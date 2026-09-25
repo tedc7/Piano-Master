@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YuE2 Listening Test</title>
+<style>
+  :root {
+    --bg: #f6f5f1; --card: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #e3e1da;
+    --accent: #2f6f5e; --accent-ink: #ffffff; --chip: #eef3f1; --warn: #9a5b00; --warn-bg: #fff4e0;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151517; --card: #1f1f22; --ink: #ececee; --muted: #9a9aa2; --line: #333338;
+            --accent: #5fb89e; --accent-ink: #0d1d18; --chip: #243430; --warn: #f0b85a; --warn-bg: #3a2c12;
+            color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 980px; margin: 0 auto;
+         padding: calc(20px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 60px max(16px, env(safe-area-inset-left)); }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 0 0 18px; }
+  .card h2 { font-size: 1.2rem; margin: 0 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
+  .chip { background: var(--chip); border-radius: 999px; padding: 3px 10px; font-size: .82rem; }
+  .chip.warn { background: var(--warn-bg); color: var(--warn); }
+  .style { color: var(--muted); font-size: .92rem; margin: 0 0 12px; }
+  .tracks { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; margin: 0 0 12px; }
+  .track { border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  .track b { display: block; font-size: .95rem; margin-bottom: 2px; }
+  .track small { color: var(--muted); display: block; margin-bottom: 6px; }
+  audio { width: 100%; height: 44px; }
+  .together { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 14px; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+           border-radius: 10px; min-height: 44px; padding: 8px 14px; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  label.vol { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .9rem; }
+  input[type=range] { width: 140px; }
+  details { margin: 0 0 12px; }
+  summary { cursor: pointer; color: var(--accent); min-height: 32px; }
+  pre { white-space: pre-wrap; background: var(--bg); border-radius: 8px; padding: 10px; font-size: .85rem; overflow-x: auto; }
+  .q { display: grid; grid-template-columns: minmax(180px, 1fr) auto; gap: 8px 12px; align-items: center;
+       border-top: 1px solid var(--line); padding: 10px 0 0; }
+  .q > span { font-size: .95rem; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .seg button { border: 0; border-radius: 0; border-left: 1px solid var(--line); min-width: 72px; }
+  .seg button:first-child { border-left: 0; }
+  .seg button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  textarea { width: 100%; font: inherit; border: 1px solid var(--line); border-radius: 10px; padding: 8px;
+             background: var(--card); color: var(--ink); min-height: 44px; }
+  .q textarea { grid-column: 1 / -1; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  #out { margin-top: 12px; min-height: 180px; font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
+  .status { color: var(--muted); font-size: .9rem; }
+  @media (max-width: 560px) { .q { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>YuE2 Listening Test</h1>
+  <p class="sub" id="sub">Loading…</p>
+  <div class="card">
+    <b>How to test</b>
+    <ol style="margin:6px 0 0; padding-left: 20px">
+      <li>For each song, play the <b>Mix</b>. Then play <b>Vocals</b> next to the <b>Reference melody</b> (the plain tone is the tune that was asked for), or use <b>Play vocals + reference together</b>.</li>
+      <li>Answer the questions. Answers are saved on this iPad as you go.</li>
+      <li>At the bottom, tap <b>Copy results</b> and paste them back into the Claude session.</li>
+    </ol>
+  </div>
+  <div id="renders"></div>
+  <div class="card">
+    <h2>Results</h2>
+    <div class="bar">
+      <button class="primary" id="copy">Copy results</button>
+      <button id="clear">Clear answers</button>
+      <span class="status" id="copystatus"></span>
+    </div>
+    <textarea id="out" readonly placeholder="Your results appear here after Copy results."></textarea>
+  </div>
+</main>
+<script>
+"use strict";
+const STORE = "yue2-listen-v1";
+const QUESTIONS = [
+  { key: "melody", text: "Vocal follows the reference melody", options: ["Yes", "Mostly", "No"] },
+  { key: "words", text: "Words are clear and correct", options: ["Yes", "Mostly", "No"] },
+  { key: "accomp", text: "Accompaniment is soft and in time", options: ["Yes", "Mostly", "No"] },
+  { key: "stems", text: "Vocal / accompaniment split is clean", options: ["Yes", "Mostly", "No", "n/a"] },
+  { key: "usable", text: "Usable for practice as-is", options: ["Yes", "No"] },
+];
+const TRACKS = [
+  ["mix", "Mix", "The whole song"],
+  ["vocals", "Vocals", "Separated vocal stem"],
+  ["accompaniment", "Accompaniment", "Separated backing stem"],
+  ["reference", "Reference melody", "Plain tone: the tune YuE2 was given or planned"],
+];
+
+function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (_) { return {}; } }
+function save(state) { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (_) {} }
+let answers = load();
+let manifest = null;
+
+function el(tag, attrs = {}, ...kids) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") node.className = v; else if (k.startsWith("on")) node.addEventListener(k.slice(2), v);
+    else node.setAttribute(k, v);
+  }
+  for (const kid of kids) if (kid != null) node.append(kid);
+  return node;
+}
+
+// Only one thing plays at a time.
+let stopTogether = null;
+document.addEventListener("play", (e) => {
+  for (const a of document.querySelectorAll("audio")) if (a !== e.target) a.pause();
+  if (stopTogether) stopTogether();
+}, true);
+
+// "Together" playback uses Web Audio: both files are fully decoded, then started
+// at the same audio-clock time, so they stay sample-aligned (two <audio> players
+// start whenever each has buffered, which can be seconds apart).
+let audioCtx = null;
+const decoded = {};
+function decode(url) {
+  if (!decoded[url]) {
+    decoded[url] = fetch(url).then((res) => res.arrayBuffer())
+      .then((data) => new Promise((ok, bad) => audioCtx.decodeAudioData(data, ok, bad)));
+    decoded[url].catch(() => { delete decoded[url]; });
+  }
+  return decoded[url];
+}
+
+function renderCard(r) {
+  const a = answers[r.id] || (answers[r.id] = {});
+  const chips = el("div", { class: "chips" });
+  const add = (text, warn) => chips.append(el("span", { class: "chip" + (warn ? " warn" : "") }, text));
+  add(r.profile ? `profile: ${r.profile}` : "generic");
+  add(r.score_supplied ? "melody supplied" : "melody by YuE2");
+  if (r.audio_seconds) add(`${Math.round(r.audio_seconds)} s song`);
+  if (r.render_seconds) add(`rendered in ${Math.round(r.render_seconds / 60 * 10) / 10} min`);
+  if (r.peak_vram_gib) add(`peak VRAM ${r.peak_vram_gib} GiB`);
+  add(`seed ${r.seed}`);
+  if (r.truncated) add("truncated", true);
+  if (r.timing) {
+    const t = r.timing, worst = Math.max(Math.abs(t.offset_first), Math.abs(t.offset_last));
+    const dir = (x) => (x < 0 ? `${Math.abs(x).toFixed(1)} s early` : `${x.toFixed(1)} s late`);
+    add(worst <= 0.2 ? "vocal on the score's timing (±0.2 s)"
+      : `vocal vs score: ${dir(t.offset_first)} at start, ${dir(t.offset_last)} at end`, worst > 0.2);
+    if (t.pitch_match != null) add(`pitch on target: ${Math.round(t.pitch_match * 100)}% of notes`, t.pitch_match < 0.9);
+  }
+
+  const tracks = el("div", { class: "tracks" });
+  const audios = {};
+  for (const [key, label, note] of TRACKS) {
+    if (!r.tracks[key]) continue;
+    const audio = el("audio", { controls: "", preload: "none", src: r.tracks[key] });
+    audios[key] = audio;
+    tracks.append(el("div", { class: "track" }, el("b", {}, label), el("small", {}, note), audio));
+  }
+
+  let togetherRow = null;
+  if (r.tracks.vocals && r.tracks.reference) {
+    const LABEL = "Play vocals + reference together";
+    const vol = el("input", { type: "range", min: "0", max: "1", step: "0.05", value: "0.5" });
+    const btn = el("button", { class: "primary" }, LABEL);
+    const status = el("span", { class: "status" });
+    let refGain = null, sources = null;
+    vol.addEventListener("input", () => { if (refGain) refGain.gain.value = Number(vol.value); });
+    const stop = () => {
+      if (sources) sources.forEach((s) => { s.onended = null; try { s.stop(); } catch (_) {} });
+      sources = null; refGain = null; btn.textContent = LABEL;
+      if (stopTogether === stop) stopTogether = null;
+    };
+    btn.addEventListener("click", async () => {
+      if (sources) { stop(); return; }
+      if (stopTogether) stopTogether();
+      for (const x of document.querySelectorAll("audio")) x.pause();
+      // Create/resume the context inside the tap, before any await (iOS requires this).
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      audioCtx.resume();
+      btn.disabled = true; status.textContent = "Loading both tracks…";
+      try {
+        const [vocBuf, refBuf] = await Promise.all([decode(r.tracks.vocals), decode(r.tracks.reference)]);
+        refGain = audioCtx.createGain();
+        refGain.gain.value = Number(vol.value);
+        refGain.connect(audioCtx.destination);
+        const voc = audioCtx.createBufferSource(); voc.buffer = vocBuf; voc.connect(audioCtx.destination);
+        const ref = audioCtx.createBufferSource(); ref.buffer = refBuf; ref.connect(refGain);
+        const when = audioCtx.currentTime + 0.15;
+        voc.start(when); ref.start(when);
+        sources = [voc, ref];
+        voc.onended = stop;
+        stopTogether = stop;
+        btn.textContent = "Stop"; status.textContent = "";
+      } catch (err) {
+        status.textContent = `Couldn't play together (${err && err.message ? err.message : err}).`;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+    togetherRow = el("div", { class: "together" }, btn, el("label", { class: "vol" }, "Reference volume", vol), status);
+  }
+
+  const qs = el("div");
+  for (const q of QUESTIONS) {
+    const seg = el("div", { class: "seg", role: "group", "aria-label": q.text });
+    for (const opt of q.options) {
+      const b = el("button", { type: "button", "aria-pressed": String(a[q.key] === opt) }, opt);
+      b.addEventListener("click", () => {
+        a[q.key] = a[q.key] === opt ? undefined : opt;
+        for (const s of seg.children) s.setAttribute("aria-pressed", String(s.textContent === a[q.key]));
+        save(answers);
+      });
+      seg.append(b);
+    }
+    qs.append(el("div", { class: "q" }, el("span", {}, q.text), seg));
+  }
+  const notes = el("textarea", { rows: "2", placeholder: "Notes (what went wrong, where, anything notable)" });
+  notes.value = a.notes || "";
+  notes.addEventListener("input", () => { a.notes = notes.value; save(answers); });
+  qs.append(el("div", { class: "q" }, el("span", {}, "Notes"), notes));
+
+  const extras = el("div");
+  if (r.lyrics) extras.append(el("details", {}, el("summary", {}, "Lyrics"), el("pre", {}, r.lyrics)));
+  if (r.score_abc) extras.append(el("details", {}, el("summary", {}, "Score (ABC)"), el("pre", {}, r.score_abc)));
+
+  const caveat = r.score_supplied ? null : el("p", { class: "style" },
+    "YuE2 wrote this melody itself. The reference plays its written plan, and the recording doesn't keep exactly to that plan's timing, so expect the reference to drift from the vocal.");
+  return el("section", { class: "card" }, el("h2", {}, r.title || r.id), chips,
+            el("p", { class: "style" }, r.style), caveat, tracks, togetherRow, extras, qs);
+}
+
+function resultsText() {
+  const head = ["Render", ...QUESTIONS.map((q) => q.text), "Notes"];
+  const lines = [
+    `YuE2 listening results (${new Date().toISOString().slice(0, 16).replace("T", " ")}, manifest ${manifest.generated})`,
+    "", "| " + head.join(" | ") + " |", "|" + head.map(() => " --- ").join("|") + "|",
+  ];
+  for (const r of manifest.renders) {
+    const a = answers[r.id] || {};
+    const cells = [r.id, ...QUESTIONS.map((q) => a[q.key] || "–"), (a.notes || "").replace(/\s*\n\s*/g, " ").replace(/\|/g, "/")];
+    lines.push("| " + cells.join(" | ") + " |");
+  }
+  return lines.join("\n");
+}
+
+document.getElementById("copy").addEventListener("click", async () => {
+  const out = document.getElementById("out");
+  const status = document.getElementById("copystatus");
+  out.value = resultsText();
+  try { await navigator.clipboard.writeText(out.value); status.textContent = "Copied. Paste it into the Claude session."; }
+  catch (_) { out.focus(); out.select(); status.textContent = "Couldn't copy automatically: select the text below and copy it."; }
+});
+document.getElementById("clear").addEventListener("click", (e) => {
+  const b = e.currentTarget;
+  if (b.dataset.armed) { answers = {}; save(answers); location.reload(); return; }
+  b.dataset.armed = "1"; b.textContent = "Tap again to clear all answers";
+  setTimeout(() => { delete b.dataset.armed; b.textContent = "Clear answers"; }, 4000);
+});
+
+fetch("manifest.json", { cache: "no-store" })
+  .then((res) => { if (!res.ok) throw new Error(res.status); return res.json(); })
+  .then((m) => {
+    manifest = m;
+    const e = m.engine || {};
+    document.getElementById("sub").textContent =
+      `${m.renders.length} renders · YuE2 ${e.packages ? e.packages["yue2-infer"] : ""} on ${e.gpu || "dev box"} · built ${m.generated}`;
+    const box = document.getElementById("renders");
+    for (const r of m.renders) box.append(renderCard(r));
+  })
+  .catch((err) => { document.getElementById("sub").textContent = `Couldn't load manifest.json (${err.message}).`; });
+</script>
+</body>
+</html>

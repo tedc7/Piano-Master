@@ -65,4 +65,4 @@ Both pages ran with no errors in headless Chromium on the workstation before dep
 
 **Full-screen tap dead zone (important for UI design):** in MIDIWeb Browser's full-screen mode, taps near the top of the screen don't register. The dead zone is about one button high (roughly the height of the hidden address bar). On the render test only the very bottom edge of the top-row buttons worked, and the links there couldn't be tapped at all. **Rule for the app:** keep the top strip for status only (song progress, stars, streak); nothing a student needs to tap goes there. This changes arch §3, whose Play screen puts pause, restart, tempo presets and the mode toggle in a top bar.
 
-**Other spikes:** YuE2 (the M0-S media spike) was built and tested separately by another agent, with generally positive results.
+**Other spikes:** YuE2 (the M0-S media spike) was built and tested separately by another agent, with generally positive results. Full results: [yue2-probe/RESULTS.md](yue2-probe/RESULTS.md).

@@ -1,0 +1,39 @@
+{
+  "name": "piano-master",
+  "description": "Vocal + soft accompaniment stems for a Piano-Master arrangement (architecture v0.15, section 10.5).",
+  "required": ["score_abc", "genre", "language", "key", "meter", "tempo_bpm"],
+  "force": {"stems": true},
+  "style_template": "{language}, {vocal_style}, {accompaniment_style}, {accompaniment_suffix}, {tempo_bpm} BPM",
+  "accompaniment_suffix": "soft, sparse, background, no lead melody",
+  "checks": ["abc_matches_header", "abc_sections_match_lyrics"],
+  "genres": {
+    "Hymns": {
+      "vocal": "warm solo voice or small choir, gentle, reverent, smooth phrasing",
+      "accompaniment": "soft organ and strings"
+    },
+    "Folk": {
+      "vocal": "clear, natural acoustic folk singer",
+      "accompaniment": "acoustic guitar and light bass"
+    },
+    "Nursery and kids' songs": {
+      "vocal": "bright, friendly voice with very clear words",
+      "accompaniment": "light acoustic band, soft percussion"
+    },
+    "Classical": {
+      "vocal": "light classical or choral tone",
+      "accompaniment": "soft strings"
+    },
+    "Holiday": {
+      "vocal": "warm and festive voice, choir optional",
+      "accompaniment": "bells, strings, light percussion"
+    },
+    "Movie/TV, Pop": {
+      "vocal": "clean, light, upbeat modern voice",
+      "accompaniment": "light drums, bass, and pad"
+    },
+    "Lesson pieces": {
+      "vocal": "bright, friendly voice with very clear words",
+      "accompaniment": "light acoustic guitar and soft strings"
+    }
+  }
+}

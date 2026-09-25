@@ -1,0 +1,17 @@
+{
+  "id": "garden-morning-intro",
+  "title": "Garden Morning with 2-bar intro (Piano-Master profile)",
+  "profile": "piano-master",
+  "genre": "Nursery and kids' songs",
+  "language": "English",
+  "key": "C",
+  "meter": "4/4",
+  "tempo_bpm": 96,
+  "score_abc_path": "garden-morning-intro.abc",
+  "lyrics_path": "garden-morning.lyrics.txt",
+  "seed": 831001,
+  "formats": [
+    "flac",
+    "mp3"
+  ]
+}

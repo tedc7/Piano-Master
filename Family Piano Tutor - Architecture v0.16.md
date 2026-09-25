@@ -2,7 +2,7 @@
 
 Sep 24, 2026 · @Someone
 
-**What changed in v0.16** (from the feasibility tests, `feasibility/RESULTS.md`): the piano site is served at the server's fixed IP address with the server's own certificate authority, because the router cannot hold local DNS names and no public issuer certifies an `.internal` name (2.5). On the iPad A16, MIDIWeb Browser trusts that certificate authority and offers Web MIDI, and saved data, Wake Lock, audio, speech, video and 60 fps staff scrolling all passed. **MIDI itself is untested:** the Jikada JK-825 has no MIDI, so a new keyboard is needed (2.3). MIDIWeb Browser's full-screen mode is lost when the app relaunches, and a page cannot turn it on, but the page can detect it and show a reminder (2.2). In full-screen mode the top of the screen ignores taps, so the top strip of every screen shows status only (3). The YuE2 media spike was run with generally positive results (12).
+**What changed in v0.16** (from the feasibility tests, `feasibility/RESULTS.md`): the piano site is served at the server's fixed IP address with the server's own certificate authority, because the router cannot hold local DNS names and no public issuer certifies an `.internal` name (2.5). On the iPad A16, MIDIWeb Browser trusts that certificate authority and offers Web MIDI, and saved data, Wake Lock, audio, speech, video and 60 fps staff scrolling all passed. **MIDI itself is untested:** the Jikada JK-825 has no MIDI, so a new keyboard is needed (2.3). MIDIWeb Browser's full-screen mode is lost when the app relaunches, and a page cannot turn it on, but the page can detect it and show a reminder (2.2). In full-screen mode the top of the screen ignores taps, so the top strip of every screen shows status only (3). The YuE2 media spike passed and YuE2 is confirmed as the media engine: it sings a supplied melody (92-98% of notes on pitch) within 8 GB of GPU memory, but its timing only roughly follows the score, so the alignment step is essential (10.5, 12).
 
 **What changed in v0.15** (from the v0.14 review): the skill map is a **branching map** (prerequisites create forks and joins), not a single line, so several skills can be in progress at once. A skill passes at 3 stars; **Guided sessions may use pieces that need one Current skill beyond the passed skills**, while Free Play and the library unlock only from passed skills (6.8, 8.1). **Stacked practice aids are for practice and do not pass a skill**; only whole-item attempts pass (7.5). A student who has trouble gets gentle **"Try it another way"** options after 3 tries, and a **stuck** skill gets more support practice in the session, never a "failed" message and never a free pass (8.1). **Rhythm skills also need timing stars to pass.** There is no minimum practice to pass and no daily cap on new skills. **Mastery is a stored running value** updated after every attempt, with the best-so-far kept (8.2). Handling of content changes behind a student's progress moves to future enhancements (section 14).
 
@@ -148,7 +148,7 @@ Three measurements, all recorded in the DeviceProfile:
 | Development device | Chromebook (no touchscreen) |  |
 | Piano | To be bought: class-compliant USB MIDI keyboard (2.3) | The Jikada JK-825 on hand has no MIDI (its USB port only plays music files). USB-C cable to the iPad; no headphones |
 | Piano server | Existing Linux server that runs Docmost | Piano site at `https://192.168.2.128/`, behind the same Caddy, with the same internal certificate authority; bound to the home-network address only, no port 80. Server Wi-Fi measured 0.93 MB/s to the iPad; a Wi-Fi upgrade is planned |
-| Dev box (Claude workstation) | Linux dev box, NVIDIA RTX 5070 Ti, 16 GB | Runs Claude Code, all three Claude skills, and the vocal and accompaniment engine YuE2 (feasibility spike run with generally positive results); talks to the server through the Skill API |
+| Dev box (Claude workstation) | Linux dev box, NVIDIA RTX 5070 Ti, 16 GB | Runs Claude Code, all three Claude skills, and the vocal and accompaniment engine YuE2 (confirmed by the M0-S spike; peaks at about 8 GB); talks to the server through the Skill API |
 | AI provider (optional) | Claude API, via the AI proxy on the piano server |  |
 
 **Tech stack (proposed; to be reviewed against existing server components during implementation):**
@@ -1025,7 +1025,7 @@ Contents:
 
 The media skill adds a sung vocal and a soft accompaniment to each arrangement before submission, on the dev box's GPU. It runs directly on that machine, so no job queue or polling worker is needed; it picks up pending media work (new songs, vocal-style changes) from the Skill API.
 
-**Engine is a plugin.** The skill calls a music engine through one interface: input is the melody (ABC notation), lyrics (all verses in playback order), chord symbols, key, tempo, vocal style tags, and accompaniment style tags; output is a vocal stem and an accompaniment stem. YuE2 is the current engine (pending the feasibility spike in M0); Suno v6 (via a third-party API) is a possible fallback (open question); newer engines can be added without changing the rest of the pipeline.
+**Engine is a plugin.** The skill calls a music engine through one interface: input is the melody (in YuE2's native two-voice ABC dialect, converted from the arrangement's MusicXML), lyrics (all verses in playback order), chord symbols, key, tempo, vocal style tags, and accompaniment style tags; output is a vocal stem and an accompaniment stem. YuE2 is the engine (confirmed by the M0-S spike, `feasibility/yue2-probe/RESULTS.md`); it runs through the general-purpose `generate-music` Claude skill (backup in `skills/`), whose `piano-master` profile applies the rules in this section; Suno v6 (via a third-party API) is a possible fallback (open question); newer engines can be added without changing the rest of the pipeline.
 
 **Style by genre.** Each genre has a default vocal style and accompaniment style, sent to the engine as tags. A song can override them. Accompaniment tags always include "soft, sparse, background, no lead melody", so the piano part stays in front.
 
@@ -1041,11 +1041,11 @@ The media skill adds a sung vocal and a soft accompaniment to each arrangement b
 **Steps**
 
 1. **Prepare:** build the engine input from the arrangement and style tags.
-2. **Generate:** the engine produces the vocal and accompaniment; if it returns a single mix, Demucs separates the stems.
-3. **Align:** onsets are time-warped to the arrangement's beat grid; drift over about 50 ms after alignment fails the take.
+2. **Generate:** the engine produces the vocal and accompaniment. YuE2 returns a single mix, so Demucs separates the stems.
+3. **Align:** onsets are time-warped to the arrangement's beat grid; drift over about 50 ms after alignment fails the take. This step is essential: in the spike, YuE2's vocal sat within about 0.1 s of a supplied score without an intro, but 0.8 s late with a 2-bar intro, and its own planned songs drifted by several seconds.
 4. **Pitch check:** the vocal's pitch is tracked and compared with the melody note by note; at least 90% of melody notes must be sung on the correct pitch (nearest semitone, any octave).
 5. **Word check:** Whisper transcribes the vocal and compares it to the lyrics. Any added or changed words fail the take. (The tolerance for words Whisper simply misses in singing is set during the spike.)
-6. **Accompaniment check:** steady on the beat grid (within about 50 ms), harmony matches the chord symbols on at least 80% of beats, and its level is set well below the vocal.
+6. **Accompaniment check:** steady on the beat grid (within about 50 ms), harmony matches the chord symbols on at least 80% of beats, and its level is set well below the vocal. The level has to be set here: in the spike the accompaniment stem came out louder than the vocal even with "soft" in the tags.
 7. **Tempo versions:** pitch-preserving time-stretch (Rubber Band) produces 90%, 75%, and 50% tempo versions of both stems.
 8. **Retry or package:** failed takes are re-rendered (up to 3 tries). If a stem still fails, the arrangement is submitted without it and flagged "no vocal" or "no accompaniment". Loudness is normalized, and the stems and check report are added to the package.
 
@@ -1170,7 +1170,7 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | # | Milestone | Delivers | Done when |
 | --- | --- | --- | --- |
 | M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Remaining:** App API and SQLite skeleton; MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; Tone.js audio in MIDIWeb Browser; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
-| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Run with generally positive results** (`feasibility/yue2-probe/`) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
+| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
@@ -1194,7 +1194,8 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 - [ ] Run the no-internet check (router WAN unplugged) on the iPad
 - [ ] Check audio and speech with the iPad's silent mode on
 - [ ] Re-measure server download speed after the server Wi-Fi upgrade
-- [ ] Record the M0-S decision on YuE2
+- [x] Record the M0-S decision on YuE2: proceed, with the alignment step built in (`feasibility/yue2-probe/RESULTS.md`)
+- [ ] Write the MusicXML → native ABC converter for the media skill (M8)
 - [ ] Continue M0 (App API and SQLite skeleton, MIDI test page)
 
 ## 13. Later-phase design (placeholders)
@@ -1250,7 +1251,6 @@ Not planned for v1; revisit when needed.
 - **Gentle options and stuck thresholds (8.1):** 3 tries before "Try it another way", 6 attempts over 2 days before a skill is stuck, and the 30% support share are first versions; tune in M5 and with the children.
 - **Mastery step (8.2):** the 0.3 running-value step is a first version; tune with the practice simulator.
 - **Lockdown:** is the full-screen reminder (2.2) enough, or is Guided Access needed? Full-screen mode alone is not reliable: it is lost when the app relaunches. Decide in M0.
-- **Media engine:** the M0-S spike ran with generally positive results; record the decision (proceed with YuE2, or which gaps remain).
 - **Suno fallback:** Suno is only available through unofficial third-party APIs; acceptable as a fallback for a personal project?
 - **Method spine:** confirm Faber *Piano Adventures* as the spine, with *Alfred's Basic* as the supplement.
 - **Ages:** what ages are the current students? This affects visual style (all students are assumed to read).
@@ -1265,6 +1265,7 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Media engine (v0.16) | YuE2 through the `generate-music` skill; Demucs for stems; the alignment step (10.5 step 3) is required | M0-S spike (`feasibility/yue2-probe/RESULTS.md`): 92-98% of notes on pitch with a supplied melody, about 8 GB peak on the 16 GB GPU, a 2-minute song in about a minute; timing only roughly follows the score. Non-expert listeners rated all takes usable |
 | Hosting address and certificate (v0.16) | `https://192.168.2.128/` with the server's own certificate authority (Caddy `tls internal`); each device trusts the root once | Router cannot hold local DNS; no public issuer for `.internal`; works with the internet down. Tested on the iPad in MIDIWeb Browser |
 | Network exposure (v0.16) | Reverse proxy bound to the home-network address only, port 443 only, no port forwarding | Answers the v0.13 open question; enforced by the Server repo setup |
 | Screen layout (v0.16) | Top strip is status only; controls sit below it (Play screen: between the staff and the keyboard) | Taps near the top are ignored in MIDIWeb Browser full-screen mode |
@@ -1338,7 +1339,7 @@ Not planned for v1; revisit when needed.
 
 | Version | Date | Summary |
 | --- | --- | --- |
-| v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; YuE2 spike positive |
+| v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; M0-S decision: proceed with YuE2 |
 | v0.15 | Sep 23, 2026 | From the v0.14 review: branching skill map; Guided-ready (passed + 1) and library-ready unlocking; stacked aids do not pass; gentle "Try it another way" options and stuck-skill support practice; rhythm skills need timing stars; no minimum practice or daily cap; running mastery with best-so-far; content-change handling deferred |
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
