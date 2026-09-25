@@ -1,0 +1,14 @@
+{
+  "id": "garden-morning",
+  "title": "Garden Morning (Piano-Master profile: supplied melody)",
+  "profile": "piano-master",
+  "genre": "Nursery and kids' songs",
+  "language": "English",
+  "key": "C",
+  "meter": "4/4",
+  "tempo_bpm": 96,
+  "score_abc_path": "garden-morning.abc",
+  "lyrics_path": "garden-morning.lyrics.txt",
+  "seed": 831001,
+  "formats": ["flac", "mp3"]
+}

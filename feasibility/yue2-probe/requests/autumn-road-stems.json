@@ -1,0 +1,9 @@
+{
+  "id": "autumn-road-stems",
+  "title": "Autumn Road (generic: same request + stems)",
+  "lyrics_path": "autumn-road.lyrics.txt",
+  "style": "English, gentle folk ballad, warm clear female voice, fingerpicked acoustic guitar, soft cello, light brushed percussion, unhurried, 92 BPM",
+  "seed": 831001,
+  "stems": true,
+  "formats": ["flac", "mp3"]
+}
