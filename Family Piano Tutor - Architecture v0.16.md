@@ -1,6 +1,8 @@
-# Family Piano Tutor — Architecture v0.15
+# Family Piano Tutor — Architecture v0.16
 
-Sep 23, 2026 · @Someone
+Sep 24, 2026 · @Someone
+
+**What changed in v0.16** (from the feasibility tests, `feasibility/RESULTS.md`): the piano site is served at the server's fixed IP address with the server's own certificate authority, because the router cannot hold local DNS names and no public issuer certifies an `.internal` name (2.5). On the iPad A16, MIDIWeb Browser trusts that certificate authority and offers Web MIDI, and saved data, Wake Lock, audio, speech, video and 60 fps staff scrolling all passed. **MIDI itself is untested:** the Jikada JK-825 has no MIDI, so a new keyboard is needed (2.3). MIDIWeb Browser's full-screen mode is lost when the app relaunches, and a page cannot turn it on, but the page can detect it and show a reminder (2.2). In full-screen mode the top of the screen ignores taps, so the top strip of every screen shows status only (3). The YuE2 media spike was run with generally positive results (12).
 
 **What changed in v0.15** (from the v0.14 review): the skill map is a **branching map** (prerequisites create forks and joins), not a single line, so several skills can be in progress at once. A skill passes at 3 stars; **Guided sessions may use pieces that need one Current skill beyond the passed skills**, while Free Play and the library unlock only from passed skills (6.8, 8.1). **Stacked practice aids are for practice and do not pass a skill**; only whole-item attempts pass (7.5). A student who has trouble gets gentle **"Try it another way"** options after 3 tries, and a **stuck** skill gets more support practice in the session, never a "failed" message and never a free pass (8.1). **Rhythm skills also need timing stars to pass.** There is no minimum practice to pass and no daily cap on new skills. **Mastery is a stored running value** updated after every attempt, with the best-so-far kept (8.2). Handling of content changes behind a student's progress moves to future enhancements (section 14).
 
@@ -46,14 +48,16 @@ The app is a web client plus a small server on the home network. The server hold
 
 ### 2.1 Client device requirements
 
-- **Browser features:** Web MIDI and Web Audio, on a page served over HTTPS.
+- **Browser features:** Web MIDI, Web Audio and Screen Wake Lock, on a page served over HTTPS; storage that survives an app relaunch.
 - **Network:** Wi-Fi access to the piano server on the home network. No internet needed.
 - **Screen:** about 10 inches or larger, landscape. Touch is recommended; mouse or trackpad also works.
 - **Performance:** smooth 60 fps staff scrolling; any recent mid-range tablet or laptop.
 
 **Web MIDI:** a browser feature that lets a web page receive notes from a MIDI keyboard. The first time, the browser asks to allow MIDI access.
 
-**Secure origin (HTTPS):** browsers only offer Web MIDI to pages loaded over HTTPS, the same privacy rule used for camera and microphone. It stops random websites from reading or controlling connected devices; it is not about piracy.
+**Secure origin (HTTPS):** browsers only offer Web MIDI to pages loaded over HTTPS, the same privacy rule used for camera and microphone. It stops random websites from reading or controlling connected devices; it is not about piracy. Each client device trusts the piano server's certificate authority once (2.5).
+
+**Screen stays awake:** a child playing the piano does not touch the screen, and piano notes do not count as activity, so the app holds a screen wake lock while practising (tested: the Wake Lock API stops Auto-Lock in MIDIWeb Browser; a silent looping video does not).
 
 **Brief network drops:** if Wi-Fi drops mid-attempt, the client keeps the finished attempt in a small local outbox and sends it when the server is reachable again. If the server cannot be reached at startup, the app shows "Can't reach the piano server" with a retry button.
 
@@ -63,14 +67,17 @@ The app is a web client plus a small server on the home network. The server hold
 | --- | --- | --- | --- | --- |
 | Chromebook (Chrome) | Built in | Touchscreen models only | Family Link supervised account; app pinning | Also good for development |
 | Android tablet (Chrome) | Built in | Yes | Family Link; screen pinning | Typically $150–300 |
-| iPad (MIDIWeb Browser app) | Supplied by the app | Yes | Baseline: MIDIWeb Browser full-screen mode (address bar hidden). Stricter option: Screen Time "Allowed Websites Only" plus Guided Access | Safari and other iPad browsers lack Web MIDI. Guided Access must be started by a parent each session, so it is optional |
+| iPad (MIDIWeb Browser app) | Supplied by the app | Yes | MIDIWeb Browser full-screen mode (address bar hidden), set by hand; the app shows a reminder when it is off. Stricter option: Guided Access, which also stops the app being closed | Safari and other iPad browsers lack Web MIDI. Full-screen mode survives lock/wake and app switches but is lost when the app relaunches, and a page cannot turn it on. Guided Access must be started by a parent each session, so it is optional |
 | Desktop (Chrome or Edge on Windows, macOS, Linux) | Built in | Usually no | OS parental controls | Development and parent use |
 
 Every new device passes the device qualification test (2.6) before children use it.
 
+**Full-screen reminder (iPad):** the page cannot switch MIDIWeb Browser to full screen (the Fullscreen API is not offered there), but it can tell when full screen is off: the page is shorter than the screen by the height of the app's bars (87 px on the iPad A16, 0 px in full screen), and a resize event fires the moment it changes. The app checks on every load and resize and, when the gap is above the device's threshold, shows a calm reminder on the student picker to turn full screen on. The threshold is stored in the DeviceProfile (5). This is a nudge, not a lockdown.
+
 ### 2.3 Piano (MIDI keyboard) requirements
 
-- **Connection:** class-compliant USB MIDI, standard on most digital pianos. (Bluetooth MIDI is a future enhancement.)
+- **Connection:** class-compliant USB MIDI, standard on most digital pianos. (Bluetooth MIDI is a future enhancement.) Check the specifications say so: some budget keyboards have a USB port only for playing music files or a flash drive (the Jikada JK-825 is one). Before buying, look for "USB MIDI" or "class compliant", velocity-sensitive keys and a sustain pedal jack; test a new keyboard on a computer before the iPad.
+- **Port selection:** the app chooses the piano's MIDI input by name and ignores virtual ports (for example MIDIWeb Browser's own "MIDIWeb Out" and iPadOS's "Network Session 1", which appear even with no keyboard).
 - **Sound:** the piano plays through its own speakers; app audio (metronome, accompaniment, vocals, spoken lessons) plays through the client device's speakers. The parent sets a comfortable balance during qualification. Headphone use is a future enhancement.
 - **Velocity-sensitive keys:** needed for dynamics scoring (about Level 3 and up).
 - **Key count:** set by the parent (61 or 88 keys; other sizes can be added later as a key range). Notes outside the configured range are never used for practice or learning: arrangements are octave-shifted where possible, otherwise the song or skill shows "Needs 88 keys" and is unavailable. 61 keys covers about Level 4; later repertoire needs 88.
@@ -94,10 +101,11 @@ Detected capabilities and the measured latency offset are saved in a **DevicePro
 ### 2.5 Server requirements
 
 - **Required:** a machine on the home network that runs:
-  - an HTTPS reverse proxy (for example nginx, Caddy, or Traefik) with a certificate the family's devices trust;
+  - an HTTPS reverse proxy (currently Caddy) with a certificate the family's devices trust;
   - the **App API** (including the Skill API used by the dev box, 10.9) and **database** (proposed: Python with SQLite, section 4);
   - file storage for media (audio stems, concept videos).
-- **Local name resolution:** the site name (for example `piano.<family-domain>`) must resolve to the server's home-network address even when the internet is down, for example with a local DNS entry on the router. The certificate can still come from a public issuer; renewal needs occasional internet access.
+- **Address and certificate (decided in v0.16):** the piano site is served at the server's fixed home-network IP address, `https://192.168.2.128/`, with a certificate for that address from the server's own certificate authority (Caddy `tls internal`, the same authority as the family knowledge base; its root is valid to 2036 and renews with no internet). Serving by address needs no name resolution, which matters because the router (TP-Link ER605, standalone) cannot hold local DNS names and tablets cannot edit a hosts file. A public certificate is not an option: no public issuer certifies an `.internal` name, and renewal would need the internet. Each client device installs and fully trusts the root certificate once (Server repo, `setup/docs/13-ipad-client.md`). If the address approach ever fails, the fallback is an mDNS name such as `piano.local`.
+- **Static files:** the app is served from `/opt/piano/www` on the server, mounted read-only into Caddy; app deploys copy files there.
 - **Network exposure:** the piano site is reachable from the home network only (section 11.1).
 - **Optional:** AI proxy (holds the AI API key, section 9).
 - **Dev box (Claude workstation):** a separate machine with an NVIDIA GPU that runs Claude Code, all three Claude skills, and the music engine (section 10). It reaches the server only through the Skill API, needs internet for Claude and song sources, and only needs to be on when the parent runs a skill.
@@ -110,13 +118,14 @@ Run on any new client profile before children use it. Each check passes or fails
 2. **Accuracy:** every key from lowest to highest lights up correctly; chords of 3 to 4 notes register fully.
 3. **Latency:** measured, not guessed. See 2.6.1. Pass: key-to-screen under about 30 ms and a stable tap-along offset (spread under about 20 ms). Fast repeated notes are not dropped.
 4. **Capabilities:** pedal, velocity, and key range are detected correctly, and the app behaves correctly with the pedal unplugged.
-5. **Audio:** metronome and a demo track play cleanly, with no crackling, while notes are being played. The balance between the piano's speakers and the device's speakers is comfortable. On iPad, confirm app audio still plays with the silent switch on, or note that it must be off.
+5. **Audio:** metronome and a demo track play cleanly, with no crackling, while notes are being played. The balance between the piano's speakers and the device's speakers is comfortable. On iPad, confirm app audio still plays with the silent switch on, or note that it must be off. After lock and wake, audio resumes (iPadOS marks it "interrupted"; the app resumes it when the page is shown again). Stems for a song at the 50% preset load and hold in memory.
 6. **Touch:** buttons, scrolling, and the staff respond smoothly (or mouse, on non-touch devices).
 7. **Rendering:** a grand-staff song with lyrics scrolls at a steady 60 fps and glides back smoothly on a rewind (the M0 tool checks, 12).
-8. **Resilience:** unplug and replug the piano; lock and wake the device; switch apps and return; turn Wi-Fi off and on mid-song. Note any cases where MIDI or sound stops, and whether reload fixes it. Confirm an attempt finished during a Wi-Fi drop is saved once Wi-Fi returns.
-9. **No internet:** unplug the home router's internet connection. The app loads, a practice session runs, and progress saves.
-10. **Lockdown:** apply the profile's child lockdown (table in 2.2) and confirm a child cannot reach any other site or app during practice. On iPad, confirm MIDIWeb Browser's full-screen mode keeps the address bar hidden after switching apps and after a reload; if not, use Guided Access.
-11. **Soak test:** children use the build daily for one week.
+8. **Screen stays awake:** with Auto-Lock at its shortest, the screen stays on through several minutes of play without touches (wake lock).
+9. **Resilience:** unplug and replug the piano; lock and wake the device; switch apps and return; turn Wi-Fi off and on mid-song. Note any cases where MIDI or sound stops, and whether reload fixes it. Confirm an attempt finished during a Wi-Fi drop is saved once Wi-Fi returns.
+10. **No internet:** unplug the home router's internet connection. The app loads, a practice session runs, and progress saves.
+11. **Lockdown:** apply the profile's child lockdown (table in 2.2) and confirm a child cannot reach any other site or app during practice. On iPad, confirm the full-screen reminder appears after the app is relaunched and disappears when full screen is turned on; decide whether Guided Access is needed.
+12. **Soak test:** children use the build daily for one week.
 
 **Decision rule:** pass on all checks, or only minor issues fixed by a reload button → device approved. Dropped notes, lag, frequent audio loss, or failed lockdown → use a different profile; no code changes needed.
 
@@ -134,17 +143,17 @@ Three measurements, all recorded in the DeviceProfile:
 
 | Role | Current choice | Notes |
 | --- | --- | --- |
-| Student device | iPad with MIDIWeb Browser (by 5of12) | Pending qualification test; Android tablet with Chrome is the planned fallback |
-| Child lockdown (iPad) | MIDIWeb Browser full-screen mode | Guided Access if full screen proves insufficient |
+| Student device | iPad A16 (USB-C) with MIDIWeb Browser (by 5of12) | HTTPS, storage, wake lock, audio, speech, video and rendering passed on Sep 24, 2026 (`feasibility/RESULTS.md`); MIDI and latency checks wait for a MIDI keyboard. Android tablet with Chrome is the planned fallback |
+| Child lockdown (iPad) | MIDIWeb Browser full-screen mode, set by hand, plus the in-app reminder (2.2) | Full screen is lost when the app relaunches; Guided Access if the reminder proves insufficient |
 | Development device | Chromebook (no touchscreen) |  |
-| Piano | Digital piano; model and pedal to be confirmed | USB-C or Lightning (camera adapter) cable to the iPad; no headphones |
-| Piano server | Existing Linux server that runs Docmost | New site, for example `piano.<family-domain>`, behind the same HTTPS reverse proxy, restricted to the home network |
-| Dev box (Claude workstation) | Linux dev box, NVIDIA RTX 5070 Ti, 16 GB | Runs Claude Code, all three Claude skills, and the vocal and accompaniment engine YuE2 (pending the feasibility spike); talks to the server through the Skill API |
+| Piano | To be bought: class-compliant USB MIDI keyboard (2.3) | The Jikada JK-825 on hand has no MIDI (its USB port only plays music files). USB-C cable to the iPad; no headphones |
+| Piano server | Existing Linux server that runs Docmost | Piano site at `https://192.168.2.128/`, behind the same Caddy, with the same internal certificate authority; bound to the home-network address only, no port 80. Server Wi-Fi measured 0.93 MB/s to the iPad; a Wi-Fi upgrade is planned |
+| Dev box (Claude workstation) | Linux dev box, NVIDIA RTX 5070 Ti, 16 GB | Runs Claude Code, all three Claude skills, and the vocal and accompaniment engine YuE2 (feasibility spike run with generally positive results); talks to the server through the Skill API |
 | AI provider (optional) | Claude API, via the AI proxy on the piano server |  |
 
 **Tech stack (proposed; to be reviewed against existing server components during implementation):**
 
-- **Client:** TypeScript, a light UI framework (Svelte or React), SVG or Canvas for the staff and keyboard, VexFlow for music notation, Tone.js for audio.
+- **Client:** TypeScript, a light UI framework (Svelte or React), SVG for the staff (one pre-rendered SVG per song; canvas tiles performed the same in testing), VexFlow for music notation, Tone.js for audio. All libraries and fonts are served from the piano server, never a CDN (VexFlow 5 loads its music fonts from a CDN by default, so its fonts must be self-hosted; 4.2.x embeds them).
 - **Server:** Python (FastAPI or similar) with SQLite; plain files for media. Python is shared with the Claude skills (music21, validation, fingerprint, fingering).
 
 ## 3. UI design
@@ -167,7 +176,7 @@ The app offers **Guided** practice (the daily session from the skill map) and **
 
 ### Screens
 
-1. **Student picker:** large avatar cards, one per child, plus a small "Parent" button that asks for the PIN.
+1. **Student picker:** large avatar cards, one per child, plus a small "Parent" button that asks for the PIN. Shows the full-screen reminder when needed (2.2).
 2. **Home:** two big buttons, "Today's Practice" (Guided) and "Free Play". Shows today's session as 3 to 5 cards, a progress ring toward today's target minutes, the streak, and stars earned this week.
 3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its lessons.
 4. **Lesson intro:** a short interactive concept lesson, with an optional parent-approved video (see "Teaching concepts" below).
@@ -177,13 +186,17 @@ The app offers **Guided** practice (the daily session from the skill map) and **
 8. **My Progress:** the student's own report: skills mastered, star trends, practice days, strengths and "working on" areas, written in kid-friendly words. Same data the parent sees.
 9. **Parent mode (PIN):** see below.
 
+### Screen layout rule: status at the top, controls below
+
+**Decision (v0.16): the top strip of every screen shows status only; nothing a student needs to tap goes there.** In MIDIWeb Browser's full-screen mode, taps near the top of the screen (about one button high) do not register, so buttons and links there fail. The top strip holds things to read: song progress, stars, streak, the Parent-mode banner. Buttons start below it.
+
 ### Parent mode
 
 The parent taps "Parent" on the student picker (or in the top bar) and enters the PIN. The PIN is checked by the server (section 11.1). Parent mode:
 
 - shows the Parental Controls pages: students (add, edit, archive, delete), genre and song rules per child, the staging review list, work requests for the Claude skills, concept videos, content and analysis, full progress reports, AI settings, and settings;
 - **opens every skill bubble on every map** for review, including locked ones, so the parent can see exactly how a concept lesson, exercise or song looks and plays. This is the content preview; there is no separate preview page. Plays in parent mode are never recorded to a student;
-- shows a clear "Parent mode" banner and a "Log out" button, and logs out automatically after 10 minutes without a touch, or when the device sleeps.
+- shows a clear "Parent mode" banner (with the "Log out" button placed below the top strip), and logs out automatically after 10 minutes without a touch, or when the device sleeps.
 
 ### Journey maps
 
@@ -225,7 +238,8 @@ On the Journey map, a concept lesson is a small **lightbulb bubble** directly be
 - **Note feedback:** green for correct, amber for right note but off-time, red flash plus the note name for wrong keys. No harsh sounds. (A color-blind option is a future enhancement.)
 - **On-screen keyboard** (bottom 30%): 2 to 4 octaves around the song's range. Target key highlighted; pressed keys light up live from MIDI. Hints fade out as levels rise.
 - **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9).
-- **Top bar:** song progress bar, pause, restart, tempo presets (50%, 75%, 90%, 100%), mode toggle, accompaniment on/off and volume.
+- **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
+- **Control strip (between the staff and the on-screen keyboard):** pause, restart, tempo presets (50%, 75%, 90%, 100%), mode toggle, accompaniment on/off and volume.
 - **Modes:** Play (the default: play-along with smooth automatic rewind, below), Listen (app plays it first, with accompaniment and vocals), Section loop. Wait mode is an optional aid, built later (M10).
 - **Smooth rewind:** see "Play and smooth rewind" below; section loops use the same glide.
 - **Count-in and metronome:** visual beat dots plus an optional click.
@@ -260,7 +274,7 @@ Notes played during the glide and count-in are ignored. Nothing on screen announ
 
 **Scoring:** each phrase counts its last pass, so fixing a phrase earns the credit; each rewind lowers the attempt's practice-aid factor, so 5 stars needs a clean run (7.5).
 
-**Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out; audio stems are decoded in advance, so they can restart instantly from any point; one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart. At resume, the evaluator re-anchors its MIDI-to-song clock mapping. Rewinds are tested with the MIDI replay adapter (11.4).
+**Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out (tested: a 64-measure grand staff with lyrics, about 22,000 px wide, scrolled and glided at a steady 60 fps on the iPad A16, worst frame 24 ms); audio stems are decoded in advance, so they can restart instantly from any point (tested: 691 MB of decoded audio held and played, 2 x 6-minute stems decoded in 0.5 s, restarts at a new point with no audible delay); one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart. At resume, the evaluator re-anchors its MIDI-to-song clock mapping. Rewinds are tested with the MIDI replay adapter (11.4).
 
 ### Tempo presets
 
@@ -339,11 +353,11 @@ flowchart TD
 
 | Module | Responsibility | Key interfaces |
 | --- | --- | --- |
-| MIDI Input | Connect to piano, emit note-on/off and pedal events with timestamps, handle reconnects, detect capabilities (pedal, velocity, range). Has a replay adapter that feeds recorded events for tests. | `onNote(pitch, velocity, time)`, `onPedal(value, time)`, `getCapabilities()` |
+| MIDI Input | Connect to the piano (chosen by name, ignoring virtual ports), emit note-on/off and pedal events with timestamps, handle reconnects, detect capabilities (pedal, velocity, range). Has a replay adapter that feeds recorded events for tests. | `onNote(pitch, velocity, time)`, `onPedal(value, time)`, `getCapabilities()` |
 | Performance Evaluator | Match played notes to expected notes in real time; decide when to rewind; run the scorers enabled for the level and device; apply the latency offset and practice-aid factor (section 7) | `start(arrangement, mode, conditions)`, emits `NoteResult`, returns `AttemptResult` |
-| Audio Engine | Demo playback, stems, chord pad, choir voice, metronome, count-in | `play(arrangement, tempo)`, `metronome(bpm)` |
+| Audio Engine | Demo playback, stems, chord pad, choir voice, metronome, count-in; resumes audio when the page is shown again after a lock or app switch | `play(arrangement, tempo)`, `metronome(bpm)` |
 | API client | Load the student's session, songs and media; post attempts (with an outbox for Wi-Fi drops); post client logs | `getSession()`, `postAttempt()`, `log()` |
-| UI Layer | Screens, staff rendering, keyboard, feedback, parent mode | Consumes the modules above |
+| UI Layer | Screens, staff rendering, keyboard, feedback, parent mode; holds a screen wake lock during practice; full-screen check and reminder | Consumes the modules above |
 
 **Server modules**
 
@@ -365,7 +379,7 @@ flowchart TD
 
 ## 5. Data model
 
-Everything is stored in the server's SQLite database, except media files (in the media store) and the content source files (in a git repository, loaded into the database by the content loader). The client keeps only a device id and the small outbox of unsent attempts. Content never changes because of student activity.
+Everything is stored in the server's SQLite database, except media files (in the media store) and the content source files (in a git repository, loaded into the database by the content loader). The client keeps only a device id and the small outbox of unsent attempts. Both survive an app relaunch in MIDIWeb Browser, but iPadOS does not grant persistent storage, so they could be cleared if the device runs low on space; the client then registers again as a new device. Content never changes because of student activity.
 
 **Content (authored files, loaded into the database)**
 
@@ -405,7 +419,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | --- | --- |
 | Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
-| DeviceProfile | deviceId, pianoName, keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, lastChecked |
+| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
 | Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
@@ -1104,7 +1118,7 @@ Used to catch duplicates and deleted songs, even in a different key, tempo, or a
 
 | Area | Measure |
 | --- | --- |
-| Network | The reverse proxy serves the piano site only to home-network addresses; no port forwarding. Remote access (for example a VPN) is a future option |
+| Network | The reverse proxy is bound to the server's home-network address only, port 443 only (no port 80), behind the firewall; no port forwarding. HTTPS uses the server's own certificate authority (2.5). Remote access (for example a VPN) is a future option |
 | Student functions | No login on the home network; choosing a student is enough. The family accepts this, since the student side only records practice |
 | Parent functions | Require a parent session. The PIN is checked by the server against a stored hash; 5 wrong tries lock parent login for 5 minutes, doubling with each further lockout. The session ends after 10 minutes idle or on logout. A longer PIN is allowed |
 | Skill API | Home network only; per-skill tokens (kept in each skill's configuration on the dev box) scoped to read and submit; no token can approve, change rules, delete, or read student progress; the parent can rotate tokens |
@@ -1155,8 +1169,8 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 
 | # | Milestone | Delivers | Done when |
 | --- | --- | --- | --- |
-| M0 | Hosting, device qualification, and tool checks | Piano site over HTTPS on the home network with local DNS; App API and SQLite skeleton; MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log); tap-along latency calibration; metronome and demo audio; **tool checks** on the student device: VexFlow grand-staff scrolling and rewind glide at 60 fps, instant audio restart from any point, Tone.js audio in MIDIWeb Browser, full-screen lockdown | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
-| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
+| M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Remaining:** App API and SQLite skeleton; MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; Tone.js audio in MIDIWeb Browser; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
+| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Run with generally positive results** (`feasibility/yue2-probe/`) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
@@ -1175,9 +1189,13 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 
 - [ ] Choose the base method book spine (Faber proposed) and photograph both methods' tables of contents
 - [ ] Sketch the branch shape of the Prep A map (which skills fork and where they join)
-- [ ] Confirm the piano model, key count, USB port and cable, and whether a sustain pedal is connected
-- [ ] Set up local DNS for the piano site and restrict it to the home network
-- [ ] Start M0 and the media feasibility spike (M0-S)
+- [ ] Buy a class-compliant USB MIDI keyboard (2.3); test it on a computer, then run the MIDI and latency checks on the iPad
+- [x] Serve the piano site over HTTPS on the home network (by IP address with the internal certificate authority, 2.5)
+- [ ] Run the no-internet check (router WAN unplugged) on the iPad
+- [ ] Check audio and speech with the iPad's silent mode on
+- [ ] Re-measure server download speed after the server Wi-Fi upgrade
+- [ ] Record the M0-S decision on YuE2
+- [ ] Continue M0 (App API and SQLite skeleton, MIDI test page)
 
 ## 13. Later-phase design (placeholders)
 
@@ -1231,9 +1249,8 @@ Not planned for v1; revisit when needed.
 - **Skill map branches (6.3):** the shape of the forks and joins is designed with each level's skill map, starting with Prep A in M3.
 - **Gentle options and stuck thresholds (8.1):** 3 tries before "Try it another way", 6 attempts over 2 days before a skill is stuck, and the 30% support share are first versions; tune in M5 and with the children.
 - **Mastery step (8.2):** the 0.3 running-value step is a first version; tune with the practice simulator.
-- **Network:** is the existing reverse proxy (Docmost host) reachable from the internet? The piano site must be limited to the home network either way.
-- **Lockdown:** does MIDIWeb Browser's full-screen mode hide the address bar reliably enough? Tested in M0.
-- **Media engine:** can YuE2 sing an exact supplied melody and produce a usable soft accompaniment within 16 GB (the official repo lists 24 GB; one tester reported under 8 GB)? Answered by the M0-S spike.
+- **Lockdown:** is the full-screen reminder (2.2) enough, or is Guided Access needed? Full-screen mode alone is not reliable: it is lost when the app relaunches. Decide in M0.
+- **Media engine:** the M0-S spike ran with generally positive results; record the decision (proceed with YuE2, or which gaps remain).
 - **Suno fallback:** Suno is only available through unofficial third-party APIs; acceptable as a fallback for a personal project?
 - **Method spine:** confirm Faber *Piano Adventures* as the spine, with *Alfred's Basic* as the supplement.
 - **Ages:** what ages are the current students? This affects visual style (all students are assumed to read).
@@ -1248,6 +1265,13 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Hosting address and certificate (v0.16) | `https://192.168.2.128/` with the server's own certificate authority (Caddy `tls internal`); each device trusts the root once | Router cannot hold local DNS; no public issuer for `.internal`; works with the internet down. Tested on the iPad in MIDIWeb Browser |
+| Network exposure (v0.16) | Reverse proxy bound to the home-network address only, port 443 only, no port forwarding | Answers the v0.13 open question; enforced by the Server repo setup |
+| Screen layout (v0.16) | Top strip is status only; controls sit below it (Play screen: between the staff and the keyboard) | Taps near the top are ignored in MIDIWeb Browser full-screen mode |
+| Full screen on iPad (v0.16) | Set by hand; the app detects when it is off from the page height and shows a reminder | A page cannot turn it on, and it is lost when the app relaunches |
+| Screen wake (v0.16) | Screen Wake Lock during practice | Piano playing does not count as touch activity; tested to stop Auto-Lock (a silent video did not) |
+| Staff rendering (v0.16) | One pre-rendered SVG per song, moved with a transform; libraries and fonts served locally | 60 fps with glides on the iPad A16; SVG and canvas tiles tested equal, SVG is simpler |
+| Keyboard (v0.16) | Buy a class-compliant USB MIDI keyboard | The JK-825 on hand has no MIDI |
 | Skill map shape (v0.15) | Branching map: prerequisites create forks and joins; several skills can be Current at once; sequence is a suggested order for layout and for choosing which skill to introduce first | Skills develop in parallel; one hard skill does not freeze all progress |
 | Unlocking (v0.15) | A skill passes at 3 stars. Guided sessions may use pieces that need one Current skill beyond the passed skills; Free Play and the library unlock only when every required skill is passed | Current skills always have material to practice; the library stays at the level the child has shown |
 | Stacked practice aids (v0.15) | Aids are practice; stacked aids cannot reach a pass; only whole-item attempts pass | Students practice until they can press the keys properly, without passing on practice-mode playing |
@@ -1280,7 +1304,7 @@ Not planned for v1; revisit when needed.
 | Concept videos (v0.13) | Found, downloaded, and trimmed by a Claude skill; approved in staging | Server never downloads on request; single approval |
 | Genre defaults (v0.13) | Lesson pieces allowed; all other genres blocked until allowed | Safe by default |
 | Generated content (v0.13) | Drills, sight-reading, and fingering generated from approved material count as approved | Parent oversight of the rules and inputs |
-| iPad lockdown (v0.13) | MIDIWeb Browser full-screen mode as baseline; Guided Access if needed | Less daily friction |
+| iPad lockdown (v0.13, updated v0.16) | MIDIWeb Browser full-screen mode as baseline, with the in-app reminder; Guided Access if needed | Less daily friction |
 | Arrangement (v0.13) | First-class entity with full notation (repeats, verses, changes, chord symbols) | Ready for advanced repertoire |
 | Fingering (v0.13) | Finger-number generator in the shared library | Imported songs rarely include fingering |
 | Melody fingerprint (v0.13) | Interval 6-gram fingerprint with similarity thresholds | Catches duplicates across keys and arrangements |
@@ -1288,7 +1312,7 @@ Not planned for v1; revisit when needed.
 | Public domain (v0.13) | Published in 1930 or earlier (as of 2026) | Current US rule |
 | Bluetooth MIDI, headphones (v0.13) | Future enhancements | USB and speakers for v1 |
 | Platform (v0.8) | Any client meeting section 2.1: Chromebook, Android tablet (Chrome), iPad (MIDIWeb Browser), desktop Chrome/Edge; each device must pass qualification | Keeps options open as hardware changes |
-| Hosting (v0.8, updated v0.13) | HTTPS site on the home network; currently the Docmost server | Host-independent |
+| Hosting (v0.8, updated v0.13, v0.16) | HTTPS site on the home network; currently the Docmost server, by IP address (see v0.16) | Host-independent |
 | Optional hardware (v0.8) | Pedal and velocity detected; missing capabilities hide features only | App works on any reasonable digital piano |
 | Keyboard size (v0.9) | Parent sets 61 or 88 keys; out-of-range notes never used | Supports both common piano sizes |
 | Students (v0.9) | Any number; add, edit, archive, delete | Family can change over time |
@@ -1308,12 +1332,13 @@ Not planned for v1; revisit when needed.
 | Student reports (v0.2) | Students see their own progress report | Not sensitive; motivating |
 | Map stars (v0.2) | Best-earned stars, plus review badge when due | Stars never drop; review still visible |
 
-**Superseded:** "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15).
+**Superseded:** "Local DNS entry on the router, certificate possibly from a public issuer" (replaced by the IP-address site with the internal certificate authority in v0.16); "Top bar with pause, restart, tempo and mode buttons" (moved below the status strip in v0.16); "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15).
 
 **Version history**
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; YuE2 spike positive |
 | v0.15 | Sep 23, 2026 | From the v0.14 review: branching skill map; Guided-ready (passed + 1) and library-ready unlocking; stacked aids do not pass; gentle "Try it another way" options and stuck-skill support practice; rhythm skills need timing stars; no minimum practice or daily cap; running mastery with best-so-far; content-change handling deferred |
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |

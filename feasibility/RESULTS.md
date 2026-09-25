@@ -23,7 +23,7 @@
 
 **Outcome (so far):** Go for HTTPS. MIDIWeb Browser trusts the user-installed Caddy root (and only because of it, per step 6) and offers Web MIDI on the server's HTTPS page. Still to confirm: step 4 (no internet).
 
-**Lockdown finding (arch §2.2, §2.6 check 10):** full-screen mode alone isn't a reliable lockdown, because a relaunch (after a force-quit or an iPad restart) brings back the address bar. Options, to decide in M0:
+**Lockdown finding (arch §2.2, §2.6 check 11 in v0.16):** full-screen mode alone isn't a reliable lockdown, because a relaunch (after a force-quit or an iPad restart) brings back the address bar. Options, to decide in M0:
 - a parent turns full screen back on after any relaunch;
 - Guided Access, which also stops the app being closed;
 - Screen Time "Allowed Websites Only" limited to the piano site. Not yet tested whether it applies inside MIDIWeb Browser or accepts an IP-address URL.
