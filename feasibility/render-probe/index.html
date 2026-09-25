@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Render Probe</title>
+<!--
+  Piano-Master feasibility test 4: can the play screen scroll a pre-rendered
+  grand staff at 60 fps and glide back smoothly on a rewind (arch §3, M0)?
+  VexFlow 4.2.5 (MIT) is served next to this page, so nothing loads from the
+  internet. Two ways to draw the staff are compared: one wide SVG, and
+  canvas tiles. Both are rendered once and then only moved.
+-->
+<style>
+  :root {
+    --bg: #fbfaf7; --fg: #1d1d1f; --muted: #6b6b70; --line: #deded9; --panel: #ffffff;
+    --play: #2d5bd7; --key-on: #7fb2ff; --btn: #2d5bd7; --btn-fg: #fff;
+    --pass: #1f7a3a; --fail: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font: 16px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+  #app { display: flex; flex-direction: column; height: 100%; }
+  #bar { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+    padding: 8px 12px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  #bar a { color: var(--btn); }
+  button, select { font: inherit; font-weight: 700; border-radius: 10px; min-height: 44px; }
+  button { color: var(--btn-fg); background: var(--btn); border: 0; padding: 8px 16px; cursor: pointer; }
+  select { padding: 6px 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); }
+  #stats { font-variant-numeric: tabular-nums; color: var(--muted); }
+  #stage { position: relative; flex: 0 0 55%; overflow: hidden; background: #fff; }
+  #strip { position: absolute; left: 0; top: 0; will-change: transform; }
+  #strip canvas { position: absolute; top: 0; }
+  #playline { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--play); opacity: 0.7; }
+  #keys { flex: 1 1 auto; position: relative; display: flex; padding: 8px 12px 12px; gap: 2px; background: #2a2a2e; }
+  .wk { flex: 1; background: #fafafa; border-radius: 0 0 6px 6px; }
+  .wk.on { background: var(--key-on); }
+  .bk { position: absolute; top: 8px; height: 58%; background: #111; border-radius: 0 0 4px 4px; z-index: 1; }
+  .bk.on { background: #3b6fd6; }
+  #results { position: absolute; right: 12px; top: 12px; max-width: 460px; max-height: 80%; overflow: auto;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px;
+    font-size: 14px; white-space: pre-line; display: none; z-index: 5; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bar">
+    <a href="../">HTTPS probe</a>
+    <a href="../client/">Client probe</a>
+    <label>Staff drawn as
+      <select id="mode">
+        <option value="svg">one wide SVG</option>
+        <option value="canvas">canvas tiles</option>
+      </select>
+    </label>
+    <button id="run" type="button">Run 60 s test</button>
+    <button id="stop" type="button">Stop</button>
+    <button id="showResults" type="button">Results</button>
+    <span id="stats">Not running</span>
+  </div>
+  <div id="stage">
+    <div id="strip"></div>
+    <div id="playline"></div>
+  </div>
+  <div id="keys"></div>
+</div>
+<div id="results"></div>
+
+<script src="vexflow-bravura.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var VF = Vex.Flow;
+  var MEASURES = 64;
+  var MW = 230;               // measure width, in VexFlow units
+  var PAD = 20;
+  var SCORE_H = 300;          // grand staff plus lyrics, in VexFlow units
+  var TILE_U = 700;           // canvas tile width, in VexFlow units
+  var BPM = 100;
+  var GLIDE_EVERY = 12;       // seconds between simulated rewinds
+  var GLIDE_BACK = 2;         // measures
+  var GLIDE_SEC = 0.7;
+  var COUNT_IN_SEC = 4 * 60 / BPM;
+  var RUN_SEC = 60;
+
+  var stage = document.getElementById("stage");
+  var strip = document.getElementById("strip");
+  var playline = document.getElementById("playline");
+  var statsEl = document.getElementById("stats");
+  var resultsEl = document.getElementById("results");
+  var results = [];
+
+  // --- deterministic "song" ---------------------------------------------------
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var TREBLE_KEYS = ["c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4", "c/5", "d/5", "e/5", "f/5", "g/5"];
+  var BASS_KEYS = ["c/3", "d/3", "e/3", "f/3", "g/3", "a/3", "b/3"];
+  var RHYTHMS = [["q", "q", "q", "q"], ["8", "8", "q", "q", "q"], ["h", "q", "q"], ["q", "q", "h"], ["q", "8", "8", "q", "q"]];
+  var SYLLABLES = ["Twin", "kle", "twin", "kle", "lit", "tle", "star", "how", "I", "won", "der", "what", "you", "are", "up", "a", "bove"];
+
+  function measureNotes(m) {
+    var r = rng(1000 + m);
+    var rhythm = RHYTHMS[Math.floor(r() * RHYTHMS.length)];
+    var treble = rhythm.map(function (d, i) {
+      var keys = (i === 0 && m % 4 === 0) ? ["c/4", "e/4", "g/4"] : [TREBLE_KEYS[Math.floor(r() * TREBLE_KEYS.length)]];
+      var n = new VF.StaveNote({ keys: keys, duration: d, auto_stem: true });
+      n.addModifier(new VF.Annotation(SYLLABLES[(m * 5 + i) % SYLLABLES.length])
+        .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM), 0);
+      return n;
+    });
+    var bassRhythm = r() < 0.5 ? ["h", "h"] : ["w"];
+    var bass = bassRhythm.map(function () {
+      var k = Math.floor(r() * (BASS_KEYS.length - 2));
+      var keys = r() < 0.3 ? [BASS_KEYS[k], BASS_KEYS[k + 2]] : [BASS_KEYS[k]];
+      return new VF.StaveNote({ keys: keys, duration: bassRhythm.length === 1 ? "w" : "h", clef: "bass", auto_stem: true });
+    });
+    return { treble: treble, bass: bass };
+  }
+
+  function drawMeasure(ctx, x, m) {
+    var treble = new VF.Stave(x, 10, MW);
+    var bass = new VF.Stave(x, 140, MW);
+    if (m === 0) {
+      treble.addClef("treble").addTimeSignature("4/4");
+      bass.addClef("bass").addTimeSignature("4/4");
+    }
+    treble.setContext(ctx).draw();
+    bass.setContext(ctx).draw();
+    if (m === 0) {
+      new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+      new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+    }
+    new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.SINGLE_RIGHT).setContext(ctx).draw();
+
+    var notes = measureNotes(m);
+    var beams = VF.Beam.generateBeams(notes.treble);
+    var v1 = new VF.Voice({ num_beats: 4, beat_value: 4 }).setMode(VF.Voice.Mode.SOFT).addTickables(notes.treble);
+    var v2 = new VF.Voice({ num_beats: 4, beat_value: 4 }).setMode(VF.Voice.Mode.SOFT).addTickables(notes.bass);
+    v1.setStave(treble);
+    v2.setStave(bass);
+    var width = MW - (treble.getNoteStartX() - x) - 15;
+    new VF.Formatter().joinVoices([v1]).joinVoices([v2]).format([v1, v2], width);
+    v1.draw(ctx, treble);
+    v2.draw(ctx, bass);
+    beams.forEach(function (b) { b.setContext(ctx).draw(); });
+  }
+
+  // --- build the staff once ---------------------------------------------------
+  var scale = 1;
+  var totalU = PAD * 2 + MEASURES * MW;
+
+  function build(mode) {
+    strip.innerHTML = "";
+    scale = stage.clientHeight / SCORE_H;
+    var t0 = performance.now();
+    if (mode === "svg") {
+      var div = document.createElement("div");
+      strip.appendChild(div);
+      var r = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+      r.resize(totalU * scale, SCORE_H * scale);
+      var ctx = r.getContext();
+      ctx.scale(scale, scale);
+      for (var m = 0; m < MEASURES; m++) { drawMeasure(ctx, PAD + m * MW, m); }
+    } else {
+      var tiles = Math.ceil(totalU / TILE_U);
+      for (var t = 0; t < tiles; t++) {
+        var c = document.createElement("canvas");
+        c.style.left = (t * TILE_U * scale) + "px";
+        strip.appendChild(c);
+        var cr = new VF.Renderer(c, VF.Renderer.Backends.CANVAS);
+        cr.resize(TILE_U * scale, SCORE_H * scale);
+        var cctx = cr.getContext();
+        cctx.scale(scale, scale);
+        var x0 = t * TILE_U, x1 = x0 + TILE_U;
+        for (var mm = 0; mm < MEASURES; mm++) {
+          var mx = PAD + mm * MW;
+          if (mx + MW + 40 > x0 && mx - 40 < x1) { drawMeasure(cctx, mx - x0, mm); }
+        }
+      }
+    }
+    return performance.now() - t0;
+  }
+
+  // --- on-screen keyboard -----------------------------------------------------
+  var keysEl = document.getElementById("keys");
+  var whiteKeys = [], blackKeys = [];
+  (function buildKeys() {
+    var octaves = 3, blackAfter = [0, 1, 3, 4, 5];
+    for (var i = 0; i < octaves * 7; i++) {
+      var w = document.createElement("div");
+      w.className = "wk";
+      keysEl.appendChild(w);
+      whiteKeys.push(w);
+    }
+    function placeBlacks() {
+      blackKeys.forEach(function (b) { b.remove(); });
+      blackKeys = [];
+      var ww = whiteKeys[0].getBoundingClientRect().width + 2;
+      for (var o = 0; o < octaves; o++) {
+        blackAfter.forEach(function (k) {
+          var b = document.createElement("div");
+          b.className = "bk";
+          b.style.width = (ww * 0.6) + "px";
+          b.style.left = (12 + (o * 7 + k + 1) * ww - ww * 0.3) + "px";
+          keysEl.appendChild(b);
+          blackKeys.push(b);
+        });
+      }
+    }
+    placeBlacks();
+    window.addEventListener("resize", placeBlacks);
+  })();
+
+  // --- animation and measurement ----------------------------------------------
+  var running = false, raf = 0;
+  var startT = 0, lastT = 0, frames = [], songPos = 0, lastBeat = -1;
+  var glide = null, glides = 0, nextGlideAt = 0, pauseUntil = 0, mode = "svg", buildMs = 0;
+  var litKey = null;
+  var startTimer = 0;
+
+  function pxPerSec() { return MW * scale / 4 * BPM / 60; }
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+
+  function place() {
+    var lineX = stage.clientWidth * 0.25;
+    playline.style.left = lineX + "px";
+    var x = songPos - lineX;
+    strip.style.transform = "translate3d(" + (-x).toFixed(2) + "px,0,0)";
+  }
+
+  function frame(now) {
+    if (!running) { return; }
+    var dt = now - lastT;
+    lastT = now;
+    frames.push(dt);
+    var t = (now - startT) / 1000;
+
+    if (glide) {
+      var p = Math.min(1, (now - glide.t0) / (GLIDE_SEC * 1000));
+      songPos = glide.from + (glide.to - glide.from) * ease(p);
+      if (p >= 1) { glide = null; pauseUntil = now + COUNT_IN_SEC * 1000; }
+    } else if (now < pauseUntil) {
+      // count-in: hold still
+    } else {
+      songPos += pxPerSec() * dt / 1000;
+      if (t >= nextGlideAt) {
+        var back = Math.max(PAD * scale, songPos - GLIDE_BACK * MW * scale);
+        glide = { t0: now, from: songPos, to: back };
+        glides++;
+        nextGlideAt = t + GLIDE_EVERY;
+      }
+      var maxPos = (totalU - PAD) * scale;
+      if (songPos > maxPos) { songPos = PAD * scale; }
+    }
+    place();
+
+    // Light a key on every beat, like live MIDI feedback.
+    var beat = Math.floor(t * BPM / 60);
+    if (beat !== lastBeat) {
+      lastBeat = beat;
+      if (litKey) { litKey.classList.remove("on"); }
+      var all = whiteKeys.concat(blackKeys);
+      litKey = all[Math.floor(Math.random() * all.length)];
+      litKey.classList.add("on");
+    }
+
+    if (frames.length % 30 === 0) { statsEl.textContent = liveStats(t); }
+    if (t >= RUN_SEC) { finish(true); return; }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function summarize() {
+    var f = frames.slice(1);           // the first interval includes start-up
+    var sorted = f.slice().sort(function (a, b) { return a - b; });
+    var total = f.reduce(function (a, b) { return a + b; }, 0);
+    function pct(q) { return sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(q * sorted.length))] : 0; }
+    return {
+      frames: f.length,
+      fps: total ? f.length / (total / 1000) : 0,
+      median: pct(0.5), p95: pct(0.95), p99: pct(0.99), worst: sorted.length ? sorted[sorted.length - 1] : 0,
+      over25: f.filter(function (d) { return d > 25; }).length,
+      over50: f.filter(function (d) { return d > 50; }).length
+    };
+  }
+
+  function liveStats(t) {
+    var s = summarize();
+    return mode.toUpperCase() + "  " + t.toFixed(0) + "/" + RUN_SEC + " s  " + s.fps.toFixed(1) + " fps  " +
+           "dropped " + s.over25 + "  worst " + s.worst.toFixed(0) + " ms  glides " + glides;
+  }
+
+  function finish(complete) {
+    running = false;
+    cancelAnimationFrame(raf);
+    var s = summarize();
+    var t = frames.length ? (lastT - startT) / 1000 : 0;
+    var ok = s.fps >= 58 && s.over25 <= s.frames * 0.01 && s.worst < 100;
+    var text = (ok ? "PASS" : "CHECK") + "  " + (mode === "svg" ? "one wide SVG" : "canvas tiles") +
+      (complete ? "" : " (stopped early)") + "\n" +
+      "  " + t.toFixed(0) + " s, " + s.frames + " frames, " + s.fps.toFixed(1) + " fps\n" +
+      "  frame time median " + s.median.toFixed(1) + " ms, p95 " + s.p95.toFixed(1) + ", p99 " + s.p99.toFixed(1) +
+      ", worst " + s.worst.toFixed(1) + "\n" +
+      "  frames over 25 ms: " + s.over25 + ", over 50 ms: " + s.over50 + ", glides: " + glides + "\n" +
+      "  staff pre-render " + buildMs.toFixed(0) + " ms, " + MEASURES + " measures, " +
+      Math.round(totalU * scale) + " x " + Math.round(SCORE_H * scale) + " px, scale " + scale.toFixed(2) +
+      ", DPR " + window.devicePixelRatio;
+    results.unshift(new Date().toLocaleTimeString() + "  " + text);
+    statsEl.textContent = (ok ? "PASS " : "CHECK ") + s.fps.toFixed(1) + " fps, dropped " + s.over25 + ", worst " + s.worst.toFixed(0) + " ms";
+    showResults();
+  }
+
+  function showResults() {
+    resultsEl.textContent = results.length ? results.join("\n\n") + "\n\nPass = at least 58 fps, at most 1% of frames over 25 ms, no frame over 100 ms. Tap Results to hide." : "No runs yet";
+    resultsEl.style.display = "block";
+  }
+
+  document.getElementById("showResults").addEventListener("click", function () {
+    if (resultsEl.style.display === "block") { resultsEl.style.display = "none"; } else { showResults(); }
+  });
+  resultsEl.addEventListener("click", function () { resultsEl.style.display = "none"; });
+
+  document.getElementById("run").addEventListener("click", function () {
+    if (running) { return; }
+    resultsEl.style.display = "none";
+    mode = document.getElementById("mode").value;
+    statsEl.textContent = "Rendering staff...";
+    // Let the message paint before the (blocking) pre-render.
+    setTimeout(function () {
+      try {
+        buildMs = build(mode);
+      } catch (e) {
+        statsEl.textContent = "Render error: " + (e && e.message);
+        return;
+      }
+      songPos = PAD * scale;
+      place();
+      frames = []; glides = 0; glide = null; pauseUntil = 0; nextGlideAt = GLIDE_EVERY; lastBeat = -1;
+      statsEl.textContent = "Rendered in " + buildMs.toFixed(0) + " ms; starting in 1 s...";
+      // Let the new layers settle (first paint, garbage collection) before measuring.
+      startTimer = setTimeout(function () {
+        running = true;
+        requestAnimationFrame(function (now) {
+          startT = lastT = now;
+          raf = requestAnimationFrame(frame);
+        });
+      }, 1000);
+    }, 50);
+  });
+
+  document.getElementById("stop").addEventListener("click", function () {
+    clearTimeout(startTimer);
+    if (running) { finish(false); } else { statsEl.textContent = "Stopped"; }
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && running) { finish(false); }
+  });
+
+  // Show a static staff straight away so the page isn't empty.
+  try { buildMs = build("svg"); songPos = PAD * scale; place(); } catch (e) { statsEl.textContent = "Render error: " + (e && e.message); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Probe</title>
+<!--
+  Piano-Master feasibility: client capabilities in MIDIWeb Browser on the iPad.
+  Test 1 storage across relaunch, 2 keeping the screen awake, 3 audio,
+  6 speech and video. No keyboard needed. Media comes from ../media/ on the
+  piano server (made by make-media.py); nothing loads from the internet.
+-->
+<style>
+  :root {
+    --bg: #f7f7f5; --fg: #1d1d1f; --muted: #6b6b70; --card: #ffffff; --line: #deded9;
+    --pass: #1f7a3a; --pass-bg: #e3f4e8; --fail: #b3261e; --fail-bg: #fbe4e2;
+    --info: #3a4a8c; --info-bg: #e6e9f7; --btn: #2d5bd7; --btn-fg: #ffffff;
+    --btn2: #e6e9f7; --btn2-fg: #2d3f8f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151517; --fg: #ececee; --muted: #9a9aa2; --card: #1f1f23; --line: #34343a;
+      --pass: #7fd99a; --pass-bg: #173222; --fail: #ff9b92; --fail-bg: #3a1a18;
+      --info: #aab7f5; --info-bg: #202647; --btn: #5b82f0; --btn-fg: #0b0b0d;
+      --btn2: #2a3159; --btn2-fg: #d0d8ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
+    font: 18px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 22px; margin: 32px 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 14px; font-size: 16px; }
+  nav a { color: var(--btn); margin-right: 16px; }
+  .row {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 8px;
+  }
+  .label { font-weight: 600; }
+  .detail { grid-column: 1 / -1; color: var(--muted); font-size: 15px; overflow-wrap: anywhere; white-space: pre-line; }
+  .badge { font-weight: 700; font-size: 15px; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+  .pass { color: var(--pass); background: var(--pass-bg); }
+  .fail { color: var(--fail); background: var(--fail-bg); }
+  .info { color: var(--info); background: var(--info-bg); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+  button {
+    font: inherit; font-size: 16px; font-weight: 700; color: var(--btn-fg); background: var(--btn);
+    border: 0; border-radius: 12px; padding: 12px 18px; min-height: 48px; cursor: pointer;
+  }
+  button.secondary { color: var(--btn2-fg); background: var(--btn2); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  video.test { width: 100%; max-width: 640px; border-radius: 12px; background: #000; display: block; margin: 8px 0; }
+  video.keepawake { position: fixed; right: 0; bottom: 0; width: 2px; height: 2px; opacity: 0.01; pointer-events: none; }
+  #log { font-size: 14px; }
+  .meta { color: var(--muted); font-size: 14px; margin-top: 20px; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main>
+  <nav><a href="../">HTTPS probe</a><a href="../render/">Render test</a></nav>
+  <h1>Client Probe</h1>
+  <p class="sub">Piano-Master feasibility tests 1, 2, 3 and 6 &middot; no keyboard needed</p>
+
+  <h2>1. Saved data after a relaunch</h2>
+  <p class="sub">Tap "Save test values", close MIDIWeb Browser completely, reopen it and come back to this page. Local storage, the cookie and IndexedDB should say FOUND. Session storage is expected to be gone.</p>
+  <div id="storageRows"></div>
+  <div class="buttons">
+    <button id="storeSave" type="button">Save test values</button>
+    <button id="storeClear" type="button" class="secondary">Clear test values</button>
+  </div>
+
+  <h2>2. Keeping the screen awake</h2>
+  <p class="sub">Set Settings &rsaquo; Display &amp; Brightness &rsaquo; Auto-Lock to 2 minutes. Start one method, then don't touch the iPad for 4 minutes. If the screen locks, the log shows when the page was hidden. Test each method on its own.</p>
+  <div id="awakeRows"></div>
+  <div class="buttons">
+    <button id="awakeLock" type="button">Start: Wake Lock API</button>
+    <button id="awakeVideo" type="button">Start: silent video</button>
+    <button id="awakeStop" type="button" class="secondary">Stop</button>
+  </div>
+  <video id="keepAwakeVideo" class="keepawake" muted playsinline loop preload="auto" src="../media/silent.mp4"></video>
+
+  <h2>3. Audio</h2>
+  <p class="sub">Start audio, then try the metronome with the silent switch (or Control Center silent mode) on and off, and across a lock and wake.</p>
+  <div id="audioRows"></div>
+  <div class="buttons">
+    <button id="audioStart" type="button">Start audio</button>
+    <button id="audioResume" type="button" class="secondary">Resume audio</button>
+    <button id="audioSession" type="button" class="secondary">Set audio session to "playback"</button>
+    <button id="metro" type="button">Metronome on/off</button>
+  </div>
+  <p class="sub"><b>Stems.</b> Each test stem is a click every second over a tone that changes pitch every 10 seconds, so a jump is easy to hear. At the 50% preset a 3-minute song needs two 6-minute stems held in memory.</p>
+  <div id="stemRows"></div>
+  <div class="buttons">
+    <button id="dlSpeed" type="button" class="secondary">Download speed (32 MB file)</button>
+    <button id="load100" type="button">Load 2 stems, 100% (2 &times; 3 min)</button>
+    <button id="load50" type="button">Load 2 stems, 50% (2 &times; 6 min)</button>
+    <button id="loadMore" type="button" class="secondary">Hold 2 more 6-min stems</button>
+  </div>
+  <div class="buttons">
+    <button id="playRandom" type="button">Play from a random point</button>
+    <button id="rewind" type="button">Rewind 10 s (fade, jump, fade in)</button>
+    <button id="stopPlay" type="button" class="secondary">Stop</button>
+  </div>
+
+  <h2>6. Spoken text and video</h2>
+  <div id="speechRows"></div>
+  <div class="buttons">
+    <button id="speak" type="button">Speak a sentence</button>
+  </div>
+  <p class="sub">The video should play inside the page, not jump to a full-screen player, with sound.</p>
+  <video id="testVideo" class="test" controls playsinline preload="metadata" src="../media/test-10s.mp4"></video>
+
+  <h2>Log (newest first)</h2>
+  <div class="row"><div class="detail" id="log"></div></div>
+
+  <div class="meta" id="meta"></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  function $(id) { return document.getElementById(id); }
+
+  function makeRow(label, state, badgeText, detail) {
+    var el = document.createElement("div");
+    el.className = "row";
+    var l = document.createElement("div");
+    l.className = "label";
+    l.textContent = label;
+    var b = document.createElement("span");
+    b.className = "badge " + state;
+    b.textContent = badgeText;
+    el.appendChild(l);
+    el.appendChild(b);
+    if (detail) {
+      var d = document.createElement("div");
+      d.className = "detail";
+      d.textContent = detail;
+      el.appendChild(d);
+    }
+    return el;
+  }
+
+  function setRows(container, rows) {
+    container.innerHTML = "";
+    rows.forEach(function (r) { container.appendChild(makeRow(r[0], r[1], r[2], r[3])); });
+  }
+
+  function clock() { return new Date().toLocaleTimeString(); }
+
+  function log(msg) {
+    var el = $("log");
+    var line = clock() + "  " + msg;
+    el.textContent = el.textContent ? line + "\n" + el.textContent : line;
+  }
+
+  function errText(e) { return e ? ((e.name || "Error") + ": " + (e.message || String(e))) : "unknown error"; }
+
+  function mmss(ms) {
+    var s = Math.max(0, Math.round(ms / 1000));
+    return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+  }
+
+  // ===== 1. Storage =========================================================
+  var LS_KEY = "probe.saved";
+
+  function idbOpen() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error("indexedDB not available")); return; }
+      var req = indexedDB.open("piano-probe", 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore("outbox", { keyPath: "id" }); };
+      req.onsuccess = function () { resolve(req.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+  }
+
+  function idbDo(mode, fn) {
+    return idbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction("outbox", mode);
+        var result = null;
+        var req = fn(tx.objectStore("outbox"));
+        req.onsuccess = function () { result = req.result; };
+        tx.oncomplete = function () { db.close(); resolve(result); };
+        tx.onerror = function () { db.close(); reject(tx.error); };
+      });
+    });
+  }
+
+  function readCookie() {
+    var m = document.cookie.match(/(?:^|;\s*)probe_saved=([^;]*)/);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  function found(value) {
+    return value ? ["pass", "FOUND", "Saved " + value] : ["fail", "NOT FOUND", ""];
+  }
+
+  function readStorage() {
+    var rows = [];
+    var ls = null, ss = null;
+    try { ls = localStorage.getItem(LS_KEY); } catch (e) { ls = null; log("localStorage read failed: " + errText(e)); }
+    try { ss = sessionStorage.getItem(LS_KEY); } catch (e) { ss = null; }
+    var f = found(ls); rows.push(["Local storage (device id)", f[0], f[1], f[2]]);
+    f = found(readCookie()); rows.push(["Cookie", f[0], f[1], f[2]]);
+    f = found(ss); rows.push(["Session storage (expected to be gone after a relaunch)", "info", ss ? "FOUND" : "NOT FOUND", ss ? "Saved " + ss : ""]);
+
+    var persistRow = ["Persistent storage granted (navigator.storage)", "info", "?", ""];
+    var p1 = idbDo("readonly", function (s) { return s.get("test"); }).then(function (rec) {
+      var f2 = found(rec && rec.writtenAt);
+      rows.splice(2, 0, ["IndexedDB (outbox)", f2[0], f2[1], f2[2]]);
+    }, function (e) {
+      rows.splice(2, 0, ["IndexedDB (outbox)", "fail", "ERROR", errText(e)]);
+    });
+    var p2 = (navigator.storage && navigator.storage.persisted) ?
+      Promise.all([navigator.storage.persisted(),
+                   navigator.storage.estimate ? navigator.storage.estimate() : Promise.resolve(null)])
+        .then(function (r) {
+          persistRow[2] = r[0] ? "YES" : "NO";
+          if (r[1]) {
+            persistRow[3] = "Using " + (r[1].usage / 1e6).toFixed(1) + " MB of about " + (r[1].quota / 1e6).toFixed(0) + " MB";
+          }
+        }, function (e) { persistRow[2] = "ERROR"; persistRow[3] = errText(e); })
+      : Promise.resolve().then(function () { persistRow[2] = "N/A"; persistRow[3] = "navigator.storage not available"; });
+
+    return Promise.all([p1, p2]).then(function () {
+      rows.push(persistRow);
+      setRows($("storageRows"), rows);
+    });
+  }
+
+  $("storeSave").addEventListener("click", function () {
+    var stamp = new Date().toLocaleString();
+    try { localStorage.setItem(LS_KEY, stamp); } catch (e) { log("localStorage write failed: " + errText(e)); }
+    try { sessionStorage.setItem(LS_KEY, stamp); } catch (e) { log("sessionStorage write failed: " + errText(e)); }
+    document.cookie = "probe_saved=" + encodeURIComponent(stamp) + "; max-age=31536000; path=/; secure; samesite=strict";
+    var persist = (navigator.storage && navigator.storage.persist) ? navigator.storage.persist() : Promise.resolve(false);
+    Promise.all([
+      idbDo("readwrite", function (s) { return s.put({ id: "test", writtenAt: stamp }); }),
+      persist
+    ]).then(function (r) {
+      log("Saved test values (" + stamp + "); persistent storage request returned " + r[1]);
+    }, function (e) {
+      log("Save failed: " + errText(e));
+    }).then(readStorage);
+  });
+
+  $("storeClear").addEventListener("click", function () {
+    try { localStorage.removeItem(LS_KEY); sessionStorage.removeItem(LS_KEY); } catch (e) { /* reported by readStorage */ }
+    document.cookie = "probe_saved=; max-age=0; path=/; secure; samesite=strict";
+    idbDo("readwrite", function (s) { return s.delete("test"); })
+      .then(function () { log("Cleared test values"); }, function (e) { log("Clear failed: " + errText(e)); })
+      .then(readStorage);
+  });
+
+  // ===== 2. Keep awake ======================================================
+  var wakeLock = null;
+  var wantWakeLock = false;
+  var awakeMethod = null;
+  var awakeStart = 0;
+  var lastTouch = Date.now();
+  var awakeVideo = $("keepAwakeVideo");
+
+  document.addEventListener("pointerdown", function () { lastTouch = Date.now(); }, true);
+
+  function renderAwake() {
+    var running = awakeMethod ? "Running: " + awakeMethod + " for " + mmss(Date.now() - awakeStart) : "Not running";
+    setRows($("awakeRows"), [
+      ["Wake Lock API offered (navigator.wakeLock)", ("wakeLock" in navigator) ? "pass" : "fail",
+       ("wakeLock" in navigator) ? "YES" : "NO", ""],
+      ["Keep-awake method", awakeMethod ? "info" : "info", awakeMethod ? "ON" : "OFF",
+       running + "\nLast touch " + mmss(Date.now() - lastTouch) + " ago"]
+    ]);
+  }
+
+  function requestWakeLock() {
+    return navigator.wakeLock.request("screen").then(function (lock) {
+      wakeLock = lock;
+      log("Wake lock acquired");
+      lock.addEventListener("release", function () { log("Wake lock released"); });
+    });
+  }
+
+  $("awakeLock").addEventListener("click", function () {
+    if (!("wakeLock" in navigator)) { log("Wake Lock API not offered on this page"); return; }
+    stopAwake(true);
+    wantWakeLock = true;
+    requestWakeLock().then(function () {
+      awakeMethod = "Wake Lock API";
+      awakeStart = Date.now();
+      renderAwake();
+    }, function (e) { wantWakeLock = false; log("Wake lock request failed: " + errText(e)); });
+  });
+
+  $("awakeVideo").addEventListener("click", function () {
+    stopAwake(true);
+    var p = awakeVideo.play();
+    var ok = function () {
+      awakeMethod = "silent video";
+      awakeStart = Date.now();
+      log("Silent video playing");
+      renderAwake();
+    };
+    if (p && p.then) { p.then(ok, function (e) { log("Silent video failed: " + errText(e)); }); } else { ok(); }
+  });
+
+  function stopAwake(quiet) {
+    wantWakeLock = false;
+    if (wakeLock) { wakeLock.release().catch(function () {}); wakeLock = null; }
+    if (!awakeVideo.paused) { awakeVideo.pause(); }
+    if (awakeMethod && !quiet) { log("Stopped " + awakeMethod + " after " + mmss(Date.now() - awakeStart)); }
+    awakeMethod = null;
+    renderAwake();
+  }
+  $("awakeStop").addEventListener("click", function () { stopAwake(false); });
+
+  awakeVideo.addEventListener("pause", function () { if (awakeMethod === "silent video") { log("Silent video paused"); } });
+
+  var hiddenAt = 0;
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "hidden") {
+      hiddenAt = Date.now();
+      var msg = "Page hidden";
+      if (awakeMethod) {
+        msg += " after " + mmss(hiddenAt - awakeStart) + " of " + awakeMethod +
+               ", " + mmss(hiddenAt - lastTouch) + " since the last touch (screen locked or app switched)";
+      }
+      log(msg);
+    } else {
+      log("Page shown again" + (hiddenAt ? " after " + mmss(Date.now() - hiddenAt) : ""));
+      if (wantWakeLock && (!wakeLock || wakeLock.released)) {
+        requestWakeLock().catch(function (e) { log("Wake lock re-request failed: " + errText(e)); });
+      }
+      if (awakeMethod === "silent video" && awakeVideo.paused) {
+        awakeVideo.play().catch(function (e) { log("Silent video restart failed: " + errText(e)); });
+      }
+      checkAudioOnReturn();
+    }
+  });
+
+  // ===== 3. Audio ===========================================================
+  var ctx = null;
+  var metroOn = false, metroTimer = null, nextClick = 0, beat = 0;
+  var held = [];          // decoded buffers kept alive on purpose
+  var playPair = null;    // the buffers used for playback
+  var playing = [];       // { src, gain }
+  var playStartCtx = 0, playStartOffset = 0;
+  var lastDownload = null, lastLoad = null;
+
+  function renderAudio() {
+    var rows = [];
+    var AC = window.AudioContext || window.webkitAudioContext;
+    rows.push(["Web Audio offered", AC ? "pass" : "fail", AC ? "YES" : "NO", ""]);
+    if (ctx) {
+      rows.push(["Audio state", ctx.state === "running" ? "pass" : "fail", ctx.state.toUpperCase(),
+                 "Sample rate " + ctx.sampleRate + " Hz"]);
+      var lat = "baseLatency " + (ctx.baseLatency !== undefined ? (ctx.baseLatency * 1000).toFixed(1) + " ms" : "n/a") +
+                ", outputLatency " + (ctx.outputLatency !== undefined ? (ctx.outputLatency * 1000).toFixed(1) + " ms" : "n/a");
+      rows.push(["Reported output delay", "info", "INFO", lat]);
+    }
+    var as = navigator.audioSession;
+    rows.push(["Audio session (navigator.audioSession)", as ? "info" : "info", as ? String(as.type).toUpperCase() : "N/A",
+               as ? "\"playback\" is the type that ignores the silent switch" : "Not offered; the app decides how the silent switch is handled"]);
+    rows.push(["Metronome", "info", metroOn ? "ON" : "OFF", "100 bpm, accent on beat 1"]);
+    setRows($("audioRows"), rows);
+  }
+
+  function ensureCtx() {
+    if (!ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) { log("Web Audio not available"); return null; }
+      ctx = new AC();
+      log("Audio context created, state " + ctx.state + ", " + ctx.sampleRate + " Hz");
+      ctx.onstatechange = function () { log("Audio state changed to " + ctx.state); renderAudio(); };
+    }
+    return ctx;
+  }
+
+  function resumeCtx(reason) {
+    if (!ensureCtx()) { return Promise.resolve(); }
+    if (ctx.state === "running") { return Promise.resolve(); }
+    var before = ctx.state;
+    return ctx.resume().then(function () {
+      log("Resumed audio (" + reason + "): " + before + " -> " + ctx.state);
+      renderAudio();
+    }, function (e) { log("Resume failed (" + reason + "): " + errText(e)); });
+  }
+
+  function checkAudioOnReturn() {
+    if (!ctx) { return; }
+    log("On return, audio state is " + ctx.state);
+    if (ctx.state !== "running") { resumeCtx("page shown"); }
+  }
+
+  $("audioStart").addEventListener("click", function () {
+    if (!ensureCtx()) { return; }
+    // A short blip inside the tap, the usual way to unlock iOS audio.
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    g.gain.value = 0.2;
+    o.frequency.value = 660;
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime + 0.12);
+    resumeCtx("start button").then(renderAudio);
+  });
+  $("audioResume").addEventListener("click", function () { resumeCtx("resume button"); });
+
+  $("audioSession").addEventListener("click", function () {
+    if (!navigator.audioSession) { log("navigator.audioSession not offered"); return; }
+    try { navigator.audioSession.type = "playback"; log("Audio session type is now " + navigator.audioSession.type); }
+    catch (e) { log("Setting audio session failed: " + errText(e)); }
+    renderAudio();
+  });
+
+  function click(t, accent) {
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = accent ? 1760 : 880;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.6, t + 0.002);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + 0.06);
+  }
+
+  function scheduleClicks() {
+    while (nextClick < ctx.currentTime + 0.12) {
+      click(nextClick, beat % 4 === 0);
+      nextClick += 0.6;
+      beat++;
+    }
+  }
+
+  $("metro").addEventListener("click", function () {
+    if (!ensureCtx()) { return; }
+    resumeCtx("metronome");
+    metroOn = !metroOn;
+    if (metroOn) {
+      nextClick = ctx.currentTime + 0.1;
+      beat = 0;
+      metroTimer = setInterval(scheduleClicks, 25);
+      log("Metronome on");
+    } else {
+      clearInterval(metroTimer);
+      log("Metronome off");
+    }
+    renderAudio();
+  });
+
+  // --- stems ---
+  var ATTEMPT_KEY = "probe.audioAttempt", REACHED_KEY = "probe.audioReached";
+
+  function heldMB() {
+    return held.reduce(function (sum, b) { return sum + b.length * b.numberOfChannels * 4 / 1e6; }, 0);
+  }
+
+  function renderStems() {
+    var rows = [];
+    if (lastDownload) { rows.push(["Download speed", "info", lastDownload.mbps.toFixed(1) + " MB/s", lastDownload.text]); }
+    if (lastLoad) { rows.push(["Last stem load", lastLoad.ok ? "pass" : "fail", lastLoad.ok ? "OK" : "FAIL", lastLoad.text]); }
+    rows.push(["Decoded audio held in memory", "info", heldMB().toFixed(0) + " MB", held.length + " buffers"]);
+    var attempt = null, reached = null;
+    try { attempt = JSON.parse(localStorage.getItem(ATTEMPT_KEY) || "null"); reached = JSON.parse(localStorage.getItem(REACHED_KEY) || "null"); } catch (e) { /* ignore */ }
+    if (attempt && (!reached || reached.at < attempt.at) && !loading) {
+      rows.push(["Previous memory attempt didn't finish", "fail", attempt.mb.toFixed(0) + " MB",
+                 "The page was reloaded while trying to hold " + attempt.mb.toFixed(0) + " MB (" + new Date(attempt.at).toLocaleTimeString() +
+                 "). Probably out of memory. Highest reached: " + (reached ? reached.mb.toFixed(0) + " MB" : "none recorded")]);
+    } else if (reached) {
+      rows.push(["Highest amount held so far", "info", reached.mb.toFixed(0) + " MB", "At " + new Date(reached.at).toLocaleTimeString()]);
+    }
+    if (playing.length) {
+      rows.push(["Playing", "pass", "POSITION " + mmss(position() * 1000), "Tone changes pitch every 10 s"]);
+    }
+    setRows($("stemRows"), rows);
+  }
+
+  var loading = false;
+
+  function fetchBuffer(url) {
+    var t0 = performance.now();
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) { throw new Error("HTTP " + r.status + " for " + url); }
+      return r.arrayBuffer();
+    }).then(function (ab) {
+      return { ab: ab, ms: performance.now() - t0 };
+    });
+  }
+
+  function decode(ab) {
+    return new Promise(function (resolve, reject) {
+      var p = ctx.decodeAudioData(ab, resolve, reject);
+      if (p && p.then) { p.then(resolve, reject); }
+    });
+  }
+
+  $("dlSpeed").addEventListener("click", function () {
+    log("Downloading stem-3min.wav...");
+    fetchBuffer("../media/stem-3min.wav").then(function (r) {
+      var mb = r.ab.byteLength / 1e6;
+      lastDownload = { mbps: mb / (r.ms / 1000), text: mb.toFixed(1) + " MB in " + (r.ms / 1000).toFixed(2) + " s" };
+      log("Download: " + lastDownload.text);
+      renderStems();
+    }, function (e) { log("Download failed: " + errText(e)); });
+  });
+
+  function loadStems(url, copies, label, keepForPlay) {
+    if (!ensureCtx()) { return; }
+    if (loading) { log("Already loading"); return; }
+    loading = true;
+    log("Loading " + label + "...");
+    fetchBuffer(url).then(function (r) {
+      var fileMB = r.ab.byteLength / 1e6;
+      // Record the intended total before decoding, so running out of memory
+      // (which reloads the page) is visible afterwards.
+      try {
+        localStorage.setItem(ATTEMPT_KEY, JSON.stringify({ mb: heldMB() + estimateMB(url, copies), at: Date.now() }));
+      } catch (e) { /* ignore */ }
+      var t0 = performance.now();
+      var chain = Promise.resolve();
+      var bufs = [];
+      for (var i = 0; i < copies; i++) {
+        chain = chain.then(function () {
+          // decodeAudioData detaches its input, so each decode gets its own copy.
+          return decode(r.ab.slice(0)).then(function (b) {
+            bufs.push(b);
+            held.push(b);
+          });
+        });
+      }
+      return chain.then(function () {
+        var ms = performance.now() - t0;
+        var perMB = bufs[0].length * bufs[0].numberOfChannels * 4 / 1e6;
+        lastLoad = { ok: true, text: label + ": downloaded " + fileMB.toFixed(1) + " MB in " + (r.ms / 1000).toFixed(2) +
+                     " s, decoded " + copies + " x " + perMB.toFixed(0) + " MB in " + (ms / 1000).toFixed(2) + " s (" +
+                     bufs[0].duration.toFixed(0) + " s long, " + bufs[0].numberOfChannels + " ch, " + bufs[0].sampleRate + " Hz)" };
+        try { localStorage.setItem(REACHED_KEY, JSON.stringify({ mb: heldMB(), at: Date.now() })); } catch (e) { /* ignore */ }
+        if (keepForPlay) { playPair = bufs.slice(0, 2); }
+        log(lastLoad.text + "; now holding " + heldMB().toFixed(0) + " MB");
+      });
+    }).catch(function (e) {
+      lastLoad = { ok: false, text: label + ": " + errText(e) };
+      log("Load failed: " + lastLoad.text);
+    }).then(function () { loading = false; renderStems(); });
+  }
+
+  // Decoded size = seconds x context rate x 2 channels x 4 bytes.
+  function estimateMB(url, copies) {
+    var seconds = url.indexOf("6min") >= 0 ? 360 : 180;
+    return copies * seconds * (ctx ? ctx.sampleRate : 48000) * 2 * 4 / 1e6;
+  }
+
+  $("load100").addEventListener("click", function () { loadStems("../media/stem-3min.m4a", 2, "2 stems at 100%", true); });
+  $("load50").addEventListener("click", function () { loadStems("../media/stem-6min.m4a", 2, "2 stems at 50%", true); });
+  $("loadMore").addEventListener("click", function () { loadStems("../media/stem-6min.m4a", 2, "2 more 6-min stems", false); });
+
+  function position() {
+    return playing.length ? playStartOffset + (ctx.currentTime - playStartCtx) : 0;
+  }
+
+  function stopSources(fadeSec) {
+    var now = ctx.currentTime;
+    playing.forEach(function (p) {
+      p.gain.gain.cancelScheduledValues(now);
+      p.gain.gain.setValueAtTime(p.gain.gain.value, now);
+      p.gain.gain.linearRampToValueAtTime(0, now + fadeSec);
+      p.src.stop(now + fadeSec + 0.01);
+    });
+    playing = [];
+  }
+
+  function startAt(offset) {
+    var t0 = ctx.currentTime + 0.005;
+    playPair.forEach(function (b) {
+      var src = ctx.createBufferSource();
+      var g = ctx.createGain();
+      src.buffer = b;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(0.4, t0 + 0.08);
+      src.connect(g); g.connect(ctx.destination);
+      src.start(t0, offset);
+      playing.push({ src: src, gain: g });
+    });
+    playStartCtx = t0;
+    playStartOffset = offset;
+  }
+
+  $("playRandom").addEventListener("click", function () {
+    if (!playPair) { log("Load stems first"); return; }
+    resumeCtx("play");
+    var tap = performance.now();
+    if (playing.length) { stopSources(0.05); }
+    var dur = playPair[0].duration;
+    var offset = Math.random() * Math.max(1, dur - 20);
+    startAt(offset);
+    log("Playing from " + mmss(offset * 1000) + " (start scheduled " + (performance.now() - tap).toFixed(1) +
+        " ms after the tap, plus the reported output delay)");
+    renderStems();
+  });
+
+  $("rewind").addEventListener("click", function () {
+    if (!playing.length) { log("Nothing playing"); return; }
+    var target = Math.max(0, position() - 10);
+    stopSources(0.2);
+    log("Rewind: fading out, jumping back to " + mmss(target * 1000));
+    setTimeout(function () { startAt(target); renderStems(); }, 800);
+  });
+
+  $("stopPlay").addEventListener("click", function () {
+    if (playing.length) { stopSources(0.2); log("Stopped"); }
+    renderStems();
+  });
+
+  // ===== 6. Speech and video ================================================
+  function renderSpeech() {
+    var ss = window.speechSynthesis;
+    var voices = ss ? ss.getVoices() : [];
+    var en = voices.filter(function (v) { return /^en/i.test(v.lang); });
+    setRows($("speechRows"), [
+      ["Speech synthesis offered", ss ? "pass" : "fail", ss ? "YES" : "NO",
+       ss ? voices.length + " voices (" + en.length + " English)" : ""]
+    ]);
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = renderSpeech;
+  }
+
+  $("speak").addEventListener("click", function () {
+    if (!window.speechSynthesis) { log("Speech synthesis not offered"); return; }
+    var u = new SpeechSynthesisUtterance("Here is the C major chord. Now listen for the wrong note.");
+    u.lang = "en-US";
+    u.rate = 0.95;
+    var tap = performance.now();
+    u.onstart = function () { log("Speech started " + (performance.now() - tap).toFixed(0) + " ms after the tap"); };
+    u.onend = function () { log("Speech ended"); };
+    u.onerror = function (e) { log("Speech error: " + (e.error || "unknown")); };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  });
+
+  var vid = $("testVideo");
+  ["play", "playing", "pause", "ended", "error", "webkitbeginfullscreen", "webkitendfullscreen"].forEach(function (type) {
+    vid.addEventListener(type, function () {
+      var extra = type === "error" && vid.error ? " (code " + vid.error.code + ")" : "";
+      if (type === "webkitbeginfullscreen") { extra = " (the video switched to the full-screen player)"; }
+      log("Video " + type + extra);
+    });
+  });
+
+  // ===== start =============================================================
+  readStorage();
+  renderAwake();
+  renderAudio();
+  renderStems();
+  renderSpeech();
+  setInterval(function () {
+    renderAwake();
+    if (ctx) { renderAudio(); }
+    if (playing.length) { renderStems(); }
+  }, 1000);
+
+  $("meta").textContent = "Loaded " + new Date().toString() + " · " + navigator.userAgent;
+})();
+</script>
+</body>
+</html>

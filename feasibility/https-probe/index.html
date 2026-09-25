@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTPS Probe</title>
+<!--
+  Piano-Master feasibility: HTTPS from the piano server into MIDIWeb Browser.
+  One static file, no external resources, so it loads with the internet down.
+  No keyboard needed: 0 MIDI inputs is the expected result.
+-->
+<style>
+  :root {
+    --bg: #f7f7f5; --fg: #1d1d1f; --muted: #6b6b70; --card: #ffffff; --line: #deded9;
+    --pass: #1f7a3a; --pass-bg: #e3f4e8; --fail: #b3261e; --fail-bg: #fbe4e2;
+    --info: #3a4a8c; --info-bg: #e6e9f7; --btn: #2d5bd7; --btn-fg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151517; --fg: #ececee; --muted: #9a9aa2; --card: #1f1f23; --line: #34343a;
+      --pass: #7fd99a; --pass-bg: #173222; --fail: #ff9b92; --fail-bg: #3a1a18;
+      --info: #aab7f5; --info-bg: #202647; --btn: #5b82f0; --btn-fg: #0b0b0d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
+    font: 18px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .row {
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; margin-bottom: 10px;
+  }
+  .label { font-weight: 600; }
+  .detail { grid-column: 1 / -1; color: var(--muted); font-size: 15px; overflow-wrap: anywhere; }
+  .badge { font-weight: 700; font-size: 16px; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+  .pass { color: var(--pass); background: var(--pass-bg); }
+  .fail { color: var(--fail); background: var(--fail-bg); }
+  .info { color: var(--info); background: var(--info-bg); }
+  button {
+    font: inherit; font-weight: 700; color: var(--btn-fg); background: var(--btn);
+    border: 0; border-radius: 12px; padding: 14px 22px; min-height: 48px; margin: 8px 0 18px;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: default; }
+  h2 { font-size: 22px; margin: 28px 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin-top: 20px; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main>
+  <p><a href="client/">Client probe (tests 1, 2, 3, 6)</a> &nbsp; <a href="render/">Render test (test 4)</a></p>
+  <h1>HTTPS Probe</h1>
+  <p class="sub">Piano-Master feasibility test &middot; no keyboard needed (0 MIDI inputs is fine)</p>
+
+  <div id="rows"></div>
+
+  <button id="midiBtn" type="button">Request MIDI access</button>
+
+  <div id="midiRows"></div>
+
+  <h2>Full screen (Fullscreen API)</h2>
+  <div id="fsRows"></div>
+  <button id="fsBtn" type="button">Try full screen</button>
+  <button id="fsExitBtn" type="button">Exit full screen</button>
+  <div class="row">
+    <div class="label">Full-screen event log</div>
+    <span class="badge info" id="fsState">?</span>
+    <div class="detail" id="fsLog">No events yet</div>
+  </div>
+
+  <h2>Viewport (can the page tell when the address bar is showing?)</h2>
+  <p class="sub">Note the numbers with MIDIWeb Browser's full screen off, then switch it on by hand. Do both landscape and portrait.</p>
+  <div class="row">
+    <div class="label">Screen height not used by the page</div>
+    <span class="badge info" id="vpGap">?</span>
+    <div class="detail">Screen height for this orientation minus the page's height (window.innerHeight). The address bar, status bar and any app toolbar all count here, so it should shrink when full screen is on.</div>
+  </div>
+  <div class="row">
+    <div class="label">Current values</div>
+    <span class="badge info" id="vpOrient">?</span>
+    <div class="detail" id="vpNow"></div>
+  </div>
+  <button id="vpSnapBtn" type="button">Add snapshot to log</button>
+  <div class="row">
+    <div class="label">Viewport log (newest first)</div>
+    <span class="badge info" id="vpLoad">?</span>
+    <div class="detail" id="vpLog"></div>
+  </div>
+
+  <div class="meta" id="meta"></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  function row(container, label, state, badgeText, detail) {
+    var el = document.createElement("div");
+    el.className = "row";
+    var l = document.createElement("div");
+    l.className = "label";
+    l.textContent = label;
+    var b = document.createElement("span");
+    b.className = "badge " + state;
+    b.textContent = badgeText;
+    el.appendChild(l);
+    el.appendChild(b);
+    if (detail) {
+      var d = document.createElement("div");
+      d.className = "detail";
+      d.textContent = detail;
+      el.appendChild(d);
+    }
+    container.appendChild(el);
+    return el;
+  }
+
+  var rows = document.getElementById("rows");
+  var midiRows = document.getElementById("midiRows");
+  var btn = document.getElementById("midiBtn");
+
+  var https = location.protocol === "https:";
+  row(rows, "Loaded over HTTPS", https ? "pass" : "fail", https ? "PASS" : "FAIL", location.href);
+
+  var secure = window.isSecureContext === true;
+  row(rows, "Secure context (isSecureContext)", secure ? "pass" : "fail",
+      secure ? "PASS" : "FAIL", "window.isSecureContext = " + String(window.isSecureContext));
+
+  var hasMidi = typeof navigator.requestMIDIAccess === "function";
+  row(rows, "Web MIDI API offered (navigator.requestMIDIAccess)", hasMidi ? "pass" : "fail",
+      hasMidi ? "PASS" : "FAIL",
+      hasMidi ? "Present" : "Absent (expected in Safari; must be present in MIDIWeb Browser)");
+
+  function portNames(map) {
+    var names = [];
+    map.forEach(function (port) {
+      names.push((port.name || "(unnamed)") + (port.manufacturer ? " / " + port.manufacturer : ""));
+    });
+    return names;
+  }
+
+  btn.addEventListener("click", function () {
+    midiRows.innerHTML = "";
+    if (!hasMidi) {
+      row(midiRows, "MIDI access request", "fail", "FAIL", "navigator.requestMIDIAccess is not available on this page");
+      return;
+    }
+    btn.disabled = true;
+    var settled = false;
+    var pending = row(midiRows, "MIDI access request", "info", "WAITING", "Waiting for the permission prompt...");
+    var timer = setTimeout(function () {
+      if (!settled) {
+        pending.querySelector(".detail").textContent =
+          "No answer after 10 s. Was a permission prompt shown? Still waiting...";
+      }
+    }, 10000);
+
+    var started = performance.now();
+    navigator.requestMIDIAccess({ sysex: false }).then(function (access) {
+      settled = true;
+      clearTimeout(timer);
+      midiRows.innerHTML = "";
+      var ms = Math.round(performance.now() - started);
+      row(midiRows, "MIDI access request", "pass", "PASS", "Resolved after " + ms + " ms");
+      var ins = portNames(access.inputs);
+      var outs = portNames(access.outputs);
+      row(midiRows, "MIDI inputs", "info", String(ins.length), ins.length ? ins.join("; ") : "None (expected without a keyboard)");
+      row(midiRows, "MIDI outputs", "info", String(outs.length), outs.length ? outs.join("; ") : "None");
+      btn.disabled = false;
+    }, function (err) {
+      settled = true;
+      clearTimeout(timer);
+      midiRows.innerHTML = "";
+      var msg = err ? ((err.name || "Error") + ": " + (err.message || String(err))) : "Rejected with no error";
+      row(midiRows, "MIDI access request", "fail", "FAIL", msg);
+      btn.disabled = false;
+    });
+  });
+
+  // --- Full screen -----------------------------------------------------------
+  // iPadOS WebKit may only offer the webkit-prefixed API, and a WKWebView app
+  // only offers it at all if the app enabled element full screen.
+  var fsRows = document.getElementById("fsRows");
+  var fsBtn = document.getElementById("fsBtn");
+  var fsExitBtn = document.getElementById("fsExitBtn");
+  var fsLog = document.getElementById("fsLog");
+  var fsState = document.getElementById("fsState");
+  var docEl = document.documentElement;
+
+  var requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.webkitRequestFullScreen;
+  var exitFs = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen;
+  var fsEnabled = document.fullscreenEnabled === true || document.webkitFullscreenEnabled === true;
+
+  row(fsRows, "Full-screen request function present", requestFs ? "pass" : "fail",
+      requestFs ? "PASS" : "FAIL",
+      docEl.requestFullscreen ? "requestFullscreen" :
+      docEl.webkitRequestFullscreen ? "webkitRequestFullscreen (prefixed)" :
+      docEl.webkitRequestFullScreen ? "webkitRequestFullScreen (old prefixed)" : "None");
+  row(fsRows, "Full screen allowed (fullscreenEnabled)", fsEnabled ? "pass" : "fail",
+      fsEnabled ? "PASS" : "FAIL",
+      "fullscreenEnabled = " + String(document.fullscreenEnabled) +
+      ", webkitFullscreenEnabled = " + String(document.webkitFullscreenEnabled));
+
+  function currentFsElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement ||
+           document.webkitCurrentFullScreenElement || null;
+  }
+
+  function logFs(msg) {
+    var line = new Date().toLocaleTimeString() + "  " + msg;
+    fsLog.textContent = fsLog.textContent === "No events yet" ? line : line + "\n" + fsLog.textContent;
+    fsLog.style.whiteSpace = "pre-line";
+    var on = currentFsElement() !== null;
+    fsState.textContent = on ? "FULL SCREEN" : "NORMAL";
+    fsState.className = "badge " + (on ? "pass" : "info");
+  }
+
+  ["fullscreenchange", "webkitfullscreenchange"].forEach(function (type) {
+    document.addEventListener(type, function () {
+      logFs(type + ": " + (currentFsElement() ? "entered" : "exited"));
+    });
+  });
+  ["fullscreenerror", "webkitfullscreenerror"].forEach(function (type) {
+    document.addEventListener(type, function () { logFs(type + ": request refused"); });
+  });
+  document.addEventListener("visibilitychange", function () {
+    logFs("page " + document.visibilityState);
+  });
+
+  fsBtn.addEventListener("click", function () {
+    if (!requestFs) { logFs("No full-screen request function on this page"); return; }
+    logFs("Requesting full screen...");
+    try {
+      var result = requestFs.call(docEl);
+      if (result && typeof result.then === "function") {
+        result.then(function () { logFs("Request resolved"); },
+                    function (err) { logFs("Request rejected: " + (err && (err.name + ": " + err.message))); });
+      } else {
+        logFs("Request sent (no promise returned; watch for a change event)");
+      }
+    } catch (e) {
+      logFs("Request threw: " + (e && (e.name + ": " + e.message)));
+    }
+  });
+
+  fsExitBtn.addEventListener("click", function () {
+    if (!currentFsElement()) { logFs("Not in full screen"); return; }
+    if (!exitFs) { logFs("No exit function on this page"); return; }
+    try { exitFs.call(document); } catch (e) { logFs("Exit threw: " + (e && e.message)); }
+  });
+
+  fsState.textContent = currentFsElement() ? "FULL SCREEN" : "NORMAL";
+
+  // --- Viewport ----------------------------------------------------------------
+  // If the app resizes the web view when its address bar hides, innerHeight
+  // grows and the "not used" gap shrinks. iOS reports screen.width/height in
+  // portrait terms whatever the orientation, so pick the side that is vertical now.
+  var vpGap = document.getElementById("vpGap");
+  var vpOrient = document.getElementById("vpOrient");
+  var vpNow = document.getElementById("vpNow");
+  var vpLog = document.getElementById("vpLog");
+  var vpLoad = document.getElementById("vpLoad");
+  vpLog.style.whiteSpace = "pre-line";
+  vpNow.style.whiteSpace = "pre-line";
+
+  function viewport() {
+    var landscape = window.innerWidth > window.innerHeight;
+    var screenLong = Math.max(screen.width, screen.height);
+    var screenShort = Math.min(screen.width, screen.height);
+    var screenTall = landscape ? screenShort : screenLong;
+    var vv = window.visualViewport;
+    return {
+      orientation: landscape ? "landscape" : "portrait",
+      gap: screenTall - window.innerHeight,
+      inner: window.innerWidth + " x " + window.innerHeight,
+      client: document.documentElement.clientWidth + " x " + document.documentElement.clientHeight,
+      visual: vv ? Math.round(vv.width) + " x " + Math.round(vv.height) + " (offsetTop " + Math.round(vv.offsetTop) + ", scale " + vv.scale + ")" : "n/a",
+      screen: screen.width + " x " + screen.height,
+      avail: screen.availWidth + " x " + screen.availHeight,
+      dpr: window.devicePixelRatio
+    };
+  }
+
+  function vpSummary(v) {
+    return v.orientation + ", gap " + v.gap + " px, inner " + v.inner + ", visual " + v.visual;
+  }
+
+  function vpRender() {
+    var v = viewport();
+    vpGap.textContent = v.gap + " px";
+    vpOrient.textContent = v.orientation.toUpperCase();
+    vpNow.textContent =
+      "window.inner: " + v.inner + "\n" +
+      "documentElement.client: " + v.client + "\n" +
+      "visualViewport: " + v.visual + "\n" +
+      "screen: " + v.screen + " (avail " + v.avail + ")\n" +
+      "devicePixelRatio: " + v.dpr;
+    return v;
+  }
+
+  function vpAddLog(reason) {
+    var v = vpRender();
+    var line = new Date().toLocaleTimeString() + "  " + reason + ": " + vpSummary(v);
+    vpLog.textContent = vpLog.textContent ? line + "\n" + vpLog.textContent : line;
+  }
+
+  // How this page load started: "navigate" after an app relaunch or a new
+  // visit, "reload" after a reload, "back_forward" from history.
+  var nav = performance.getEntriesByType ? performance.getEntriesByType("navigation")[0] : null;
+  vpLoad.textContent = "LOAD: " + (nav && nav.type ? nav.type.toUpperCase() : "UNKNOWN");
+
+  var vpTimer = null;
+  function vpScheduleLog(reason) {
+    clearTimeout(vpTimer);
+    vpTimer = setTimeout(function () { vpAddLog(reason); }, 250);
+  }
+  window.addEventListener("resize", function () { vpScheduleLog("resize"); });
+  window.addEventListener("orientationchange", function () { vpScheduleLog("orientation change"); });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () { vpScheduleLog("visual viewport resize"); });
+  }
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") { vpScheduleLog("page shown"); }
+  });
+  document.getElementById("vpSnapBtn").addEventListener("click", function () { vpAddLog("snapshot"); });
+
+  vpAddLog("page load (" + (nav && nav.type ? nav.type : "unknown") + ")");
+
+  document.getElementById("meta").textContent =
+    "Loaded " + new Date().toString() + " · " + navigator.userAgent;
+})();
+</script>
+</body>
+</html>
