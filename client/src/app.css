@@ -1,0 +1,91 @@
+/* Bright but calm, large type, big tap targets (arch §3 "Visual style"). */
+:root {
+  --bg: #f7f5f0;
+  --panel: #ffffff;
+  --fg: #1f1f24;
+  --muted: #6c6a72;
+  --line: #e2dfd7;
+  --accent: #2f6fdb;
+  --accent-fg: #ffffff;
+  --off: #9a98a0;
+  --ok: #1f9d55;
+  --late: #d99a00;
+  --wrong: #d93a2b;
+  --hand-r: #2f6fdb;
+  --hand-l: #8a4fd0;
+  --staff-bg: #ffffff;
+  --status-h: 56px;     /* status only: taps near the top are ignored in MIDIWeb Browser full screen */
+  --deadzone: 96px;     /* nothing tappable this close to the top of the screen */
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+#app { height: 100%; }
+
+button {
+  font: inherit;
+  font-weight: 650;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-fg);
+  cursor: pointer;
+}
+button:disabled { opacity: 0.45; }
+button.quiet { background: #ecebe6; color: var(--fg); }
+button.toggle.off { background: var(--off); }
+
+.status {
+  flex: 0 0 var(--status-h);
+  height: var(--status-h);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.status .title { font-weight: 750; font-size: 19px; overflow: hidden; text-overflow: ellipsis; }
+.status .muted { color: var(--muted); }
+.status .spacer { flex: 1; }
+.piano-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; background: var(--off); }
+.piano-dot.on { background: var(--ok); }
+
+/* staff feedback (note-head groups drawn by VexFlow) */
+.pm-ok path { fill: var(--ok) !important; stroke: var(--ok) !important; }
+.pm-late path { fill: var(--late) !important; stroke: var(--late) !important; }
+.pm-glow path { fill: var(--accent) !important; stroke: var(--accent) !important; filter: drop-shadow(0 0 3px rgba(47, 111, 219, 0.8)); }
+
+/* on-screen keyboard */
+.kb { position: absolute; inset: 0; }
+.kb-w, .kb-b { position: absolute; top: 0; border-radius: 0 0 8px 8px; display: flex; align-items: flex-end; justify-content: center; }
+.kb-w { height: 100%; background: #fbfbf9; border: 1px solid #b9b7b0; border-top: 0; }
+.kb-b { height: 60%; background: #1d1d20; z-index: 1; border-radius: 0 0 5px 5px; }
+.kb-c { position: absolute; bottom: 8px; font-size: 13px; color: #8d8b93; pointer-events: none; }
+.kb-f { font-weight: 800; font-size: 22px; color: #fff; margin-bottom: 30px; pointer-events: none; }
+.kb-b .kb-f { margin-bottom: 12px; font-size: 18px; }
+.kb-t-R { background: var(--hand-r) !important; }
+.kb-t-L { background: var(--hand-l) !important; }
+.kb-t-R .kb-c, .kb-t-L .kb-c { color: rgba(255, 255, 255, 0.85); }
+.kb-ok { background: var(--ok) !important; }
+.kb-late { background: var(--late) !important; }
+.kb-wrong { background: var(--wrong) !important; }
+.kb-neutral { background: #b8c6e3 !important; }

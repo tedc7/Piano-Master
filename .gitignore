@@ -1,0 +1,11 @@
+# local tools (tools/setup.sh rebuilds them)
+.tools/
+tools/.venv/
+tools/.vendor/
+__pycache__/
+# client build and generated content (tools/build_content.py)
+client/node_modules/
+client/dist/
+client/public/content/
+client/public/media/
+tests-output/
