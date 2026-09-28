@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sync Probe</title>
+<!--
+  Piano-Master feasibility tests 2, 3 and 4 (see ../RESULTS.md):
+   4. real songs, converted to the arch §5 notation, rendered by VexFlow 4.2.5 into one wide SVG
+      in playback order (repeats and verses unrolled), with lyrics and chord symbols;
+   2. one song clock: the staff, lyric highlight, beat flash and key light are all driven from the
+      audio clock (getOutputTimestamp when offered), with rewinds, count-in and tempo switches;
+   3. the aligned YuE2 stems at 100/90/75/50% (Rubber Band): per song the best take and alignment by the
+      vocal check (select_takes.py), and the best of another alignment mode to compare.
+  Everything is served from the piano server; nothing loads from the internet.
+-->
+<style>
+  :root {
+    --bg: #fbfaf7; --fg: #1d1d1f; --muted: #6b6b70; --line: #deded9; --panel: #fff;
+    --play: #2d5bd7; --btn: #2d5bd7; --btn-fg: #fff; --off: #8a8a90; --lit: #e0a100; --flash: #ff3b30;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font: 16px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden;
+    -webkit-user-select: none; user-select: none; }
+  #app { display: flex; flex-direction: column; height: 100%; }
+  /* status only: taps near the top are ignored in MIDIWeb Browser full-screen mode (arch §3) */
+  #status { flex: 0 0 auto; display: flex; gap: 14px; align-items: center; padding: 10px 14px;
+    background: var(--panel); border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums;
+    white-space: nowrap; overflow: hidden; min-height: 44px; }
+  #status b { font-weight: 700; }
+  #status .muted { color: var(--muted); }
+  #stage { position: relative; flex: 0 0 50%; overflow: hidden; background: #fff; touch-action: none; }
+  #strip { position: absolute; left: 0; top: 0; will-change: transform; }
+  #playline { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--play); opacity: .6; }
+  #flash { position: absolute; right: 12px; bottom: 12px; width: 50px; height: 50px; border-radius: 9px;
+    background: #eee; border: 2px solid #ccc; }
+  #flash.on { background: var(--flash); border-color: var(--flash); }
+  #controls { flex: 0 0 auto; display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); }
+  button, select { font: inherit; font-weight: 700; border-radius: 10px; min-height: 44px; }
+  button { color: var(--btn-fg); background: var(--btn); border: 0; padding: 8px 14px; }
+  button.toggle.off { background: var(--off); }
+  select { padding: 6px 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); max-width: 260px; }
+  .vol { align-self: center; font-variant-numeric: tabular-nums; min-width: 48px; text-align: center; }
+  #offsetLabel { align-self: center; font-variant-numeric: tabular-nums; min-width: 70px; text-align: center; }
+  #keys { flex: 1 1 auto; position: relative; display: flex; padding: 8px 12px 12px; gap: 2px; background: #2a2a2e; min-height: 80px; }
+  .wk { flex: 1; background: #fafafa; border-radius: 0 0 6px 6px; position: relative; }
+  .wk.on, .bk.on { background: var(--lit); }
+  .bk { position: absolute; top: 8px; height: 55%; background: #111; border-radius: 0 0 4px 4px; z-index: 1; }
+  #panel { position: fixed; left: 50%; top: 56px; transform: translateX(-50%); width: min(760px, 96vw);
+    max-height: 70vh; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; font: 13px/1.4 ui-monospace, Menlo, monospace; white-space: pre-wrap; z-index: 10;
+    box-shadow: 0 6px 24px rgba(0,0,0,.18); -webkit-user-select: text; user-select: text; }
+  #panel[hidden] { display: none; }
+  button.busy { background: #6d8fe6; position: relative; padding-left: 38px; }
+  button.busy::before { content: ""; position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; margin-top: -8px;
+    border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lyric { font: 13px -apple-system, "Segoe UI", Roboto, sans-serif; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="status"><b id="stTitle">Sync probe</b><span id="stPreset"></span><span id="stClock"></span>
+    <span id="stSync" class="muted"></span><span id="stFps" class="muted"></span><span id="stMsg" class="muted"></span></div>
+  <div id="stage"><div id="strip"></div><div id="playline"></div><div id="flash"></div></div>
+  <div id="controls">
+    <select id="song"></select>
+    <select id="take"></select>
+    <select id="preset"></select>
+    <button id="play" type="button">Play</button>
+    <button id="rewind" type="button">Rewind</button>
+    <button id="auto" type="button" class="toggle off">Auto-rewind 20 s</button>
+    <button id="click" type="button" class="toggle">Click</button>
+    <button id="flashBtn" type="button" class="toggle">Flash</button>
+    <button id="voc" type="button" class="toggle">Vocal</button>
+    <button id="acc" type="button" class="toggle">Backing</button>
+    <button id="accMinus" type="button">&minus;</button><span id="accLabel" class="vol">200%</span><button id="accPlus" type="button">+</button>
+    <button id="offMinus" type="button">&minus;10 ms</button><span id="offsetLabel">80 ms</span><button id="offPlus" type="button">+10 ms</button>
+    <button id="check" type="button" class="toggle off">Staff check</button>
+    <button id="results" type="button">Results</button>
+  </div>
+  <div id="keys"></div>
+</div>
+<div id="panel" hidden></div>
+
+<script src="vexflow-bravura.js"></script>
+<script>
+(function () {
+  "use strict";
+  var VF = Vex.Flow;
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $("stage"), strip = $("strip"), playline = $("playline"), flashEl = $("flash"), panel = $("panel");
+  var LINE_FRAC = 0.25;
+  var GLIDE_SEC = 0.7, FADE_SEC = 0.2, PREROLL = 0.15, LEAD = 0.12, AUTO_EVERY = 20;
+  var PRESET_NAMES = { "100": "100%", "90": "90%", "75": "75%", "50": "50%" };
+
+  var manifest = null, song = null, nota = null, un = null, layout = null;
+  var presetKey = "100", takeKey = null, tk = null;
+  function takeName(k) { return song && song.takes[k] ? song.takes[k].label : k; }
+  var runs = [], logLines = [];
+  var settings = { click: true, flash: true, voc: true, acc: true, accVol: 2, auto: false, offsetMs: 80 };  // iPad listening 2026-09-27: 80 ms display offset lines the notes up with the bar; backing 200%
+
+  function log(msg) {
+    var line = new Date().toLocaleTimeString() + "  " + msg;
+    logLines.push(line);
+    if (logLines.length > 400) { logLines.shift(); }
+    if (!panel.hidden) { showPanel(); }
+  }
+  function status(msg) { $("stMsg").textContent = msg || ""; }
+
+  // ------------------------------------------------------------------ notation (arch §5) -> timeline
+  function unroll(n) {
+    var ms = n.measures, lyr = {}, plays = {}, byM = ms.map(function () { return []; });
+    n.lyrics.forEach(function (l) { (lyr[l.note] = lyr[l.note] || {})[l.verse] = l; });
+    n.playbackOrder.forEach(function (p) { plays[p.measure] = (plays[p.measure] || 0) + 1; });
+    n.notes.forEach(function (x, i) {
+      for (var mi = 0; mi < ms.length; mi++) {
+        if (ms[mi].start <= x.start + 1e-9 && x.start < ms[mi].start + ms[mi].duration - 1e-9) { byM[mi].push(i); break; }
+      }
+    });
+    var t = 0, entries = [], out = [];
+    n.playbackOrder.forEach(function (p, k) {
+      var m = ms[p.measure];
+      entries.push({ start: t, measure: p.measure, verse: p.verse, duration: m.duration, m: m });
+      byM[p.measure].forEach(function (i) {
+        var x = n.notes[i], L = lyr[i] || {}, ly = L[p.verse], keys = Object.keys(L);
+        if (!ly && keys.length === 1 && plays[p.measure] === 1) { ly = L[keys[0]]; }
+        out.push(Object.assign({}, x, { index: i, entry: k, ustart: t + x.start - m.start, lyric: ly || null }));
+      });
+      t += m.duration;
+    });
+    var melody = out.filter(function (x) { return x.isMelody; }).sort(function (a, b) { return a.ustart - b.ustart; });
+    return { entries: entries, notes: out, length: t, melody: melody };
+  }
+
+  // ------------------------------------------------------------------ VexFlow rendering (test 4)
+  var DUR = [[6, "w", 1], [4, "w", 0], [3, "h", 1], [2, "h", 0], [1.5, "q", 1], [1, "q", 0], [0.75, "8", 1],
+             [0.5, "8", 0], [0.375, "16", 1], [0.25, "16", 0], [0.125, "32", 0]];
+  function durPieces(d) {
+    var out = [], guard = 0;
+    while (d > 1e-6 && guard++ < 12) {
+      var p = DUR.find(function (e) { return e[0] <= d + 1e-6; }) || DUR[DUR.length - 1];
+      out.push(p); d -= p[0];
+    }
+    return out;
+  }
+  var ACC = { "-2": "bb", "-1": "b", "0": "", "1": "#", "2": "##" };
+  function vexKey(sp) { return sp.step.toLowerCase() + ACC[String(sp.alter)] + "/" + sp.octave; }
+  var MAJOR = ["Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"];
+  function keySpec(fifths) { return MAJOR[fifths + 7]; }
+
+  function buildScore() {
+    var h = nota.header, staves = h.staves, grand = staves.length > 1;
+    var TOP = 70, GAP = 175, H = grand ? 400 : 250;
+    var ts = h.timeSig, key = keySpec(h.keySig);
+    var t0 = performance.now(), problems = [];
+    var measures = [];      // per unrolled entry: {tickables per staff/voice, width, ...}
+    var byEntry = un.entries.map(function () { return []; });
+    un.notes.forEach(function (x, i) { byEntry[x.entry].push(i); });
+    var tickInfo = [];      // {vf, beat, isRest, unIdx[]}
+    var tieStarts = [];
+
+    // pass 1: notes, voices and widths
+    un.entries.forEach(function (e, k) {
+      var entryNotes = byEntry[k].map(function (i) { return un.notes[i]; });
+      var perStaff = staves.map(function (clef, s) {
+        var voices = {};
+        entryNotes.forEach(function (x) { if (x.staff === s) { (voices[x.voice] = voices[x.voice] || []).push(x); } });
+        var voiceNums = Object.keys(voices).map(Number).sort();
+        if (!voiceNums.length) { voiceNums = [1]; voices[1] = []; }
+        var multi = voiceNums.length > 1;
+        return voiceNums.map(function (v, vi) {
+          var groups = {}, starts = [];
+          voices[v].forEach(function (x) {
+            var key0 = x.ustart.toFixed(4);
+            if (!groups[key0]) { groups[key0] = []; starts.push(x.ustart); }
+            groups[key0].push(x);
+          });
+          starts.sort(function (a, b) { return a - b; });
+          var tick = [], cursor = e.start, end = e.start + e.duration;
+          var dir = multi ? (vi === 0 ? 1 : -1) : 0;
+          var restKey = clef === "bass" ? (vi ? "f/2" : "d/3") : (vi ? "e/4" : "b/4");
+          function rest(len) {
+            durPieces(len).forEach(function (p) {
+              var r = new VF.StaveNote({ keys: [restKey], duration: p[1] + "r", dots: p[2], clef: clef });
+              if (p[2]) { VF.Dot.buildAndAttach([r], { all: true }); }
+              tick.push(r); tickInfo.push({ vf: r, beat: cursor, isRest: true });
+              cursor += p[0];
+            });
+          }
+          starts.forEach(function (s, gi) {
+            if (s > cursor + 1e-6) { rest(s - cursor); }
+            if (s < cursor - 1e-6) { problems.push("m" + e.m.number + " staff " + clef + " voice " + v + ": overlapping notes"); return; }
+            var g = groups[s.toFixed(4)];
+            var next = gi + 1 < starts.length ? starts[gi + 1] : end;
+            var len = Math.min(Math.min.apply(null, g.map(function (x) { return x.duration; })), next - s, end - s);
+            var keys = g.slice().sort(function (a, b) { return a.pitch - b.pitch; });
+            var prevPiece = null;
+            durPieces(len).forEach(function (p, pi) {
+              var opts = { keys: keys.map(function (x) { return vexKey(x.spelled); }), duration: p[1], dots: p[2], clef: clef };
+              if (dir) { opts.stem_direction = dir; } else { opts.auto_stem = true; }
+              var n = new VF.StaveNote(opts);
+              if (p[2]) { VF.Dot.buildAndAttach([n], { all: true }); }
+              if (pi === 0 && keys.some(function (x) { return x.fermata; })) {
+                n.addModifier(new VF.Articulation("a@a").setPosition(dir < 0 ? 4 : 3), 0);
+              }
+              tick.push(n);
+              tickInfo.push({ vf: n, beat: cursor, isRest: false });
+              if (prevPiece) { tieStarts.push({ a: prevPiece, b: n, idx: keys.map(function (_, i) { return i; }) }); }
+              prevPiece = n;
+              if (pi === 0) { keys.forEach(function (x, ki) { x._vf = n; x._ki = ki; }); }
+              cursor += p[0];
+            });
+            keys.forEach(function (x) { x._vfLast = prevPiece; });
+          });
+          if (cursor < end - 1e-6 && (vi === 0 || starts.length)) { rest(end - cursor); }
+          var voice = new VF.Voice({ num_beats: Math.max(1, Math.round(e.duration * 8)), beat_value: 32 }).setMode(VF.Voice.Mode.SOFT);
+          voice.addTickables(tick);
+          var beams = [];
+          try {
+            var cfg = { groups: VF.Beam.getDefaultBeamGroups(ts) };
+            if (dir) { cfg.stem_direction = dir; cfg.maintain_stem_directions = true; }
+            beams = VF.Beam.generateBeams(tick.filter(function (t) { return !t.isRest(); }), cfg);
+          } catch (err) { problems.push("m" + e.m.number + " beams: " + err.message); }
+          return { voice: voice, beams: beams, tick: tick };
+        });
+      });
+      var all = [];
+      perStaff.forEach(function (vs) { vs.forEach(function (v) { all.push(v.voice); }); });
+      try { VF.Accidental.applyAccidentals(all, key); } catch (err) { problems.push("m" + e.m.number + " accidentals: " + err.message); }
+      var fmt = new VF.Formatter();
+      perStaff.forEach(function (vs) { fmt.joinVoices(vs.map(function (v) { return v.voice; })); });
+      var minW = 60;
+      try { minW = fmt.preCalculateMinTotalWidth(all); } catch (err) { problems.push("m" + e.m.number + " width: " + err.message); }
+      var lyricW = 0;
+      entryNotes.forEach(function (x) {
+        if (x.isMelody) { lyricW += Math.max(30, (x.lyric ? x.lyric.text.length + (x.lyric.syllabic === "begin" || x.lyric.syllabic === "middle" ? 2 : 0) : 0) * 8.4 + 16); }
+      });
+      var first = k === 0, change = !first && (e.m.keySig !== undefined || e.m.timeSig !== undefined);
+      var extra = first ? (grand ? 95 : 85) + Math.abs(h.keySig) * 10 : (change ? 50 : 0);
+      var w = Math.max(minW * 1.25 + 40, lyricW + 20, 90) + extra;
+      measures.push({ e: e, perStaff: perStaff, fmt: fmt, all: all, width: w, first: first, change: change, extra: extra });
+    });
+
+    // pass 2: draw
+    var PAD = 30, total = PAD * 2 + measures.reduce(function (a, m) { return a + m.width; }, 0);
+    var scale = stage.clientHeight / H;
+    strip.innerHTML = "";
+    var holder = document.createElement("div");
+    strip.appendChild(holder);
+    var renderer = new VF.Renderer(holder, VF.Renderer.Backends.SVG);
+    renderer.resize(Math.ceil(total * scale), Math.ceil(H * scale));
+    var ctx = renderer.getContext();
+    ctx.scale(scale, scale);
+    var x = PAD, lastVerse = null;
+    measures.forEach(function (m) {
+      var treble = new VF.Stave(x, TOP, m.width), bass = grand ? new VF.Stave(x, TOP + GAP, m.width) : null;
+      var st = grand ? [treble, bass] : [treble];
+      st.forEach(function (s, i) {
+        if (m.first) { s.addClef(staves[i]).addKeySignature(key).addTimeSignature(ts); }
+        else if (m.change) {
+          if (m.e.m.keySig !== undefined) { s.addKeySignature(keySpec(m.e.m.keySig)); }
+          if (m.e.m.timeSig !== undefined) { s.addTimeSignature(m.e.m.timeSig); }
+        }
+        s.setContext(ctx).draw();
+      });
+      if (grand) {
+        if (m.first) {
+          new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+          new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+        }
+        new VF.StaveConnector(treble, bass).setType(VF.StaveConnector.type.SINGLE_RIGHT).setContext(ctx).draw();
+      }
+      if (m.e.verse !== lastVerse) {
+        ctx.save(); ctx.setFont("Arial", 11, "bold"); ctx.fillText("verse " + m.e.verse, x + 4, TOP - 44); ctx.restore();
+        lastVerse = m.e.verse;
+      }
+      try {
+        m.perStaff.forEach(function (vs, i) { vs.forEach(function (v) { v.voice.setStave(st[i]); }); });
+        m.fmt.format(m.all, m.width - (treble.getNoteStartX() - x) - 14);
+        m.perStaff.forEach(function (vs, i) {
+          vs.forEach(function (v) { v.voice.draw(ctx, st[i]); v.beams.forEach(function (b) { b.setContext(ctx).draw(); }); });
+        });
+      } catch (err) { problems.push("m" + m.e.m.number + " draw: " + err.message); }
+      m.x = x;
+      x += m.width;
+    });
+    // ties: split pieces, then written ties to the next note of the same pitch, staff and voice
+    tieStarts.forEach(function (t) {
+      try { new VF.StaveTie({ first_note: t.a, last_note: t.b, first_indices: t.idx, last_indices: t.idx }).setContext(ctx).draw(); }
+      catch (err) { problems.push("tie: " + err.message); }
+    });
+    var nextOf = {};
+    un.notes.slice().sort(function (a, b) { return a.ustart - b.ustart; }).forEach(function (n) {
+      if (!n._vf) { return; }
+      var k = n.staff + "/" + n.voice + "/" + n.pitch, prev = nextOf[k];
+      if (prev && prev.tieToNext && Math.abs(prev.ustart + prev.duration - n.ustart) < 1e-6) {
+        try {
+          new VF.StaveTie({ first_note: prev._vfLast, last_note: n._vf, first_indices: [prev._ki], last_indices: [n._ki] }).setContext(ctx).draw();
+        } catch (err) { problems.push("tie: " + err.message); }
+      }
+      nextOf[k] = n;
+    });
+
+    // beat -> x (note-head centres), used by the song clock
+    var pts = [];
+    tickInfo.forEach(function (t) {
+      try {
+        pts.push([t.beat, centerX(t.vf)]);
+      } catch (err) { /* not drawn */ }
+    });
+    pts.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+    var map = [];
+    pts.forEach(function (p) {
+      if (map.length && Math.abs(map[map.length - 1][0] - p[0]) < 1e-6) { return; }
+      if (map.length && p[1] <= map[map.length - 1][1]) { return; }
+      map.push(p);
+    });
+    map.push([un.length, x - 6]);
+    var firstX = map.length ? map[0][1] : PAD;
+    var bpu = map.length > 1 ? (map[1][1] - map[0][1]) / Math.max(map[1][0] - map[0][0], 1e-6) : 40;
+    map.unshift([-8, firstX - 8 * bpu]);
+
+    // lyrics and chord symbols as their own SVG text, so a syllable can light up
+    var svg = holder.querySelector("svg");
+    var lyricY = TOP + 148, lyrics = [];     // below the treble staff's lowest stems, above the bass staff
+    function addText(txt, tx, ty, size, weight, fill) {
+      var el = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      el.setAttribute("x", tx); el.setAttribute("y", ty); el.setAttribute("font-size", size);
+      el.setAttribute("font-family", "-apple-system, Segoe UI, Roboto, sans-serif");
+      el.setAttribute("text-anchor", "middle");
+      if (weight) { el.setAttribute("font-weight", weight); }
+      el.setAttribute("fill", fill || "#222");
+      el.textContent = txt;
+      svg.appendChild(el);
+      return el;
+    }
+    // svg is scaled through its viewBox, so these coordinates are VexFlow units
+    un.melody.forEach(function (n) {
+      if (!n.lyric || !n._vf) { return; }
+      var tx;
+      try { tx = centerX(n._vf); } catch (err) { return; }
+      var txt = n.lyric.text + (n.lyric.syllabic === "begin" || n.lyric.syllabic === "middle" ? " -" : "");
+      lyrics.push({ beat: n.ustart, end: n.ustart + n.duration, el: addText(txt, tx, lyricY, 14) });
+    });
+    var chordY = TOP - 22;
+    (nota.chordSymbols || []).forEach(function (c) {
+      un.entries.forEach(function (e) {
+        if (c.beat >= e.m.start - 1e-6 && c.beat < e.m.start + e.m.duration - 1e-6) {
+          var b = e.start + c.beat - e.m.start;
+          addText(c.symbol, xAt(map, b), chordY, 13, "bold", c.derived ? "#7a5b00" : "#5a3c00");
+        }
+      });
+    });
+    var ms = performance.now() - t0;
+    return { scale: scale, map: map, lyrics: lyrics, width: Math.round(total * scale), height: Math.round(H * scale),
+             renderMs: ms, measures: measures.length, tickables: tickInfo.length, problems: problems };
+  }
+
+  function centerX(n) {
+    try { return (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2; } catch (e) { return n.getAbsoluteX() + 6; }
+  }
+
+  function xAt(map, beat) {
+    var lo = 0, hi = map.length - 1;
+    if (beat <= map[0][0]) { return map[0][1]; }
+    if (beat >= map[hi][0]) { return map[hi][1]; }
+    while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (map[mid][0] <= beat) { lo = mid; } else { hi = mid; } }
+    var a = map[lo], b = map[hi];
+    return a[1] + (b[1] - a[1]) * (beat - a[0]) / (b[0] - a[0]);
+  }
+
+  // ------------------------------------------------------------------ keyboard
+  var keyEls = {}, litKey = null;
+  function buildKeys() {
+    var el = $("keys");
+    el.innerHTML = "";
+    keyEls = {};
+    var lo = Math.min.apply(null, un.melody.map(function (n) { return n.pitch; })) - 2;
+    var hi = Math.max.apply(null, un.melody.map(function (n) { return n.pitch; })) + 2;
+    while ([1, 3, 6, 8, 10].indexOf(((lo % 12) + 12) % 12) >= 0) { lo--; }
+    var whites = [];
+    for (var p = lo; p <= hi; p++) {
+      if ([1, 3, 6, 8, 10].indexOf(p % 12) < 0) {
+        var w = document.createElement("div"); w.className = "wk"; el.appendChild(w); keyEls[p] = w; whites.push(p);
+      }
+    }
+    requestAnimationFrame(function () {
+      var ww = whites.length ? keyEls[whites[0]].getBoundingClientRect().width + 2 : 20;
+      whites.forEach(function (p, i) {
+        if (p + 1 <= hi && [1, 3, 6, 8, 10].indexOf((p + 1) % 12) >= 0) {
+          var b = document.createElement("div"); b.className = "bk";
+          b.style.width = (ww * 0.6) + "px"; b.style.left = (12 + (i + 1) * ww - ww * 0.3) + "px";
+          el.appendChild(b); keyEls[p + 1] = b;
+        }
+      });
+    });
+  }
+
+  // ------------------------------------------------------------------ audio and the song clock (test 2)
+  var ac = null, master, vGain, aGain, clickGain;
+  var buffers = {}, loads = [];
+  var sources = [];
+  var clock = null;          // {t0, beat0, spb}: beat(t) = beat0 + (t - t0) / spb, t = heard audio time
+  var playing = false, glide = null, rewinds = 0, lastAuto = 0;
+  var nextClick = null, clickTimer = 0;
+  var frames = [], lastFrame = 0, raf = 0, runStart = 0;
+  var tsSamples = [], diffSamples = [];
+
+  function ensureAudio() {
+    if (ac) { return ac.resume(); }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    ac = new AC({ latencyHint: "interactive" });
+    master = ac.createGain(); master.connect(ac.destination);
+    vGain = ac.createGain(); vGain.connect(master);
+    aGain = ac.createGain(); aGain.connect(master);
+    clickGain = ac.createGain(); clickGain.gain.value = 0.5; clickGain.connect(master);
+    applyMix();
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden && ac && ac.state !== "running") { ac.resume(); log("audio resumed after returning (" + ac.state + ")"); }
+    });
+    log("AudioContext " + ac.sampleRate + " Hz, baseLatency " + ms(ac.baseLatency) + ", outputLatency " + ms(ac.outputLatency) +
+        ", getOutputTimestamp " + (typeof ac.getOutputTimestamp === "function" ? "offered" : "NOT offered"));
+    return ac.resume();
+  }
+  function ms(s) { return s === undefined ? "n/a" : (s * 1000).toFixed(1) + " ms"; }
+  function applyMix() {
+    if (!ac) { return; }
+    vGain.gain.value = settings.voc ? 1 : 0;
+    aGain.gain.value = settings.acc ? settings.accVol : 0;
+  }
+
+  function fetchWithProgress(url, total, onBytes) {
+    return fetch(url).then(function (r) {
+      if (!r.body || !r.body.getReader) { return r.arrayBuffer(); }
+      var reader = r.body.getReader(), chunks = [], got = 0;
+      function pump() {
+        return reader.read().then(function (res) {
+          if (res.done) {
+            var out = new Uint8Array(got), o = 0;
+            chunks.forEach(function (c) { out.set(c, o); o += c.length; });
+            return out.buffer;
+          }
+          chunks.push(res.value); got += res.value.length; onBytes(res.value.length);
+          return pump();
+        });
+      }
+      return pump();
+    });
+  }
+
+  function setBusy(on, text) {
+    busy = on;
+    $("play").classList.toggle("busy", on);
+    $("play").textContent = on ? (text || "Loading") : (playing ? "Stop" : "Play");
+  }
+  var busy = false;
+
+  function loadPreset(key) {
+    var cacheKey = song.id + "/" + takeKey + "/" + key;
+    if (buffers[cacheKey]) { return Promise.resolve(buffers[cacheKey]); }
+    var st = tk.stems[key];
+    var t0 = performance.now(), totalBytes = st.vocals.bytes + st.accompaniment.bytes, gotBytes = 0;
+    setBusy(true, "Loading 0%");
+    status("Loading " + PRESET_NAMES[key] + " audio (" + (totalBytes / 1048576).toFixed(1) + " MB)...");
+    return Promise.all(["vocals", "accompaniment"].map(function (stem) {
+      var f = st[stem], tf = performance.now();
+      return fetchWithProgress(f.url, f.bytes, function (n) {
+        gotBytes += n;
+        $("play").textContent = "Loading " + Math.min(99, Math.round(100 * gotBytes / totalBytes)) + "%";
+      }).then(function (ab) {
+        var td = performance.now();
+        return ac.decodeAudioData(ab).then(function (buf) {
+          var line = { song: song.id, preset: key, stem: stem, kb: Math.round(f.bytes / 1024), fetchMs: Math.round(td - tf),
+                       decodeMs: Math.round(performance.now() - td), seconds: buf.duration.toFixed(1),
+                       decodedMB: (buf.length * buf.numberOfChannels * 4 / 1048576).toFixed(0) };
+          loads.push(line);
+          log("loaded " + stem + " " + key + ": " + line.kb + " KB in " + line.fetchMs + " ms, decoded in " + line.decodeMs + " ms (" + line.seconds + " s, " + line.decodedMB + " MB)");
+          return buf;
+        });
+      });
+    })).then(function (bufs) {
+      buffers[cacheKey] = { vocals: bufs[0], accompaniment: bufs[1] };
+      setBusy(false);
+      status("Ready (" + Math.round(performance.now() - t0) + " ms to load)");
+      return buffers[cacheKey];
+    });
+  }
+
+  function heardTime(now) {
+    // the audio time being heard at performance time `now`
+    var off = settings.offsetMs / 1000;
+    if (typeof ac.getOutputTimestamp === "function") {
+      var ts = ac.getOutputTimestamp();
+      // after a lock or app switch the timestamp can be stale (audio not rendering yet); extrapolating
+      // from it jumped the clock minutes ahead ("played 0 s, end of song"), so only trust a fresh one
+      if (ts && ts.performanceTime > 0 && now - ts.performanceTime < 250 && ac.state === "running") {
+        return { t: ts.contextTime + (now - ts.performanceTime) / 1000 - off, how: "outputTimestamp" };
+      }
+    }
+    return { t: ac.currentTime - (ac.outputLatency || 0) - (ac.baseLatency || 0) - off, how: "latency" };
+  }
+
+  function barBeats() { return nota.header.barLength; }
+  function unitBeats() {
+    var p = nota.header.timeSig.split("/");
+    return (+p[1] === 8 && +p[0] % 3 === 0) ? 1.5 : 4 / +p[1];
+  }
+
+  function stopSources(fade) {
+    var now = ac.currentTime;
+    sources.forEach(function (s) {
+      try {
+        s.g.gain.cancelScheduledValues(now);
+        s.g.gain.setValueAtTime(s.g.gain.value, now);
+        s.g.gain.linearRampToValueAtTime(0, now + fade);
+        s.src.stop(now + fade + 0.02);
+      } catch (e) { /* already stopped */ }
+    });
+    sources = [];
+  }
+
+  function startAt(beat, countIn) {
+    var st = tk.stems[presetKey], bufs = buffers[song.id + "/" + takeKey + "/" + presetKey];
+    var spb = 60 / (tk.bpm * st.ratio);
+    var ci = countIn ? barBeats() : 0;
+    var t0 = ac.currentTime + LEAD;
+    clock = { t0: t0, beat0: beat - ci, spb: spb };
+    var tStart = t0 + ci * spb;
+    var off = (beat + tk.padBeats) * spb;
+    var pre = Math.max(0, Math.min(PREROLL, off, tStart - ac.currentTime - 0.01));
+    ["vocals", "accompaniment"].forEach(function (stem) {
+      var src = ac.createBufferSource(), g = ac.createGain();
+      src.buffer = bufs[stem];
+      g.gain.setValueAtTime(pre > 0 ? 0 : 1, tStart - pre);
+      if (pre > 0) { g.gain.linearRampToValueAtTime(1, tStart); }
+      src.connect(g); g.connect(stem === "vocals" ? vGain : aGain);
+      // before the stem's own start (a switch during the count-in): wait until stem time 0
+      var when = tStart - pre, from = off - pre;
+      if (from < 0) { when -= from; from = 0; }
+      src.start(Math.max(when, ac.currentTime), from);
+      sources.push({ src: src, g: g });
+    });
+    // first click at or after the count-in start, on the metric grid (bar lines at the pickup)
+    var u = unitBeats(), pick = nota.header.pickupBeats;
+    nextClick = pick + Math.ceil((clock.beat0 - pick) / u - 1e-6) * u;
+  }
+
+  function scheduleClicks() {
+    if (!playing || !clock || glide) { return; }
+    var horizon = ac.currentTime + 0.25, u = unitBeats(), bar = barBeats(), pick = nota.header.pickupBeats;
+    while (true) {
+      var t = clock.t0 + (nextClick - clock.beat0) * clock.spb;
+      if (t > horizon) { break; }
+      if (settings.click && t >= ac.currentTime) {
+        var down = Math.abs(((nextClick - pick) / bar) - Math.round((nextClick - pick) / bar)) < 1e-6;
+        var o = ac.createOscillator(), g = ac.createGain();
+        o.frequency.value = down ? 1760 : 1320;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(1, t + 0.002);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+        o.connect(g); g.connect(clickGain); o.start(t); o.stop(t + 0.05);
+      }
+      nextClick += u;
+    }
+  }
+
+  function currentBeat(now) {
+    if (!clock) { return 0; }
+    var h = heardTime(now);
+    return { beat: clock.beat0 + Math.max(0, h.t - clock.t0) / clock.spb, how: h.how };
+  }
+
+  function play() {
+    if (busy) { return; }
+    setBusy(true, "Starting");
+    ensureAudio().then(function () { return loadPreset(presetKey); }).then(function () {
+      setBusy(false);
+      if (ac.state !== "running") { log("audio state " + ac.state + " at start; resuming"); ac.resume(); }
+      playing = true; glide = null; rewinds = 0; frames = []; lastFrame = 0; tsSamples = []; diffSamples = [];
+      runStart = performance.now(); lastAuto = runStart;
+      startAt(0, true);
+      clickTimer = setInterval(scheduleClicks, 25);
+      scheduleClicks();
+      $("play").textContent = "Stop";
+      log("play " + song.id + " at " + PRESET_NAMES[presetKey]);
+    }).catch(function (e) { setBusy(false); status("Error: " + e.message); log("ERROR " + e.message); });
+  }
+
+  function stop(reason) {
+    if (!playing) { return; }
+    playing = false; glide = null;
+    clearInterval(clickTimer);
+    stopSources(0.08);
+    $("play").textContent = "Play";
+    recordRun(reason || "stopped");
+  }
+
+  function phraseStart(beat) {
+    var ph = nota.phrases, p = ph[0];
+    for (var i = 0; i < ph.length; i++) { if (ph[i] <= beat - 0.5) { p = ph[i]; } }
+    return p;
+  }
+
+  function rewind() {
+    if (!playing || glide) { return; }
+    var now = performance.now(), cur = currentBeat(now).beat;
+    var target = phraseStart(cur);
+    stopSources(FADE_SEC);
+    glide = { t0: now, from: cur, to: target - barBeats(), target: target };
+    rewinds++;
+    log("rewind from beat " + cur.toFixed(2) + " to phrase at " + target.toFixed(2));
+  }
+
+  function switchPreset(key) {
+    var was = playing, cur = null;
+    if (was && clock) { cur = currentBeat(performance.now()).beat; }
+    presetKey = key;
+    $("stPreset").textContent = PRESET_NAMES[key];
+    if (!ac) { return; }
+    loadPreset(key).then(function () {
+      if (was && playing && !glide) {
+        var b = currentBeat(performance.now()).beat;
+        stopSources(0.05);
+        startAt(b, false);
+        log("tempo switch to " + PRESET_NAMES[key] + " at beat " + b.toFixed(2) + " (asked at " + (cur || 0).toFixed(2) + ")");
+      }
+    });
+  }
+
+  // ------------------------------------------------------------------ frame loop
+  var lastGrid = null, flashUntil = 0, litLyric = null;
+  function ease(p) { return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+  function place(beat) {
+    var lineX = stage.clientWidth * LINE_FRAC;
+    playline.style.left = lineX + "px";
+    var x = xAt(layout.map, beat) * layout.scale;
+    strip.style.transform = "translate3d(" + (lineX - x).toFixed(2) + "px,0,0)";
+  }
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    if (!layout) { return; }
+    if (playing) {
+      if (lastFrame) { frames.push(now - lastFrame); }
+      lastFrame = now;
+    }
+    var beat = null, how = "";
+    if (playing && glide) {
+      var p = Math.min(1, (now - glide.t0) / (GLIDE_SEC * 1000));
+      beat = glide.from + (glide.to - glide.from) * ease(p);
+      if (p >= 1) {
+        var target = glide.target;
+        glide = null;
+        startAt(target, true);
+      }
+    } else if (playing && clock) {
+      var cb = currentBeat(now);
+      beat = cb.beat; how = cb.how;
+      if (beat >= un.length + 0.5) { stop("end of song"); }
+      if (settings.auto && now - lastAuto > AUTO_EVERY * 1000) { lastAuto = now; rewind(); }
+      sampleClocks(now);
+    }
+    if (beat !== null) {
+      place(beat);
+      // beat flash, on the display's idea of the beat
+      var u = unitBeats(), pick = nota.header.pickupBeats;
+      var grid = Math.floor((beat - pick) / u + 1e-6);
+      if (!glide && lastGrid !== null && grid !== lastGrid && settings.flash) { flashUntil = now + 70; }
+      lastGrid = glide ? null : grid;
+      // key light and lyric highlight
+      var mel = melodyAt(beat);
+      var k = mel && !glide ? keyEls[mel.pitch] : null;
+      if (k !== litKey) { if (litKey) { litKey.classList.remove("on"); } if (k) { k.classList.add("on"); } litKey = k; }
+      var ly = lyricAt(beat);
+      if (ly !== litLyric) {
+        if (litLyric) { litLyric.el.setAttribute("fill", "#222"); litLyric.el.removeAttribute("font-weight"); }
+        if (ly) { ly.el.setAttribute("fill", "#d05a00"); ly.el.setAttribute("font-weight", "bold"); }
+        litLyric = ly;
+      }
+      $("stClock").textContent = "beat " + beat.toFixed(2);
+      $("stSync").textContent = how ? "clock: " + how : "";
+      if (frames.length && frames.length % 30 === 0) { $("stFps").textContent = fpsText(); }
+    }
+    flashEl.classList.toggle("on", now < flashUntil);
+  }
+
+  function melodyAt(beat) {
+    var m = un.melody, lo = 0, hi = m.length - 1, found = null;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      if (m[mid].ustart <= beat) { found = m[mid]; lo = mid + 1; } else { hi = mid - 1; }
+    }
+    return found && beat < found.ustart + found.duration ? found : null;
+  }
+  function lyricAt(beat) {
+    var L = layout.lyrics, found = null;
+    for (var i = 0; i < L.length; i++) { if (L[i].beat <= beat) { found = L[i]; } else { break; } }
+    return found && beat < found.end + 0.25 ? found : null;
+  }
+
+  function sampleClocks(now) {
+    if (typeof ac.getOutputTimestamp !== "function") { return; }
+    if (tsSamples.length && now - tsSamples[tsSamples.length - 1].at < 1000) { return; }
+    var ts = ac.getOutputTimestamp();
+    if (!ts || !(ts.performanceTime > 0)) { return; }
+    tsSamples.push({ at: now, ctx: ts.contextTime, perf: ts.performanceTime / 1000 });
+    var viaTs = ts.contextTime + (now - ts.performanceTime) / 1000;
+    var viaLat = ac.currentTime - (ac.outputLatency || 0) - (ac.baseLatency || 0);
+    diffSamples.push((viaLat - viaTs) * 1000);
+  }
+
+  function frameStats() {
+    var f = frames.slice(1).sort(function (a, b) { return a - b; });
+    var total = f.reduce(function (a, b) { return a + b; }, 0);
+    function pct(q) { return f.length ? f[Math.min(f.length - 1, Math.floor(q * f.length))] : 0; }
+    return { frames: f.length, fps: total ? f.length / (total / 1000) : 0, p95: pct(0.95), worst: f.length ? f[f.length - 1] : 0,
+             over25: f.filter(function (d) { return d > 25; }).length };
+  }
+  function fpsText() { var s = frameStats(); return s.fps.toFixed(1) + " fps, worst " + s.worst.toFixed(0) + " ms"; }
+
+  function driftPpm() {
+    if (tsSamples.length < 10) { return null; }
+    var n = tsSamples.length, mx = 0, my = 0;
+    tsSamples.forEach(function (s) { mx += s.perf; my += s.ctx; });
+    mx /= n; my /= n;
+    var sxy = 0, sxx = 0;
+    tsSamples.forEach(function (s) { sxy += (s.perf - mx) * (s.ctx - my); sxx += (s.perf - mx) * (s.perf - mx); });
+    return (sxy / sxx - 1) * 1e6;
+  }
+
+  function recordRun(reason) {
+    var s = frameStats(), secs = (performance.now() - runStart) / 1000, d = driftPpm();
+    var diffs = diffSamples.slice().sort(function (a, b) { return a - b; });
+    var r = [
+      song.title + " at " + PRESET_NAMES[presetKey] + ", " + takeName(takeKey) + " (" + reason + ")",
+      "  played " + secs.toFixed(0) + " s, rewinds " + rewinds + ", display offset " + settings.offsetMs + " ms, backing " + Math.round(settings.accVol * 100) + "%",
+      "  frames: " + s.fps.toFixed(1) + " fps, p95 " + s.p95.toFixed(1) + " ms, worst " + s.worst.toFixed(1) + " ms, over 25 ms: " + s.over25 + " of " + s.frames,
+      "  clock: " + (typeof ac.getOutputTimestamp === "function" ? "getOutputTimestamp" : "currentTime - latency") +
+        "; baseLatency " + ms(ac.baseLatency) + ", outputLatency " + ms(ac.outputLatency),
+      "  audio clock vs display clock: " + (d === null ? "too short to tell" : d.toFixed(0) + " ppm (" + (d * 180 / 1000).toFixed(1) + " ms per 3 min if not corrected)"),
+      "  latency-formula minus outputTimestamp: " + (diffs.length ? "median " + diffs[diffs.length >> 1].toFixed(1) + " ms" : "n/a")
+    ].join("\n");
+    runs.unshift(new Date().toLocaleTimeString() + "  " + r);
+    log("run finished: " + reason);
+    showPanel();
+  }
+
+  function showPanel() {
+    var info = [];
+    if (layout) {
+      info.push("STAFF (test 4): " + song.title + ": " + layout.measures + " measures in playback order, " + layout.tickables +
+        " notes and rests, " + layout.width + " x " + layout.height + " px, rendered in " + layout.renderMs.toFixed(0) + " ms, " +
+        layout.problems.length + " problems" + (layout.problems.length ? ":\n  " + layout.problems.slice(0, 20).join("\n  ") : ""));
+    }
+    if (tk && tk.check) {
+      var c = tk.check;
+      info.push("VOCAL CHECK (" + tk.label + "): melody notes sung on pitch " + Math.round(c.notesOnPitch * 100) +
+        "%; words more than 0.3 s off the staff " + Math.round(c.wordsOff * 100) + "%; first word sung: " + (c.firstWordSung ? "yes" : "NO") +
+        (c.wordStretches.length ? "\n  words off the staff at: " + c.wordStretches.join("; ") : "") +
+        (c.melodyStretches.length ? "\n  melody off the notes at: " + c.melodyStretches.join("; ") : "") +
+        "\n  (YuE2 sometimes sings words on other notes than the score; turn Vocal off if a song is badly affected)");
+    }
+    panel.textContent = (runs.length ? "RUNS\n" + runs.join("\n\n") + "\n\n" : "") + info.join("\n\n") +
+      "\n\nLOG\n" + logLines.slice(-60).join("\n") + "\n\n(Tap to close. Text can be selected and copied.)";
+    panel.hidden = false;
+  }
+  panel.addEventListener("click", function () { if (!window.getSelection().toString()) { panel.hidden = true; } });
+
+  // ------------------------------------------------------------------ staff check: drag to inspect
+  var drag = null, checkPos = 0;
+  stage.addEventListener("pointerdown", function (e) {
+    if (!settings.check || playing) { return; }
+    drag = { x: e.clientX, pos: checkPos }; stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove", function (e) {
+    if (!drag) { return; }
+    checkPos = Math.max(0, drag.pos - (e.clientX - drag.x));
+    strip.style.transform = "translate3d(" + (-checkPos).toFixed(1) + "px,0,0)";
+  });
+  stage.addEventListener("pointerup", function () { drag = null; });
+
+  // ------------------------------------------------------------------ song loading and controls
+  function loadSong(id) {
+    stop("song changed");
+    song = manifest.songs.find(function (s) { return s.id === id; });
+    $("stTitle").textContent = song.title;
+    var tsel = $("take");
+    tsel.innerHTML = "";
+    var takes = Object.keys(song.takes || {});
+    takes.sort(function (a, b) { return (song.takes[b].default ? 1 : 0) - (song.takes[a].default ? 1 : 0); });
+    takes.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = takeName(k); tsel.appendChild(o); });
+    tsel.hidden = !takes.length;
+    selectTake(takes[0] || null);
+    status("Rendering staff...");
+    return fetch(song.notation).then(function (r) { return r.json(); }).then(function (n) {
+      nota = n; un = unroll(n);
+      return new Promise(function (res) { setTimeout(res, 30); });
+    }).then(function () {
+      layout = buildScore();
+      buildKeys();
+      checkPos = 0;
+      place(nota.phrases[0] - barBeats());
+      status("Staff: " + layout.measures + " measures in " + layout.renderMs.toFixed(0) + " ms" + (layout.problems.length ? ", " + layout.problems.length + " problems" : ""));
+      log("rendered " + song.id + ": " + layout.measures + " measures, " + layout.width + " px wide, " + layout.renderMs.toFixed(0) + " ms, problems: " + layout.problems.length);
+    }).catch(function (e) { status("Error: " + e.message); log("ERROR " + e.stack); });
+  }
+
+  function selectTake(k) {
+    takeKey = k; tk = k ? song.takes[k] : null;
+    var sel = $("preset");
+    sel.innerHTML = "";
+    var presets = tk ? Object.keys(tk.stems) : [];
+    presets.forEach(function (p) { var o = document.createElement("option"); o.value = p; o.textContent = PRESET_NAMES[p]; sel.appendChild(o); });
+    if (presets.indexOf(presetKey) < 0) { presetKey = presets[0] || "100"; }
+    sel.value = presetKey;
+    sel.hidden = !presets.length;
+    $("stPreset").textContent = tk ? PRESET_NAMES[presetKey] : "staff only (no audio)";
+    $("play").disabled = !tk;
+    $("rewind").disabled = !tk;
+  }
+
+  function toggle(id, keyName, after) {
+    $(id).addEventListener("click", function () {
+      settings[keyName] = !settings[keyName];
+      $(id).classList.toggle("off", !settings[keyName]);
+      if (after) { after(); }
+    });
+  }
+  toggle("click", "click");
+  toggle("flashBtn", "flash");
+  toggle("voc", "voc", applyMix);
+  toggle("acc", "acc", applyMix);
+  toggle("auto", "auto", function () { lastAuto = performance.now(); });
+  toggle("check", "check", function () {
+    if (settings.check) { stop("staff check"); panel.hidden = true; checkPos = 0; strip.style.transform = "translate3d(0,0,0)"; }
+    else if (layout) { place(nota.phrases[0] - barBeats()); }
+  });
+  $("play").addEventListener("click", function () { if (busy) { return; } if (playing) { stop("stopped"); } else { settings.check = false; $("check").classList.add("off"); play(); } });
+  $("rewind").addEventListener("click", rewind);
+  $("results").addEventListener("click", showPanel);
+  function accVol(step) {
+    settings.accVol = Math.max(0, Math.min(3, Math.round((settings.accVol + step) * 4) / 4));
+    $("accLabel").textContent = Math.round(settings.accVol * 100) + "%";
+    applyMix();
+    log("backing volume " + Math.round(settings.accVol * 100) + "%");
+  }
+  $("accMinus").addEventListener("click", function () { accVol(-0.25); });
+  $("accPlus").addEventListener("click", function () { accVol(0.25); });
+  $("offMinus").addEventListener("click", function () { settings.offsetMs -= 10; $("offsetLabel").textContent = settings.offsetMs + " ms"; });
+  $("offPlus").addEventListener("click", function () { settings.offsetMs += 10; $("offsetLabel").textContent = settings.offsetMs + " ms"; });
+  $("song").addEventListener("change", function (e) { loadSong(e.target.value); });
+  $("preset").addEventListener("change", function (e) { switchPreset(e.target.value); });
+  $("take").addEventListener("change", function (e) { stop("take changed"); selectTake(e.target.value); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { stop("page hidden"); } });
+
+  fetch("manifest.json").then(function (r) { return r.json(); }).then(function (m) {
+    manifest = m;
+    m.songs.forEach(function (s) {
+      var o = document.createElement("option"); o.value = s.id; o.textContent = s.title + (Object.keys(s.takes || {}).length ? "" : " (staff only)");
+      $("song").appendChild(o);
+    });
+    raf = requestAnimationFrame(frame);
+    loadSong(m.songs[0].id);
+  }).catch(function (e) { status("Error: " + e.message); });
+
+  window.__probe = { get layout() { return layout; }, get song() { return song; }, get un() { return un; }, log: logLines };
+})();
+</script>
+</body>
+</html>

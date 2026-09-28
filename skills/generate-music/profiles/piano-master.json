@@ -1,39 +1,45 @@
 {
   "name": "piano-master",
-  "description": "Vocal + soft accompaniment stems for a Piano-Master arrangement (architecture v0.15, section 10.5).",
-  "required": ["score_abc", "genre", "language", "key", "meter", "tempo_bpm"],
+  "description": "Vocal + accompaniment stems for a Piano-Master arrangement (architecture section 10.5). Requires one Vocal attack per sung syllable (syllables sidecar). Genre defaults name the backing instruments and how they play.",
+  "required": ["score_abc", "syllables", "genre", "language", "key", "meter", "tempo_bpm"],
   "force": {"stems": true},
-  "style_template": "{language}, {vocal_style}, {accompaniment_style}, {accompaniment_suffix}, {tempo_bpm} BPM",
-  "accompaniment_suffix": "soft, sparse, background, no lead melody",
+  "style_template": "{language}, {genre_style}, {vocal_style}, {accompaniment_style}, {tempo_bpm} BPM",
   "checks": ["abc_matches_header", "abc_sections_match_lyrics"],
   "genres": {
     "Hymns": {
-      "vocal": "warm solo voice or small choir, gentle, reverent, smooth phrasing",
-      "accompaniment": "soft organ and strings"
-    },
-    "Folk": {
-      "vocal": "clear, natural acoustic folk singer",
-      "accompaniment": "acoustic guitar and light bass"
-    },
-    "Nursery and kids' songs": {
-      "vocal": "bright, friendly voice with very clear words",
-      "accompaniment": "light acoustic band, soft percussion"
-    },
-    "Classical": {
-      "vocal": "light classical or choral tone",
-      "accompaniment": "soft strings"
+      "style": "traditional hymn",
+      "vocal": "warm clear solo voice",
+      "accompaniment": "soft pipe organ and warm string ensemble playing steady sustained chords, gentle, reverent"
     },
     "Holiday": {
-      "vocal": "warm and festive voice, choir optional",
-      "accompaniment": "bells, strings, light percussion"
+      "style": "traditional holiday carol",
+      "vocal": "warm clear solo voice",
+      "accompaniment": "warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady"
+    },
+    "Folk": {
+      "style": "gentle folk song",
+      "vocal": "clear natural solo folk singer",
+      "accompaniment": "fingerpicked acoustic guitar, soft upright bass, light brushed percussion, steady"
+    },
+    "Nursery and kids' songs": {
+      "style": "children's song",
+      "vocal": "bright friendly solo voice with very clear words",
+      "accompaniment": "strummed acoustic guitar, soft glockenspiel, light hand percussion, steady"
+    },
+    "Classical": {
+      "style": "light classical art song",
+      "vocal": "light clear classical solo voice",
+      "accompaniment": "soft string quartet playing sustained chords, gentle, steady"
     },
     "Movie/TV, Pop": {
-      "vocal": "clean, light, upbeat modern voice",
-      "accompaniment": "light drums, bass, and pad"
+      "style": "light pop song",
+      "vocal": "clean light solo voice",
+      "accompaniment": "light brushed drums, warm bass guitar, soft synth pad chords, steady"
     },
     "Lesson pieces": {
-      "vocal": "bright, friendly voice with very clear words",
-      "accompaniment": "light acoustic guitar and soft strings"
+      "style": "simple lesson song",
+      "vocal": "bright friendly solo voice with very clear words",
+      "accompaniment": "strummed acoustic guitar and soft string pad playing steady chords"
     }
   }
 }
