@@ -1,0 +1,6 @@
+{
+  "description": "A perfect run at the 50% preset: the tempo factor 0.78 caps it at 3 stars (enough to pass, per §7.5).",
+  "piece": "twinkle-twinkle", "preset": "50", "hands": "both",
+  "passes": [{}],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "accuracyStars": 3, "timingStars": 3, "aids": ["tempo"] }
+}

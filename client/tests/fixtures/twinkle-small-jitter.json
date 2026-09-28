@@ -1,0 +1,6 @@
+{
+  "description": "Human-sized unevenness (up to 100 ms either way) is all on time at Prep levels: still 5 and 5.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "jitterMs": 100, "seed": 7 }],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "accuracyStars": 5, "timingStars": 5 }
+}

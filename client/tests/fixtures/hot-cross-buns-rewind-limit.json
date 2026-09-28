@@ -1,0 +1,7 @@
+{
+  "description": "The same two misses every time: three rewinds of the first phrase, then the music keeps going (§3 limit). 15/17 x 0.85 = 75%: 3 stars, tricky spot bars 1-2.",
+  "piece": "hot-cross-buns", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4, 5] }, { "skipBeats": [4, 5] }, { "skipBeats": [4, 5] }, { "skipBeats": [4, 5] }],
+  "expect": { "rewinds": [{ "phrase": 0 }, { "phrase": 0 }, { "phrase": 0 }], "completed": true, "matched": 15,
+              "accuracyStars": 3, "tricky": { "phrase": 0, "bars": [1, 2] } }
+}

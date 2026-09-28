@@ -1,6 +1,8 @@
-"""End-to-end check of the built client in headless Chromium at iPad A16 landscape size.
+"""End-to-end check of the built client and the App API in headless Chromium at iPad A16 size.
 
-    tools/.venv/bin/python tools/check_app.py            # serves client/dist on a local port
+    tools/.venv/bin/python tools/check_app.py            # serves client/dist and the API locally
+
+The API runs in-process with a temporary database, and serves client/dist at / like Caddy does.
 
 Web MIDI is replaced by a scripted keyboard here, in the test only (arch §11.4: "real screens
 with scripted playing"); the app itself only ever reads a real piano through Web MIDI.
@@ -8,12 +10,16 @@ Screenshots go to tests-output/.
 """
 from __future__ import annotations
 
-import functools
-import http.server
 import json
+import os
+import socket
 import sys
+import tempfile
 import threading
+import time
 from pathlib import Path
+
+import uvicorn
 
 from playwright.sync_api import sync_playwright
 
@@ -67,11 +73,20 @@ AUTOPLAY = """
 
 
 def serve():
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(DIST))
-    handler.log_message = lambda *a: None
-    httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
-    threading.Thread(target=httpd.serve_forever, daemon=True).start()
-    return httpd, f"http://127.0.0.1:{httpd.server_address[1]}/"
+    """The App API plus the built client at /, on a free local port, with a throwaway database."""
+    os.environ["PIANO_DB"] = str(Path(tempfile.mkdtemp()) / "piano.db")
+    sys.path.insert(0, str(ROOT / "api"))
+    from starlette.staticfiles import StaticFiles
+    from app.main import app
+    app.mount("/", StaticFiles(directory=str(DIST), html=True), name="client")
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning"))
+    threading.Thread(target=server.run, daemon=True).start()
+    while not server.started:
+        time.sleep(0.05)
+    return server, f"http://127.0.0.1:{port}/"
 
 
 def main():
@@ -79,7 +94,7 @@ def main():
         print("build first: (cd client && npm run build)", file=sys.stderr)
         return 1
     OUT.mkdir(exist_ok=True)
-    httpd, url = serve()
+    server, url = serve()
     failures, report = [], {}
 
     def open_piece(page, pid):
@@ -146,6 +161,14 @@ def main():
         page.wait_for_timeout(300)
         page.screenshot(path=str(OUT / "twinkle-result.png"))
         check(page.locator(".result").count() == 1, "twinkle clean run: result card shown")
+        check(page.locator('.result [aria-label="Notes: 5 of 5 stars"]').count() == 1 and
+              page.locator('.result [aria-label="Timing: 5 of 5 stars"]').count() == 1, "twinkle clean run: 5 stars for notes and timing")
+        page.wait_for_function("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json()).then(j => j.attempts.length > 0)", timeout=15000)
+        stored = page.evaluate("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json())")["attempts"]
+        check(len(stored) == 1 and stored[0]["completed"] and stored[0]["accuracyStars"] == 5 and stored[0]["tempoPreset"] == "100",
+              f"twinkle clean run: attempt stored by the API ({[(a['completed'], a['accuracyStars']) for a in stored]})")
+        full = page.evaluate(f"fetch('api/attempts/{stored[0]['id']}').then(r => r.json())") if stored else {}
+        check(len([e for e in full.get("rawEvents", []) if e["type"] == "on"]) == 42, "twinkle clean run: all 42 key presses stored as raw events")
 
         # 4. Hot Cross Buns with two missed notes in phrase 1: one rewind, then a clean pass
         open_piece(page, "hot-cross-buns")
@@ -158,6 +181,29 @@ def main():
         r = page.evaluate(AUTOPLAY, [[], 0, 40])
         res = r["debug"]["matcher"]
         check(r["state"] == "finished" and res["hits"] == res["expected"], f"hot cross buns: clean second pass counts ({res})")
+        page.wait_for_selector(".result")
+        page.screenshot(path=str(OUT / "hcb-result.png"))
+        check(page.locator('.result [aria-label="Notes: 4.5 of 5 stars"]').count() == 1, "hot cross buns: one rewind caps notes at 4.5 stars")
+        check(page.get_by_text("Practice mode: 1 rewind").count() == 1, "hot cross buns: practice-mode chip lists the rewind")
+        page.get_by_role("button", name="Practice tricky part").click()
+        page.wait_for_function("__pm.player.mode === 'loop' && __pm.player.preset === '90'")
+        check(page.get_by_text("Bars 1–2").count() > 0, "tricky part: loops bars 1-2 at the next slower preset (90%)")
+        r = page.evaluate(AUTOPLAY, [[], 1, 30])
+        page.wait_for_selector(".loopnote")
+        page.screenshot(path=str(OUT / "hcb-loop.png"))
+        check("6 of 6 notes" in page.locator(".loopnote").inner_text(), f"tricky part: a clean loop pass shows its result ({page.locator('.loopnote').inner_text()})")
+        page.wait_for_function("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
+        loops = [a for a in page.evaluate("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json())")["attempts"] if a["mode"] == "loop"]
+        check(len(loops) == 1 and loops[0]["accuracyStars"] == 3.5 and loops[0]["tempoPreset"] == "90",
+              f"tricky part: loop pass stored as a section attempt (0.9 x 0.92 = 83%, 3.5 stars: {[(a['accuracyStars'], a['tempoPreset']) for a in loops]})")
+        page.get_by_role("button", name="Pause").click()
+
+        # 4b. Echo Song, right hand only: the left hand's notes are shown faintly
+        open_piece(page, "echo-song")
+        page.get_by_role("button", name="Both hands").click()
+        faint = page.evaluate("__pm.tl.notes.filter(n => __pm.layout.noteEls[n.id].classList.contains('pm-other')).map(n => n.hand)")
+        check(len(faint) == 13 and set(faint) == {"L"}, f"echo song: right hand only dims the 13 left-hand notes ({len(faint)})")
+        page.screenshot(path=str(OUT / "echo-right-hand.png"))
 
         # 5. Mary with nothing played: a lost-place rewind at the next bar line
         open_piece(page, "mary-had-a-little-lamb")
@@ -186,7 +232,7 @@ def main():
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
         browser.close()
-    httpd.shutdown()
+    server.should_exit = True
     (OUT / "report.json").write_text(json.dumps(report, indent=1))
     print(f"\n{len(failures)} failed" if failures else "\nall passed")
     return 1 if failures else 0

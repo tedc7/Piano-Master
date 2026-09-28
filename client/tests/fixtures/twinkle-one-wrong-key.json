@@ -1,0 +1,7 @@
+{
+  "description": "One wrong key instead of the right one (A# for A at beat 4). Under the first-version rewind rule a substitution counts twice (a missed note plus a wrong note), so the phrase is replayed once, cleanly. Open question for M1 tuning: should a substitution count once?",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4], "wrong": [{ "beat": 4, "pitch": 70 }] }, {}],
+  "expect": { "rewinds": [{ "reason": "errors", "phrase": 0, "targetBeat": 0 }], "completed": true, "matched": 42, "extra": 0,
+              "accuracyStars": 4.5, "timingStars": 4.5, "aids": ["rewinds"] }
+}

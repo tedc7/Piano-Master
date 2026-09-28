@@ -1,0 +1,6 @@
+{
+  "description": "Every note 200 ms early: all matched, none on time. Notes 5 stars; timing 50% (1.5 stars), 'rushing'.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "offsetMs": -200 }],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "accuracyStars": 5, "timingStars": 1.5, "tendency": "early" }
+}

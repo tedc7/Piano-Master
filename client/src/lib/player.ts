@@ -1,16 +1,21 @@
 // The Play screen's engine (arch §3 "Play and smooth rewind"): one song clock drives the staff,
 // lyrics, audio and note matching, so they can't drift apart. Framework-free: the screen calls
 // frame() from requestAnimationFrame and draws what it returns.
+//
+// Modes: Play (the whole piece, with smooth automatic rewind), Loop (one section, over and over;
+// "Practice tricky part" uses it) and Listen (the app plays it; no scoring).
+import { Attempt, type AttemptResult, type RawEvent } from "./attempt";
 import type { AudioEngine, StemBuffers } from "./audio";
-import { Matcher, type Expected, type Verdict } from "./matcher";
+import type { Verdict } from "./matcher";
 import type { MidiNote, MidiPedal } from "./midi";
-import { RewindPolicy, type RewindPlan } from "./rewind";
+import type { RewindPlan } from "./rewind";
 import type { Settings } from "./settings";
 import { gridBeat, phraseIndexAt, type Timeline, type TimelineNote } from "./timeline";
 import type { Piece, Preset } from "./types";
 
-export type Mode = "play" | "listen";
+export type Mode = "play" | "loop" | "listen";
 export type State = "idle" | "loading" | "gliding" | "countin" | "playing" | "paused" | "finished";
+export type Hands = "both" | "R" | "L";
 
 export const GLIDE_MS = 700;       // the staff glides back over 0.6-0.8 s
 export const FADE_S = 0.2;         // vocals and backing fade out over about 0.2 s
@@ -21,27 +26,30 @@ const PULSE_LEVEL = 0.3;           // the soft pulse that keeps the beat through
 
 interface Clock { t0: number; beat0: number; spb: number }
 
-export interface AttemptResult {
-  expected: number;
-  hits: number;
-  onTime: number;
-  missed: number;
-  wrong: number;
-  rewinds: number;
-  tricky: { phrase: number; bars: [number, number] } | null;
-  seconds: number;
+/** A finished (or stopped) attempt, ready to store (arch §5 Attempt). */
+export interface AttemptRecord extends AttemptResult {
+  id: string;
+  pieceId: string;
+  mode: "play" | "loop";
+  section: { fromBeat: number; toBeat: number } | null;
+  startedAt: string;
+  durationSec: number;
+  latencyOffsetMs: number;
+  displayOffsetMs: number;
+  rawEvents: RawEvent[];
+  passes: { from: number; t: number }[];
 }
-
-export interface RawEvent { t: number; type: "on" | "off" | "pedal"; pitch?: number; velocity?: number; value?: number; beat: number | null }
 
 export interface PlayerHooks {
   state(s: State): void;
-  verdict(v: Verdict, pitch: number): void;     // a key press judged in Play mode
+  verdict(v: Verdict, pitch: number): void;     // a key press judged in Play or Loop mode
   keyUp(pitch: number): void;
   keyDown(pitch: number): void;                  // a key press not judged (not playing, count-in, Listen)
   missed(noteIds: number[]): void;
   pass(fromBeat: number, targetPhrase: number | null): void;   // a new pass: reset colours from here
-  finished(r: AttemptResult): void;
+  finished(r: AttemptRecord): void;             // the whole piece, in Play mode
+  loopPass(r: AttemptRecord): void;             // one time round a section loop
+  save(r: AttemptRecord): void;                 // every attempt with notes played, finished or not
   loading(fraction: number): void;
   error(message: string): void;
 }
@@ -55,23 +63,20 @@ export interface Frame {
 export class Player {
   mode: Mode = "play";
   preset: Preset;
+  hands: Hands = "both";
+  loopPhrases: [number, number] = [0, 0];
   state: State = "idle";
-  rawEvents: RawEvent[] = [];
+  private attempt: Attempt;
   private clock: Clock | null = null;
   private glide: { t0: number; from: number; to: number; target: number } | null = null;
   private displayBeat: number;
   private logicBeat: number;
   private passStart = 0;
   private stems: StemBuffers | null = null;
-  private matcher!: Matcher;
-  private policy!: RewindPolicy;
-  private expected: Expected[];
   private nextClick = 0;
   private pulseAt: number | null = null;      // context time of the next beat on the running grid
   private pulseSpb = 0.6;
   private toneCursor = 0;
-  private attemptStart = 0;
-  private totalRewinds = 0;
   private wake: WakeLockSentinel | null = null;
 
   constructor(
@@ -83,27 +88,55 @@ export class Player {
     preset: Preset,
   ) {
     this.preset = preset;
-    this.expected = tl.notes.filter((n) => !n.tieContinuation)
-      .map((n) => ({ id: n.id, pitch: n.pitch, beat: n.beat, phrase: n.phrase }));
-    this.displayBeat = this.logicBeat = -tl.barLength;
-    this.newAttempt();
+    this.attempt = this.newAttempt();
+    this.displayBeat = this.logicBeat = this.start - tl.barLength;
   }
 
   get tempo(): number { return this.piece.media?.bpm ?? this.piece.notation.header.tempo; }
   get spb(): number { return 60 / (this.tempo * Number(this.preset) / 100); }
   get hasStems(): boolean { return !!this.piece.media?.presets[this.preset]; }
   get running(): boolean { return this.state === "countin" || this.state === "playing" || this.state === "gliding"; }
+  get scoring(): boolean { return this.mode !== "listen"; }
+  /** Where play starts and ends: the whole piece, or the loop's section. */
+  get start(): number { return this.mode === "loop" ? this.tl.phrases[this.loopPhrases[0]].start : 0; }
+  get end(): number { return this.mode === "loop" ? this.tl.phrases[this.loopPhrases[1]].end : this.tl.length; }
 
   private setState(s: State): void {
     this.state = s;
     this.hooks.state(s);
   }
 
-  private newAttempt(): void {
-    this.matcher = new Matcher(this.expected, (b) => phraseIndexAt(this.tl.phrases, b));
-    this.policy = new RewindPolicy(this.tl, this.matcher);
-    this.rawEvents = [];
-    this.totalRewinds = 0;
+  private newAttempt(): Attempt {
+    const loop = this.mode === "loop";
+    return new Attempt(this.tl, {
+      hands: this.hands,
+      handsWritten: this.piece.hands,
+      section: loop ? { start: this.start, end: this.end } : null,
+      level: this.piece.level,
+      preset: this.preset,
+    });
+  }
+
+  /** Store the attempt if anything was played; `completed` = played to the end. */
+  private closeAttempt(completed: boolean): AttemptRecord | null {
+    const a = this.attempt;
+    if (!this.scoring || !a.passes.length || !a.played) return null;
+    const s = this.settings();
+    const rec: AttemptRecord = {
+      ...a.result(completed),
+      id: a.id,
+      pieceId: this.piece.id,
+      mode: this.mode === "loop" ? "loop" : "play",
+      section: this.mode === "loop" ? { fromBeat: this.start, toBeat: this.end } : null,
+      startedAt: a.startedAt.toISOString(),
+      durationSec: Math.round((Date.now() - a.startedAt.getTime()) / 100) / 10,
+      latencyOffsetMs: s.latencyOffsetMs,
+      displayOffsetMs: s.displayOffsetMs,
+      rawEvents: a.rawEvents,
+      passes: a.passes,
+    };
+    this.hooks.save(rec);
+    return rec;
   }
 
   // ------------------------------------------------------------------ controls
@@ -114,10 +147,9 @@ export class Player {
     if (this.state === "finished") return this.restart();
     if (this.running || this.state === "loading") return;
     if (!(await this.ensureReady())) return;
-    this.newAttempt();
-    this.attemptStart = performance.now();
-    this.hooks.pass(-Infinity, 0);
-    this.startAt(0);
+    this.attempt = this.newAttempt();
+    this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, this.start));
+    this.startAt(this.start);
   }
 
   pause(): void {
@@ -134,22 +166,25 @@ export class Player {
   async restart(): Promise<void> {
     if (this.state === "loading") return;
     if (this.state === "idle") return this.play();
+    if (this.state !== "finished") this.closeAttempt(false);
     const from = this.displayBeat;
     this.audio.stopStems(FADE_S);
     this.clock = null;
     if (!(await this.ensureReady())) return;
-    this.newAttempt();
-    this.attemptStart = performance.now();
-    this.hooks.pass(-Infinity, 0);
-    this.beginGlide(from, 0);
+    this.attempt = this.newAttempt();
+    this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, this.start));
+    this.beginGlide(from, this.start);
   }
 
+  /** Stop and go back to the start position; an attempt under way is saved as not completed. */
   stop(): void {
+    if (this.state !== "finished" && this.state !== "idle") this.closeAttempt(false);
     this.audio.stopStems(0.08);
     this.clock = null;
     this.glide = null;
     this.pulseAt = null;
-    this.displayBeat = this.logicBeat = -this.tl.barLength;
+    this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
+    this.attempt = this.newAttempt();
     this.setState("idle");
     this.releaseWake();
   }
@@ -173,7 +208,44 @@ export class Player {
     if (m === this.mode) return;
     this.stop();
     this.mode = m;
-    this.newAttempt();
+    this.reposition();
+  }
+
+  setHands(h: Hands): void {
+    if (h === this.hands) return;
+    this.stop();
+    this.hands = h;
+    this.reposition();
+  }
+
+  /** Choose the loop's section (phrase indices, inclusive). */
+  setLoop(first: number, last: number): void {
+    const n = this.tl.phrases.length;
+    const a = Math.max(0, Math.min(n - 1, first));
+    const b = Math.max(a, Math.min(n - 1, last));
+    this.stop();
+    this.loopPhrases = [a, b];
+    this.reposition();
+  }
+
+  /** "Practice tricky part": loop that phrase at the next slower preset (arch §3). */
+  async practiceTricky(phrase: number): Promise<Preset> {
+    this.stop();
+    this.mode = "loop";
+    this.loopPhrases = [phrase, phrase];
+    const slower: Record<Preset, Preset> = { "100": "90", "90": "75", "75": "50", "50": "50" };
+    if (slower[this.preset] !== this.preset) {
+      this.preset = slower[this.preset];
+      this.stems = null;
+    }
+    this.reposition();
+    void this.play();
+    return this.preset;
+  }
+
+  private reposition(): void {
+    this.attempt = this.newAttempt();
+    this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
     this.hooks.pass(-Infinity, null);
   }
 
@@ -208,8 +280,9 @@ export class Player {
   }
 
   private phraseStartFor(beat: number): number {
-    if (beat < 0) return 0;
-    return this.tl.phrases[phraseIndexAt(this.tl.phrases, Math.max(beat, this.passStart))].start;
+    if (beat < this.start) return this.start;
+    const p = this.tl.phrases[phraseIndexAt(this.tl.phrases, Math.max(beat, this.passStart))];
+    return Math.max(p.start, this.start);
   }
 
   private async resumeAt(target: number): Promise<void> {
@@ -242,8 +315,8 @@ export class Player {
       const offset = (beat + this.piece.media.padBeats) * spb;
       this.audio.startStems(this.stems, offset, t0 + bar * spb, PREROLL_S);
     }
-    this.matcher.resetFrom(beat);
-    this.policy.beginPass(beat);
+    this.attempt.usedPreset(this.preset);    // an attempt counts at the slowest preset it used
+    this.attempt.beginPass(beat, performance.now());
     this.nextClick = gridBeat(this.tl, this.piece.notation.header.pickupBeats, beat - bar);
     this.toneCursor = this.tl.notes.findIndex((n) => n.beat >= beat - 1e-6);
     if (this.toneCursor < 0) this.toneCursor = this.tl.notes.length;
@@ -282,18 +355,18 @@ export class Player {
       if (this.state === "countin" && this.logicBeat >= this.passStart - 1e-6) this.setState("playing");
       this.scheduleClicks();
       if (this.mode === "listen") this.scheduleTones();
-      if (this.mode === "play" && this.state === "playing") {
-        const missed = this.matcher.advance(this.logicBeat, this.clock.spb);
+      if (this.scoring && this.state === "playing") {
+        const { missed, plan } = this.attempt.tick(this.logicBeat, this.clock.spb, s.autoRewind);
         if (missed.length) this.hooks.missed(missed);
-        if (s.autoRewind) {
-          const plan = this.policy.update(this.logicBeat);
-          if (plan) this.rewind(plan);
-        }
+        if (plan) this.rewind(plan);
       }
-      if (this.clock && this.logicBeat >= this.tl.length + 0.25) this.finish();
-      const u = this.tl.beatUnit;
-      const ciStart = this.passStart - this.tl.barLength;
+      if (this.clock) {
+        if (this.mode === "loop" && this.logicBeat >= this.end + 0.1) this.loopAround();
+        else if (this.mode !== "loop" && this.logicBeat >= this.end + 0.25) this.finish();
+      }
       if (this.clock && this.displayBeat < this.passStart) {
+        const u = this.tl.beatUnit;
+        const ciStart = this.passStart - this.tl.barLength;
         countIn = { total: Math.round(this.tl.barLength / u), current: Math.floor((this.displayBeat - ciStart) / u + 1e-6) };
       }
     }
@@ -301,10 +374,19 @@ export class Player {
   }
 
   private rewind(plan: RewindPlan): void {
-    this.totalRewinds++;
     this.audio.stopStems(FADE_S);
     this.hooks.pass(plan.targetBeat, plan.targetPhrase);
     this.beginGlide(this.displayBeat, plan.targetBeat);
+  }
+
+  /** One time round the loop: score it as its own (section) attempt, then go again. */
+  private loopAround(): void {
+    const rec = this.closeAttempt(true);
+    if (rec) this.hooks.loopPass(rec);
+    this.attempt = this.newAttempt();
+    this.audio.stopStems(FADE_S);
+    this.hooks.pass(this.start, this.loopPhrases[0]);
+    this.beginGlide(this.displayBeat, this.start);
   }
 
   private finish(): void {
@@ -313,18 +395,8 @@ export class Player {
     this.pulseAt = null;
     this.setState("finished");
     this.releaseWake();
-    if (this.mode !== "play") return;
-    const sum = this.matcher.summary();
-    const tp = this.policy.trickiest();
-    let tricky: AttemptResult["tricky"] = null;
-    if (tp !== null) {
-      const ph = this.tl.phrases[tp];
-      const inside = this.tl.entries.filter((e) => e.start >= ph.start - 1e-6 && e.start < ph.end - 1e-6);
-      const first = inside[0] ?? this.tl.entries[0];
-      const last = inside[inside.length - 1] ?? first;
-      tricky = { phrase: tp, bars: [first.m.number, last.m.number] };
-    }
-    this.hooks.finished({ ...sum, rewinds: this.totalRewinds, tricky, seconds: (performance.now() - this.attemptStart) / 1000 });
+    const rec = this.closeAttempt(true);
+    if (rec && this.mode === "play") this.hooks.finished(rec);
   }
 
   // ------------------------------------------------------------------ sound scheduling
@@ -386,27 +458,26 @@ export class Player {
 
   onMidi(ev: MidiNote | MidiPedal): void {
     if (ev.type === "pedal") {
-      this.rawEvents.push({ t: ev.timeMs, type: "pedal", value: ev.value, beat: null });
+      this.attempt.record({ t: ev.timeMs, type: "pedal", value: ev.value, beat: null });
       return;
     }
     let beat: number | null = null;
     if (this.clock && this.audio.ctx) {
       beat = this.beatAt(this.audio.outputTimeAt(ev.timeMs) - this.settings().latencyOffsetMs / 1000);
     }
-    this.rawEvents.push({ t: ev.timeMs, type: ev.type, pitch: ev.pitch, velocity: ev.velocity, beat });
+    this.attempt.record({ t: ev.timeMs, type: ev.type, pitch: ev.pitch, velocity: ev.velocity, beat });
     if (ev.type === "off") {
-        this.matcher.noteOff(ev.pitch, ev.timeMs);
+      this.attempt.noteOff(ev.pitch, ev.timeMs);
       this.hooks.keyUp(ev.pitch);
       return;
     }
-    const judged = this.mode === "play" && beat !== null && (this.state === "countin" || this.state === "playing") &&
-      beat >= this.passStart - this.matcher.windows.matchMs / 1000 / this.spb;     // notes during the count-in are ignored
+    const judged = this.scoring && beat !== null && (this.state === "countin" || this.state === "playing") &&
+      beat >= this.passStart - this.attempt.matcher.windows.matchMs / 1000 / this.spb;   // count-in notes are ignored
     if (!judged) {
       this.hooks.keyDown(ev.pitch);
       return;
     }
-    this.policy.played(beat!);
-    const v = this.matcher.noteOn(ev.pitch, beat!, ev.velocity, this.spb, ev.timeMs);
+    const v = this.attempt.noteOn(ev.pitch, beat!, ev.velocity, this.spb, ev.timeMs);
     if (v.kind === "ignored") this.hooks.keyDown(ev.pitch);
     else this.hooks.verdict(v, ev.pitch);
   }
@@ -428,11 +499,12 @@ export class Player {
 
   /** The next notes to play at or after `beat`, skipping ones already played (for the keyboard). */
   nextTargets(beat: number): TimelineNote[] {
-    const notes = this.tl.notes;
-    const open = (n: TimelineNote) => !n.tieContinuation && !this.matcher.hits.has(n.id);
-    const first = notes.find((n) => n.beat >= beat - 1e-6 && open(n));
+    const m = this.attempt.matcher;
+    const expected = new Set(m.expected.map((e) => e.id));
+    const open = (n: TimelineNote) => expected.has(n.id) && !m.hits.has(n.id);
+    const first = this.tl.notes.find((n) => n.beat >= beat - 1e-6 && open(n));
     if (!first) return [];
-    return notes.filter((n) => Math.abs(n.beat - first.beat) < 1e-6 && open(n));
+    return this.tl.notes.filter((n) => Math.abs(n.beat - first.beat) < 1e-6 && open(n));
   }
 
   /** During a glide: the beat play resumes from. */
@@ -447,7 +519,12 @@ export class Player {
 
   /** For tests and the settings sheet. */
   debug() {
-    return { matcher: this.matcher.summary(), rewinds: [...this.policy.rewinds], passStart: this.passStart, state: this.state };
+    return {
+      matcher: this.attempt.matcher.summary(),
+      rewinds: [...this.attempt.policy.rewinds],
+      passStart: this.passStart,
+      state: this.state,
+    };
   }
 }
 

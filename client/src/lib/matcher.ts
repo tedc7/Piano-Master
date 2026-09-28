@@ -1,6 +1,6 @@
-// Simple play-along note matching (arch §7.1, §7.2): each played note matches the nearest
-// unmatched expected note of the same pitch within the match window. M2 builds the full
-// evaluator (accuracy, timing points, stars) on the results kept here.
+// Play-along note matching (arch §7.1, §7.2): each played note matches the nearest unmatched
+// expected note of the same pitch within the match window. scoring.ts turns the results kept
+// here into accuracy, timing and stars.
 //
 // Times: `beat` is the playback beat the note was played at, already corrected for latency;
 // `spb` is seconds per beat at the current tempo, so windows stay in milliseconds at any preset.
@@ -19,7 +19,7 @@ export interface Expected { id: number; pitch: number; beat: number; phrase: num
 export type Verdict =
   | { kind: "hit"; noteId: number; deltaMs: number; onTime: boolean }
   | { kind: "wrong"; pitch: number; beat: number }
-  | { kind: "ignored"; reason: "brush" | "restrike" };
+  | { kind: "ignored"; reason: "brush" | "restrike" | "otherHand" | "outside" };
 
 interface Hit { deltaMs: number; beat: number }
 interface Wrong { pitch: number; beat: number; phrase: number; timeMs: number; retracted: boolean }

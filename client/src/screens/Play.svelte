@@ -1,10 +1,13 @@
 <script lang="ts">
   // The Play screen (arch §3): status strip (display only), moving staff with the play line and
-  // lyrics, control strip, on-screen keyboard. Play mode needs the MIDI piano; Listen doesn't.
+  // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
   import { onMount, tick } from "svelte";
+  import Stars from "../components/Stars.svelte";
+  import { api } from "../lib/api";
   import { app, pianoLabel } from "../lib/app.svelte.js";
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
-  import { Player, type AttemptResult, type Mode, type State } from "../lib/player";
+  import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
+  import { STAR_MEANING } from "../lib/scoring";
   import { toggleIn } from "../lib/settings";
   import { LYRIC_FILL, renderStaff, xAt, type StaffLayout } from "../lib/staff";
   import { buildTimeline, type Timeline } from "../lib/timeline";
@@ -21,7 +24,12 @@
   let mode = $state<Mode>("play");
   let preset = $state<Preset>("100");
   let loadingFrac = $state(0);
-  let result = $state<AttemptResult | null>(null);
+  let result = $state<AttemptRecord | null>(null);
+  let loopNote = $state<{ text: string; stars: number } | null>(null);
+  let hands = $state<Hands>("both");
+  let loopPhrases = $state<[number, number]>([0, 0]);
+  let phraseCount = $state(1);
+  let pending = $state(api.pending);
   let sheet = $state(false);
   let countIn = $state<{ total: number; current: number } | null>(null);
   let wrongText = $state("");
@@ -33,7 +41,7 @@
   let kbHost: HTMLDivElement;
   let progressEl: HTMLDivElement;
 
-  let tl: Timeline;
+  let tl!: Timeline;
   let layout: StaffLayout | null = null;
   let player: Player | null = null;
   let kb: KeyboardView | null = null;
@@ -42,13 +50,15 @@
   let wrongTimer = 0;
   let lastStageH = 0;
   let recentKey = 0;
+  let loopTimer = 0;
 
   const hasMedia = $derived(!!piece?.media);
   const vocalsOn = $derived(piece ? !app.settings.vocalsOff.includes(piece.id) : true);
   // songs with singing default to no click during play; the count-in always clicks
   const clickOn = $derived(piece ? app.settings.click[piece.id] ?? !piece.media : true);
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
-  const needPiano = $derived(mode === "play" && app.midiStatus !== "connected");
+  const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
+  const loopBars = $derived(tl && piece ? barsOf(loopPhrases[0], loopPhrases[1]) : "");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
 
   onMount(() => {
@@ -57,6 +67,7 @@
     const frames: number[] = [];
     let alive = true;
     const offMidi = app.midi.onEvent(onMidi);
+    const offApi = api.onChange(() => { pending = api.pending; });
     const onVis = () => { if (document.hidden) player?.pause(); };
     const onResize = () => { if (!player?.running && stageEl && Math.abs(stageEl.clientHeight - lastStageH) > 20) drawStaff(); };
     document.addEventListener("visibilitychange", onVis);
@@ -73,6 +84,7 @@
       }
       const p = piece!;
       tl = buildTimeline(p.notation);
+      phraseCount = tl.phrases.length;
       const saved = app.settings.presets[p.id];
       preset = saved && (!p.media || p.media.presets[saved]) ? saved : "100";
       applyMix();
@@ -111,8 +123,15 @@
           result = null;
         },
         finished: (r) => { result = r; },
+        loopPass: (r) => {
+          const e = r.evaluation;
+          loopNote = { text: `${e.matched} of ${e.expected} notes`, stars: e.accuracyStars };
+          clearTimeout(loopTimer);
+          loopTimer = window.setTimeout(() => { loopNote = null; }, 3000);
+        },
+        save: (r) => api.saveAttempt({ ...r, contentVersion: piece?.contentVersion }),
         loading: (f) => { loadingFrac = f; },
-        error: (m) => { error = m; },
+        error: (m) => { error = m; api.log("error", "play screen: " + m, { piece: id }); },
       }, preset);
       void player.preload();
       (window as unknown as { __pm: unknown }).__pm = { player, tl, get layout() { return layout; } };
@@ -146,6 +165,8 @@
       alive = false;
       cancelAnimationFrame(raf);
       offMidi();
+      offApi();
+      clearTimeout(loopTimer);
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("resize", onResize);
       player?.stop();
@@ -164,7 +185,23 @@
     stats.measures = tl.entries.length;
     litLyric = null;
     if (layout.problems.length) console.warn("staff problems", layout.problems);
-    place(-tl.barLength);
+    place(player ? player.position.display : -tl.barLength);
+    markHands();
+  }
+
+  /** Practising one hand: the other hand's notes are shown faintly. */
+  function markHands(): void {
+    if (!layout) return;
+    for (const n of tl.notes) layout.noteEls[n.id]?.classList.toggle("pm-other", hands !== "both" && n.hand !== hands);
+  }
+
+  function barsOf(a: number, b: number): string {
+    const ph = tl.phrases;
+    const inside = tl.entries.filter((e) => e.start >= ph[a].start - 1e-6 && e.start < ph[b].end - 1e-6);
+    if (!inside.length) return "";
+    const x = inside[0].m.number, y = inside[inside.length - 1].m.number;
+    const verse = inside[0].verse > 1 ? ` (verse ${inside[0].verse})` : "";
+    return (x === y ? `Bar ${x}` : `Bars ${x}–${y}`) + verse;
   }
 
   function place(beat: number): void {
@@ -192,7 +229,7 @@
     if (mode === "listen" && player.running) {
       targets = tl.notes.filter((n) => n.beat <= beat && beat < n.beat + n.duration)
         .map((n) => ({ pitch: n.pitch, hand: n.hand, finger: n.finger }));
-    } else if (mode === "play" && uiState !== "finished") {
+    } else if (mode !== "listen" && uiState !== "finished") {
       // while gliding back, show the notes play resumes on, not the ones sliding past
       const from = player.resumeBeat ?? (uiState === "idle" || uiState === "paused" ? Math.max(0, beat) : logicBeat - 0.25);
       const next = player.nextTargets(from);
@@ -240,6 +277,28 @@
     mode = m;
     player?.setMode(m);
     result = null;
+    loopNote = null;
+  }
+  function setHands(): void {
+    const order: Hands[] = ["both", "R", "L"];
+    hands = order[(order.indexOf(hands) + 1) % 3];
+    player?.setHands(hands);
+    markHands();
+    result = null;
+  }
+  function moveLoop(by: number): void {
+    const n = tl.phrases.length;
+    const a = Math.max(0, Math.min(n - 1, loopPhrases[0] + by));
+    loopPhrases = [a, a];
+    player?.setLoop(a, a);
+  }
+  async function practiceTricky(): Promise<void> {
+    if (!player || !result?.tricky) return;
+    const phrase = result.tricky.phrase;
+    result = null;
+    mode = "loop";
+    loopPhrases = [phrase, phrase];
+    preset = await player.practiceTricky(phrase);
   }
   function setPreset(p: Preset): void {
     if (!piece || !player) return;
@@ -287,7 +346,8 @@
   <header class="status">
     <span class="title">{piece?.title ?? "…"}</span>
     <div class="progress"><div class="bar" bind:this={progressEl}></div></div>
-    <span>{mode === "play" ? "Play" : "Listen"} · {preset}%</span>
+    <span>{mode === "play" ? "Play" : mode === "loop" ? loopBars : "Listen"} · {preset}%{hands !== "both" ? (hands === "R" ? " · right hand" : " · left hand") : ""}</span>
+    {#if pending}<span class="muted">{pending} to send</span>{/if}
     <span class="muted"><span class="piano-dot" class:on={app.midiStatus === "connected"}></span>{pianoLabel(app.midiStatus, app.pianoName)}</span>
   </header>
 
@@ -310,14 +370,24 @@
     {:else if needPiano && !running && !result}
       <div class="message">Connect the piano to play along, or choose Listen.</div>
     {/if}
+    {#if loopNote}
+      <div class="loopnote">{loopNote.text} · {"★".repeat(Math.floor(loopNote.stars))}{loopNote.stars % 1 ? "½" : ""}</div>
+    {/if}
     {#if result}
+      {@const e = result.evaluation}
       <div class="result">
-        <h2>{result.missed + result.wrong === 0 ? "Beautiful!" : result.hits >= result.expected * 0.8 ? "Well played!" : "Nice work, keep going!"}</h2>
-        <p>Notes played: <b>{result.hits}</b> of {result.expected} · on time: <b>{result.onTime}</b></p>
-        <p>Wrong notes: {result.wrong} · rewinds: {result.rewinds}{result.tricky ? ` · tricky spot: bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}` : ""}</p>
-        <p class="muted">Stars and the practice tools come in M2.</p>
+        <h2>{e.accuracyStars >= 4.5 ? "Beautiful!" : e.accuracyStars >= 3 ? "Well played!" : "Nice work, keep going!"}</h2>
+        <Stars label="Notes" value={e.accuracyStars} />
+        <Stars label="Timing" value={e.timingStars} />
+        <p class="meaning">{STAR_MEANING[e.accuracyStars]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</p>
+        <p class="detail">{e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.conditions.rewinds ? ` · ${result.conditions.rewinds} rewind${result.conditions.rewinds > 1 ? "s" : ""}` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</p>
+        {#if e.aids.length}
+          <p class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</p>
+          <p class="hint">{e.hint}</p>
+        {/if}
         <div class="row">
-          <button onclick={startOver}>Play again</button>
+          {#if result.tricky}<button onclick={practiceTricky}>Practice tricky part</button>{/if}
+          <button class:quiet={!!result.tricky} onclick={startOver}>Play again</button>
           <button class="quiet" onclick={back}>Songs</button>
         </div>
       </div>
@@ -330,8 +400,19 @@
     <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">⟲</button>
     <div class="seg">
       <button class:sel={mode === "play"} onclick={() => setMode("play")}>Play</button>
+      <button class:sel={mode === "loop"} onclick={() => setMode("loop")}>Loop</button>
       <button class:sel={mode === "listen"} onclick={() => setMode("listen")}>Listen</button>
     </div>
+    {#if mode === "loop"}
+      <div class="seg">
+        <button onclick={() => moveLoop(-1)} disabled={loopPhrases[0] === 0} aria-label="Earlier section">‹</button>
+        <span class="loopbars">{loopBars}</span>
+        <button onclick={() => moveLoop(1)} disabled={loopPhrases[0] >= phraseCount - 1} aria-label="Later section">›</button>
+      </div>
+    {/if}
+    {#if piece?.hands === "RL"}
+      <button class="quiet hands" onclick={setHands}>{hands === "both" ? "Both hands" : hands === "R" ? "Right hand" : "Left hand"}</button>
+    {/if}
     <div class="seg">
       {#each PRESETS as p}
         <button class:sel={preset === p} onclick={() => setPreset(p)}>{p}%</button>
@@ -401,6 +482,16 @@
   }
   .result h2 { margin: 0 0 8px; }
   .result p { margin: 6px 0; }
+  .meaning { font-weight: 650; }
+  .detail { color: var(--muted); }
+  .chip { display: inline-block; background: #eef3fd; border: 1px solid #cfdcf6; border-radius: 999px; padding: 3px 12px; font-size: 15px; }
+  .hint { color: var(--muted); font-size: 15px; }
+  .loopnote {
+    position: absolute; right: 18px; bottom: 16px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 8px 14px; font-weight: 650; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); pointer-events: none;
+  }
+  .loopbars { background: #ecebe6; display: flex; align-items: center; padding: 0 12px; font-weight: 650; min-width: 110px; justify-content: center; }
+  .hands { min-width: 130px; }
   .muted { color: var(--muted); }
   .row { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
   .controls {

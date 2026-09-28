@@ -1,0 +1,6 @@
+{
+  "description": "Every note 200 ms late: timing 1.5 stars, 'dragging'.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "offsetMs": 200 }],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "accuracyStars": 5, "timingStars": 1.5, "tendency": "late" }
+}

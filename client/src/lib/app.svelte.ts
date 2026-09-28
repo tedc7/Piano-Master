@@ -1,4 +1,5 @@
 // App-wide state shared by the screens: settings, the audio engine and the MIDI input.
+import { api } from "./api";
 import { AudioEngine } from "./audio";
 import { MidiInput, type MidiStatus } from "./midi";
 import { loadSettings, saveSettings, type Settings } from "./settings";
@@ -20,6 +21,9 @@ class AppState {
   constructor() {
     this.midi = new MidiInput(() => this.settings.pianoName);
     this.midi.onChange(() => {
+      if (this.midi.status !== this.midiStatus || this.midi.inputName !== this.pianoName) {
+        api.log("info", `MIDI ${this.midi.status}`, { input: this.midi.inputName, inputs: this.midi.names });
+      }
       this.midiStatus = this.midi.status;
       this.pianoName = this.midi.inputName;
       this.midiNames = [...this.midi.names];

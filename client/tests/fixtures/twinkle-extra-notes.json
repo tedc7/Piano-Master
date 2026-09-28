@@ -1,0 +1,6 @@
+{
+  "description": "A clean run plus three stray keys, one in each of three phrases (not enough to rewind): 0.75 off 42 notes, still 5 stars.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "extra": [{ "beat": 2.5, "pitch": 50 }, { "beat": 10.5, "pitch": 50 }, { "beat": 18.5, "pitch": 50 }] }],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "extra": 3, "accuracyStars": 5, "timingStars": 5 }
+}

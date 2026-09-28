@@ -1,0 +1,7 @@
+{
+  "description": "Two notes missed in the first phrase: it rewinds once at the phrase end, then the replay counts (last pass per phrase).",
+  "piece": "hot-cross-buns", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4, 5] }, {}],
+  "expect": { "rewinds": [{ "reason": "errors", "phrase": 0, "targetBeat": 0 }], "completed": true, "matched": 17,
+              "accuracyStars": 4.5, "aids": ["rewinds"], "tricky": { "phrase": 0, "bars": [1, 2] } }
+}

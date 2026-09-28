@@ -27,6 +27,10 @@ export interface RewindPlan {
   atBeat: number;        // start the rewind when the song reaches this beat
 }
 
+/** The part of the piece being played: the whole piece, or a section loop. In a loop the
+ *  rewind never goes before the section start, and the loop itself handles the section end. */
+export interface PlayRange { start: number; end: number; loop: boolean }
+
 export class RewindPolicy {
   readonly rewinds: number[];
   private passStart = 0;
@@ -34,7 +38,8 @@ export class RewindPolicy {
   private checkedTo = -1;       // phrases up to this index have had their end-of-phrase check
   private pending: RewindPlan | null = null;
 
-  constructor(private tl: Timeline, private matcher: Matcher, readonly rules: RewindRules = REWIND_RULES) {
+  constructor(private tl: Timeline, private matcher: Matcher, readonly rules: RewindRules = REWIND_RULES,
+              private range: PlayRange = { start: 0, end: tl.length, loop: false }) {
     this.rewinds = tl.phrases.map(() => 0);
   }
 
@@ -79,6 +84,7 @@ export class RewindPolicy {
     while (this.checkedTo + 1 < ph.length && ph[this.checkedTo + 1].end <= beat + 1e-6) {
       const p = ++this.checkedTo;
       if (ph[p].end <= this.passStart + 1e-6) continue;
+      if (this.range.loop && ph[p].end >= this.range.end - 1e-6) continue;   // the loop goes back anyway
       if (this.rewinds[p] >= this.rules.maxPerPhrase) continue;
       const err = this.matcher.phraseErrors(p);
       if (err.count >= this.threshold(p)) return this.plan("errors", p, err.firstBeat, ph[p].end);
@@ -101,8 +107,11 @@ export class RewindPolicy {
   private plan(reason: RewindPlan["reason"], phrase: number, firstError: number | null, atBeat: number): RewindPlan {
     const ph = this.tl.phrases;
     let target = phrase;
-    // first error on the phrase's first beat: go back one more phrase for a run-up
-    if (firstError !== null && target > 0 && firstError < ph[target].start + this.tl.beatUnit - 1e-6) target--;
-    return { reason, phrase, targetPhrase: target, targetBeat: ph[target].start, atBeat };
+    // first error on the phrase's first beat: go back one more phrase for a run-up, but never
+    // before the start of a section loop
+    if (firstError !== null && target > 0 && firstError < ph[target].start + this.tl.beatUnit - 1e-6 &&
+        ph[target - 1].start >= this.range.start - 1e-6) target--;
+    const targetBeat = Math.max(ph[target].start, this.range.start);
+    return { reason, phrase, targetPhrase: target, targetBeat, atBeat };
   }
 }

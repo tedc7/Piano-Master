@@ -72,6 +72,7 @@ button.toggle.off { background: var(--off); }
 /* staff feedback (note-head groups drawn by VexFlow) */
 .pm-ok path { fill: var(--ok) !important; stroke: var(--ok) !important; }
 .pm-late path { fill: var(--late) !important; stroke: var(--late) !important; }
+.pm-other path { opacity: 0.3; }
 .pm-glow path { fill: var(--accent) !important; stroke: var(--accent) !important; filter: drop-shadow(0 0 3px rgba(47, 111, 219, 0.8)); }
 
 /* on-screen keyboard */

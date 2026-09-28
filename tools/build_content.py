@@ -12,6 +12,7 @@ warnings, since song analysis (M3) will replace the hand-assigned `pieces` lists
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import sys
@@ -164,7 +165,16 @@ def build_sync_probe_piece(pid, meta, phrase_bars):
     return nota, media, []
 
 
+def content_version() -> str:
+    """A short hash of every content source file: stored with each attempt (arch §5 ContentVersion)."""
+    h = hashlib.sha256()
+    for p in sorted(CONTENT.rglob("*.yaml")):
+        h.update(str(p.relative_to(CONTENT)).encode() + b"\0" + p.read_bytes())
+    return h.hexdigest()[:12]
+
+
 def main():
+    version = content_version()
     pieces_meta = {p.stem: yaml.safe_load(p.read_text()) for p in sorted((CONTENT / "pieces").glob("*.yaml"))}
     maps = load_skill_maps()
     skills, errors, warnings = validate_skill_maps(maps, set(pieces_meta))
@@ -189,7 +199,7 @@ def main():
                 warnings += check_constraints(pid, nota, s)
         piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": meta.get("kind", "core"),
                  "genre": meta.get("genre"), "level": meta.get("level"), "hands": meta.get("hands", "R"),
-                 "skillId": skill_of.get(pid), "notation": nt.jsonable(nota), "media": media}
+                 "skillId": skill_of.get(pid), "contentVersion": version, "notation": nt.jsonable(nota), "media": media}
         (OUT / "pieces" / f"{pid}.json").write_text(json.dumps(piece, indent=1))
         index.append({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId")}
                      | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
@@ -197,14 +207,14 @@ def main():
         print(f"{pid}: {len(nota['notes'])} notes, {len(nota['playbackOrder'])} bars in playback order, "
               f"{len(nota['phrases'])} phrases" + (f", media {', '.join(media['presets'])}" if media else ""))
 
-    skillmap = {"placeholder": any(m.get("placeholder") for m in maps),
+    skillmap = {"contentVersion": version, "placeholder": any(m.get("placeholder") for m in maps),
                 "maps": [{k: m[k] for k in ("map", "level", "file")} for m in maps],
                 "skills": [{k: v for k, v in s.items()} for s in skills]}
     (OUT / "skillmap.json").write_text(json.dumps(skillmap, indent=1))
-    (OUT / "index.json").write_text(json.dumps({"pieces": index}, indent=1))
+    (OUT / "index.json").write_text(json.dumps({"contentVersion": version, "pieces": index}, indent=1))
     if warnings:
         print("Warnings:\n  " + "\n  ".join(warnings))
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(index)} pieces")
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(index)} pieces, content version {version}")
     return 0
 
 

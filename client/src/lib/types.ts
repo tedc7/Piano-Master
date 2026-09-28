@@ -78,6 +78,7 @@ export interface Piece {
   level?: string;
   hands: "R" | "L" | "RL";
   skillId?: string | null;
+  contentVersion?: string;
   notation: Notation;
   media: Media | null;
 }
