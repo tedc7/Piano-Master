@@ -125,7 +125,7 @@ def main():
         page.get_by_role("button", name="Start").click()
         page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
         page.get_by_role("button", name="100%").click()
-        page.locator("button.main").click()
+        page.locator(".modes button").first.click()
         r = page.evaluate(AUTOPLAY, [[], 0, 40, False])
         check(r["state"] == "finished", f"practice: the review song is played to the end ({r['state']})")
         page.wait_for_selector(".result")
@@ -220,9 +220,14 @@ def main():
         page.on("pageerror", lambda e: errors.append(str(e)))
         open_piece(page, "twinkle-twinkle")
         check(page.get_by_text("No piano connected").count() > 0, "no piano: status strip says so (virtual port ignored)")
-        check(page.locator("button.main").is_disabled(), "no piano: Play is disabled in Play mode")
-        page.get_by_role("button", name="Listen").click()
-        check(not page.locator("button.main").is_disabled(), "no piano: Play is enabled in Listen mode")
+        play_btn, listen_btn = page.locator(".modes button").nth(0), page.locator(".modes button").nth(1)
+        check(play_btn.is_disabled() and not listen_btn.is_disabled(), "no piano: Play is disabled, Listen is not")
+        listen_btn.click()
+        page.wait_for_function("__pm.player.running")
+        check(listen_btn.inner_text() == "Pause", "listen: one tap starts it, and the button becomes Pause")
+        page.wait_for_timeout(1500)
+        listen_btn.click()
+        check(page.evaluate("__pm.player.state") == "paused" and listen_btn.inner_text() == "Listen", "listen: Pause pauses, and the button says Listen again")
         ctx.close()
 
         # 2. with the scripted keyboard
@@ -251,7 +256,7 @@ def main():
         # 3. Twinkle played cleanly at 100%: no rewinds, every note matched
         open_piece(page, "twinkle-twinkle")
         page.get_by_role("button", name="100%").click()
-        page.locator("button.main").click()
+        page.locator(".modes button").first.click()
         page.wait_for_timeout(2500)
         page.screenshot(path=str(OUT / "twinkle-playing.png"))
         r = page.evaluate(AUTOPLAY, [[], 0, 60, False])
@@ -270,11 +275,15 @@ def main():
               f"twinkle clean run: attempt stored by the API ({[(a['completed'], a['accuracyStars']) for a in stored]})")
         full = page.evaluate(f"fetch('api/attempts/{stored[0]['id']}').then(r => r.json())") if stored else {}
         check(len([e for e in full.get("rawEvents", []) if e["type"] == "on"]) == 42, "twinkle clean run: all 42 key presses stored as raw events")
+        page.get_by_role("button", name="Rewind").click()
+        page.wait_for_timeout(100)
+        st = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display})")
+        check(st["s"] == "idle" and st["b"] < 0 and page.locator(".result").count() == 0, f"rewind after the end: back to the start, ready to play ({st})")
 
         # 4. Hot Cross Buns with three wrong keys in the first phrase (6 errors): one rewind, then a clean pass
         open_piece(page, "hot-cross-buns")
         page.get_by_role("button", name="100%").click()
-        page.locator("button.main").click()
+        page.locator(".modes button").first.click()
         r = page.evaluate(AUTOPLAY, [[4, 5, 6], 1, 30, True])
         check(r["rewinds"] == 1 and r["debug"]["rewinds"][0] == 1, f"hot cross buns: 3 wrong keys in the first phrase rewind it once ({r['debug']['rewinds']})")
         page.wait_for_timeout(250)
@@ -287,7 +296,7 @@ def main():
         check(page.locator('.result [aria-label="Notes: 4.5 of 5 stars"]').count() == 1, "hot cross buns: one rewind caps notes at 4.5 stars")
         check(page.get_by_text("Practice mode: 1 rewind").count() == 1, "hot cross buns: practice-mode chip lists the rewind")
         page.get_by_role("button", name="Practice tricky part").click()
-        page.wait_for_function("__pm.player.mode === 'loop' && __pm.player.preset === '90'")
+        page.wait_for_function("__pm.player.mode === 'play' && __pm.player.section && __pm.player.preset === '90'")
         check(page.get_by_text("Bars 1–2").count() > 0, "tricky part: loops bars 1-2 at the next slower preset (90%)")
         r = page.evaluate(AUTOPLAY, [[], 1, 30, False])
         page.wait_for_selector(".loopnote")
@@ -305,11 +314,38 @@ def main():
         faint = page.evaluate("__pm.tl.notes.filter(n => __pm.layout.noteEls[n.id].classList.contains('pm-other')).map(n => n.hand)")
         check(len(faint) == 13 and set(faint) == {"L"}, f"echo song: right hand only dims the 13 left-hand notes ({len(faint)})")
         page.screenshot(path=str(OUT / "echo-right-hand.png"))
+        bars = page.locator(".loopbars")
+        check(bars.inner_text() == "All bars", "bars: all bars by default")
+        page.get_by_role("button", name="Later bars").click()
+        first = bars.inner_text()
+        page.get_by_role("button", name="Later bars").click()
+        second = bars.inner_text()
+        page.get_by_role("button", name="Earlier bars").click()
+        page.get_by_role("button", name="Earlier bars").click()
+        check(first.startswith("Bar") and second.startswith("Bar") and first != second and bars.inner_text() == "All bars",
+              f"bars: step through the sections and back to all bars ({first}, {second})")
+
+        # 4c. Rewind while listening: glide back 2 bars from the current bar; while paused, the resume point moves
+        open_piece(page, "twinkle-twinkle")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").nth(1).click()
+        page.wait_for_function("__pm.player.state === 'playing' && __pm.player.position.logic > 13", timeout=20000)
+        exp = page.evaluate("""() => { const L = __pm.tl.barLines, b = __pm.player.position.logic; let i = 0;
+            while (i + 1 < L.length && L[i + 1] <= b + 0.05) i++; return L[Math.max(0, i - 2)]; }""")
+        page.get_by_role("button", name="Rewind").click()
+        st = page.evaluate("({s: __pm.player.state, to: __pm.player.resumeBeat})")
+        check(st["s"] == "gliding" and st["to"] == exp, f"rewind while listening: glides back 2 bars (to beat {st['to']}, expected {exp})")
+        page.wait_for_function("__pm.player.state === 'playing'", timeout=10000)
+        page.get_by_role("button", name="Pause").click()
+        before = page.evaluate("__pm.player.position.display")
+        page.get_by_role("button", name="Rewind").click()
+        after = page.evaluate("__pm.player.position.display")
+        check(page.evaluate("__pm.player.state") == "paused" and after < before, f"rewind while paused: stays paused, further back ({before:.2f} -> {after:.2f})")
 
         # 5. Mary with nothing played: a lost-place rewind at the next bar line
         open_piece(page, "mary-had-a-little-lamb")
         page.get_by_role("button", name="100%").click()
-        page.locator("button.main").click()
+        page.locator(".modes button").first.click()
         r = page.evaluate("""() => new Promise((res) => { const t0 = performance.now(); const i = setInterval(() => {
             const pl = __pm.player; if (pl.state === 'gliding' || performance.now() - t0 > 15000) { clearInterval(i);
             res({ state: pl.state, beat: pl.position.logic, rw: pl.debug().rewinds }); } }, 5); })""")
@@ -318,9 +354,8 @@ def main():
 
         # 6. Amazing Grace in Listen mode with the YuE2 stems at 50%
         open_piece(page, "amazing-grace-melody")
-        page.get_by_role("button", name="Listen").click()
         page.get_by_role("button", name="50%").click()
-        page.locator("button.main").click()
+        page.get_by_role("button", name="Listen").click()
         page.wait_for_function("__pm.player.state === 'playing'", timeout=30000)
         page.wait_for_timeout(6000)
         pos = page.evaluate("__pm.player.position")

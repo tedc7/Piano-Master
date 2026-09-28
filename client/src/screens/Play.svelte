@@ -30,7 +30,7 @@
   let result = $state<AttemptRecord | null>(null);
   let loopNote = $state<{ text: string; stars: number } | null>(null);
   let hands = $state<Hands>("both");
-  let loopPhrases = $state<[number, number]>([0, 0]);
+  let section = $state<[number, number] | null>(null);   // null = all bars
   let phraseCount = $state(1);
   let pending = $state(api.pending);
   let sheet = $state(false);
@@ -61,7 +61,7 @@
   const clickOn = $derived(piece ? app.settings.click[piece.id] ?? !piece.media : true);
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
-  const loopBars = $derived(tl && piece ? barsOf(loopPhrases[0], loopPhrases[1]) : "");
+  const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
   // in a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too
   // the session item this song was opened for, fixed when the screen opens: it stays the same
@@ -286,17 +286,22 @@
   }
 
   // ------------------------------------------------------------------ controls
-  function playPause(): void {
+  /** Play and Listen each start and pause their own mode: tapping the current mode pauses or
+   *  resumes it (or plays again after the end); tapping the other mode switches and starts it. */
+  function tapMode(m: Mode): void {
     if (!player) return;
-    if (running) player.pause(); else void player.play();
-  }
-  function startOver(): void { void player?.restart(); }
-  function setMode(m: Mode): void {
+    if (m === mode) {
+      if (running) player.pause(); else void player.play();
+      return;
+    }
     mode = m;
-    player?.setMode(m);
     result = null;
     loopNote = null;
+    player.setMode(m);
+    void player.play();
   }
+  function rewind(): void { player?.rewindBars(app.settings.rewindBars); }
+  function playAgain(): void { void player?.play(); }
   function setHands(): void {
     const order: Hands[] = ["both", "R", "L"];
     hands = order[(order.indexOf(hands) + 1) % 3];
@@ -304,18 +309,21 @@
     markHands();
     result = null;
   }
-  function moveLoop(by: number): void {
-    const n = tl.phrases.length;
-    const a = Math.max(0, Math.min(n - 1, loopPhrases[0] + by));
-    loopPhrases = [a, a];
-    player?.setLoop(a, a);
+  /** Step through "All bars" and each phrase's bars. */
+  function moveSection(by: number): void {
+    const cur = section ? section[0] : -1;
+    const next = Math.max(-1, Math.min(tl.phrases.length - 1, cur + by));
+    section = next < 0 ? null : [next, next];
+    result = null;
+    loopNote = null;
+    player?.setSection(section);
   }
   async function practiceTricky(): Promise<void> {
     if (!player || !result?.tricky) return;
     const phrase = result.tricky.phrase;
     result = null;
-    mode = "loop";
-    loopPhrases = [phrase, phrase];
+    mode = "play";
+    section = [phrase, phrase];
     preset = await player.practiceTricky(phrase);
   }
   function setPreset(p: Preset): void {
@@ -351,16 +359,15 @@
     return `median ${d[d.length >> 1].toFixed(1)} ms, worst ${d[d.length - 1].toFixed(1)} ms (${d.length} notes)`;
   }
 
-  const playLabel = $derived(
+  const modeLabel = (m: Mode) => m !== mode ? (m === "play" ? "Play" : "Listen") :
     uiState === "loading" ? `Loading ${Math.round(loadingFrac * 100)}%` :
-    running ? "Pause" : uiState === "paused" ? "Resume" : uiState === "finished" ? "Play again" : "Play",
-  );
+    running ? "Pause" : m === "play" ? "Play" : "Listen";
 </script>
 
 <div class="play">
   <Status title={piece?.title ?? "…"}>
     <div class="progress"><div class="bar" bind:this={progressEl}></div></div>
-    <span>{mode === "play" ? "Play" : mode === "loop" ? loopBars : "Listen"} · {preset}%{hands !== "both" ? (hands === "R" ? " · right hand" : " · left hand") : ""}</span>
+    <span>{mode === "play" ? "Play" : "Listen"} · {sectionLabel} · {preset}%{hands !== "both" ? (hands === "R" ? " · right hand" : " · left hand") : ""}</span>
     {#if pending}<span class="muted">{pending} to send</span>{/if}
   </Status>
 
@@ -400,7 +407,7 @@
         {/if}
         <div class="row">
           {#if result.tricky}<button onclick={practiceTricky}>Practice tricky part</button>{/if}
-          <button class:quiet={!!result.tricky || inSession} onclick={startOver}>Play again</button>
+          <button class:quiet={!!result.tricky || inSession} onclick={playAgain}>Play again</button>
           {#if inSession}
             <button onclick={next}>Next ›</button>
           {:else}
@@ -413,22 +420,20 @@
 
   <div class="controls">
     <button class="quiet" onclick={back}>‹ Back</button>
-    <button class="main" onclick={playPause} disabled={!piece || uiState === "loading" || (needPiano && !running && uiState !== "paused")}>{playLabel}</button>
-    <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">
+    <div class="seg modes">
+      <button class:sel={mode === "play"} onclick={() => tapMode("play")}
+              disabled={!piece || (uiState === "loading" && mode !== "play") || (needPiano && !(mode === "play" && running))}>{modeLabel("play")}</button>
+      <button class:sel={mode === "listen"} onclick={() => tapMode("listen")}
+              disabled={!piece || (uiState === "loading" && mode !== "listen")}>{modeLabel("listen")}</button>
+    </div>
+    <button class="quiet" onclick={rewind} disabled={!piece || uiState === "idle" || uiState === "loading"} aria-label="Rewind">
       <svg class="restart" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" /><path d="M4 3.5v4.2h4.2" /></svg>
     </button>
     <div class="seg">
-      <button class:sel={mode === "play"} onclick={() => setMode("play")}>Play</button>
-      <button class:sel={mode === "loop"} onclick={() => setMode("loop")}>Loop</button>
-      <button class:sel={mode === "listen"} onclick={() => setMode("listen")}>Listen</button>
+      <button onclick={() => moveSection(-1)} disabled={!section} aria-label="Earlier bars">‹</button>
+      <span class="loopbars">{sectionLabel}</span>
+      <button onclick={() => moveSection(1)} disabled={!!section && section[0] >= phraseCount - 1} aria-label="Later bars">›</button>
     </div>
-    {#if mode === "loop"}
-      <div class="seg">
-        <button onclick={() => moveLoop(-1)} disabled={loopPhrases[0] === 0} aria-label="Earlier section">‹</button>
-        <span class="loopbars">{loopBars}</span>
-        <button onclick={() => moveLoop(1)} disabled={loopPhrases[0] >= phraseCount - 1} aria-label="Later section">›</button>
-      </div>
-    {/if}
     {#if piece?.hands === "RL"}
       <button class="quiet hands" onclick={setHands}>{hands === "both" ? "Both hands" : hands === "R" ? "Right hand" : "Left hand"}</button>
     {/if}
@@ -440,7 +445,7 @@
     {#if hasMedia}
       <button class="toggle" class:off={!vocalsOn} onclick={toggleVocals}>Vocals</button>
     {/if}
-    <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Click</button>
+    <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>
     <button class="quiet" onclick={() => { sheet = !sheet; }} aria-label="Settings">⚙</button>
   </div>
 
@@ -493,18 +498,19 @@
     position: absolute; right: 18px; bottom: 16px; background: var(--panel); border: 1px solid var(--line);
     border-radius: 12px; padding: 8px 14px; font-weight: 650; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); pointer-events: none;
   }
-  .loopbars { background: #ecebe6; display: flex; align-items: center; padding: 0 12px; font-weight: 650; min-width: 110px; justify-content: center; }
-  .hands { min-width: 130px; }
+  .loopbars { background: #ecebe6; display: flex; align-items: center; padding: 0 8px; font-weight: 650; min-width: 104px; justify-content: center; }
+  .hands { min-width: 118px; }
   .muted { color: var(--muted); }
   .row { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
   .controls {
-    flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-    padding: 10px 14px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
+    padding: 10px 10px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
-  .controls .main { min-width: 130px; }
+  .modes button { min-width: 100px; }
+  .controls > button { padding: 8px 13px; }
   .restart { width: 34px; height: 34px; display: block; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
   .seg { display: flex; border-radius: 12px; overflow: hidden; }
-  .seg button { border-radius: 0; background: #ecebe6; color: var(--fg); padding: 8px 14px; }
+  .seg button { border-radius: 0; background: #ecebe6; color: var(--fg); padding: 8px 11px; }
   .seg button.sel { background: var(--accent); color: var(--accent-fg); }
   .keys { position: relative; flex: 0 0 28%; min-height: 150px; background: #2a2a2e; margin: 0 10px 10px; }
   .sheet {

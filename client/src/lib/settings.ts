@@ -1,11 +1,19 @@
-// Per-device settings, kept in this browser until the server holds the DeviceProfile and the
-// student settings (M4). Storage can be missing or cleared on iPadOS, so defaults always work.
+// Settings, all kept in this browser for now, so every player on this device shares them.
+// Storage can be missing or cleared on iPadOS, so defaults always work.
+//
+// M4 (flagged 2026-09-28): split them by owner and take them off the children's Play screen.
+//  - Device (DeviceProfile, arch §5; Config > Device settings, parent only): displayOffsetMs,
+//    latencyOffsetMs, pianoName.
+//  - Each student (Student.settings, arch §5; set by the parent in Config > Students):
+//    autoRewind, backingVolume, rewindBars, and per song vocalsOff, click and presets.
+//  The Play screen's ⚙ sheet then keeps only the test readouts, for the parent.
 import type { Preset } from "./types";
 
 export interface Settings {
   displayOffsetMs: number;   // staff drawn this much behind the estimated audio clock (80 ms on the iPad A16)
   latencyOffsetMs: number;   // subtracted from played-note times before matching (tap-along calibration, M0)
   autoRewind: boolean;
+  rewindBars: number;        // how far the Rewind button goes back while playing
   backingVolume: number;     // 2 = the 200% found right on the iPad
   pianoName: string | null;  // the MIDI input to use; null = the first real (non-virtual) input
   vocalsOff: string[];       // piece ids with vocals off (remembered per song, arch §3)
@@ -21,6 +29,7 @@ export const DEFAULTS: Settings = {
   // sees and hears, which the display offset already measures on this device.
   latencyOffsetMs: 80,
   autoRewind: true,
+  rewindBars: 2,
   backingVolume: 2,
   pianoName: null,
   vocalsOff: [],

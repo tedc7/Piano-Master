@@ -2,8 +2,10 @@
 // lyrics, audio and note matching, so they can't drift apart. Framework-free: the screen calls
 // frame() from requestAnimationFrame and draws what it returns.
 //
-// Modes: Play (the whole piece, with smooth automatic rewind), Loop (one section, over and over;
-// "Practice tricky part" uses it) and Listen (the app plays it; no scoring).
+// Two modes: Play (play along, scored, with smooth automatic rewind) and Listen (the app plays it;
+// no scoring). Either runs over the whole piece or over a section of bars chosen on the screen,
+// which then goes round and round ("Practice tricky part" picks one at a slower preset). A section
+// in Play mode is stored as a "loop" attempt, one per time round.
 import { Attempt, type AttemptResult, type RawEvent } from "./attempt";
 import type { AudioEngine, StemBuffers } from "./audio";
 import type { Verdict } from "./matcher";
@@ -13,7 +15,7 @@ import type { Settings } from "./settings";
 import { gridBeat, phraseIndexAt, type Timeline, type TimelineNote } from "./timeline";
 import type { Piece, Preset } from "./types";
 
-export type Mode = "play" | "loop" | "listen";
+export type Mode = "play" | "listen";
 export type State = "idle" | "loading" | "gliding" | "countin" | "playing" | "paused" | "finished";
 export type Hands = "both" | "R" | "L";
 
@@ -64,7 +66,8 @@ export class Player {
   mode: Mode = "play";
   preset: Preset;
   hands: Hands = "both";
-  loopPhrases: [number, number] = [0, 0];
+  /** The section being played (phrase indices, inclusive), or null for the whole piece. */
+  section: [number, number] | null = null;
   state: State = "idle";
   private attempt: Attempt;
   private clock: Clock | null = null;
@@ -72,6 +75,7 @@ export class Player {
   private displayBeat: number;
   private logicBeat: number;
   private passStart = 0;
+  private resumeFrom: number | null = null;   // set by Rewind while paused
   private stems: StemBuffers | null = null;
   private nextClick = 0;
   private pulseAt: number | null = null;      // context time of the next beat on the running grid
@@ -96,10 +100,10 @@ export class Player {
   get spb(): number { return 60 / (this.tempo * Number(this.preset) / 100); }
   get hasStems(): boolean { return !!this.piece.media?.presets[this.preset]; }
   get running(): boolean { return this.state === "countin" || this.state === "playing" || this.state === "gliding"; }
-  get scoring(): boolean { return this.mode !== "listen"; }
-  /** Where play starts and ends: the whole piece, or the loop's section. */
-  get start(): number { return this.mode === "loop" ? this.tl.phrases[this.loopPhrases[0]].start : 0; }
-  get end(): number { return this.mode === "loop" ? this.tl.phrases[this.loopPhrases[1]].end : this.tl.length; }
+  get scoring(): boolean { return this.mode === "play"; }
+  /** Where play starts and ends: the whole piece, or the section. */
+  get start(): number { return this.section ? this.tl.phrases[this.section[0]].start : 0; }
+  get end(): number { return this.section ? this.tl.phrases[this.section[1]].end : this.tl.length; }
 
   private setState(s: State): void {
     this.state = s;
@@ -107,7 +111,7 @@ export class Player {
   }
 
   private newAttempt(): Attempt {
-    const loop = this.mode === "loop";
+    const loop = !!this.section;
     return new Attempt(this.tl, {
       hands: this.hands,
       handsWritten: this.piece.hands,
@@ -126,8 +130,8 @@ export class Player {
       ...a.result(completed),
       id: a.id,
       pieceId: this.piece.id,
-      mode: this.mode === "loop" ? "loop" : "play",
-      section: this.mode === "loop" ? { fromBeat: this.start, toBeat: this.end } : null,
+      mode: this.section ? "loop" : "play",
+      section: this.section ? { fromBeat: this.start, toBeat: this.end } : null,
       startedAt: a.startedAt.toISOString(),
       durationSec: Math.round((Date.now() - a.startedAt.getTime()) / 100) / 10,
       latencyOffsetMs: s.latencyOffsetMs,
@@ -143,8 +147,14 @@ export class Player {
 
   /** Play from the start (a new attempt), or resume after a pause. */
   async play(): Promise<void> {
-    if (this.state === "paused") return this.resumeAt(this.phraseStartFor(this.displayBeat));
-    if (this.state === "finished") return this.restart();
+    if (this.state === "paused") {
+      // Listen carries on from the bar it stopped in; Play goes back to the phrase start, so the
+      // phrase is scored as one pass
+      const at = this.resumeFrom ?? (this.scoring ? this.phraseStartFor(this.displayBeat) : this.barStartFor(this.displayBeat));
+      this.resumeFrom = null;
+      return this.resumeAt(at);
+    }
+    if (this.state === "finished") return this.again();
     if (this.running || this.state === "loading") return;
     if (!(await this.ensureReady())) return;
     this.attempt = this.newAttempt();
@@ -162,14 +172,40 @@ export class Player {
     this.releaseWake();
   }
 
-  /** Start over: a new attempt from the beginning, gliding back if the song is under way. */
-  async restart(): Promise<void> {
-    if (this.state === "loading") return;
-    if (this.state === "idle") return this.play();
-    if (this.state !== "finished") this.closeAttempt(false);
-    const from = this.displayBeat;
+  /** The Rewind button: while playing, glide back `bars` bars (from the start of the current bar)
+   *  and play on after the count-in; while paused, move the resume point back; after the end,
+   *  back to the start, ready to play again. Never before the section's start. In Play mode it
+   *  counts as a rewind, like the automatic ones (arch §7.5). */
+  rewindBars(bars: number): void {
+    if (this.state === "finished") {
+      this.stop();
+      this.reposition();
+      return;
+    }
+    if (this.state !== "paused" && !this.running) return;
+    const from = this.state === "gliding" ? this.resumeBeat! :
+      this.state === "paused" ? (this.resumeFrom ?? this.displayBeat) :
+      this.state === "countin" ? this.passStart : this.logicBeat;
+    // the start of the current bar, then `bars` bar lines further back
+    const lines = this.tl.barLines;
+    let i = 0;
+    while (i + 1 < lines.length && lines[i + 1] <= from + 0.05) i++;
+    const target = Math.max(this.start, lines[Math.max(0, i - bars)]);
+    if (this.scoring) this.attempt.rewinds++;
+    const phrase = phraseIndexAt(this.tl.phrases, target);
+    this.hooks.pass(target, phrase);
+    if (this.state === "paused") {
+      this.resumeFrom = target;
+      this.displayBeat = this.logicBeat = target - this.tl.barLength;
+      return;
+    }
     this.audio.stopStems(FADE_S);
-    this.clock = null;
+    this.beginGlide(this.displayBeat, target);
+  }
+
+  /** Play again after the end: a new attempt, gliding back to the start. */
+  private async again(): Promise<void> {
+    const from = this.displayBeat;
     if (!(await this.ensureReady())) return;
     this.attempt = this.newAttempt();
     this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, this.start));
@@ -184,6 +220,7 @@ export class Player {
     this.glide = null;
     this.pulseAt = null;
     this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
+    this.resumeFrom = null;
     this.attempt = this.newAttempt();
     this.setState("idle");
     this.releaseWake();
@@ -218,21 +255,25 @@ export class Player {
     this.reposition();
   }
 
-  /** Choose the loop's section (phrase indices, inclusive). */
-  setLoop(first: number, last: number): void {
+  /** Choose the section (phrase indices, inclusive), or null for all bars. */
+  setSection(range: [number, number] | null): void {
     const n = this.tl.phrases.length;
-    const a = Math.max(0, Math.min(n - 1, first));
-    const b = Math.max(a, Math.min(n - 1, last));
     this.stop();
-    this.loopPhrases = [a, b];
+    if (range) {
+      const a = Math.max(0, Math.min(n - 1, range[0]));
+      this.section = [a, Math.max(a, Math.min(n - 1, range[1]))];
+    } else {
+      this.section = null;
+    }
     this.reposition();
   }
 
-  /** "Practice tricky part": loop that phrase at the next slower preset (arch §3). */
+  /** "Practice tricky part": play along with that phrase, round and round, at the next slower
+   *  preset (arch §3). */
   async practiceTricky(phrase: number): Promise<Preset> {
     this.stop();
-    this.mode = "loop";
-    this.loopPhrases = [phrase, phrase];
+    this.mode = "play";
+    this.section = [phrase, phrase];
     const slower: Record<Preset, Preset> = { "100": "90", "90": "75", "75": "50", "50": "50" };
     if (slower[this.preset] !== this.preset) {
       this.preset = slower[this.preset];
@@ -283,6 +324,13 @@ export class Player {
     if (beat < this.start) return this.start;
     const p = this.tl.phrases[phraseIndexAt(this.tl.phrases, Math.max(beat, this.passStart))];
     return Math.max(p.start, this.start);
+  }
+
+  private barStartFor(beat: number): number {
+    const lines = this.tl.barLines;
+    let i = 0;
+    while (i + 1 < lines.length && lines[i + 1] <= beat + 0.05) i++;
+    return Math.max(this.start, Math.min(lines[i], this.end - 1e-6));
   }
 
   private async resumeAt(target: number): Promise<void> {
@@ -361,8 +409,8 @@ export class Player {
         if (plan) this.rewind(plan);
       }
       if (this.clock) {
-        if (this.mode === "loop" && this.logicBeat >= this.end + 0.1) this.loopAround();
-        else if (this.mode !== "loop" && this.logicBeat >= this.end + 0.25) this.finish();
+        if (this.section && this.logicBeat >= this.end + 0.1) this.loopAround();
+        else if (!this.section && this.logicBeat >= this.end + 0.25) this.finish();
       }
       if (this.clock && this.displayBeat < this.passStart) {
         const u = this.tl.beatUnit;
@@ -385,7 +433,7 @@ export class Player {
     if (rec) this.hooks.loopPass(rec);
     this.attempt = this.newAttempt();
     this.audio.stopStems(FADE_S);
-    this.hooks.pass(this.start, this.loopPhrases[0]);
+    this.hooks.pass(this.start, this.section![0]);
     this.beginGlide(this.displayBeat, this.start);
   }
 
