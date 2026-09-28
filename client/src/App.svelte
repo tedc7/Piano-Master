@@ -1,27 +1,38 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Home from "./screens/Home.svelte";
+  import Config from "./screens/Config.svelte";
   import Journey from "./screens/Journey.svelte";
   import Lesson from "./screens/Lesson.svelte";
   import Library from "./screens/Library.svelte";
-  import Parent from "./screens/Parent.svelte";
   import Picker from "./screens/Picker.svelte";
+  import Pin from "./screens/Pin.svelte";
   import Play from "./screens/Play.svelte";
   import Progress from "./screens/Progress.svelte";
   import Session from "./screens/Session.svelte";
   import { api } from "./lib/api";
   import { app } from "./lib/app.svelte.js";
-  import { go, parse } from "./lib/route";
+  import { go, parse, type Route } from "./lib/route";
 
   let route = $state(parse(location.hash));
 
-  // student screens need a player; without one (a reload, or a bookmark) start at the picker
-  const needsStudent = new Set(["home", "session", "journey", "library", "progress"]);
+  // Who may see what: a student's own screens need a student; the map, songs and lessons need
+  // a student or the parent; Config needs the parent. Without a player (a reload, a bookmark)
+  // the app starts at the picker. The Play screen opens for anyone (the browser check uses it).
+  const studentOnly = new Set(["session", "progress"]);
+  const anyPlayer = new Set(["journey", "library", "lesson"]);
+
+  function allowed(r: Route): string | null {
+    if (studentOnly.has(r.screen) && !app.student) return app.parentMode ? "config" : "";
+    if (anyPlayer.has(r.screen) && !app.student && !app.parentMode) return "";
+    if (r.screen === "config" && !app.parentMode) return "pin";
+    return null;
+  }
 
   onMount(() => {
     const onHash = () => {
       const r = parse(location.hash);
-      if (needsStudent.has(r.screen) && !app.student && !app.parentMode) { go(""); return; }
+      const redirect = allowed(r);
+      if (redirect !== null) { go(redirect); return; }
       route = r;
     };
     onHash();
@@ -39,8 +50,6 @@
   {#key route.id}
     <Play id={route.id} />
   {/key}
-{:else if route.screen === "home"}
-  <Home />
 {:else if route.screen === "session"}
   <Session />
 {:else if route.screen === "journey"}
@@ -53,8 +62,10 @@
   <Library />
 {:else if route.screen === "progress"}
   <Progress />
-{:else if route.screen === "parent"}
-  <Parent page={route.page} />
+{:else if route.screen === "pin"}
+  <Pin />
+{:else if route.screen === "config"}
+  <Config page={route.page} />
 {:else}
   <Picker />
 {/if}

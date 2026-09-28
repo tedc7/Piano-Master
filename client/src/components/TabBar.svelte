@@ -1,16 +1,24 @@
 <script lang="ts">
-  // Bottom navigation for the student screens. It sits at the bottom because the top of the
-  // screen ignores taps in full screen (arch §3); Parent is small and asks for the PIN.
+  // Bottom navigation. It sits at the bottom because the top of the screen ignores taps in full
+  // screen (arch §3). Students get their practice, map, songs and progress; the parent (a player
+  // of their own, after the PIN) gets the map, songs and Config.
   import { app } from "../lib/app.svelte.js";
   import { go } from "../lib/route";
 
-  let { current }: { current: "home" | "journey" | "library" | "progress" } = $props();
-  const tabs = [
-    { id: "home", label: "Home", icon: "🏠" },
+  type Tab = "session" | "journey" | "library" | "progress" | "config";
+  let { current }: { current: Tab } = $props();
+  const STUDENT: { id: Tab; label: string; icon: string }[] = [
+    { id: "session", label: "Today's Practice", icon: "▶️" },
     { id: "journey", label: "Journey", icon: "🗺️" },
     { id: "library", label: "Songs", icon: "🎵" },
     { id: "progress", label: "My Progress", icon: "⭐" },
-  ] as const;
+  ];
+  const PARENT: { id: Tab; label: string; icon: string }[] = [
+    { id: "journey", label: "Journey", icon: "🗺️" },
+    { id: "library", label: "Songs", icon: "🎵" },
+    { id: "config", label: "Config", icon: "⚙️" },
+  ];
+  const tabs = $derived(app.parentMode ? PARENT : STUDENT);
 </script>
 
 <nav class="tabbar">
@@ -20,10 +28,7 @@
     </button>
   {/each}
   <span class="spacer"></span>
-  {#if app.student}
-    <button class="quiet small" onclick={() => go("")}>{app.student.avatar} Switch player</button>
-  {/if}
-  <button class="quiet small" onclick={() => go("parent")}>{app.parentMode ? "Parent ✓" : "Parent"}</button>
+  <button class="quiet small" onclick={() => app.switchPlayer()}>Switch player</button>
 </nav>
 
 <style>

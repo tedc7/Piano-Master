@@ -37,7 +37,7 @@
       <p class="needs">{#if s.prerequisites.length}Needs: {s.prerequisites.map((p) => skillName.get(p) ?? p).join(" + ")}{:else}First skill{/if}</p>
       <div class="cards">
         {#each piecesOf(s) as p (p.id)}
-          <button class="card" onclick={() => app.openPiece(p.id, "parent/content")}>
+          <button class="card" onclick={() => app.openPiece(p.id, "config/content")}>
             <span class="card-title">{p.title}</span>
             <span class="card-meta">{handsLabel(p.hands)} · {p.timeSig} · {p.tempo} bpm · {p.measures} bars{p.hasMedia ? " · with singing" : ""}</span>
           </button>
@@ -50,7 +50,7 @@
       <h2>Other songs</h2>
       <div class="cards">
         {#each unassigned as p (p.id)}
-          <button class="card" onclick={() => app.openPiece(p.id, "parent/content")}>
+          <button class="card" onclick={() => app.openPiece(p.id, "config/content")}>
             <span class="card-title">{p.title}</span>
             <span class="card-meta">{handsLabel(p.hands)} · {p.timeSig}</span>
           </button>

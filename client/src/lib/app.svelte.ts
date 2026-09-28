@@ -1,5 +1,5 @@
 // App-wide state shared by the screens: settings, the audio engine, the MIDI input, who is
-// playing, parent mode and today's session.
+// playing (a student, or the parent after the PIN) and today's session.
 import { api } from "./api";
 import { AudioEngine } from "./audio";
 import { MidiInput, type MidiStatus } from "./midi";
@@ -22,7 +22,32 @@ export const SAMPLE_STUDENTS: Student[] = [
   { id: "sample-2", name: "Player 2", avatar: "🐢" },
 ];
 
-export interface Session { items: SessionItem[]; index: number }
+/** Stars earned by a finished session item (null for a concept lesson). */
+export interface ItemResult { accuracyStars: number | null; timingStars: number | null; title?: string }
+
+/** Today's Guided session for one student (arch §8.5). Kept in this browser for the day until
+ *  the server holds the queue (M5), so a reload resumes where the student stopped. */
+export interface Session {
+  studentId: string;
+  date: string;
+  items: SessionItem[];
+  index: number;                      // the next item to play; items before it are done
+  results: (ItemResult | null)[];     // parallel to items
+  seconds: number;                    // practice time today (play and loop attempts)
+}
+
+const SESSION_KEY = "pm.session.v1";
+const today = () => new Date().toLocaleDateString("en-CA");
+
+function loadSession(studentId: string): Session | null {
+  try {
+    const all = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "{}") as Record<string, Session>;
+    const s = all[studentId];
+    return s && s.date === today() ? s : null;
+  } catch {
+    return null;
+  }
+}
 
 class AppState {
   settings = $state<Settings>(loadSettings());
@@ -34,7 +59,7 @@ class AppState {
   parentMode = $state(false);
   session = $state<Session | null>(null);
   /** Where the Play screen's Back button goes: the screen that opened the song. */
-  returnTo = "home";
+  returnTo = "session";
   private lastTouch = 0;
   readonly isIPad = /iPad|iPhone|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1;
   readonly audio = new AudioEngine();
@@ -66,25 +91,39 @@ class AppState {
   }
 
   chooseStudent(s: Student): void {
+    this.leaveParent(false);
     this.student = s;
-    this.session = null;
-    go("home");
+    this.session = loadSession(s.id);
+    go("session");
   }
 
-  /** PLACEHOLDER: any 4 digits until the server checks the PIN (M4, arch §11.1). */
+  /** Back to the player picker; the parent is logged out. */
+  switchPlayer(): void {
+    this.leaveParent(false);
+    this.student = null;
+    this.session = null;
+    go("");
+  }
+
+  /** The parent is a player of their own, behind the PIN. PLACEHOLDER: any 4 digits until the
+   *  server checks the PIN (M4, arch §11.1). */
   enterParent(pin: string): boolean {
     if (!/^\d{4}$/.test(pin)) return false;
+    this.student = null;
+    this.session = null;
     this.parentMode = true;
     this.lastTouch = performance.now();
     api.log("info", "parent mode on");
+    go("config");
     return true;
   }
 
-  leaveParent(): void {
+  /** Log the parent out (after 10 idle minutes, when the device sleeps, or on Switch player). */
+  leaveParent(toPicker = true): void {
     if (!this.parentMode) return;
     this.parentMode = false;
     api.log("info", "parent mode off");
-    if (location.hash.startsWith("#/parent")) go(this.student ? "home" : "");
+    if (toPicker) go("");
   }
 
   openPiece(id: string, from: string): void {
@@ -92,15 +131,63 @@ class AppState {
     go(`play/${id}`);
   }
 
-  startSession(items: SessionItem[]): void {
-    this.session = { items, index: 0 };
+  /** Today's session, built from `items` the first time it is needed today. */
+  ensureSession(items: () => SessionItem[]): Session | null {
+    if (!this.student) return null;
+    if (!this.session) {
+      const list = items();
+      this.session = { studentId: this.student.id, date: today(), items: list, index: 0, results: list.map(() => null), seconds: 0 };
+      this.saveSession();
+    }
+    return this.session;
+  }
+
+  get sessionItem(): SessionItem | null {
+    const s = this.session;
+    return s && s.index < s.items.length ? s.items[s.index] : null;
+  }
+
+  /** The current item's result; a replay keeps the better stars. */
+  itemResult(r: ItemResult): void {
+    const s = this.session;
+    if (!s || s.index >= s.items.length) return;
+    const old = s.results[s.index];
+    if (!old || (r.accuracyStars ?? 0) >= (old.accuracyStars ?? 0)) s.results[s.index] = r;
+    this.saveSession();
+  }
+
+  /** After an item: move to the next one ("Next", arch §8.5). */
+  nextItem(): void {
+    if (this.session) {
+      this.session.index++;
+      this.saveSession();
+    }
     go("session");
   }
 
-  /** After an item's result: move to the next item ("Next", arch §8.5). */
-  nextItem(): void {
-    if (this.session) this.session.index++;
-    go("session");
+  /** Skip once: the item moves to the end of the queue (§8.5). */
+  skipItem(): void {
+    const s = this.session;
+    if (!s || s.index >= s.items.length - 1) return;
+    const move = <T>(a: T[]) => [...a.slice(0, s.index), ...a.slice(s.index + 1), a[s.index]];
+    s.items = move(s.items);
+    s.results = move(s.results);
+    this.saveSession();
+  }
+
+  addPractice(seconds: number): void {
+    if (!this.session) return;
+    this.session.seconds += seconds;
+    this.saveSession();
+  }
+
+  private saveSession(): void {
+    if (!this.session) return;
+    try {
+      const all = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "{}") as Record<string, Session>;
+      all[this.session.studentId] = $state.snapshot(this.session) as Session;
+      localStorage.setItem(SESSION_KEY, JSON.stringify(all));
+    } catch { /* not kept over a reload */ }
   }
 
   get needsFullScreen(): boolean {

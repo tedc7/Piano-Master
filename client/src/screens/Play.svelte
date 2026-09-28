@@ -64,7 +64,7 @@
   const loopBars = $derived(tl && piece ? barsOf(loopPhrases[0], loopPhrases[1]) : "");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
   // in a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too
-  const sessionItem = $derived(app.session ? app.session.items[app.session.index] : null);
+  const sessionItem = $derived(app.sessionItem);
   const inSession = $derived(!!sessionItem && (sessionItem.pieceId === id || sessionItem.kind === "pick"));
 
   onMount(() => {
@@ -128,14 +128,23 @@
           }
           result = null;
         },
-        finished: (r) => { result = r; },
+        finished: (r) => {
+          result = r;
+          if (inSession) {
+            const e = r.evaluation;
+            app.itemResult({ accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: sessionItem?.kind === "pick" ? piece?.title : undefined });
+          }
+        },
         loopPass: (r) => {
           const e = r.evaluation;
           loopNote = { text: `${e.matched} of ${e.expected} notes`, stars: e.accuracyStars };
           clearTimeout(loopTimer);
           loopTimer = window.setTimeout(() => { loopNote = null; }, 3000);
         },
-        save: (r) => api.saveAttempt({ ...r, contentVersion: piece?.contentVersion }),
+        save: (r) => {
+          api.saveAttempt({ ...r, contentVersion: piece?.contentVersion });
+          app.addPractice(r.durationSec);
+        },
         loading: (f) => { loadingFrac = f; },
         error: (m) => { error = m; api.log("error", "play screen: " + m, { piece: id }); },
       }, preset);
@@ -324,11 +333,7 @@
     app.settings.click = { ...app.settings.click, [piece.id]: !clickOn };
     app.save();
   }
-  function home(): void {
-    player?.stop();
-    go("home");
-  }
-  /** The result's "Done": back to the screen that opened the song (the library, the map...). */
+  /** Back to the screen that opened the song: the session, the song library, the map... */
   function back(): void {
     player?.stop();
     go(app.returnTo);
@@ -404,7 +409,7 @@
   </div>
 
   <div class="controls">
-    <button class="quiet" onclick={home}>‹ Home</button>
+    <button class="quiet" onclick={back}>‹ Back</button>
     <button class="main" onclick={playPause} disabled={!piece || uiState === "loading" || (needPiano && !running && uiState !== "paused")}>{playLabel}</button>
     <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">⟲</button>
     <div class="seg">

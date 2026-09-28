@@ -1,6 +1,6 @@
 <script lang="ts">
-  // Student picker (arch §3 screen 1): one large card per child, and a small Parent button that
-  // asks for the PIN. The students are placeholders until the server holds them (M4).
+  // Player picker (arch §3 screen 1): one large card per child, and the parent, who is a player
+  // of their own behind the PIN. The students are placeholders until the server holds them (M4).
   import Status from "../components/Status.svelte";
   import { app, SAMPLE_STUDENTS } from "../lib/app.svelte.js";
   import { go } from "../lib/route";
@@ -20,12 +20,13 @@
           <span class="name">{s.name}</span>
         </button>
       {/each}
+      <button class="student parent" onclick={() => go("pin")}>
+        <span class="avatar">🔑</span>
+        <span class="name">Parent</span>
+      </button>
     </div>
-    <p class="muted">Placeholder players <span class="sample">sample</span> — the parent adds the real students in Parent mode once they are stored on the piano server (M4).</p>
+    <p class="muted">Placeholder players <span class="sample">sample</span> — the parent adds the real students under Config once they are stored on the piano server (M4).</p>
   </main>
-  <footer class="foot">
-    <button class="quiet" onclick={() => go("parent")}>{app.parentMode ? "Parent ✓" : "Parent"}</button>
-  </footer>
 </div>
 
 <style>
@@ -38,5 +39,5 @@
   }
   .avatar { font-size: 84px; line-height: 1; }
   .name { font-size: 24px; font-weight: 750; }
-  .foot { display: flex; justify-content: flex-end; padding: 10px 16px; }
+  .parent { border-style: dashed; background: #fffaf0; }
 </style>

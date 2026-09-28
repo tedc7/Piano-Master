@@ -26,7 +26,7 @@
     { name: "Watch", icon: "🎬", text: "A parent-approved video on this idea, if one has been added (optional).", speak: false },
   ]);
   const card = $derived(cards[step]);
-  const inSession = $derived(app.session?.items[app.session.index]?.skillId === skillId && app.session?.items[app.session.index]?.kind === "lesson");
+  const inSession = $derived(app.sessionItem?.kind === "lesson" && app.sessionItem.skillId === skillId);
 
   function speak(text: string): void {
     try {
@@ -35,7 +35,10 @@
     } catch { /* no speech on this device */ }
   }
   function done(): void {
-    if (inSession) app.nextItem(); else leave();
+    if (inSession) {
+      app.itemResult({ accuracyStars: null, timingStars: null });
+      app.nextItem();
+    } else leave();
   }
   function leave(): void {
     if (inSession) go("session"); else if (history.length > 1) history.back(); else go("journey");

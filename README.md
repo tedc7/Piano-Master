@@ -16,11 +16,14 @@ Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.
 The skill map in `content/skillmap/` is a **placeholder** (ids start with `placeholder.`) until the
 Faber books arrive; replace it with the real Prep A map.
 
-**Screens** (arch §3): player picker → Home (Today's Practice, Free Play) with a bottom tab bar for
-Journey, Songs and My Progress; the Play screen; and Parent (PIN pad, then the hub with the piano
+**Screens** (arch §3): the player picker (each child, and Parent behind the PIN), then a bottom
+tab bar. Students: Today's Practice (the session as a path of items; the start screen), Journey,
+Songs and My Progress. Parent: Journey and Songs with everything open, and Config (the piano
 check, device settings, app status and the content preview; other pages are placeholders marked
-with their milestone). Until M4 and M5, the players, the PIN (any 4 digits) and the progress
-behind the Journey map, Songs, Home and My Progress are **sample data** (`client/src/lib/progress.ts`,
+with their milestone). The Play screen's Back returns to whichever screen opened the song. The
+status strip keeps its left 110 px empty for MIDIWeb Browser's floating full-screen button.
+Until M4 and M5, the players, the PIN (any 4 digits) and the progress behind the Journey map,
+Songs, the session and My Progress are **sample data** (`client/src/lib/progress.ts`,
 `SAMPLE_STUDENTS`), shown with a "sample" tag.
 
 ## Develop
