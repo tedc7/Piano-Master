@@ -1,6 +1,15 @@
-# Family Piano Tutor — Architecture v0.16
+# Family Piano Tutor — Architecture v0.17
 
-Sep 24, 2026 · @Someone
+Sep 27, 2026 · @Someone
+
+**What changed in v0.17** (from feasibility tests 2–4 and four rounds of YuE2 listening, `feasibility/sync-probe/RESULTS.md`):
+- **Song clock and notation:**
+  - One song clock drives the staff, lyrics and audio. It reads the audio clock through `getOutputTimestamp()`, ignoring stale time stamps. On the iPad it ran at 60 fps, and the audio and display clocks agreed within 8–32 ppm, so no drift correction is needed. A per-device **display offset** (80 ms on the iPad A16) lines the notes up with the play line (3, 5).
+  - Real public-domain hymns and songs convert to the §5 notation and render with no hand edits. Notes need a **pitch spelling** (5), and ABC Plus sources go through abc2xml first (10.4).
+- **YuE2 input:** the melody sent to YuE2 has **one note per sung syllable** (melismas merged onto their first pitch). This cut the words sung on the wrong notes from 39% to 12%. Scores also keep their chords and start with a throwaway sung "Oh" bar.
+- **Backing prompts:** they **name the backing instruments and how they play**, which made the backing follow the chords in 81% of spans instead of 58% (10.5).
+- **Timing:** YuE2 still keeps its own pace (0.7% off, plus rubato), so every take is time-warped. The alignment uses pitch windows, with lyric forced alignment as the word check and fallback. 50% versions come from Rubber Band (10.5).
+- **Accepted limitations:** YuE2 sings melismas as one held pitch, sometimes blurs the first word, puts an occasional stretch of words on other notes, and varies its backing. The Play screen gets a **Vocals on/off** button, and each song's check results are stored (3, 5, 10.5).
 
 **What changed in v0.16** (from the feasibility tests, `feasibility/RESULTS.md`): the piano site is served at the server's fixed IP address with the server's own certificate authority, because the router cannot hold local DNS names and no public issuer certifies an `.internal` name (2.5). On the iPad A16, MIDIWeb Browser trusts that certificate authority and offers Web MIDI, and saved data, Wake Lock, audio, speech, video and 60 fps staff scrolling all passed. **MIDI itself is untested:** the Jikada JK-825 has no MIDI, so a new keyboard is needed (2.3). MIDIWeb Browser's full-screen mode is lost when the app relaunches, and a page cannot turn it on, but the page can detect it and show a reminder (2.2). In full-screen mode the top of the screen ignores taps, so the top strip of every screen shows status only (3). The YuE2 media spike passed and YuE2 is confirmed as the media engine: it sings a supplied melody (92-98% of notes on pitch) within 8 GB of GPU memory, but its timing only roughly follows the score, so the alignment step is essential (10.5, 12).
 
@@ -239,7 +248,7 @@ On the Journey map, a concept lesson is a small **lightbulb bubble** directly be
 - **On-screen keyboard** (bottom 30%): 2 to 4 octaves around the song's range. Target key highlighted; pressed keys light up live from MIDI. Hints fade out as levels rise.
 - **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9).
 - **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
-- **Control strip (between the staff and the on-screen keyboard):** pause, restart, tempo presets (50%, 75%, 90%, 100%), mode toggle, accompaniment on/off and volume.
+- **Control strip (between the staff and the on-screen keyboard):** pause, restart, tempo presets (50%, 75%, 90%, 100%), mode toggle, **vocals on/off**, accompaniment on/off and volume.
 - **Modes:** Play (the default: play-along with smooth automatic rewind, below), Listen (app plays it first, with accompaniment and vocals), Section loop. Wait mode is an optional aid, built later (M10).
 - **Smooth rewind:** see "Play and smooth rewind" below; section loops use the same glide.
 - **Count-in and metronome:** visual beat dots plus an optional click.
@@ -274,7 +283,12 @@ Notes played during the glide and count-in are ignored. Nothing on screen announ
 
 **Scoring:** each phrase counts its last pass, so fixing a phrase earns the credit; each rewind lowers the attempt's practice-aid factor, so 5 stars needs a clean run (7.5).
 
-**Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out (tested: a 64-measure grand staff with lyrics, about 22,000 px wide, scrolled and glided at a steady 60 fps on the iPad A16, worst frame 24 ms); audio stems are decoded in advance, so they can restart instantly from any point (tested: 691 MB of decoded audio held and played, 2 x 6-minute stems decoded in 0.5 s, restarts at a new point with no audible delay); one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart. At resume, the evaluator re-anchors its MIDI-to-song clock mapping. Rewinds are tested with the MIDI replay adapter (11.4).
+**Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out (tested: a 64-measure grand staff with lyrics, about 22,000 px wide, scrolled and glided at a steady 60 fps on the iPad A16, worst frame 24 ms); audio stems are decoded in advance, so they can restart instantly from any point (tested: 691 MB of decoded audio held and played, 2 x 6-minute stems decoded in 0.5 s, restarts at a new point with no audible delay); one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart (tested in v0.17 with real songs and aligned stems: 60 fps with no frame over 25 ms in a 3-minute run with 9 rewinds and tempo switches).
+- **The song clock** reads the audio clock through `getOutputTimestamp()`. It uses a time stamp only when it is fresh (under 250 ms old) from a running audio context; after the iPad sleeps, a stale time stamp once jumped the clock minutes ahead. Otherwise it falls back to `currentTime` minus the reported latencies, which read about 12 ms off on the iPad.
+- **Audio vs display clock:** they agreed within 8–32 ppm on the iPad (2–6 ms over 3 minutes), so no drift correction is needed.
+- **Display offset:** the staff is drawn a per-device offset ahead of the audio clock (DeviceProfile, 5). 80 ms lined the notes up with the play line on the iPad A16. This is separate from the MIDI latency offset used for scoring.
+
+At resume, the evaluator re-anchors its MIDI-to-song clock mapping. Rewinds are tested with the MIDI replay adapter (11.4).
 
 ### Tempo presets
 
@@ -284,8 +298,8 @@ Tempo is chosen from four presets: **50%, 75%, 90%, and 100%** of the written te
 
 Accompaniment and vocals are audio **stems** produced for each arrangement by the Claude media skill before the song is submitted (section 10.5), so the parent hears them when approving the song.
 
-- **Accompaniment stem:** soft, sparse, background backing that never overwhelms the piano part, in instruments matched to the song's genre (for example organ and strings for hymns, acoustic guitar and bass for folk). Default volume is low; the student can adjust it.
-- **Vocal stem:** a sung vocal in a style matched to the song's genre.
+- **Accompaniment stem:** a backing that stays behind the piano part, in named instruments matched to the song's genre (for example pipe organ and string ensemble for hymns, fingerpicked guitar and upright bass for folk; 10.5). Its level is set in the media pipeline for tablet speakers; the student can adjust the volume. YuE2's backing still varies in level and instruments within and between songs.
+- **Vocal stem:** a sung vocal in a style matched to the song's genre, with a **Vocals on/off** button on the Play screen, remembered per song. Known YuE2 limits: a melisma (one syllable over several notes) is sung as one held pitch, the first word can be soft or unclear, and a take can put a stretch of words on other notes than the staff shows. Each song's check results are stored with its stems and shown in the parent's review list, so a badly affected song can be re-rendered or left with vocals off.
 - **When stems play:** Listen and Play modes, at every tempo preset (100%, 90%, 75%, and 50%); each is rendered in advance.
 - **No vocals or accompaniment in wait mode:** recorded audio cannot pause mid-word or mid-bar. If wait mode is built (optional, M10), it plays only the metronome and the student's own notes.
 - **No stems yet:** the Audio Engine plays a **soft chord pad** from the arrangement's chord symbols and the **choir voice** (the melody on a soft "ooh" sound) with lyrics highlighted, so every song has something to sing along with.
@@ -388,7 +402,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | Skill | id (stable, never reused), name, map (basic, intermediate, advanced), level, **sequence** (suggested order along the map, unique; used for layout and to choose which available skill to introduce first), track (reading, rhythm, technique, theory, repertoire, musicianship), staff (treble, bass, grand), **prerequisites\[\]** (define the map's forks and joins; each must have a lower sequence), requiredCapabilities\[\] (e.g. pedal, velocity, 88 keys), constraints (allowed notes or hand positions, rhythms, keys, time signatures, hands, staff, range), targetTempo?, conceptLessonId?, sourceMethods\[\], bookRefs\[\]?, description |
 | Lesson | id, skillIds\[\], type (concept, exercise, drill, song, review), drillParams? (e.g. scale, key, octaves, hands, target bpm), arrangementId?, cards\[\] (concept lessons), passCriteria |
 | ConceptCard | kind (explain, show, hear, try, check, watch), text, diagram (declarative: keys to light, staff notes, timing), audioExample, expectedNotes\[\], questions\[\] |
-| Genre | id, name, defaultVocalStyle, defaultAccompanimentStyle, defaultAllowed (true only for "Lesson pieces") |
+| Genre | id, name, genreStyle (e.g. "traditional hymn"), defaultVocalStyle, defaultAccompanimentStyle (named instruments and how they play, 10.5), defaultAllowed (true only for "Lesson pieces") |
 | ContentVersion | version, loadedDate, analysisRunDate, notes |
 
 **Library (approved songs and media)**
@@ -396,7 +410,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | Entity | Key fields |
 | --- | --- |
 | Song | id, title, composer, kind (core piece or library song), genreIds\[\], arrangementIds\[\], source (site, url, id), license, licenseEvidence, addedDate |
-| Arrangement | id, songId, level, hands, keyboardSize needed, **notation** (see below), **requiredSkillIds\[\]** (used for unlocking, 6.8), **mapPoint** (sequence of its highest required skill; used for placing it on the map and grouping, not for unlocking), featuredSkillIds\[\], skillMeasures (skill → measures where it is used), fingeringSource (imported, generated, edited), vocalStyle? (overrides genre default), phrases\[\] (measure ranges used for rewind), vocalStems{100, 90, 75, 50}?, accompanimentStems{100, 90, 75, 50}?, mediaReport? (engine, style tags, check results), fingerprint |
+| Arrangement | id, songId, level, hands, keyboardSize needed, **notation** (see below), **requiredSkillIds\[\]** (used for unlocking, 6.8), **mapPoint** (sequence of its highest required skill; used for placing it on the map and grouping, not for unlocking), featuredSkillIds\[\], skillMeasures (skill → measures where it is used), fingeringSource (imported, generated, edited), vocalStyle? (overrides genre default), phrases\[\] (measure ranges used for rewind), vocalStems{100, 90, 75, 50}?, accompanimentStems{100, 90, 75, 50}?, mediaReport? (engine, style text, seed, alignment method, check results: notes on pitch, words off the staff and where, first word sung, backing on the written chords), fingerprint |
 | DeletedSong | fingerprint, title, composer, source ids\[\], deletedDate, reason? |
 | StagedItem | batchId, kind (new song, media update, concept video), full data for that kind, source, licenseEvidence, estimatedLevel, flags\[\], claudeNotes, validationResult, selected (true/false); batches also record date, genre, and skill version |
 | ConceptVideo | conceptLessonId, sourceUrl?, videoFile, trimStart, trimEnd, durationSec, status (staged, approved, removed), addedDate |
@@ -409,7 +423,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | Header | keySig, timeSig, tempo (initial), pickupBeats (anacrusis), range (lowest, highest) |
 | Measures | number, keySig?, timeSig?, tempo? (changes take effect at that measure), repeat start/end, volta number(s) |
 | Navigation | D.C., D.S., segno, coda, Fine markers; a computed **playback order** (expanded measure list) used for playing, scoring and lyrics |
-| Notes | `{pitch (MIDI number), start (beats), duration (beats), hand, voice, finger?, velocity?, articulation?, tieToNext?, isMelody?}`. Beats, not seconds, so tempo can change freely |
+| Notes | `{pitch (MIDI number), spelled {step, alter, octave}, start (beats), duration (beats), hand, voice, finger?, velocity?, articulation?, tieToNext?, isMelody?}`. Beats, not seconds, so tempo can change freely. The spelling is needed to draw F♯ vs G♭ and to name chords (v0.17); rests are not stored, the renderer fills the gaps |
 | Other events | pedalEvents\[\], dynamics\[\], sections\[\] (named ranges in playback order), chordSymbols\[\] (beat, symbol) |
 | Lyrics | syllables with note index and **verse number**, so repeats can show verse 1, then verse 2 |
 
@@ -417,9 +431,9 @@ Everything is stored in the server's SQLite database, except media files (in the
 
 | Entity | Key fields |
 | --- | --- |
-| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume) |
+| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, vocals off for songs\[\]) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
-| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
+| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn ahead of the audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
 | Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
@@ -1021,35 +1035,84 @@ Contents:
 
 **Arrangements:** each song can have several versions (Level 2 right-hand only, Level 4 hands together, and so on). Each has its own required skills, so the library shows the version that matches each student.
 
+**Conversion notes (tested in v0.17 on Open Hymnal and music21-corpus sources, `feasibility/sync-probe/convert.py`):**
+- **ABC Plus (Open Hymnal):** music21 can't read it; it merges the four voices and drops the lyrics. Convert it with abc2xml (LGPL) to MusicXML first.
+- **Pitch spelling:** keep each note's spelled pitch (5).
+- **Repeats, endings and verses:** unroll them into the playback order, with each pass's verse under its notes.
+- **Key:** YuE2's `K:` field needs the key the song is in, which can differ from the written signature (What Child Is This is written with two sharps but is in E minor). Take the tonic from the final bass note.
+- **Hymns without chord symbols:** derive them from the four voices on each beat.
+- **Phrases:** they come from the metric grid, moved to include a pickup at a word start.
+
 ### 10.5 Media skill: vocals and accompaniment
 
-The media skill adds a sung vocal and a soft accompaniment to each arrangement before submission, on the dev box's GPU. It runs directly on that machine, so no job queue or polling worker is needed; it picks up pending media work (new songs, vocal-style changes) from the Skill API.
+The media skill adds a sung vocal and an accompaniment to each arrangement before submission, on the dev box's GPU. It runs directly on that machine, so no job queue or polling worker is needed; it picks up pending media work (new songs, vocal-style changes) from the Skill API.
 
-**Engine is a plugin.** The skill calls a music engine through one interface: input is the melody (in YuE2's native two-voice ABC dialect, converted from the arrangement's MusicXML), lyrics (all verses in playback order), chord symbols, key, tempo, vocal style tags, and accompaniment style tags; output is a vocal stem and an accompaniment stem. YuE2 is the engine (confirmed by the M0-S spike, `feasibility/yue2-probe/RESULTS.md`); it runs through the general-purpose `generate-music` Claude skill (backup in `skills/`), whose `piano-master` profile applies the rules in this section; Suno v6 (via a third-party API) is a possible fallback (open question); newer engines can be added without changing the rest of the pipeline.
+**Engine is a plugin.** The skill calls a music engine through one interface.
+- **Input:** the melody (in YuE2's native two-voice ABC dialect, converted from the arrangement), the lyrics (all verses in playback order), the sung syllables with their beats, chord symbols, key, tempo, and the style text.
+- **Output:** a vocal stem and an accompaniment stem.
+- **Current engine:** YuE2 (confirmed by the M0-S spike, `feasibility/yue2-probe/RESULTS.md`). It runs through the general-purpose `generate-music` Claude skill (backup in `skills/`), whose `piano-master` profile applies the input rules in this section.
+- **Other engines:** Suno v6 (via a third-party API) is a possible fallback (open question), and newer engines (e.g. a future YuE3) can be added without changing the rest of the pipeline. The alignment and checks don't depend on the engine.
 
-**Style by genre.** Each genre has a default vocal style and accompaniment style, sent to the engine as tags. A song can override them. Accompaniment tags always include "soft, sparse, background, no lead melody", so the piano part stays in front.
+**One note per sung syllable (v0.17).** YuE2 pairs lyric syllables with melody notes by itself: there is no field that ties a syllable to a note (no `w:` lines, no slurs). When a score has more notes than syllables (a melisma: one syllable over several notes), it drifts words onto the wrong notes. So:
+- **Merge melismas:** each melisma is merged into one note on its first pitch, with the combined length. Only the melody sent to YuE2 changes; the student's staff and piano part don't.
+- **Syllables:** they come from the source's own lyric splits (MusicXML lyrics, ABC `w:` lines).
+- **Check:** the `generate-music` skill refuses a score unless its melody has exactly one note per syllable, each on its syllable's beat, and the syllables spell the lyrics.
+- **Result:** words more than 0.3 s off the staff fell from 39% to 12%, and notes on pitch (with the words placed) rose from 60% to 85%.
+- **Cost:** the singer holds one pitch where the staff shows a slur. That's a known limitation, accepted.
 
-| Genre | Default vocal style | Default accompaniment |
-| --- | --- | --- |
-| Hymns | Warm solo voice or small choir; gentle, reverent, smooth phrasing | Soft organ and strings |
-| Folk | Clear, natural acoustic folk singer | Acoustic guitar and light bass |
-| Nursery and kids' songs | Bright, friendly voice with very clear words | Light acoustic band, soft percussion |
-| Classical (songs with words) | Light classical or choral tone | Soft strings |
-| Holiday | Warm and festive; choir optional | Bells, strings, light percussion |
-| Movie/TV, Pop | Clean, light, upbeat modern voice | Light drums, bass, and pad |
+**Style by genre.** Each genre has a default genre style, vocal style and accompaniment style. A song can override the vocal or accompaniment.
+- **Name the backing instruments and how they play**, with one solo voice and no "or choir" alternatives. With vague tags, YuE2 guessed; with specific ones, its backing followed the written chords in 81% of chord spans instead of 58%, and listening preferred it (v0.17).
+- **No piano in the backing:** the child plays the piano part.
+
+| Genre | Genre style | Default vocal style | Default accompaniment |
+| --- | --- | --- | --- |
+| Hymns | Traditional hymn | Warm clear solo voice | Soft pipe organ and warm string ensemble playing steady sustained chords, gentle, reverent |
+| Holiday | Traditional holiday carol | Warm clear solo voice | Warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady |
+| Folk | Gentle folk song | Clear natural solo folk singer | Fingerpicked acoustic guitar, soft upright bass, light brushed percussion, steady |
+| Nursery and kids' songs | Children's song | Bright friendly solo voice with very clear words | Strummed acoustic guitar, soft glockenspiel, light hand percussion, steady |
+| Classical (songs with words) | Light classical art song | Light clear classical solo voice | Soft string quartet playing sustained chords, gentle, steady |
+| Movie/TV, Pop | Light pop song | Clean light solo voice | Light brushed drums, warm bass guitar, soft synth pad chords, steady |
+
+Hymns and Holiday were tested by listening; the other rows follow the same pattern and are checked with their first songs.
 
 **Steps**
 
-1. **Prepare:** build the engine input from the arrangement and style tags.
-2. **Generate:** the engine produces the vocal and accompaniment. YuE2 returns a single mix, so Demucs separates the stems.
-3. **Align:** onsets are time-warped to the arrangement's beat grid; drift over about 50 ms after alignment fails the take. This step is essential: in the spike, YuE2's vocal sat within about 0.1 s of a supplied score without an intro, but 0.8 s late with a 2-bar intro, and its own planned songs drifted by several seconds.
-4. **Pitch check:** the vocal's pitch is tracked and compared with the melody note by note; at least 90% of melody notes must be sung on the correct pitch (nearest semitone, any octave).
-5. **Word check:** Whisper transcribes the vocal and compares it to the lyrics. Any added or changed words fail the take. (The tolerance for words Whisper simply misses in singing is set during the spike.)
-6. **Accompaniment check:** steady on the beat grid (within about 50 ms), harmony matches the chord symbols on at least 80% of beats, and its level is set well below the vocal. The level has to be set here: in the spike the accompaniment stem came out louder than the vocal even with "soft" in the tags.
-7. **Tempo versions:** pitch-preserving time-stretch (Rubber Band) produces 90%, 75%, and 50% tempo versions of both stems.
-8. **Retry or package:** failed takes are re-rendered (up to 3 tries). If a stem still fails, the arrangement is submitted without it and flagged "no vocal" or "no accompaniment". Loudness is normalized, and the stems and check report are added to the package.
+1. **Prepare:** build the engine input from the arrangement:
+   - unroll repeats and verses;
+   - pad the pickup bar with rests;
+   - one note per syllable, with the syllables sidecar;
+   - chord symbols kept on the melody. Without them YuE2 chooses its own harmony, and the backing followed the written chords in only 40% of spans.
+
+   Add a **throwaway lead-in bar**: one sung "Oh" on a different pitch from the first note, muted after alignment. Without a lead-in, YuE2 ignores the rests before the pickup, starts 1.1–1.7 s early, and sometimes drops the first word. With it, the first word was sung in every take.
+2. **Generate:** render 2–3 seeds. The engine returns a single mix, so Demucs separates the stems.
+3. **Align:** time-warp both stems to the arrangement's beat grid with one Rubber Band time map (R3 engine, command-line tool; a second, correcting pass removes its 25 ms lag). This step is always needed:
+   - even with one note per syllable, YuE2's pace is its own (about 0.7% off, up to 3%, plus rubato on held notes);
+   - after the best single tempo correction, 5% of the song is still over 160 ms off.
+
+   The map comes from the sung pitch curve, lined up with the score in 3-second windows. If that map is fooled by a repeated melody or the lead-in, lyric forced alignment of the known words sets the rough map instead. The offset before the first anchor is held constant.
+
+   Pass rule: a sustained offset (median over a phrase) above about 50 ms fails the take. Single windows aren't judged, because the measurement's own p95 error is about 45 ms. Aligned takes sat 4–9 ms (median) off the grid.
+4. **Pitch check:** the vocal's pitch is tracked and compared with the melody that was sent, note by note. At least 90% of notes must be sung on the correct pitch (nearest semitone, any octave; YuE2 often sings an octave below).
+5. **Word check:** lyric forced alignment (an MMS CTC aligner) places each known word in the aligned vocal. It flags stretches of words more than 0.3 s from their notes, and whether the first word was sung. Whisper transcription isn't needed: the words are known.
+6. **Accompaniment check and level:**
+   - **Harmony:** the written chord should be the backing's strongest in most chord spans. Start with an 80% threshold and tune it: the tested takes averaged 58–81%, depending on the prompt.
+   - **Timing:** the onset check is too weak on soft backings to judge. The backing is warped with the vocal's map, so they stay together.
+   - **Level:** YuE2's backing is mostly bass (87–100% of its energy below 250 Hz), which tablet speakers barely play, and it swings 11–37 dB within a song. So the level is set from what the speakers play: cut below 120 Hz, then set the backing about 4 dB under the vocal as measured above 250 Hz (tuned on the iPad). The prompt doesn't change this; a slow automatic backing level for the swings is still to build.
+7. **Tempo versions:** Rubber Band produces the 90%, 75% and 50% versions from the same map. Stretched 50% sounded fine on the iPad; YuE2 can't render a real slow take (asked for 50 BPM, it sings at about 73).
+8. **Choose, retry or package:**
+   - **Choose:** each take is scored: share of notes on pitch, minus share of words off the staff, minus penalties for a missing first word or misplaced words in the first 15 s. The best take is kept.
+   - **Retry:** if none passes, re-render (up to 3 tries).
+   - **Package:** loudness is set, and the stems and check report are added to the package.
+   - **Vocals with remaining flaws** can still be submitted: the parent sees the report, and the Vocals on/off button covers a badly affected song. If a stem is unusable, the arrangement is flagged "no vocal" or "no accompaniment".
 
 The parent hears the vocal and accompaniment in the staging review list, so media reaches children only after that single approval.
+
+**Known YuE2 limitations (accepted for a family app; revisit when the engine is replaced):**
+- **Melismas** are sung as one held pitch.
+- **The first word** can be soft or unclear.
+- **Words on other notes:** some takes put a stretch of words on other notes than the staff shows; seeds differ, which is why 2–3 are rendered.
+- **Backing:** it varies in level and instruments within and between songs.
+- **Pace:** YuE2 doesn't keep the score's pace, so step 3 is always needed.
 
 **Dev box software (standard open source, installed with pip in a Python virtual environment or a Docker container):**
 
@@ -1058,10 +1121,11 @@ The parent hears the vocal and accompaniment in the staging review list, so medi
 | NVIDIA driver + CUDA, PyTorch | GPU runtime (the build must support the machine's GPU generation) |
 | Music engine (currently YuE2, official m-a-p repo) | Sings the melody and generates the accompaniment in the requested style; weights download from Hugging Face |
 | Demucs | Separates stems if the engine returns a mix |
-| librosa | Onset detection for beat alignment; pitch tracking; chroma for harmony check |
-| Whisper (open-source speech recognition) | Transcribes the vocal to check the words |
-| Rubber Band | Pitch-preserving time-stretch for tempo versions |
-| Skill scripts (ours) | Run the steps and build the package |
+| music21, abc2xml | Read MusicXML and ABC sources; abc2xml converts ABC Plus, which music21 misreads |
+| librosa | Pitch tracking (pYIN) for alignment and the pitch check; chroma for the harmony check |
+| ctc-forced-aligner (MMS model, ONNX) | Places the known lyric words in the vocal, for the word check and the fallback map |
+| Rubber Band 4 (command line) | Pitch-preserving time-warp to the beat grid (time map) and the tempo versions; the Python bindings can't pass a time map |
+| Skill scripts (ours) | Run the steps and build the package (prototypes in `feasibility/sync-probe/`) |
 
 ### 10.6 Concept-video skill
 
@@ -1170,7 +1234,7 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | # | Milestone | Delivers | Done when |
 | --- | --- | --- | --- |
 | M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Remaining:** App API and SQLite skeleton; MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; Tone.js audio in MIDIWeb Browser; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
-| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
+| M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`). **Extended in v0.17** with real hymns and songs, the song clock and alignment on the iPad (`feasibility/sync-probe/RESULTS.md`): YuE2 input rules, alignment method and checks settled (10.5) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
@@ -1195,7 +1259,10 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 - [ ] Check audio and speech with the iPad's silent mode on
 - [ ] Re-measure server download speed after the server Wi-Fi upgrade
 - [x] Record the M0-S decision on YuE2: proceed, with the alignment step built in (`feasibility/yue2-probe/RESULTS.md`)
-- [ ] Write the MusicXML → native ABC converter for the media skill (M8)
+- [x] Prototype the MusicXML / ABC → notation and native ABC converter, the alignment and the media checks (`feasibility/sync-probe/`; M3 and M8 build the real ones)
+- [x] Settle the YuE2 input rules: one note per syllable (checked by the `generate-music` skill), chords kept, "Oh" lead-in, named backing instruments (10.5)
+- [ ] Listen to the untested genre defaults (Folk, kids' songs, Classical, Pop) with their first songs
+- [ ] Build a slow automatic backing level for YuE2's swings within a song (10.5 step 6)
 - [ ] Continue M0 (App API and SQLite skeleton, MIDI test page)
 
 ## 13. Later-phase design (placeholders)
@@ -1265,6 +1332,14 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| YuE2 input (v0.17) | One melody note per sung syllable (melismas merged onto the first pitch), checked against a syllables sidecar; chord symbols kept (`plan full`); `L:1/32`; a sung "Oh" lead-in bar | Words on the wrong notes fell from 39% to 12%; chord-free input made the backing ignore the written chords; without a lead-in YuE2 starts early and drops the first word |
+| Backing prompt (v0.17) | Genre defaults name the backing instruments and how they play, with one solo voice; no piano | The backing followed the written chords in 81% of spans (vague defaults 58%); preferred by listening |
+| Alignment (v0.17) | Every take is time-warped with a Rubber Band time map from windowed pitch alignment; lyric forced alignment for the word check and as the fallback map; fail on a sustained phrase offset over about 50 ms | YuE2 keeps its own pace even with one note per syllable; onset picking failed; the measurement's own p95 is about 45 ms |
+| Word check (v0.17) | Forced alignment of the known lyrics instead of Whisper transcription | The words are known; it also shows where each word landed |
+| Backing level (v0.17) | Cut below 120 Hz; backing about 4 dB under the vocal, measured above 250 Hz | YuE2's backing is mostly bass that tablet speakers barely play; 200% of the first level was right on the iPad |
+| Vocals button (v0.17) | Vocals on/off on the Play screen, remembered per song; check results stored and shown to the parent | YuE2's vocals help a lot but some takes have flaws; a better engine can replace YuE2 later |
+| Song clock (v0.17) | `getOutputTimestamp()` when fresh, else `currentTime` minus latencies; per-device display offset (80 ms on the iPad A16) | 60 fps, 8–32 ppm drift on the iPad; a stale time stamp after sleep jumped the clock |
+| Slow tempo versions (v0.17) | Rubber Band time-stretch of the aligned stems | Stretched 50% sounds fine; YuE2 can't render slow takes |
 | Media engine (v0.16) | YuE2 through the `generate-music` skill; Demucs for stems; the alignment step (10.5 step 3) is required | M0-S spike (`feasibility/yue2-probe/RESULTS.md`): 92-98% of notes on pitch with a supplied melody, about 8 GB peak on the 16 GB GPU, a 2-minute song in about a minute; timing only roughly follows the score. Non-expert listeners rated all takes usable |
 | Hosting address and certificate (v0.16) | `https://192.168.2.128/` with the server's own certificate authority (Caddy `tls internal`); each device trusts the root once | Router cannot hold local DNS; no public issuer for `.internal`; works with the internet down. Tested on the iPad in MIDIWeb Browser |
 | Network exposure (v0.16) | Reverse proxy bound to the home-network address only, port 443 only, no port forwarding | Answers the v0.13 open question; enforced by the Server repo setup |
@@ -1333,12 +1408,13 @@ Not planned for v1; revisit when needed.
 | Student reports (v0.2) | Students see their own progress report | Not sensitive; motivating |
 | Map stars (v0.2) | Best-earned stars, plus review badge when due | Stars never drop; review still visible |
 
-**Superseded:** "Local DNS entry on the router, certificate possibly from a public issuer" (replaced by the IP-address site with the internal certificate authority in v0.16); "Top bar with pause, restart, tempo and mode buttons" (moved below the status strip in v0.16); "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15).
+**Superseded:** "Accompaniment tags always include soft, sparse, background, no lead melody" and the v0.13 genre tag table (replaced by named instruments in v0.17); "Whisper transcribes the vocal to check the words" (replaced by lyric forced alignment in v0.17); "Onsets are time-warped to the beat grid" (replaced by windowed pitch alignment in v0.17); "Local DNS entry on the router, certificate possibly from a public issuer" (replaced by the IP-address site with the internal certificate authority in v0.16); "Top bar with pause, restart, tempo and mode buttons" (moved below the status strip in v0.16); "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15).
 
 **Version history**
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.17 | Sep 27, 2026 | From feasibility tests 2–4 and YuE2 listening: one song clock with a per-device display offset; pitch spelling in the notation; ABC Plus via abc2xml; YuE2 input with one note per syllable, chords and an "Oh" lead-in; named backing instruments; pitch-window alignment with lyric forced alignment; backing level for tablet speakers; Vocals on/off button; YuE2 limitations documented |
 | v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; M0-S decision: proceed with YuE2 |
 | v0.15 | Sep 23, 2026 | From the v0.14 review: branching skill map; Guided-ready (passed + 1) and library-ready unlocking; stacked aids do not pass; gentle "Try it another way" options and stuck-skill support practice; rhythm skills need timing stars; no minimum practice or daily cap; running mastery with best-so-far; content-change handling deferred |
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |

@@ -26,6 +26,7 @@
 | `seed` | no (831001) | Integer. Same request + seed + engine settings gives the same `request_id` |
 | `stems` | no (false) | Also write `vocals.*` and `accompaniment.*` (Demucs htdemucs; accompaniment = drums + bass + other) |
 | `formats` | no (`["flac"]`) | Any of `flac`, `wav`, `mp3` (48 kHz; FLAC/WAV 24-bit) |
+| `syllables` or `syllables_path` | no (required by `piano-master`) | Every sung syllable in order, as a JSON list (or a file holding it, or `{"syllables": [...]}`): strings, or `{"syllable", "beat"}` with `beat` = the attack's onset in quarter notes from the start of the score. Needs a score. Checked: one `Vocal` attack per syllable (ties merged), each at its `beat`, and the syllables spell the lyrics. Recorded as `syllable_check` in the report |
 | `profile` | no | Name of a file in `profiles/` that adds fields and rules, e.g. `piano-master` |
 | `title`, `notes` | no | Free text, carried into the report |
 

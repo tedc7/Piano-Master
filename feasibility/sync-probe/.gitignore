@@ -1,0 +1,10 @@
+.venv/
+.rubberband/
+tools/
+build/
+renders/
+dist/
+check/
+*.log
+__pycache__/
+.fa/

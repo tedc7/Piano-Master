@@ -66,3 +66,16 @@ Both pages ran with no errors in headless Chromium on the workstation before dep
 **Full-screen tap dead zone (important for UI design):** in MIDIWeb Browser's full-screen mode, taps near the top of the screen don't register. The dead zone is about one button high (roughly the height of the hidden address bar). On the render test only the very bottom edge of the top-row buttons worked, and the links there couldn't be tapped at all. **Rule for the app:** keep the top strip for status only (song progress, stars, streak); nothing a student needs to tap goes there. This changes arch §3, whose Play screen puts pause, restart, tempo presets and the mode toggle in a top bar.
 
 **Other spikes:** YuE2 (the M0-S media spike) was built and tested separately by another agent, with generally positive results. Full results: [yue2-probe/RESULTS.md](yue2-probe/RESULTS.md).
+
+**Song clock, media alignment and real notation (tests 2, 3, 4, Sep 25):**
+- **Test 4 (real notation):** real public-domain hymns and songs convert to the §5 notation and render with no hand edits.
+- **Test 2 (song clock):** passed on the iPad: 60 fps, no frames over 25 ms, audio and display clocks within 8–32 ppm.
+- **Test 3 (YuE2 media):**
+  - The takes can be aligned to the beat grid.
+  - Rubber Band tempo versions are fine; YuE2 can't render slow takes.
+  - YuE2 sings the notes and words well, but places words on other notes than the score over stretches of every take (0 of 16 pass a strict check).
+  - The main cause was our input: the hymnal's melismas gave YuE2 more notes than syllables. With one Vocal note per sung syllable, words off the staff fell from 39% to 12% and 3 of 12 takes pass; the page now uses those takes.
+  - Backing prompts now name the instruments and how they play: the backing followed the written chords in 81% of spans instead of 58%.
+  - Decision: keep YuE2, with a Vocals on/off button and per-song check results. Recorded in architecture v0.17.
+
+Full results and the list of known vocal issues: [sync-probe/RESULTS.md](sync-probe/RESULTS.md).

@@ -1,0 +1,133 @@
+{
+ "songs": [
+  {
+   "id": "amazing-grace",
+   "title": "Amazing Grace",
+   "source": {
+    "kind": "abc-plus",
+    "path": "sources/amazing-grace.abc",
+    "from": "Open Hymnal Project 2014.06 (http://openhymnal.org/OpenHymnal2014.06.abc), tune X:192",
+    "license": "public domain (words 1779, music 1831, setting 1900); Open Hymnal files are freely distributable"
+   },
+   "genre": "Hymns",
+   "tests": "3/4, pickup, 5 verses, SATB grand staff, slow hymn",
+   "yue2": true,
+   "lead_in_variants": [
+    "intro",
+    "fake"
+   ],
+   "default_take": "intro",
+   "extra_fake_seeds": [
+    2,
+    3
+   ],
+   "input_styles": [
+    "syl",
+    "mel"
+   ]
+  },
+  {
+   "id": "what-child-is-this",
+   "title": "What Child Is This?",
+   "source": {
+    "kind": "abc-plus",
+    "path": "sources/what-child-is-this.abc",
+    "from": "Open Hymnal Project 2014.06, tune 'What Child Is This?'",
+    "license": "public domain (words 1865, Greensleeves traditional, setting 1871)"
+   },
+   "genre": "Holiday",
+   "tests": "3/4, E minor, pickup, dotted and sixteenth-note figures, 3 verses, slow",
+   "yue2": true,
+   "lead_in_variants": [
+    "intro",
+    "fake"
+   ],
+   "default_take": "fake",
+   "extra_fake_seeds": [
+    2,
+    3
+   ],
+   "input_styles": [
+    "syl",
+    "mel"
+   ]
+  },
+  {
+   "id": "it-came-upon-a-midnight-clear",
+   "title": "It Came Upon a Midnight Clear",
+   "source": {
+    "kind": "abc-plus",
+    "path": "sources/it-came-upon-a-midnight-clear.abc",
+    "from": "Open Hymnal Project 2014.06, tune 'It Came Upon A Midnight Clear'",
+    "license": "public domain (words 1849, music 1850s, setting 1866)"
+   },
+   "genre": "Holiday",
+   "tests": "6/8, pickup, 5 verses, SATB grand staff",
+   "tempo_qpm": 84,
+   "tempo_note": "Source says Q:1/4=60 (dotted quarter 40), far slower than this carol is sung; 84 gives dotted quarter 56",
+   "yue2": true,
+   "lead_in_variants": [
+    "intro",
+    "fake"
+   ],
+   "default_take": "fake",
+   "extra_fake_seeds": [
+    2,
+    3
+   ],
+   "input_styles": [
+    "syl",
+    "mel"
+   ]
+  },
+  {
+   "id": "jeanie",
+   "title": "Jeanie with the Light Brown Hair",
+   "source": {
+    "kind": "corpus",
+    "path": "leadSheet/fosterBrownHair.mxl",
+    "from": "music21 corpus (MuseScore 0.9.5 MusicXML lead sheet), Stephen Foster 1854",
+    "license": "public domain (file metadata: 'Public Domain')"
+   },
+   "genre": "Folk",
+   "tests": "MusicXML lead sheet: 4/4, repeat with first and second endings, 2 verses, chord symbols, treble staff only",
+   "tempo_qpm": 76,
+   "tempo_note": "No tempo in the source; 76 is a typical ballad tempo",
+   "yue2": true,
+   "lead_in_variants": [
+    "intro",
+    "fake"
+   ],
+   "default_take": "intro",
+   "extra_fake_seeds": [
+    2,
+    3
+   ],
+   "input_styles": [
+    "syl",
+    "mel"
+   ]
+  },
+  {
+   "id": "bach-bwv103-6",
+   "title": "Was mein Gott will (Bach, BWV 103.6)",
+   "source": {
+    "kind": "corpus",
+    "path": "bach/bwv103.6.mxl",
+    "from": "music21 corpus (MusicXML, four vocal staves S A T B)",
+    "license": "public domain (Bach, 1725); music21 corpus"
+   },
+   "genre": "Hymns",
+   "tests": "MusicXML open score: four staves reduced to a grand staff, pickup, repeat with 2 verses under it, fermatas; render only (German words)",
+   "tempo_qpm": 72,
+   "yue2": false
+  }
+ ],
+ "excluded": [
+  {
+   "path": "leadSheet/berlinAlexandersRagtime.mxl",
+   "reason": "The song (1911) is public domain, but this file's metadata says 'All Rights Reserved': the edition is not openly licensed (arch 10.4)"
+  }
+ ],
+ "notes": "lead_in_variants: the first takes (no lead-in) dropped or rushed the pickup word after bare leading rests; 'intro' adds 2 instrumental bars, 'fake' adds a bar with a throwaway sung 'Oh' that is muted after alignment; extra_fake_seeds: more fake-note takes (seeds 831002, 831003) with the 'Oh' moved off the first word's pitch, for QA to pick from; input_styles: takes following 'YuE2 Lyrics & Melody Input - Agent Instructions' (repo root), with the fake lead-in and the same seeds: syl = one Vocal attack per syllable (melismas merged onto their first pitch), L:1/32, chords, cot full; mel = the same, chord-free, cot melody"
+}

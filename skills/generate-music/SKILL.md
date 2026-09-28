@@ -20,7 +20,7 @@ If it isn't ready, run `bash ~/.claude/skills/generate-music/scripts/install_eng
 | The user wants | Request |
 |---|---|
 | A new song from an idea | `lyrics` + `style`; no score. YuE2 writes its own melody and chords (`score.abc` is saved so it can be edited and re-rendered) |
-| A song that follows a given melody | add `score_abc_path` in native ABC ([references/abc-quickref.md](references/abc-quickref.md)); chords in the score → `plan` full, none → melody |
+| A song that follows a given melody | add `score_abc_path` in native ABC ([references/abc-quickref.md](references/abc-quickref.md)); chords in the score → `plan` full, none → melody. Give **one Vocal note per sung syllable** (merge melismas) and pass `syllables_path` so the count is checked |
 | Separate vocal / backing tracks, or an instrumental backing track | `"stems": true` → `vocals.*` and `accompaniment.*` (YuE2 always sings; the accompaniment stem is the instrumental) |
 | Piano-Master arrangement media | `"profile": "piano-master"`; read [references/piano-master.md](references/piano-master.md) |
 
@@ -29,7 +29,7 @@ Full schema, outputs and exit codes: [references/request-format.md](references/r
 ## 3. Write the request
 
 - **Lyrics**: section tags on their own lines (`[Verse]`, `[Chorus]`, `[Bridge]`, `[Outro]`), all verses in the order sung, only words that should be sung. Keep them singable: short lines, regular syllable counts. Write lyrics to a file and pass `lyrics_path`. Write original lyrics unless the user supplies their own; don't reproduce copyrighted lyrics.
-- **Style**: one comma-separated line: language, genre, vocal character, instruments, mood, tempo — e.g. `English, gentle folk ballad, warm male voice, fingerpicked acoustic guitar, soft cello, 84 BPM`. Say what to avoid in positive terms ("sparse", "soft background drums") — there's no negative prompt.
+- **Style**: one comma-separated line: language, genre, vocal character, instruments, mood, tempo — e.g. `English, gentle folk ballad, warm male voice, fingerpicked acoustic guitar, soft cello, 84 BPM`. **Name the backing instruments and how they play** ("warm string ensemble playing steady sustained chords"), and ask for one voice rather than offering alternatives ("solo voice or small choir"); vague instrument words leave YuE2 to guess, and its backing then follows the chords less well. Say what to avoid in positive terms ("sparse", "soft background drums") — there's no negative prompt.
 - **Length** follows the lyrics (or the score). A verse–chorus–verse–chorus song is typically 2–3 minutes and takes several minutes to render.
 - Save the request next to its lyrics/score files, e.g. in a `renders/requests/` folder of the current project, and choose `formats` (`mp3` for easy listening, `flac`/`wav` for further processing).
 

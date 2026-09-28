@@ -46,4 +46,13 @@ V: Ins
 
 ## Lyrics and the score
 
-Lyrics go in the separate `lyrics` field, never in the ABC. Keep the same sections, in the same order, in both. YuE2 fits the words to the notes itself; there is no syllable-to-note alignment channel, so give roughly one syllable per melody note and let long notes carry held vowels.
+Lyrics go in the separate `lyrics` field, never in the ABC. Keep the same sections, in the same order, in both. YuE2 pairs the words with the notes itself; there is no syllable-to-note alignment channel (no `w:` lines, no slurs).
+
+**One Vocal attack per sung syllable.** When a score has more notes than syllables, YuE2 drifts words onto the wrong notes (Piano-Master test, 2026-09: words off the staff fell from 39% to 12% of words once the count matched). Count attacks after merging ties.
+- **Melisma** (one syllable over several pitches): merge into one note on the first pitch with the combined length: `B4G4` on "zing" → `B8`. The slur is lost; that's a YuE2 limitation.
+- **Repeated notes of one syllable:** tie them: `C4C4` → `C4-C4`.
+- **A verse with an extra syllable:** split that verse's note into repeated attacks: `C8` → `C4C4`.
+- **Held notes and chord changes:** a tie keeps one attack: `"C"E8-"Am"E8`.
+- **Pickups** sit in the previous section's last bar (sections start at barlines), as in YuE2's own plans, so the count holds for the whole song, not section by section.
+
+Pass the syllables with the request (`syllables` / `syllables_path`, see [request-format.md](request-format.md)); the script then checks the count, each syllable's beat, and that the syllables spell the lyrics. YuE2's own melodies use about 1.0–1.1 attacks per syllable.

@@ -21,6 +21,8 @@ import os
 import re
 import subprocess
 import sys
+import unicodedata
+from fractions import Fraction
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parents[1]
@@ -30,7 +32,7 @@ ABC_TOOLS = ENGINE_HOME / "YuE" / "skills" / "yue2-music" / "scripts" / "abc_too
 WORKER = Path(__file__).resolve().parent / "engine_yue2.py"
 
 FIELDS = {"id", "lyrics", "lyrics_path", "style", "score_abc", "score_abc_path", "plan", "seed",
-          "stems", "formats", "profile", "title", "notes",
+          "stems", "formats", "profile", "title", "notes", "syllables", "syllables_path",
           # profile fields (only meaningful when a profile uses them)
           "genre", "language", "key", "meter", "tempo_bpm", "vocal_style", "accompaniment_style"}
 PLANS = {"auto", "full", "melody", "off"}
@@ -93,6 +95,72 @@ def normalize_key(key):
     return re.sub(r"\s*minor$|min$", "m", key)
 
 
+def letters(text):
+    """Letters and digits only, accents removed, case folded (for comparing syllables with lyrics)."""
+    text = unicodedata.normalize("NFKD", text)
+    return "".join(c for c in text.casefold() if c.isalnum())
+
+
+def read_syllables(req, base):
+    """The sung syllables in order: `syllables` (a JSON list) or `syllables_path` (a JSON file holding
+    that list, or an object with a "syllables" list). Each item is a string, or an object
+    {"syllable": str, "beat": onset in quarter notes from the start of the score, as a number or "a/b"}."""
+    inline, path = req.get("syllables"), req.get("syllables_path")
+    check(not (inline is not None and path), "give syllables or syllables_path, not both")
+    if path:
+        file = (base / path).expanduser()
+        check(file.is_file(), f"syllables_path not found: {file}")
+        try:
+            inline = json.loads(file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise RequestError(f"syllables_path is not valid JSON: {exc}") from exc
+        if isinstance(inline, dict):
+            inline = inline.get("syllables")
+    if inline is None:
+        return None
+    check(isinstance(inline, list) and inline, "syllables must be a non-empty list")
+    rows = []
+    for i, item in enumerate(inline):
+        if isinstance(item, str):
+            item = {"syllable": item}
+        check(isinstance(item, dict) and isinstance(item.get("syllable"), str) and item["syllable"].strip(),
+              f"syllables[{i}] must be a string or an object with a 'syllable' string")
+        beat = item.get("beat")
+        if beat is not None:
+            try:
+                beat = Fraction(str(beat))
+            except (ValueError, ZeroDivisionError):
+                raise RequestError(f"syllables[{i}].beat is not a number or fraction: {item['beat']!r}") from None
+        rows.append({"syllable": item["syllable"].strip(), "beat": beat})
+    return rows
+
+
+def check_syllables(rows, score, lyrics):
+    """One Vocal attack per sung syllable. YuE2 pairs lyric syllables with Vocal notes by itself (there
+    is no alignment channel); extra notes let it drift words onto the wrong notes. Checks the count,
+    each syllable's beat when given, and that the syllables spell the lyrics."""
+    check(score is not None, "syllables need a score (score_abc or score_abc_path) to check against")
+    attacks = score.voices["Vocal"].notes          # [onset, midi, duration], ties merged, quarter notes
+    if len(attacks) != len(rows):
+        where = next((i for i, (a, r) in enumerate(zip(attacks, rows)) if r["beat"] is not None and a[0] != r["beat"]), None)
+        hint = (f"; the first extra or missing note is at beat {attacks[where][0]}, where syllable {where + 1} "
+                f"{rows[where]['syllable']!r} expects beat {rows[where]['beat']}" if where is not None else "")
+        check(False, f"{len(attacks)} Vocal attacks (ties merged) but {len(rows)} sung syllables: give each syllable "
+                     f"exactly one Vocal note. Merge a melisma onto its first pitch, tie repeated notes of one "
+                     f"syllable, split a note for an extra syllable (references/abc-quickref.md){hint}")
+    for i, (a, r) in enumerate(zip(attacks, rows)):
+        check(r["beat"] is None or a[0] == r["beat"],
+              f"syllable {i + 1} {r['syllable']!r} is at beat {r['beat']} but its Vocal attack is at beat {a[0]}")
+    sung = letters(re.sub(r"^\s*\[[^\]]+\]\s*$", "", lyrics, flags=re.M))
+    spelled = letters("".join(r["syllable"] for r in rows))
+    if sung != spelled:
+        i = next((k for k, (x, y) in enumerate(zip(sung, spelled)) if x != y), min(len(sung), len(spelled)))
+        check(False, f"the syllables don't spell the lyrics: from letter {i}, lyrics {sung[max(0, i - 10):i + 15]!r} "
+                     f"vs syllables {spelled[max(0, i - 10):i + 15]!r}")
+    return {"syllables": len(rows), "vocal_attacks": len(attacks),
+            "beats_checked": sum(r["beat"] is not None for r in rows)}
+
+
 def apply_profile(req, abc, score):
     name = req.get("profile")
     if not name:
@@ -112,9 +180,9 @@ def apply_profile(req, abc, score):
         check(genre is not None, f"profile {name}: genre must be one of {sorted(genres)}")
     parts = {
         "language": req.get("language", ""),
+        "genre_style": (genre or {}).get("style", ""),
         "vocal_style": req.get("vocal_style") or (genre or {}).get("vocal", ""),
         "accompaniment_style": req.get("accompaniment_style") or (genre or {}).get("accompaniment", ""),
-        "accompaniment_suffix": profile.get("accompaniment_suffix", ""),
         "tempo_bpm": req.get("tempo_bpm", ""),
     }
     style = profile["style_template"].format(**parts)
@@ -169,6 +237,9 @@ def build_job(args):
             raise RequestError(f"score_abc is not valid native YuE2 ABC: {exc}") from exc
         abc = score.text
     req["score_abc"] = abc  # so profiles see a score given by path too
+    syllables = read_syllables(req, path.parent)
+    req["syllables"] = syllables  # so profiles see syllables given by path too
+    syllable_check = check_syllables(syllables, score, req["lyrics"]) if syllables is not None else None
     style, profile = apply_profile(req, abc, score)
 
     if plan == "auto":
@@ -179,7 +250,7 @@ def build_job(args):
     return {
         "id": req["id"], "title": req.get("title"), "profile": profile,
         "style": style, "lyrics": req["lyrics"], "cot": plan, "seed": seed, "abc": abc,
-        "stems": req.get("stems", False), "formats": formats,
+        "stems": req.get("stems", False), "formats": formats, "syllable_check": syllable_check,
         "score_nominal_seconds": float(score.voices["Vocal"].time * 60 / score.bpm) if score else None,
         "request_file": str(path),
     }

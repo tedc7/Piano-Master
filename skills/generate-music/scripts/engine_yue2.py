@@ -77,7 +77,7 @@ def main(job_path: str) -> int:
     installed = json.loads((home / "INSTALLED.json").read_text())
     report = {"status": "running", "id": job["id"], "title": job.get("title"), "profile": job["profile"],
               "output": str(out), "style": job["style"], "cot": job["cot"], "seed": job["seed"],
-              "score_supplied": bool(job["abc"]), "engine": {"name": "yue2", **engine,
+              "score_supplied": bool(job["abc"]), "syllable_check": job.get("syllable_check"), "engine": {"name": "yue2", **engine,
               "yue_commit": installed["yue_commit"], "model_revision": installed["model"]["revision"],
               "vae_revision": installed["vae"]["revision"], "packages": installed["packages"]}}
     stage = "load"
