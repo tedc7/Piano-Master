@@ -1,5 +1,5 @@
 # Piano-Master
-Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.17.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.17.md).
+Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.18.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.18.md).
 
 ## Layout
 

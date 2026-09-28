@@ -2,8 +2,8 @@
 // tuned with the children in M1):
 //  - too many errors: missed plus wrong notes in a phrase reach 6 or 25% of its notes, whichever
 //    is larger; the rewind starts at the end of that phrase. Timing alone never triggers one.
-//    (Arch §3 says 2; raised to 6 on 2026-09-28 because one wrong key counts twice, as a missed
-//    note and a wrong note. Tighten after the MIDI tests with the children.)
+//    (6 since arch v0.18, was 2: one wrong key counts twice, as a missed note and a wrong note.
+//    Tighten after the MIDI tests with the children.)
 //  - lost place: no notes played for 2 beats while notes are expected; the rewind starts at the
 //    next bar line.
 //  - it goes back to the start of the phrase with the errors, or one more phrase for a run-up
