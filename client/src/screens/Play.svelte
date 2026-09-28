@@ -2,14 +2,17 @@
   // The Play screen (arch §3): status strip (display only), moving staff with the play line and
   // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
   import { onMount, tick } from "svelte";
+  import DeviceSettings from "../components/DeviceSettings.svelte";
   import Stars from "../components/Stars.svelte";
+  import Status from "../components/Status.svelte";
   import { api } from "../lib/api";
-  import { app, pianoLabel } from "../lib/app.svelte.js";
+  import { app } from "../lib/app.svelte.js";
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
   import { toggleIn } from "../lib/settings";
   import { LYRIC_FILL, renderStaff, xAt, type StaffLayout } from "../lib/staff";
+  import { go } from "../lib/route";
   import { buildTimeline, type Timeline } from "../lib/timeline";
   import { PRESETS, type Piece, type Preset } from "../lib/types";
   import type { MidiNote, MidiPedal } from "../lib/midi";
@@ -60,6 +63,9 @@
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
   const loopBars = $derived(tl && piece ? barsOf(loopPhrases[0], loopPhrases[1]) : "");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
+  // in a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too
+  const sessionItem = $derived(app.session ? app.session.items[app.session.index] : null);
+  const inSession = $derived(!!sessionItem && (sessionItem.pieceId === id || sessionItem.kind === "pick"));
 
   onMount(() => {
     let raf = 0;
@@ -318,17 +324,18 @@
     app.settings.click = { ...app.settings.click, [piece.id]: !clickOn };
     app.save();
   }
-  function nudge(key: "displayOffsetMs" | "latencyOffsetMs", by: number): void {
-    app.settings[key] += by;
-    app.save();
+  function home(): void {
+    player?.stop();
+    go("home");
   }
-  function backing(by: number): void {
-    app.settings.backingVolume = Math.max(0, Math.min(3, Math.round((app.settings.backingVolume + by) * 4) / 4));
-    app.save();
-  }
+  /** The result's "Done": back to the screen that opened the song (the library, the map...). */
   function back(): void {
     player?.stop();
-    location.hash = "";
+    go(app.returnTo);
+  }
+  function next(): void {
+    player?.stop();
+    app.nextItem();
   }
   function delayStats(): string {
     const d = [...app.midi.delays].sort((a, b) => a - b);
@@ -343,13 +350,11 @@
 </script>
 
 <div class="play">
-  <header class="status">
-    <span class="title">{piece?.title ?? "…"}</span>
+  <Status title={piece?.title ?? "…"}>
     <div class="progress"><div class="bar" bind:this={progressEl}></div></div>
     <span>{mode === "play" ? "Play" : mode === "loop" ? loopBars : "Listen"} · {preset}%{hands !== "both" ? (hands === "R" ? " · right hand" : " · left hand") : ""}</span>
     {#if pending}<span class="muted">{pending} to send</span>{/if}
-    <span class="muted"><span class="piano-dot" class:on={app.midiStatus === "connected"}></span>{pianoLabel(app.midiStatus, app.pianoName)}</span>
-  </header>
+  </Status>
 
   <div class="stage" bind:this={stageEl}>
     <div class="strip" bind:this={stripEl}></div>
@@ -387,15 +392,19 @@
         {/if}
         <div class="row">
           {#if result.tricky}<button onclick={practiceTricky}>Practice tricky part</button>{/if}
-          <button class:quiet={!!result.tricky} onclick={startOver}>Play again</button>
-          <button class="quiet" onclick={back}>Songs</button>
+          <button class:quiet={!!result.tricky || inSession} onclick={startOver}>Play again</button>
+          {#if inSession}
+            <button onclick={next}>Next ›</button>
+          {:else}
+            <button class="quiet" onclick={back}>Done</button>
+          {/if}
         </div>
       </div>
     {/if}
   </div>
 
   <div class="controls">
-    <button class="quiet" onclick={back}>‹ Songs</button>
+    <button class="quiet" onclick={home}>‹ Home</button>
     <button class="main" onclick={playPause} disabled={!piece || uiState === "loading" || (needPiano && !running && uiState !== "paused")}>{playLabel}</button>
     <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">⟲</button>
     <div class="seg">
@@ -431,23 +440,7 @@
     <div class="sheet">
       <div class="sheet-head"><h2>Test settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
       <div class="grid">
-        <span>Auto-rewind</span>
-        <span><button class="toggle" class:off={!app.settings.autoRewind} onclick={() => { app.settings.autoRewind = !app.settings.autoRewind; app.save(); }}>{app.settings.autoRewind ? "On" : "Off"}</button></span>
-        <span>Display offset</span>
-        <span><button class="quiet" onclick={() => nudge("displayOffsetMs", -10)}>−10</button> <b>{app.settings.displayOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("displayOffsetMs", 10)}>+10</button></span>
-        <span>Latency offset</span>
-        <span><button class="quiet" onclick={() => nudge("latencyOffsetMs", -10)}>−10</button> <b>{app.settings.latencyOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("latencyOffsetMs", 10)}>+10</button></span>
-        {#if hasMedia}
-          <span>Backing volume</span>
-          <span><button class="quiet" onclick={() => backing(-0.25)}>−</button> <b>{Math.round(app.settings.backingVolume * 100)}%</b> <button class="quiet" onclick={() => backing(0.25)}>+</button></span>
-        {/if}
-        <span>Piano input</span>
-        <span class="wrap">
-          <button class="quiet" class:sel={!app.settings.pianoName} onclick={() => app.choosePiano(null)}>Automatic</button>
-          {#each app.midiNames as n}
-            <button class="quiet" class:sel={app.settings.pianoName === n} onclick={() => app.choosePiano(n)}>{n}</button>
-          {/each}
-        </span>
+        <DeviceSettings backing={hasMedia} />
         <span>MIDI delivery delay</span>
         <span>{delayStats()}</span>
         <span>Last MIDI events</span>
@@ -512,7 +505,6 @@
   .sheet-head { display: flex; justify-content: space-between; align-items: center; }
   .sheet-head h2 { margin: 0; font-size: 20px; }
   .grid { display: grid; grid-template-columns: 190px 1fr; gap: 10px 16px; align-items: center; margin-top: 10px; }
-  .wrap { display: flex; flex-wrap: wrap; gap: 8px; }
   .sel { outline: 3px solid var(--accent); }
   .mono { font: 14px/1.4 ui-monospace, Menlo, monospace; }
 </style>

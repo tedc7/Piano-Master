@@ -1,114 +1,113 @@
 <script lang="ts">
-  // M1 start screen: the pieces, grouped by the (placeholder) skill map. The student picker,
-  // Home with Guided / Free Play and the Journey map come in M4 and M5.
+  // Home (arch §3 screen 2): the two ways to play, "Today's Practice" (Guided) and "Free Play",
+  // today's session as cards, and the progress ring toward today's target minutes. The session,
+  // streak and stars are sample data until the lesson engine (M5).
   import { onMount } from "svelte";
-  import { app, pianoLabel } from "../lib/app.svelte.js";
-  import type { PieceSummary, Skill, SkillMap } from "../lib/types";
+  import Status from "../components/Status.svelte";
+  import TabBar from "../components/TabBar.svelte";
+  import { app } from "../lib/app.svelte.js";
+  import { loadContent, type Content } from "../lib/content";
+  import { sampleProgress, sampleSession, type SessionItem } from "../lib/progress";
+  import { go } from "../lib/route";
 
-  let map = $state<SkillMap | null>(null);
-  let pieces = $state<PieceSummary[]>([]);
+  const TARGET_MIN = 15;
+  const minutesToday = 0;
+
+  let content = $state<Content | null>(null);
   let error = $state("");
 
   onMount(async () => {
-    try {
-      const [m, idx] = await Promise.all([
-        fetch("content/skillmap.json").then((r) => r.json()),
-        fetch("content/index.json").then((r) => r.json()),
-      ]);
-      map = m;
-      pieces = idx.pieces;
-    } catch (e) {
-      error = `Can't load the songs from the piano server (${(e as Error).message}).`;
-    }
+    if (!app.student) { go(""); return; }
+    try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
   });
 
-  const byId = $derived(new Map(pieces.map((p) => [p.id, p])));
-  const skillName = $derived(new Map((map?.skills ?? []).map((s) => [s.id, s.name])));
-  const unassigned = $derived(pieces.filter((p) => !p.skillId));
-  const hands = (h: string) => (h === "RL" ? "Both hands" : h === "L" ? "Left hand" : "Right hand");
-  const piecesOf = (s: Skill) => (s.pieces ?? []).map((id) => byId.get(id)).filter((p): p is PieceSummary => !!p);
-  const open = (id: string) => { location.hash = `#/play/${id}`; };
+  const items = $derived.by((): SessionItem[] => {
+    if (!content) return [];
+    return app.session?.items ?? sampleSession(content.map, content.pieces, sampleProgress(content.map));
+  });
+  const doneCount = $derived(app.session?.index ?? 0);
+  const ring = $derived(Math.min(1, minutesToday / TARGET_MIN));
+  const reasonIcon: Record<string, string> = { Review: "🔁", New: "✨", Practice: "🎯", "Your pick": "🎁" };
+
+  function start(): void {
+    if (app.session && app.session.index < app.session.items.length) go("session");
+    else app.startSession(items);
+  }
 </script>
 
-<div class="home">
-  <header class="status">
-    <span class="title">Piano Master</span>
-    <span class="muted">M1 test build</span>
-    <span class="spacer"></span>
-    <span><span class="piano-dot" class:on={app.midiStatus === "connected"}></span>{pianoLabel(app.midiStatus, app.pianoName)}</span>
-  </header>
+<div class="screen">
+  <Status title={app.student ? `${app.student.avatar} ${app.student.name}` : "Piano Master"}>
+    <span>🔥 3 days</span>
+    <span>★ 12 this week</span>
+    <span class="sample">sample</span>
+  </Status>
 
-  <main>
+  <main class="body">
     {#if app.needsFullScreen}
       <p class="notice">Turn on full screen in MIDIWeb Browser to hide the address bar.</p>
     {/if}
-    {#if error}
-      <p class="notice error">{error}</p>
-    {/if}
-    {#if map}
-      {#if map.placeholder}
-        <p class="note">Placeholder skill map ({map.maps.map((m) => m.level).join(", ")}), for testing until the Faber books arrive.</p>
-      {/if}
-      {#each map.skills as s (s.id)}
-        <section class="skill">
-          <div class="skill-head">
-            <h2>{s.name}</h2>
-            <span class="track">{s.track}</span>
-          </div>
-          <p class="needs">
-            {#if s.prerequisites.length}Needs: {s.prerequisites.map((p) => skillName.get(p) ?? p).join(" + ")}{:else}First skill{/if}
-          </p>
-          <div class="cards">
-            {#each piecesOf(s) as p (p.id)}
-              <button class="card" onclick={() => open(p.id)}>
-                <span class="card-title">{p.title}</span>
-                <span class="card-meta">{hands(p.hands)} · {p.timeSig} · {p.tempo} bpm{p.hasMedia ? " · with singing" : ""}</span>
-              </button>
-            {/each}
-          </div>
-        </section>
+    {#if error}<p class="notice error">{error}</p>{/if}
+
+    <div class="top">
+      <div class="big-buttons">
+        <button class="big guided" onclick={start} disabled={!items.length}>
+          <span class="big-icon">▶</span>
+          <span><span class="big-title">Today's Practice</span><span class="big-sub">{app.session ? `${doneCount} of ${items.length} done` : `${items.length} things to play`}</span></span>
+        </button>
+        <button class="big free" onclick={() => go("library")}>
+          <span class="big-icon">🎵</span>
+          <span><span class="big-title">Free Play</span><span class="big-sub">Pick any song you've unlocked</span></span>
+        </button>
+      </div>
+      <div class="ring" style:--p={ring} aria-label="{minutesToday} of {TARGET_MIN} minutes today">
+        <div class="ring-inner"><b>{minutesToday}</b><span>of {TARGET_MIN} min</span></div>
+      </div>
+    </div>
+
+    <h2>Today <span class="sample">sample session</span></h2>
+    <div class="today">
+      {#each items as it, i (i)}
+        <div class="item" class:done={i < doneCount}>
+          <span class="reason">{reasonIcon[it.reason]} {it.reason}</span>
+          <span class="item-title">{it.kind === "lesson" ? `Lesson: ${it.title}` : it.title}</span>
+          {#if i < doneCount}<span class="check">✓</span>{/if}
+        </div>
       {/each}
-      {#if unassigned.length}
-        <section class="skill">
-          <h2>Other songs</h2>
-          <div class="cards">
-            {#each unassigned as p (p.id)}
-              <button class="card" onclick={() => open(p.id)}>
-                <span class="card-title">{p.title}</span>
-                <span class="card-meta">{hands(p.hands)} · {p.timeSig}</span>
-              </button>
-            {/each}
-          </div>
-        </section>
-      {/if}
-    {/if}
+    </div>
   </main>
+
+  <TabBar current="home" />
 </div>
 
 <style>
-  .home { display: flex; flex-direction: column; height: 100%; }
-  main {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    /* keep the first tappable card clear of the full-screen dead zone */
-    padding: calc(var(--deadzone) - var(--status-h)) 24px 40px;
+  .top { display: flex; gap: 24px; align-items: center; margin-bottom: 22px; }
+  .big-buttons { display: flex; gap: 18px; flex: 1; flex-wrap: wrap; }
+  .big {
+    flex: 1; min-width: 260px; min-height: 120px; display: flex; align-items: center; gap: 18px;
+    padding: 18px 24px; border-radius: 22px; text-align: left; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
-  .note { color: var(--muted); margin: 0 0 12px; }
-  .notice { background: #fff4d6; border: 1px solid #efd58a; border-radius: 12px; padding: 12px 16px; margin: 0 0 16px; }
-  .notice.error { background: #fde8e6; border-color: #f0b3ac; }
-  .skill { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px 18px; margin-bottom: 14px; }
-  .skill-head { display: flex; align-items: baseline; gap: 12px; }
-  h2 { font-size: 20px; margin: 0; }
-  .track { font-size: 14px; color: var(--muted); text-transform: capitalize; }
-  .needs { margin: 4px 0 12px; color: var(--muted); font-size: 15px; }
-  .cards { display: flex; flex-wrap: wrap; gap: 12px; }
-  .card {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-    min-width: 240px; padding: 14px 18px; text-align: left;
-    background: #eef3fd; color: var(--fg); border: 1px solid #cfdcf6;
+  .big > span:last-child { display: flex; flex-direction: column; gap: 4px; }
+  .guided { background: var(--accent); }
+  .free { background: #8a4fd0; }
+  .big-icon { font-size: 40px; }
+  .big-title { font-size: 28px; font-weight: 800; }
+  .big-sub { font-size: 16px; font-weight: 500; opacity: 0.9; }
+  .ring {
+    flex: 0 0 130px; height: 130px; border-radius: 50%;
+    background: conic-gradient(var(--ok) calc(var(--p) * 360deg), #e4e2da 0);
+    display: grid; place-items: center;
   }
-  .card-title { font-size: 19px; font-weight: 700; }
-  .card-meta { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .ring-inner { width: 100px; height: 100px; border-radius: 50%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-inner b { font-size: 30px; line-height: 1; }
+  .ring-inner span { font-size: 13px; color: var(--muted); }
+  h2 { margin-bottom: 10px !important; }
+  .today { display: flex; gap: 12px; flex-wrap: wrap; }
+  .item {
+    position: relative; display: flex; flex-direction: column; gap: 6px; min-width: 200px; flex: 1;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px;
+  }
+  .item.done { opacity: 0.55; }
+  .reason { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .item-title { font-size: 18px; font-weight: 700; }
+  .check { position: absolute; right: 14px; top: 10px; color: var(--ok); font-size: 22px; font-weight: 800; }
 </style>

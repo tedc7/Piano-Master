@@ -95,6 +95,11 @@ export class KeyboardView {
     k.classList.add(`kb-${kind}`);
   }
 
+  /** Add or remove an extra class on one key (the piano check marks the keys it has heard). */
+  mark(pitch: number, cls: string, on = true): void {
+    this.keys.get(pitch)?.classList.toggle(cls, on);
+  }
+
   release(pitch: number): void {
     this.keys.get(pitch)?.classList.remove("kb-ok", "kb-late", "kb-wrong", "kb-neutral");
   }

@@ -7,7 +7,7 @@ const API = "/api";
 const DEVICE_KEY = "pm.device.v1";
 const OUTBOX_KEY = "pm.outbox.v1";
 const OUTBOX_MAX = 200;
-export const CLIENT_VERSION = "0.2.0";
+export const CLIENT_VERSION = "0.3.0";
 
 function read<T>(key: string, fallback: T): T {
   try {

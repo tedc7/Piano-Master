@@ -1,19 +1,30 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Home from "./screens/Home.svelte";
+  import Journey from "./screens/Journey.svelte";
+  import Lesson from "./screens/Lesson.svelte";
+  import Library from "./screens/Library.svelte";
+  import Parent from "./screens/Parent.svelte";
+  import Picker from "./screens/Picker.svelte";
   import Play from "./screens/Play.svelte";
+  import Progress from "./screens/Progress.svelte";
+  import Session from "./screens/Session.svelte";
   import { api } from "./lib/api";
   import { app } from "./lib/app.svelte.js";
+  import { go, parse } from "./lib/route";
 
   let route = $state(parse(location.hash));
 
-  function parse(hash: string): { screen: "home" } | { screen: "play"; id: string } {
-    const m = /^#\/play\/([\w-]+)$/.exec(hash);
-    return m ? { screen: "play", id: m[1] } : { screen: "home" };
-  }
+  // student screens need a player; without one (a reload, or a bookmark) start at the picker
+  const needsStudent = new Set(["home", "session", "journey", "library", "progress"]);
 
   onMount(() => {
-    const onHash = () => { route = parse(location.hash); };
+    const onHash = () => {
+      const r = parse(location.hash);
+      if (needsStudent.has(r.screen) && !app.student && !app.parentMode) { go(""); return; }
+      route = r;
+    };
+    onHash();
     window.addEventListener("hashchange", onHash);
     void app.midi.start();
     void api.start();
@@ -28,6 +39,22 @@
   {#key route.id}
     <Play id={route.id} />
   {/key}
-{:else}
+{:else if route.screen === "home"}
   <Home />
+{:else if route.screen === "session"}
+  <Session />
+{:else if route.screen === "journey"}
+  <Journey />
+{:else if route.screen === "lesson"}
+  {#key route.skillId}
+    <Lesson skillId={route.skillId} />
+  {/key}
+{:else if route.screen === "library"}
+  <Library />
+{:else if route.screen === "progress"}
+  <Progress />
+{:else if route.screen === "parent"}
+  <Parent page={route.page} />
+{:else}
+  <Picker />
 {/if}

@@ -16,6 +16,13 @@ Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.
 The skill map in `content/skillmap/` is a **placeholder** (ids start with `placeholder.`) until the
 Faber books arrive; replace it with the real Prep A map.
 
+**Screens** (arch §3): player picker → Home (Today's Practice, Free Play) with a bottom tab bar for
+Journey, Songs and My Progress; the Play screen; and Parent (PIN pad, then the hub with the piano
+check, device settings, app status and the content preview; other pages are placeholders marked
+with their milestone). Until M4 and M5, the players, the PIN (any 4 digits) and the progress
+behind the Journey map, Songs, Home and My Progress are **sample data** (`client/src/lib/progress.ts`,
+`SAMPLE_STUDENTS`), shown with a "sample" tag.
+
 ## Develop
 
 ```sh
