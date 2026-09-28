@@ -1,16 +1,19 @@
 import { describe, expect, it } from "vitest";
 import { Matcher } from "../src/lib/matcher";
-import { RewindPolicy } from "../src/lib/rewind";
+import { REWIND_RULES, RewindPolicy, type RewindRules } from "../src/lib/rewind";
 import { buildTimeline, phraseIndexAt } from "../src/lib/timeline";
 import { FOUR_BARS } from "./fixtures";
 
 const SPB = 0.5;
 
-function setup() {
+// the mechanism is tested with the arch's original threshold of 2; the default is checked below
+const TWO: RewindRules = { ...REWIND_RULES, minErrors: 2 };
+
+function setup(rules: RewindRules = TWO) {
   const tl = buildTimeline(FOUR_BARS);
   const expected = tl.notes.map((x) => ({ id: x.id, pitch: x.pitch, beat: x.beat, phrase: x.phrase }));
   const m = new Matcher(expected, (b) => phraseIndexAt(tl.phrases, b));
-  const p = new RewindPolicy(tl, m);
+  const p = new RewindPolicy(tl, m, rules);
   p.beginPass(0);
   /** Play the expected notes from..to (beats), each on time, stepping the clock like frames. */
   const play = (from: number, to: number, skip: number[] = [], wrongAt: number[] = []) => {
@@ -53,6 +56,13 @@ describe("RewindPolicy", () => {
   it("rewinds at the next bar line after 2 beats of silence while notes are expected", () => {
     const r = setup().play(0, 16, [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);   // stops after beat 4
     expect(r?.plan).toMatchObject({ reason: "lost", phrase: 0, targetBeat: 0, atBeat: 8 });
+  });
+
+  it("by default needs 6 errors in a phrase (a wrong key counts as a miss and a wrong note)", () => {
+    expect(REWIND_RULES.minErrors).toBe(6);
+    // 3 wrong keys in phrase 1 = 6 errors: rewind; 2 wrong keys = 4 errors: keep going
+    expect(setup(REWIND_RULES).play(0, 16.1, [9, 10, 11], [9, 10, 11])?.plan).toMatchObject({ reason: "errors", phrase: 1 });
+    expect(setup(REWIND_RULES).play(0, 16.5, [9, 10], [9, 10])).toBeNull();
   });
 
   it("keeps going after 3 rewinds of the same phrase", () => {

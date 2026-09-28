@@ -41,10 +41,11 @@ FAKE_MIDI = """
 })();
 """
 
-# Plays the piece's expected notes when the song clock reaches them, optionally skipping some
-# beats, until the attempt finishes (or `untilRewinds` rewinds have happened).
+# Plays the piece's expected notes when the song clock reaches them, until the attempt finishes
+# (or `untilRewinds` rewinds have happened). Notes at the `skip` beats are left out, or, with
+# `wrongKeys`, played a semitone too high.
 AUTOPLAY = """
-([skip, untilRewinds, maxSeconds]) => new Promise((resolve) => {
+([skip, untilRewinds, maxSeconds, wrongKeys]) => new Promise((resolve) => {
   const pm = window.__pm, tl = pm.tl, player = pm.player;
   let next = 0, lastState = null, rewinds = 0, t0 = performance.now();
   const notes = tl.notes.filter((n) => !n.tieContinuation);
@@ -60,9 +61,10 @@ AUTOPLAY = """
     if (st === "playing" || st === "countin") {
       while (next < notes.length && notes[next].beat <= pos + 1e-6) {
         const n = notes[next++];
-        if (skip.some((b) => Math.abs(b - n.beat) < 1e-6)) continue;
-        window.__midiSend([0x90, n.pitch, 80]);
-        setTimeout(() => window.__midiSend([0x80, n.pitch, 0]), 120);
+        let pitch = n.pitch;
+        if (skip.some((b) => Math.abs(b - n.beat) < 1e-6)) { if (!wrongKeys) continue; pitch += 1; }
+        window.__midiSend([0x90, pitch, 80]);
+        setTimeout(() => window.__midiSend([0x80, pitch, 0]), 120);
       }
     }
     const done = st === "finished" || (untilRewinds && rewinds >= untilRewinds) || performance.now() - t0 > maxSeconds * 1000;
@@ -153,7 +155,7 @@ def main():
         page.locator("button.main").click()
         page.wait_for_timeout(2500)
         page.screenshot(path=str(OUT / "twinkle-playing.png"))
-        r = page.evaluate(AUTOPLAY, [[], 0, 60])
+        r = page.evaluate(AUTOPLAY, [[], 0, 60, False])
         res = page.evaluate("__pm.player.debug()")
         check(r["state"] == "finished", f"twinkle clean run: finishes ({r['state']})")
         check(r["rewinds"] == 0 and res["matcher"]["hits"] == res["matcher"]["expected"] and res["matcher"]["wrong"] == 0,
@@ -170,15 +172,15 @@ def main():
         full = page.evaluate(f"fetch('api/attempts/{stored[0]['id']}').then(r => r.json())") if stored else {}
         check(len([e for e in full.get("rawEvents", []) if e["type"] == "on"]) == 42, "twinkle clean run: all 42 key presses stored as raw events")
 
-        # 4. Hot Cross Buns with two missed notes in phrase 1: one rewind, then a clean pass
+        # 4. Hot Cross Buns with three wrong keys in the first phrase (6 errors): one rewind, then a clean pass
         open_piece(page, "hot-cross-buns")
         page.get_by_role("button", name="100%").click()
         page.locator("button.main").click()
-        r = page.evaluate(AUTOPLAY, [[4, 5], 1, 30])
-        check(r["rewinds"] == 1 and r["debug"]["rewinds"][0] == 1, f"hot cross buns: 2 misses in the first phrase rewind it once ({r['debug']['rewinds']})")
+        r = page.evaluate(AUTOPLAY, [[4, 5, 6], 1, 30, True])
+        check(r["rewinds"] == 1 and r["debug"]["rewinds"][0] == 1, f"hot cross buns: 3 wrong keys in the first phrase rewind it once ({r['debug']['rewinds']})")
         page.wait_for_timeout(250)
         page.screenshot(path=str(OUT / "hcb-glide.png"))
-        r = page.evaluate(AUTOPLAY, [[], 0, 40])
+        r = page.evaluate(AUTOPLAY, [[], 0, 40, False])
         res = r["debug"]["matcher"]
         check(r["state"] == "finished" and res["hits"] == res["expected"], f"hot cross buns: clean second pass counts ({res})")
         page.wait_for_selector(".result")
@@ -188,7 +190,7 @@ def main():
         page.get_by_role("button", name="Practice tricky part").click()
         page.wait_for_function("__pm.player.mode === 'loop' && __pm.player.preset === '90'")
         check(page.get_by_text("Bars 1–2").count() > 0, "tricky part: loops bars 1-2 at the next slower preset (90%)")
-        r = page.evaluate(AUTOPLAY, [[], 1, 30])
+        r = page.evaluate(AUTOPLAY, [[], 1, 30, False])
         page.wait_for_selector(".loopnote")
         page.screenshot(path=str(OUT / "hcb-loop.png"))
         check("6 of 6 notes" in page.locator(".loopnote").inner_text(), f"tricky part: a clean loop pass shows its result ({page.locator('.loopnote').inner_text()})")

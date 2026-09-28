@@ -5,6 +5,7 @@ student functions need no login (§11.1). Parent-only reads arrive with parent m
 """
 from __future__ import annotations
 
+import html
 import json
 import re
 from contextlib import asynccontextmanager
@@ -12,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Literal
 
 from fastapi import FastAPI, HTTPException, Query, Request, Response
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from . import db
@@ -126,6 +127,71 @@ class LogsIn(BaseModel):
 
 
 # ------------------------------------------------------------------------------------ routes
+
+def local_time(iso: str | None) -> str:
+    """A stored UTC time in the server's time zone (TZ), for people to read."""
+    if not iso:
+        return ""
+    try:
+        return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone().strftime("%b %d %H:%M")
+    except ValueError:
+        return iso
+
+
+def stars_text(v: float | None) -> str:
+    if v is None:
+        return "–"
+    return "★" * int(v) + ("½" if v % 1 else "")
+
+
+@app.get("/api/", response_class=HTMLResponse)
+def index():
+    """A page for people: what the API is, recent attempts and problems, and the JSON endpoints."""
+    con = db.connect()
+    try:
+        attempts = con.execute(
+            "SELECT started_at, piece_id, mode, tempo_preset, completed, accuracy_stars, timing_stars, conditions_factor, "
+            "raw_accuracy, id FROM attempts ORDER BY started_at DESC LIMIT 25").fetchall()
+        counts = con.execute("SELECT COUNT(*), COUNT(DISTINCT device_id) FROM attempts").fetchone()
+        devices = con.execute("SELECT COUNT(*) FROM devices").fetchone()[0]
+        problems = con.execute(
+            "SELECT time, level, message FROM client_logs WHERE level != 'info' ORDER BY id DESC LIMIT 10").fetchall()
+    finally:
+        con.close()
+    e = html.escape
+    rows = "".join(
+        f"<tr><td>{e(local_time(a['started_at']))}</td><td>{e(a['piece_id'])}</td><td>{e(a['mode'])}</td>"
+        f"<td>{e(a['tempo_preset'])}%</td><td>{'done' if a['completed'] else 'stopped'}</td>"
+        f"<td class=s>{stars_text(a['accuracy_stars'])}</td><td class=s>{stars_text(a['timing_stars'])}</td>"
+        f"<td>{a['raw_accuracy'] * 100:.0f}% × {a['conditions_factor']:.2f}</td>"
+        f"<td><a href='attempts/{e(a['id'])}'>json</a></td></tr>"
+        for a in attempts) or "<tr><td colspan=9>No attempts yet: they arrive when a piece is played in Play or Loop mode.</td></tr>"
+    probs = "".join(f"<li>{e(local_time(x['time']))} <b>{e(x['level'])}</b> {e(x['message'])}</li>" for x in problems) \
+        or "<li>None</li>"
+    return f"""<!doctype html><html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1"><title>Piano App API</title>
+<style>
+ body {{ font: 16px/1.4 -apple-system, "Segoe UI", Roboto, sans-serif; margin: 24px; color: #1f1f24; background: #f7f5f0; }}
+ table {{ border-collapse: collapse; background: #fff; }} td, th {{ padding: 6px 10px; border-bottom: 1px solid #e2dfd7; text-align: left; }}
+ .s {{ color: #d99a00; white-space: nowrap; }} code {{ background: #ecebe6; padding: 1px 5px; border-radius: 4px; }}
+ .muted {{ color: #6c6a72; }}
+</style></head><body>
+<h1>Piano App API</h1>
+<p>Version {VERSION}, database schema {schema_version}. {counts[0]} attempts from {counts[1]} device(s); {devices} device(s) registered.
+The app itself is at <a href="/app/">/app/</a>.</p>
+<h2>Recent attempts</h2>
+<table><tr><th>Started</th><th>Piece</th><th>Mode</th><th>Tempo</th><th></th><th>Notes</th><th>Timing</th><th>Accuracy × aids</th><th></th></tr>{rows}</table>
+<h2>Recent problems (client warnings and errors)</h2><ul>{probs}</ul>
+<h2>Endpoints (JSON)</h2>
+<ul>
+ <li><a href="health">GET /api/health</a></li>
+ <li><a href="attempts">GET /api/attempts</a> <span class=muted>?piece_id=… &amp;device_id=… &amp;limit=…</span>, and <code>GET /api/attempts/&lt;id&gt;</code> with every key press</li>
+ <li><a href="logs">GET /api/logs</a> <span class=muted>?level=error</span></li>
+ <li><code>POST /api/attempts</code>, <code>PUT /api/devices/&lt;id&gt;</code>, <code>POST /api/logs</code>: used by the app</li>
+ <li><a href="docs">Interactive docs</a> <span class=muted>(loads its script from the internet)</span></li>
+</ul>
+</body></html>"""
+
 
 @app.get("/api/health")
 def health():

@@ -1,0 +1,6 @@
+{
+  "description": "Two wrong keys in the first phrase: 4 errors, below the threshold of 6, so no rewind. (15 - 0.5) / 17 = 85%: 3.5 stars; the phrase with the errors is the tricky spot.",
+  "piece": "hot-cross-buns", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4, 5], "wrong": [{ "beat": 4, "pitch": 65 }, { "beat": 5, "pitch": 63 }] }],
+  "expect": { "rewinds": [], "completed": true, "matched": 15, "extra": 2, "accuracyStars": 3.5, "tricky": { "phrase": 0, "bars": [1, 2] } }
+}

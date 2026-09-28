@@ -82,3 +82,11 @@ def test_migrations_are_idempotent(tmp_path):
     assert db.migrate(path) == v
     con = db.connect(path)
     assert con.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
+
+
+def test_index_page_lists_attempts_for_people(client):
+    a = attempt()
+    client.post("/api/attempts", json=a)
+    r = client.get("/api/")
+    assert r.status_code == 200 and r.headers["content-type"].startswith("text/html")
+    assert "Piano App API" in r.text and "twinkle-twinkle" in r.text and "★★★" in r.text and a["id"] in r.text
