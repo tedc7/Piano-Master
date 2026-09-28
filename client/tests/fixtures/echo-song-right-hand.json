@@ -1,0 +1,6 @@
+{
+  "description": "Right hand only on a hands-taking-turns piece, while also playing the left-hand echoes: those are the other hand, not extra notes. One hand: factor 0.85, 3.5 stars.",
+  "piece": "echo-song", "preset": "100", "hands": "R",
+  "passes": [{ "playHands": "both" }],
+  "expect": { "rewinds": [], "completed": true, "matched": 13, "extra": 0, "accuracyStars": 3.5, "aids": ["hands"] }
+}

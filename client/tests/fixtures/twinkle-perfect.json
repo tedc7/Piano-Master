@@ -1,0 +1,6 @@
+{
+  "description": "Every note on the beat at full tempo: 5 stars for notes and timing, no rewinds.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{}],
+  "expect": { "rewinds": [], "completed": true, "matched": 42, "extra": 0, "accuracyStars": 5, "timingStars": 5, "tendency": null, "aids": [] }
+}

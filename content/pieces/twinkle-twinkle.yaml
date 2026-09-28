@@ -1,0 +1,22 @@
+# Core piece (placeholder map). Words Jane Taylor (1806), traditional tune; public domain.
+# The M1 test song: "a child plays Twinkle Twinkle start to finish at the 50% preset" (arch §12).
+title: Twinkle Twinkle Little Star
+composer: Traditional
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Twinkle Twinkle Little Star
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  K:C
+  "C"!1!C C !4!G G | "F"!5!A A "C"!4!G2 | "F"!3!F F "C"!2!E E | "G"D D "C"C2 |
+  w: Twin-kle, twin-kle, lit-tle star, how I won-der what you are!
+  "C"G G "F"F F | "C"E E "G"D2 | "C"G G "F"F F | "C"E E "G"D2 |
+  w: Up a-bove the world so high, like a dia-mond in the sky.
+  "C"C C G G | "F"A A "C"G2 | "F"F F "C"E E | "G"D D "C"C2 |]
+  w: Twin-kle, twin-kle, lit-tle star, how I won-der what you are!

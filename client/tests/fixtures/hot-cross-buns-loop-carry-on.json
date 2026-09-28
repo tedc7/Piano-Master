@@ -1,0 +1,6 @@
+{
+  "description": "A loop of the first phrase, played cleanly, carrying on into the next bar as the loop ends: the notes past the section are ignored, not extra. 6/6 x 0.9 (section) x 0.92 (90%) = 83%: 3.5 stars.",
+  "piece": "hot-cross-buns", "preset": "90", "hands": "both", "section": { "phrases": [0, 0] },
+  "passes": [{}],
+  "expect": { "rewinds": [], "completed": true, "matched": 6, "extra": 0, "accuracyStars": 3.5, "aids": ["tempo", "section"] }
+}

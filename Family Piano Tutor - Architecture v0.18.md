@@ -1,6 +1,15 @@
-# Family Piano Tutor — Architecture v0.17
+# Family Piano Tutor — Architecture v0.18
 
-Sep 27, 2026 · @Someone
+Sep 28, 2026 · @Someone
+
+**What changed in v0.18** (from building M1 and M2, `client/`, `api/`):
+- **Display offset direction:** the staff is drawn a per-device offset **behind** the estimated audio clock, not ahead of it (3, 5). v0.17 said "ahead"; the code and the iPad test hold it behind.
+- **Plain Web Audio instead of Tone.js:** stems, clicks, count-in and the Listen tone need only a few Web Audio nodes, and the song clock reads the `AudioContext` directly, so Tone.js is dropped (2.7, 4).
+- **Rewind threshold 6:** a phrase rewinds when its missed plus wrong notes reach **6**, or 25% of its notes, whichever is larger (3). A **wrong key counts twice**: the written note it replaced is missed, and the key itself is a wrong note, so 2 errors per wrong key made the first threshold of 2 rewind on a single slip. To be tightened after the MIDI tests if needed.
+- **Built stack:** Svelte 5, TypeScript and Vite on the client; FastAPI with SQLite (numbered migrations) for the App API; the client outbox and client log are in place (2.7, 12).
+- **Navigation (from the layout review):** the player picker lists each child and **Parent** (behind the PIN) as players; a bottom tab bar replaces Home (students: Today's Practice, Journey, Songs, My Progress; the parent: Journey, Songs, Config). Today's Practice shows the whole session as a path of items, checked off with their stars as soon as each is finished. The status strip leaves its left 110 px empty for MIDIWeb Browser's floating full-screen button (3).
+- **Play screen controls:** two modes, **Play** (play-along) and **Listen**, each button starting and pausing its own mode, with a bars picker (**All bars** or one section, which then repeats: the old Section loop). A **Rewind** button goes back a set number of bars (2 by default) and counts as a rewind in Play mode; after the end it returns to the start. The Click button is now **Metro** (3).
+- **Settings owners (flagged for M4):** everything is kept per device for now; in M4 the per-student settings (auto-rewind, backing volume, rewind bars, and per song the vocals, metronome and tempo preset) move to each student, set by the parent in Config, and the device settings (offsets, piano input) stay in Config > Device settings. The Play screen's settings sheet then shows only test readouts, to the parent (5, 12).
 
 **What changed in v0.17** (from feasibility tests 2–4 and four rounds of YuE2 listening, `feasibility/sync-probe/RESULTS.md`):
 - **Song clock and notation:**
@@ -162,8 +171,8 @@ Three measurements, all recorded in the DeviceProfile:
 
 **Tech stack (proposed; to be reviewed against existing server components during implementation):**
 
-- **Client:** TypeScript, a light UI framework (Svelte or React), SVG for the staff (one pre-rendered SVG per song; canvas tiles performed the same in testing), VexFlow for music notation, Tone.js for audio. All libraries and fonts are served from the piano server, never a CDN (VexFlow 5 loads its music fonts from a CDN by default, so its fonts must be self-hosted; 4.2.x embeds them).
-- **Server:** Python (FastAPI or similar) with SQLite; plain files for media. Python is shared with the Claude skills (music21, validation, fingerprint, fingering).
+- **Client:** TypeScript, Svelte 5 with Vite (chosen in v0.18), SVG for the staff (one pre-rendered SVG per song; canvas tiles performed the same in testing), VexFlow for music notation, plain Web Audio for audio (Tone.js dropped in v0.18: the few nodes needed are simpler to own, and the song clock reads the `AudioContext` directly). All libraries and fonts are served from the piano server, never a CDN (VexFlow 5 loads its music fonts from a CDN by default, so its fonts must be self-hosted; 4.2.x embeds them).
+- **Server:** Python (FastAPI) with SQLite, schema changes as numbered migrations; plain files for media. Python is shared with the Claude skills (music21, validation, fingerprint, fingering).
 
 ## 3. UI design
 
@@ -248,8 +257,9 @@ On the Journey map, a concept lesson is a small **lightbulb bubble** directly be
 - **On-screen keyboard** (bottom 30%): 2 to 4 octaves around the song's range. Target key highlighted; pressed keys light up live from MIDI. Hints fade out as levels rise.
 - **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9).
 - **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
-- **Control strip (between the staff and the on-screen keyboard):** pause, restart, tempo presets (50%, 75%, 90%, 100%), mode toggle, **vocals on/off**, accompaniment on/off and volume.
-- **Modes:** Play (the default: play-along with smooth automatic rewind, below), Listen (app plays it first, with accompaniment and vocals), Section loop. Wait mode is an optional aid, built later (M10).
+- **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song), the two mode buttons (each starts and pauses its mode), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, metronome on/off (v0.18).
+- **Modes:** Play (the default: play-along with smooth automatic rewind, below) and Listen (the app plays it, with accompaniment and vocals). Either runs over all bars or a chosen section, which then repeats (the section loop; v0.18). The screen opens paused in Play mode.
+- **Rewind button:** while playing, glides back a set number of bars (2 by default, from the start of the current bar; never before the section start) and plays on after the count-in; while paused, moves the resume point back; after the end, returns to the start. In Play mode it counts as a rewind for the practice-aid factor (7.5). Wait mode is an optional aid, built later (M10).
 - **Smooth rewind:** see "Play and smooth rewind" below; section loops use the same glide.
 - **Count-in and metronome:** visual beat dots plus an optional click.
 
@@ -263,7 +273,7 @@ On the Journey map, a concept lesson is a small **lightbulb bubble** directly be
 
 | Trigger | Rule | When the rewind starts |
 | --- | --- | --- |
-| Too many errors | Missed plus wrong notes in the current phrase reach 2, or 25% of the phrase's notes, whichever is larger. Timing alone never triggers a rewind | At the end of the phrase, so the music is not cut off mid-phrase |
+| Too many errors | Missed plus wrong notes in the current phrase reach 6, or 25% of the phrase's notes, whichever is larger (v0.18; 2 in v0.17). A wrong key counts twice: the written note is missed and the key is a wrong note. Timing alone never triggers a rewind | At the end of the phrase, so the music is not cut off mid-phrase |
 | Lost place | No notes played for 2 beats while notes are expected | At the next bar line |
 
 **Where it goes back to:** the start of the phrase with the errors. If the first error was on the phrase's first beat, it goes back one more phrase for a run-up. In section loop it never goes before the section start.
@@ -286,7 +296,7 @@ Notes played during the glide and count-in are ignored. Nothing on screen announ
 **Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out (tested: a 64-measure grand staff with lyrics, about 22,000 px wide, scrolled and glided at a steady 60 fps on the iPad A16, worst frame 24 ms); audio stems are decoded in advance, so they can restart instantly from any point (tested: 691 MB of decoded audio held and played, 2 x 6-minute stems decoded in 0.5 s, restarts at a new point with no audible delay); one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart (tested in v0.17 with real songs and aligned stems: 60 fps with no frame over 25 ms in a 3-minute run with 9 rewinds and tempo switches).
 - **The song clock** reads the audio clock through `getOutputTimestamp()`. It uses a time stamp only when it is fresh (under 250 ms old) from a running audio context; after the iPad sleeps, a stale time stamp once jumped the clock minutes ahead. Otherwise it falls back to `currentTime` minus the reported latencies, which read about 12 ms off on the iPad.
 - **Audio vs display clock:** they agreed within 8–32 ppm on the iPad (2–6 ms over 3 minutes), so no drift correction is needed.
-- **Display offset:** the staff is drawn a per-device offset ahead of the audio clock (DeviceProfile, 5). 80 ms lined the notes up with the play line on the iPad A16. This is separate from the MIDI latency offset used for scoring.
+- **Display offset:** the staff is drawn a per-device offset behind the estimated audio clock (DeviceProfile, 5; "ahead" before v0.18 was wrong). 80 ms lined the notes up with the play line on the iPad A16. This is separate from the MIDI latency offset used for scoring.
 
 At resume, the evaluator re-anchors its MIDI-to-song clock mapping. Rewinds are tested with the MIDI replay adapter (11.4).
 
@@ -433,7 +443,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | --- | --- |
 | Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, vocals off for songs\[\]) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
-| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn ahead of the audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
+| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
 | Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
@@ -625,7 +635,7 @@ The match window is never more than half the gap to the next expected note of th
 
 ### 7.2 Matching played notes to the music
 
-**Play-along mode:** each played note is matched to the nearest unmatched expected note of the same pitch within the match window. Expected notes with no match are **missed**. Played notes with no match are **extra**.
+**Play-along mode:** each played note is matched to the nearest unmatched expected note of the same pitch within the match window. Expected notes with no match are **missed**. Played notes with no match are **extra**. So a wrong key in place of a written note is **two errors**: the written note is missed (no credit) and the key is extra (the extra-note penalty). The rewind rule (3) counts both.
 
 **After a rewind:** only the last pass of each phrase is scored. Earlier passes stay in the raw events, so Diagnostics still sees every mistake.
 
@@ -1233,12 +1243,12 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 
 | # | Milestone | Delivers | Done when |
 | --- | --- | --- | --- |
-| M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Remaining:** App API and SQLite skeleton; MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; Tone.js audio in MIDIWeb Browser; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
+| M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Done in M1 and M2 (Sep 28, 2026):** App API and SQLite skeleton. **Dropped:** Tone.js (plain Web Audio, v0.18). **Remaining:** MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
 | M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`). **Extended in v0.17** with real hymns and songs, the song clock and alignment on the iPad (`feasibility/sync-probe/RESULTS.md`): YuE2 input rules, alignment method and checks settled (10.5) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
-| M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
-| M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
+| M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs. **Built (Sep 28, 2026)** at `https://192.168.2.128/app/` with a placeholder skill map and 6 songs; the acceptance test waits for the MIDI keyboard | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
+| M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures. **Built (Sep 28, 2026)** with the App API storing attempts and raw events, and 16 scripted fixtures; recorded fixtures and the "fair over 10 plays" check wait for the MIDI keyboard | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
-| M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
+| M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure; per-student settings moved out of the Play screen into each student (set by the parent in Config), device settings in Config > Device settings (v0.18) | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
 | M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles) | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
 | M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring | Errors planted in simulated data are detected and get the right remedy |
 | M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
@@ -1324,7 +1334,7 @@ Not planned for v1; revisit when needed.
 - **Song import:** which genres to import first?
 - **Scoring numbers (section 7) and diagnostic thresholds (8.8):** first versions; tune after M2 fixtures and real use.
 - **Content authoring formats (6.9):** initial recommendation; confirm after the first few lessons are authored.
-- **Smooth rewind:** thresholds, glide timing, and the "slower third pass" option are first versions, tuned with the children in M1.
+- **Smooth rewind:** thresholds (6 errors from v0.18), glide timing, and the "slower third pass" option are first versions, tuned with the children in M1.
 - **Wait mode:** build it in M10, or drop it if smooth rewind works well?
 - **AI advisor:** where, if anywhere, does AI improve learning (section 9)?
 
@@ -1332,6 +1342,9 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Rewind threshold (v0.18) | 6 missed plus wrong notes per phrase, or 25% of its notes; tighten after the MIDI tests if needed | A wrong key is 2 errors (a missed note and a wrong note), so 2 rewound on a single slip |
+| Client audio (v0.18) | Plain Web Audio; Tone.js dropped | Only stems, clicks and a simple tone are needed; the song clock reads the `AudioContext` directly |
+| Display offset direction (v0.18) | The staff is drawn behind the estimated audio clock | Corrects v0.17's "ahead"; matches the code and the iPad test |
 | YuE2 input (v0.17) | One melody note per sung syllable (melismas merged onto the first pitch), checked against a syllables sidecar; chord symbols kept (`plan full`); `L:1/32`; a sung "Oh" lead-in bar | Words on the wrong notes fell from 39% to 12%; chord-free input made the backing ignore the written chords; without a lead-in YuE2 starts early and drops the first word |
 | Backing prompt (v0.17) | Genre defaults name the backing instruments and how they play, with one solo voice; no piano | The backing followed the written chords in 81% of spans (vague defaults 58%); preferred by listening |
 | Alignment (v0.17) | Every take is time-warped with a Rubber Band time map from windowed pitch alignment; lyric forced alignment for the word check and as the fallback map; fail on a sustained phrase offset over about 50 ms | YuE2 keeps its own pace even with one note per syllable; onset picking failed; the measurement's own p95 is about 45 ms |
@@ -1414,6 +1427,7 @@ Not planned for v1; revisit when needed.
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.18 | Sep 28, 2026 | From building M1 and M2 and the layout review: display offset is behind the audio clock; plain Web Audio instead of Tone.js; rewind threshold 6 because a wrong key counts twice; built stack recorded; M0, M1 and M2 status; parent as a player and tab-bar navigation; Play and Listen modes with a bars picker and a Rewind button; per-student settings flagged for M4 |
 | v0.17 | Sep 27, 2026 | From feasibility tests 2–4 and YuE2 listening: one song clock with a per-device display offset; pitch spelling in the notation; ABC Plus via abc2xml; YuE2 input with one note per syllable, chords and an "Oh" lead-in; named backing instruments; pitch-window alignment with lyric forced alignment; backing level for tablet speakers; Vocals on/off button; YuE2 limitations documented |
 | v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; M0-S decision: proceed with YuE2 |
 | v0.15 | Sep 23, 2026 | From the v0.14 review: branching skill map; Guided-ready (passed + 1) and library-ready unlocking; stacked aids do not pass; gentle "Try it another way" options and stuck-skill support practice; rhythm skills need timing stars; no minimum practice or daily cap; running mastery with best-so-far; content-change handling deferred |

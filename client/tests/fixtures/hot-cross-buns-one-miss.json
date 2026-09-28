@@ -1,0 +1,6 @@
+{
+  "description": "One note missed: below the rewind threshold, so the music keeps going. 16 of 17 = 94%: 4.5 stars.",
+  "piece": "hot-cross-buns", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [5] }],
+  "expect": { "rewinds": [], "completed": true, "matched": 16, "accuracyStars": 4.5, "timingStars": 5, "tricky": null }
+}

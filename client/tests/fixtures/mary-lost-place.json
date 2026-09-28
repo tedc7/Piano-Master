@@ -1,0 +1,6 @@
+{
+  "description": "Plays the first bar, then stops: 2 beats of silence while notes are expected rewinds at the next bar line (beat 8) to the phrase start.",
+  "piece": "mary-had-a-little-lamb", "preset": "100", "hands": "both",
+  "passes": [{ "stopAtBeat": 4 }, {}],
+  "expect": { "rewinds": [{ "reason": "lost", "phrase": 0, "targetBeat": 0 }], "completed": true, "matched": 26, "accuracyStars": 4.5 }
+}

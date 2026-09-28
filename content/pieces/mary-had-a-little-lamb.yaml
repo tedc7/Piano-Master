@@ -1,0 +1,19 @@
+# Core piece (placeholder map). Words Sarah Josepha Hale (1830), traditional tune; public domain.
+title: Mary Had a Little Lamb
+composer: Traditional
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Mary Had a Little Lamb
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  K:C
+  "C"!3!E !2!D !1!C D | E E E2 | "G"D D D2 | "C"E !5!G G2 |
+  w: Ma-ry had a lit-tle lamb, lit-tle lamb, lit-tle lamb,
+  "C"E D C D | E E E E | "G"D D E D | "C"C4 |]
+  w: Ma-ry had a lit-tle lamb, its fleece was white as snow.

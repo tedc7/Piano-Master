@@ -1,0 +1,6 @@
+{
+  "description": "One wrong key instead of the right one (A# for A at beat 4): a missed note plus a wrong note, 2 errors, below the rewind threshold of 6, so the music keeps going. (41 - 0.25) / 42 = 97%: still 5 stars.",
+  "piece": "twinkle-twinkle", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4], "wrong": [{ "beat": 4, "pitch": 70 }] }],
+  "expect": { "rewinds": [], "completed": true, "matched": 41, "extra": 1, "accuracyStars": 5, "timingStars": 5, "aids": [] }
+}

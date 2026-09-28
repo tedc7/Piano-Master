@@ -1,0 +1,6 @@
+{
+  "description": "'Practice tricky part': the third phrase looped at 75%, played cleanly. Section 0.9 x tempo 0.86 = 0.774: 3 stars, but a section never passes a skill.",
+  "piece": "twinkle-twinkle", "preset": "75", "hands": "both", "section": { "phrases": [2, 2] },
+  "passes": [{}],
+  "expect": { "rewinds": [], "completed": true, "matched": 7, "accuracyStars": 3, "timingStars": 3, "aids": ["tempo", "section"] }
+}

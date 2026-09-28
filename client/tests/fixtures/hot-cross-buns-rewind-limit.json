@@ -1,0 +1,8 @@
+{
+  "description": "The same three wrong keys every time: three rewinds of the first phrase, then the music keeps going (§3 limit). (14 - 0.75) / 17 x 0.85 = 66%: 2 stars, tricky spot bars 1-2.",
+  "piece": "hot-cross-buns", "preset": "100", "hands": "both",
+  "passes": [{ "skipBeats": [4, 5, 6], "wrong": [{ "beat": 4, "pitch": 65 }, { "beat": 5, "pitch": 63 }, { "beat": 6, "pitch": 61 }] }, { "skipBeats": [4, 5, 6], "wrong": [{ "beat": 4, "pitch": 65 }, { "beat": 5, "pitch": 63 }, { "beat": 6, "pitch": 61 }] },
+             { "skipBeats": [4, 5, 6], "wrong": [{ "beat": 4, "pitch": 65 }, { "beat": 5, "pitch": 63 }, { "beat": 6, "pitch": 61 }] }, { "skipBeats": [4, 5, 6], "wrong": [{ "beat": 4, "pitch": 65 }, { "beat": 5, "pitch": 63 }, { "beat": 6, "pitch": 61 }] }],
+  "expect": { "rewinds": [{ "phrase": 0 }, { "phrase": 0 }, { "phrase": 0 }], "completed": true, "matched": 14, "extra": 3,
+              "accuracyStars": 2, "tricky": { "phrase": 0, "bars": [1, 2] } }
+}

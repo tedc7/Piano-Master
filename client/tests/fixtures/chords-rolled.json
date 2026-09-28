@@ -1,0 +1,8 @@
+{
+  "description": "Three-note chords rolled 60 ms from the bottom up (children often press chord notes one at a time): each note counts, the top note 120 ms late is still on time.",
+  "chords": { "timeSig": "4/4", "tempo": 80, "level": "Prep B",
+              "events": [[0, [48, 52, 55], 2], [2, [48, 53, 57], 2], [4, [47, 50, 55], 2], [6, [48, 52, 55], 2]] },
+  "preset": "100", "hands": "both",
+  "passes": [{ "rollMs": 60 }],
+  "expect": { "rewinds": [], "completed": true, "matched": 12, "accuracyStars": 5, "timingStars": 5 }
+}
