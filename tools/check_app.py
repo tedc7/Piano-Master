@@ -129,10 +129,11 @@ def main():
         r = page.evaluate(AUTOPLAY, [[], 0, 40, False])
         check(r["state"] == "finished", f"practice: the review song is played to the end ({r['state']})")
         page.wait_for_selector(".result")
-        page.get_by_role("button", name="Next ›").click()
+        check(page.get_by_role("button", name="Next ›").count() == 1, "practice: the result card offers Next")
+        page.get_by_role("button", name="‹ Back").click()   # leaving by Back still checks the item off
         page.wait_for_selector(".bubble.done")
         check(page.locator(".bubble.done").count() == 1 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
-              "practice: the finished item is checked off with its 5 stars")
+              "practice: the finished item is checked off with its 5 stars, even when leaving by Back")
         check("New idea" in page.locator(".upnext").inner_text(), "practice: the concept lesson is up next")
         page.screenshot(path=str(OUT / "nav-session-progress.png"))
 

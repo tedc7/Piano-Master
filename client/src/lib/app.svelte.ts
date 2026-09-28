@@ -147,22 +147,17 @@ class AppState {
     return s && s.index < s.items.length ? s.items[s.index] : null;
   }
 
-  /** The current item's result; a replay keeps the better stars. */
-  itemResult(r: ItemResult): void {
+  /** Item `i` is done: a song played to the end, or a concept lesson gone through. It is
+   *  checked off straight away, however the student leaves the screen, and the session moves to
+   *  the next item; playing it again keeps the better stars. (Whether an item needs a minimum
+   *  score, and "Try it another way" after 3 tries, come with the lesson engine, M5.) */
+  completeItem(i: number, r: ItemResult): void {
     const s = this.session;
-    if (!s || s.index >= s.items.length) return;
-    const old = s.results[s.index];
-    if (!old || (r.accuracyStars ?? 0) >= (old.accuracyStars ?? 0)) s.results[s.index] = r;
+    if (!s || i < 0 || i >= s.items.length) return;
+    const old = s.results[i];
+    if (!old || (r.accuracyStars ?? 0) >= (old.accuracyStars ?? 0)) s.results[i] = r;
+    if (i === s.index) s.index++;
     this.saveSession();
-  }
-
-  /** After an item: move to the next one ("Next", arch §8.5). */
-  nextItem(): void {
-    if (this.session) {
-      this.session.index++;
-      this.saveSession();
-    }
-    go("session");
   }
 
   /** Skip once: the item moves to the end of the queue (§8.5). */

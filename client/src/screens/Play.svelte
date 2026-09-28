@@ -1,7 +1,7 @@
 <script lang="ts">
   // The Play screen (arch §3): status strip (display only), moving staff with the play line and
   // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
-  import { onMount, tick } from "svelte";
+  import { onMount, tick, untrack } from "svelte";
   import DeviceSettings from "../components/DeviceSettings.svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
@@ -64,8 +64,11 @@
   const loopBars = $derived(tl && piece ? barsOf(loopPhrases[0], loopPhrases[1]) : "");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
   // in a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too
-  const sessionItem = $derived(app.sessionItem);
-  const inSession = $derived(!!sessionItem && (sessionItem.pieceId === id || sessionItem.kind === "pick"));
+  // the session item this song was opened for, fixed when the screen opens: it stays the same
+  // after the item is checked off, so "Play again" can still improve its stars
+  const opened = app.sessionItem;
+  const sessionIndex = untrack(() => (opened && (opened.pieceId === id || opened.kind === "pick") ? app.session!.index : null));
+  const inSession = sessionIndex !== null;
 
   onMount(() => {
     let raf = 0;
@@ -130,9 +133,9 @@
         },
         finished: (r) => {
           result = r;
-          if (inSession) {
+          if (sessionIndex !== null) {
             const e = r.evaluation;
-            app.itemResult({ accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: sessionItem?.kind === "pick" ? piece?.title : undefined });
+            app.completeItem(sessionIndex, { accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: opened?.kind === "pick" ? piece?.title : undefined });
           }
         },
         loopPass: (r) => {
@@ -340,7 +343,7 @@
   }
   function next(): void {
     player?.stop();
-    app.nextItem();
+    go("session");
   }
   function delayStats(): string {
     const d = [...app.midi.delays].sort((a, b) => a - b);
@@ -411,7 +414,9 @@
   <div class="controls">
     <button class="quiet" onclick={back}>‹ Back</button>
     <button class="main" onclick={playPause} disabled={!piece || uiState === "loading" || (needPiano && !running && uiState !== "paused")}>{playLabel}</button>
-    <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">⟲</button>
+    <button class="quiet" onclick={startOver} disabled={!piece || uiState === "idle" || needPiano} aria-label="Start over">
+      <svg class="restart" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" /><path d="M4 3.5v4.2h4.2" /></svg>
+    </button>
     <div class="seg">
       <button class:sel={mode === "play"} onclick={() => setMode("play")}>Play</button>
       <button class:sel={mode === "loop"} onclick={() => setMode("loop")}>Loop</button>
@@ -497,6 +502,7 @@
     padding: 10px 14px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
   .controls .main { min-width: 130px; }
+  .restart { width: 34px; height: 34px; display: block; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
   .seg { display: flex; border-radius: 12px; overflow: hidden; }
   .seg button { border-radius: 0; background: #ecebe6; color: var(--fg); padding: 8px 14px; }
   .seg button.sel { background: var(--accent); color: var(--accent-fg); }

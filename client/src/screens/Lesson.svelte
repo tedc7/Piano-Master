@@ -1,7 +1,7 @@
 <script lang="ts">
   // Concept lesson (arch §3 screen 4, "Teaching concepts"): a short sequence of cards the student
   // taps through. PLACEHOLDER: each card says what it will do; the lessons are authored in M3.
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import Status from "../components/Status.svelte";
   import { app } from "../lib/app.svelte.js";
   import { loadContent } from "../lib/content";
@@ -26,7 +26,9 @@
     { name: "Watch", icon: "🎬", text: "A parent-approved video on this idea, if one has been added (optional).", speak: false },
   ]);
   const card = $derived(cards[step]);
-  const inSession = $derived(app.sessionItem?.kind === "lesson" && app.sessionItem.skillId === skillId);
+  // fixed when the screen opens, like the Play screen's session item
+  const inSession = untrack(() => app.sessionItem?.kind === "lesson" && app.sessionItem.skillId === skillId);
+  const sessionIndex = inSession ? app.session!.index : -1;
 
   function speak(text: string): void {
     try {
@@ -36,8 +38,8 @@
   }
   function done(): void {
     if (inSession) {
-      app.itemResult({ accuracyStars: null, timingStars: null });
-      app.nextItem();
+      app.completeItem(sessionIndex, { accuracyStars: null, timingStars: null });
+      go("session");
     } else leave();
   }
   function leave(): void {
