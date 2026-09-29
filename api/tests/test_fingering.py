@@ -77,3 +77,33 @@ def test_chords_go_up_the_hand_and_wide_ones_are_flagged():
     wide = nota(["C3+E4"], hand="L")
     info = fingering.generate(wide)
     assert info["flagged"]
+
+
+def test_scale_tables_never_put_the_thumb_on_a_black_key():
+    for (mode, pc), hands in fingering.SCALE_TABLE.items():
+        for hand in ("R", "L"):
+            for octaves in (1, 2):
+                ps = fingering.scale_pitches(60 + pc, mode, octaves)
+                fs = fingering.scale_fingering(60 + pc, mode, hand, octaves)
+                assert len(fs) == len(ps), (mode, pc, hand)
+                assert all(not (f == 1 and p % 12 in fingering.BLACK) for p, f in zip(ps, fs)), (mode, pc, hand, fs)
+                # the same finger never plays two notes in a row
+                assert all(a != b for a, b in zip(fs, fs[1:])), (mode, pc, hand, fs)
+
+
+def test_scale_table_fingers_known_scales():
+    assert fingering.scale_fingering(60, "major", "L", 2) == [5, 4, 3, 2, 1, 3, 2, 1, 4, 3, 2, 1, 3, 2, 1]
+    assert fingering.scale_fingering(65, "major", "R") == [1, 2, 3, 4, 1, 2, 3, 4]         # F
+    assert fingering.scale_fingering(70, "major", "R") == [4, 1, 2, 3, 1, 2, 3, 4]         # B flat
+    assert fingering.scale_fingering(63, "major", "L", down=True) == [3, 1, 2, 3, 4, 1, 2, 3]
+    assert fingering.arpeggio_fingering(60, "R", 2) == [1, 2, 3, 1, 2, 3, 5]
+    assert fingering.arpeggio_fingering(61, "R") is None
+
+
+def test_a_scale_run_in_a_piece_takes_the_table_fingering():
+    # G major, one octave up and back down, in the right hand
+    up = ["G4", "A4", "B4", "C5", "D5", "E5", "F#5", "G5"]
+    n = nota(up + up[-2::-1])
+    fingering.generate(n)
+    assert fingers(n)[:8] == [1, 2, 3, 1, 2, 3, 4, 5]
+    assert fingers(n)[7:] == [5, 4, 3, 2, 1, 3, 2, 1]

@@ -1,10 +1,22 @@
-// Audio Engine (arch §4): stems, metronome and count-in clicks, and a simple tone for Listen
-// mode. Plain Web Audio, the API the feasibility tests proved in MIDIWeb Browser.
+// Audio Engine (arch §4): stems, metronome and count-in clicks, and a sampled piano for Listen
+// mode, the other hand in one-hand practice and the concept lessons. Plain Web Audio, the API the
+// feasibility tests proved in MIDIWeb Browser.
 import type { Media, Preset } from "./types";
 
 export interface StemBuffers { vocals: AudioBuffer; accompaniment: AudioBuffer }
 
 interface Playing { src: AudioBufferSourceNode; gain: GainNode }
+interface Voice extends Playing { end: number }
+
+// The Salamander Grand Piano (Alexander Holm, CC BY 3.0; public/audio/piano/README.md): one
+// sample every minor third from A0 to C8, served by the piano server so it works offline. Each
+// note plays the nearest sample, re-pitched by at most a semitone and a half.
+const SAMPLE_LOW = 21, SAMPLE_HIGH = 108, SAMPLE_STEP = 3;
+const SAMPLE_NAMES: Record<number, string> = { 0: "C", 3: "Ds", 6: "Fs", 9: "A" };
+const PIANO_RELEASE_S = 0.25;      // the damper: how fast a note dies away when it ends
+export const sampleFor = (pitch: number) =>
+  Math.max(SAMPLE_LOW, Math.min(SAMPLE_HIGH, SAMPLE_LOW + SAMPLE_STEP * Math.round((pitch - SAMPLE_LOW) / SAMPLE_STEP)));
+const sampleUrl = (m: number) => `audio/piano/${SAMPLE_NAMES[m % 12]}${Math.floor(m / 12) - 1}.mp3`;
 
 export class AudioEngine {
   ctx: AudioContext | null = null;
@@ -13,6 +25,12 @@ export class AudioEngine {
   private backingBus!: GainNode;
   private clickBus!: GainNode;
   private toneBus!: GainNode;
+  private pianoBus!: GainNode;
+  private samples = new Map<number, AudioBuffer>();
+  private sampleLoads = new Map<number, Promise<void>>();
+  private voices: Voice[] = [];
+  /** The last notes the app's piano played, for the browser check. */
+  readonly pianoLog: { pitch: number; sampled: boolean }[] = [];
   private stems = new Map<string, StemBuffers>();
   private loading = new Map<string, Promise<StemBuffers>>();
   private playing: Playing[] = [];
@@ -38,6 +56,7 @@ export class AudioEngine {
       this.backingBus = this.bus();
       this.clickBus = this.bus(0.5);
       this.toneBus = this.bus(0.35);
+      this.pianoBus = this.bus(0.8);
       this.applyMix();
       // after a lock or app switch iPadOS marks the context "interrupted"; resume on return
       document.addEventListener("visibilitychange", () => {
@@ -198,5 +217,70 @@ export class AudioEngine {
       o.start(when);
       o.stop(end + 0.02);
     }
+  }
+
+  /** Fetch and decode the piano samples these pitches need (safe before a tap). A sample that
+   *  cannot load leaves its notes on the plain tone. */
+  loadPiano(pitches: Iterable<number>): Promise<void> {
+    const ctx = this.create();
+    const need = new Set([...pitches].map(sampleFor));
+    return Promise.all([...need].map((m) => {
+      let p = this.sampleLoads.get(m);
+      if (!p) {
+        p = fetch(sampleUrl(m))
+          .then((r) => { if (!r.ok) throw new Error(`${sampleUrl(m)}: HTTP ${r.status}`); return r.arrayBuffer(); })
+          .then((b) => ctx.decodeAudioData(b))
+          .then((buf) => { this.samples.set(m, buf); })
+          .catch(() => { this.sampleLoads.delete(m); });
+        this.sampleLoads.set(m, p);
+      }
+      return p;
+    })).then(() => undefined);
+  }
+
+  hasPiano(pitch: number): boolean {
+    return this.samples.has(sampleFor(pitch));
+  }
+
+  /** A piano note: held for `seconds`, then damped. `level` 0..1 is how hard it is played. */
+  piano(pitch: number, when: number, seconds: number, level = 1): void {
+    const buf = this.samples.get(sampleFor(pitch));
+    this.pianoLog.push({ pitch, sampled: !!buf });
+    if (this.pianoLog.length > 200) this.pianoLog.shift();
+    if (!buf) { this.tone(pitch, when, seconds, level); return; }
+    const ctx = this.ctx!;
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = Math.pow(2, (pitch - sampleFor(pitch)) / 12);
+    const gain = ctx.createGain();
+    const off = when + Math.max(0.08, seconds);
+    const end = Math.min(off + PIANO_RELEASE_S, when + buf.duration / src.playbackRate.value);
+    gain.gain.setValueAtTime(Math.max(0.05, Math.min(1, level)), when);
+    gain.gain.setValueAtTime(Math.max(0.05, Math.min(1, level)), Math.min(off, end));
+    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    src.connect(gain);
+    gain.connect(this.pianoBus);
+    src.start(when);
+    src.stop(end + 0.02);
+    const now = ctx.currentTime;
+    this.voices = this.voices.filter((v) => v.end > now);
+    this.voices.push({ src, gain, end });
+  }
+
+  /** Damp every piano note still sounding or scheduled (a pause, rewind or stop). */
+  silencePiano(fade: number): void {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    for (const v of this.voices) {
+      if (v.end <= now) continue;
+      try {
+        const f = Math.max(0.02, fade);
+        v.gain.gain.cancelScheduledValues(now);
+        v.gain.gain.setValueAtTime(v.gain.gain.value, now);
+        v.gain.gain.linearRampToValueAtTime(0, now + f);
+        v.src.stop(now + f + 0.02);
+      } catch { /* already stopped */ }
+    }
+    this.voices = [];
   }
 }

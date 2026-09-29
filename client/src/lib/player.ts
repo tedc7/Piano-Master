@@ -6,6 +6,9 @@
 // no scoring). Either runs over the whole piece or over a section of bars chosen on the screen,
 // which then goes round and round ("Practice tricky part" picks one at a slower preset). A section
 // in Play mode is stored as a "loop" attempt, one per time round.
+//
+// The app's piano: Listen mode plays every note; in Play mode with one hand chosen, it plays the
+// other hand (the student setting "otherHand"), so one-hand practice still sounds like the piece.
 import { Attempt, type AttemptResult, type RawEvent } from "./attempt";
 import type { AudioEngine, StemBuffers } from "./audio";
 import type { Verdict } from "./matcher";
@@ -25,6 +28,7 @@ const PREROLL_S = 0.15;            // stems fade back in just before the resume 
 const LEAD_S = 0.12;               // scheduling margin for a fresh start
 const HORIZON_S = 0.3;             // clicks and tones are scheduled this far ahead
 const PULSE_LEVEL = 0.3;           // the soft pulse that keeps the beat through a glide
+const OTHER_HAND_LEVEL = 0.6;      // the app's other hand sits under the student's playing
 
 interface Clock { t0: number; beat0: number; spb: number }
 
@@ -69,6 +73,8 @@ export class Player {
   /** The section being played (phrase indices, inclusive), or null for the whole piece. */
   section: [number, number] | null = null;
   state: State = "idle";
+  /** The metronome for this visit, overriding the song's remembered choice (a remedy item's). */
+  forceClick: boolean | null = null;
   private attempt: Attempt;
   private clock: Clock | null = null;
   private glide: { t0: number; from: number; to: number; target: number } | null = null;
@@ -164,7 +170,7 @@ export class Player {
 
   pause(): void {
     if (!this.running) return;
-    this.audio.stopStems(0.1);
+    this.quiet(0.1);
     this.clock = null;
     this.glide = null;
     this.pulseAt = null;
@@ -199,7 +205,7 @@ export class Player {
       this.displayBeat = this.logicBeat = target - this.tl.barLength;
       return;
     }
-    this.audio.stopStems(FADE_S);
+    this.quiet(FADE_S);
     this.beginGlide(this.displayBeat, target);
   }
 
@@ -215,7 +221,7 @@ export class Player {
   /** Stop and go back to the start position; an attempt under way is saved as not completed. */
   stop(): void {
     if (this.state !== "finished" && this.state !== "idle") this.closeAttempt(false);
-    this.audio.stopStems(0.08);
+    this.quiet(0.08);
     this.clock = null;
     this.glide = null;
     this.pulseAt = null;
@@ -290,8 +296,21 @@ export class Player {
     this.hooks.pass(-Infinity, null);
   }
 
-  /** Fetch and decode this preset's stems ahead of time (works before the first tap). */
+  /** Stems and piano notes stop together: a pause, rewind, loop or stop. */
+  private quiet(fade: number): void {
+    this.audio.stopStems(fade);
+    this.audio.silencePiano(fade);
+  }
+
+  /** The piano samples this piece needs (small, from the piano server). */
+  private loadPiano(): Promise<void> {
+    return this.audio.loadPiano(this.tl.notes.map((n) => n.pitch));
+  }
+
+  /** Fetch and decode this preset's stems and the piano samples ahead of time (works before the
+   *  first tap). */
   async preload(): Promise<void> {
+    void this.loadPiano();
     if (!this.piece.media || !this.hasStems) return;
     const preset = this.preset;
     try {
@@ -305,6 +324,7 @@ export class Player {
   /** Audio running and this preset's stems decoded; false if the stems could not load. */
   private async ensureReady(): Promise<boolean> {
     await this.audio.ensure();
+    await this.loadPiano();              // a sample that fails to load falls back to the plain tone
     if (this.piece.media && this.hasStems && !this.stems) {
       const prev = this.state;
       this.setState("loading");
@@ -402,7 +422,7 @@ export class Player {
       this.logicBeat = this.beatAt(heard - s.latencyOffsetMs / 1000);
       if (this.state === "countin" && this.logicBeat >= this.passStart - 1e-6) this.setState("playing");
       this.scheduleClicks();
-      if (this.mode === "listen") this.scheduleTones();
+      if (this.mode === "listen" || this.otherHandSounds) this.scheduleTones();
       if (this.scoring && this.state === "playing") {
         const { missed, plan } = this.attempt.tick(this.logicBeat, this.clock.spb, s.autoRewind);
         if (missed.length) this.hooks.missed(missed);
@@ -422,7 +442,7 @@ export class Player {
   }
 
   private rewind(plan: RewindPlan): void {
-    this.audio.stopStems(FADE_S);
+    this.quiet(FADE_S);
     this.hooks.pass(plan.targetBeat, plan.targetPhrase);
     this.beginGlide(this.displayBeat, plan.targetBeat);
   }
@@ -432,13 +452,13 @@ export class Player {
     const rec = this.closeAttempt(true);
     if (rec) this.hooks.loopPass(rec);
     this.attempt = this.newAttempt();
-    this.audio.stopStems(FADE_S);
+    this.quiet(FADE_S);
     this.hooks.pass(this.start, this.section![0]);
     this.beginGlide(this.displayBeat, this.start);
   }
 
   private finish(): void {
-    this.audio.stopStems(0.8);
+    this.quiet(0.8);
     this.clock = null;
     this.pulseAt = null;
     this.setState("finished");
@@ -455,7 +475,7 @@ export class Player {
     const u = this.tl.beatUnit;
     const bar = this.tl.barLength;
     const pick = this.piece.notation.header.pickupBeats;
-    const clickOn = this.settings().click[this.piece.id] ?? !this.piece.media;
+    const clickOn = this.forceClick ?? this.settings().click[this.piece.id] ?? !this.piece.media;
     for (;;) {
       const t = this.timeOf(this.nextClick);
       if (t > horizon) break;
@@ -478,15 +498,23 @@ export class Player {
     }
   }
 
+  /** Play mode with one hand chosen: the app plays the other hand. */
+  get otherHandSounds(): boolean {
+    return this.scoring && this.hands !== "both" && this.piece.hands === "RL" && this.settings().otherHand;
+  }
+
+  /** The app's piano: every note in Listen mode, the other hand's in one-hand Play practice. */
   private scheduleTones(): void {
     const ctx = this.audio.ctx!;
     const horizon = ctx.currentTime + HORIZON_S;
     const notes = this.tl.notes;
+    const listen = this.mode === "listen";
+    const level = listen ? (this.hasStems ? 0.6 : 1) : OTHER_HAND_LEVEL;
     while (this.toneCursor < notes.length) {
       const n = notes[this.toneCursor];
       const t = this.timeOf(n.beat);
       if (t > horizon) break;
-      if (!n.tieContinuation && t >= ctx.currentTime - 0.01) {
+      if (!n.tieContinuation && t >= ctx.currentTime - 0.01 && (listen || n.hand !== this.hands) && n.beat < this.end - 1e-6) {
         let dur = n.duration;
         // a tied note sounds once, for the whole tied length
         for (let k = n, j = this.toneCursor + 1; k.tieToNext && j < notes.length; j++) {
@@ -496,7 +524,7 @@ export class Player {
             k = m;
           }
         }
-        this.audio.tone(n.pitch, Math.max(t, ctx.currentTime), dur * this.clock!.spb * 0.95, this.hasStems ? 0.6 : 1);
+        this.audio.piano(n.pitch, Math.max(t, ctx.currentTime), dur * this.clock!.spb * 0.95, level);
       }
       this.toneCursor++;
     }
@@ -509,6 +537,9 @@ export class Player {
       this.attempt.record({ t: ev.timeMs, type: "pedal", value: ev.value, beat: null });
       return;
     }
+    // a rhythm tap drill: any key counts as the drill's note; only the timing matters (§7.8)
+    const any = this.piece.drill?.anyKey;
+    if (any !== undefined) ev = { ...ev, pitch: any };
     let beat: number | null = null;
     if (this.clock && this.audio.ctx) {
       beat = this.beatAt(this.audio.outputTimeAt(ev.timeMs) - this.settings().latencyOffsetMs / 1000);

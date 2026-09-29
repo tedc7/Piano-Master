@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Test and deploy to the piano server:
 #   the App API  -> /opt/piano/api, rebuilt by the server's piano-api-redeploy (Server repo),
-#                   with the built skill map and piece index in app/content (the lesson engine
-#                   plans from the same content version the client shows)
+#                   with the built skill map, piece index and pieces in app/content (the lesson
+#                   engine plans from the same content version the client shows)
 #   the client   -> /opt/piano/www/app, i.e. https://192.168.2.128/app/ (swapped in whole)
 # Nothing else on the server is touched; the database in /opt/piano/data is never touched here.
 #   tools/deploy.sh            both
@@ -33,6 +33,7 @@ if [ "$WHAT" = all ] || [ "$WHAT" = api ]; then
   rm -rf "$ROOT/api/app/content"
   mkdir -p "$ROOT/api/app/content"
   cp "$ROOT/client/public/content/skillmap.json" "$ROOT/client/public/content/index.json" "$ROOT/api/app/content/"
+  cp -r "$ROOT/client/public/content/pieces" "$ROOT/api/app/content/"   # full notation, for Diagnostics and drills
   (cd "$ROOT/api" && "$ROOT/tools/.venv/bin/python" -m pytest -q tests)
   rsync -a --delete --exclude tests --exclude '__pycache__' --exclude '*.pyc' "$ROOT/api/" "$HOST:/tmp/piano-api/"
   ssh "$HOST" 'set -e

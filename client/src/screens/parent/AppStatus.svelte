@@ -46,6 +46,12 @@
     <p><a href="/api/" target="_blank" rel="noopener">Open the API status page</a></p>
   </section>
   <section class="panel">
+    <h2>Credits</h2>
+    <p class="muted">The app's piano is the Salamander Grand Piano by Alexander Holm, used under
+      <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>.
+      Staff drawing by VexFlow (MIT).</p>
+  </section>
+  <section class="panel">
     <h2>Recent problems</h2>
     {#if problems === null}
       <p class="muted">Not available.</p>

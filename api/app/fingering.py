@@ -4,7 +4,10 @@
 2. Fixed position: when the piece's skill defines a hand position (`position: {R: C4}` is the
    five white keys up from C4), every note of that hand inside it gets its position finger
    (right hand C=1 to G=5, left hand C=5 to G=1).
-3. Scales and arpeggios: standard fingering tables arrive with the drill generator (M6).
+3. Scales and arpeggios: standard fingerings from the tables below (every major and harmonic
+   minor scale, and root-position arpeggios on white-key roots). The drill generator uses them
+   directly; in a piece, a run of eight or more notes that climbs or falls through a whole octave
+   of one of these scales from its tonic gets the table's fingers before the search fills the rest.
 4. Everything else: for each hand, the finger sequence with the lowest total effort, found by
    dynamic programming over the notes. Effort is added for stretches beyond a comfortable span
    for the pair of fingers (more beyond a practical span), crossings other than thumb-under or a
@@ -37,6 +40,105 @@ SAME = 3.0          # the same finger moving to a different note (a hand shift)
 # costs more than a shift, as beginner fingerings shift the hand rather than cross (tuned on the
 # printed fingering in twinkle-twinkle.yaml and the standard C major scale)
 UNDER, OVER = 1.0, 5.0
+
+
+# ------------------------------------------------------------------ scale and arpeggio tables
+
+MAJOR = [0, 2, 4, 5, 7, 9, 11]
+HARMONIC_MINOR = [0, 2, 3, 5, 7, 8, 11]
+# Standard fingerings (as in the ABRSM and Faber scale books), ascending from the tonic:
+# (first finger on the bottom tonic, fingers for degrees 1-7 inside the run, finger on the top
+# tonic). Descending uses the same fingers in reverse. Keys by the tonic's pitch class.
+_WHITE_R = (1, (1, 2, 3, 1, 2, 3, 4), 5)
+_WHITE_L = (5, (1, 4, 3, 2, 1, 3, 2), 1)
+SCALE_TABLE: dict[tuple[str, int], dict[str, tuple[int, tuple[int, ...], int]]] = {
+    ("major", 0): {"R": _WHITE_R, "L": _WHITE_L},                         # C
+    ("major", 7): {"R": _WHITE_R, "L": _WHITE_L},                         # G
+    ("major", 2): {"R": _WHITE_R, "L": _WHITE_L},                         # D
+    ("major", 9): {"R": _WHITE_R, "L": _WHITE_L},                         # A
+    ("major", 4): {"R": _WHITE_R, "L": _WHITE_L},                         # E
+    ("major", 11): {"R": _WHITE_R, "L": (4, (1, 3, 2, 1, 4, 3, 2), 1)},   # B
+    ("major", 5): {"R": (1, (1, 2, 3, 4, 1, 2, 3), 4), "L": _WHITE_L},   # F
+    ("major", 6): {"R": (2, (2, 3, 4, 1, 2, 3, 1), 2), "L": (4, (4, 3, 2, 1, 3, 2, 1), 4)},   # F#/Gb
+    ("major", 1): {"R": (2, (2, 3, 1, 2, 3, 4, 1), 2), "L": (3, (3, 2, 1, 4, 3, 2, 1), 3)},   # Db
+    ("major", 8): {"R": (3, (3, 4, 1, 2, 3, 1, 2), 3), "L": (3, (3, 2, 1, 4, 3, 2, 1), 3)},   # Ab
+    ("major", 3): {"R": (3, (3, 1, 2, 3, 4, 1, 2), 3), "L": (3, (3, 2, 1, 4, 3, 2, 1), 3)},   # Eb
+    ("major", 10): {"R": (4, (4, 1, 2, 3, 1, 2, 3), 4), "L": (3, (3, 2, 1, 4, 3, 2, 1), 3)},  # Bb
+    ("minor", 9): {"R": _WHITE_R, "L": _WHITE_L},                         # A minor
+    ("minor", 4): {"R": _WHITE_R, "L": _WHITE_L},                         # E minor
+    ("minor", 2): {"R": _WHITE_R, "L": _WHITE_L},                         # D minor
+    ("minor", 7): {"R": _WHITE_R, "L": _WHITE_L},                         # G minor
+    ("minor", 0): {"R": _WHITE_R, "L": _WHITE_L},                         # C minor
+    ("minor", 11): {"R": _WHITE_R, "L": (4, (1, 3, 2, 1, 4, 3, 2), 1)},   # B minor
+    ("minor", 5): {"R": (1, (1, 2, 3, 4, 1, 2, 3), 4), "L": _WHITE_L},   # F minor
+    ("minor", 6): {"R": (3, (3, 4, 1, 2, 3, 1, 2), 3), "L": (4, (4, 3, 2, 1, 3, 2, 1), 4)},   # F# minor
+    ("minor", 1): {"R": (3, (3, 4, 1, 2, 3, 1, 2), 3), "L": (3, (3, 2, 1, 4, 3, 2, 1), 3)},   # C# minor
+    ("minor", 8): {"R": (3, (3, 4, 1, 2, 3, 1, 2), 3), "L": (3, (3, 2, 1, 3, 2, 1, 4), 3)},   # G# minor
+    ("minor", 3): {"R": (3, (3, 1, 2, 3, 4, 1, 2), 3), "L": (2, (2, 1, 4, 3, 2, 1, 3), 2)},   # Eb/D# minor
+    ("minor", 10): {"R": (4, (4, 1, 2, 3, 1, 2, 3), 4), "L": (2, (2, 1, 3, 2, 1, 4, 3), 2)},  # Bb minor
+}
+
+
+def scale_pitches(tonic: int, mode: str = "major", octaves: int = 1) -> list[int]:
+    """The scale going up from `tonic` (a MIDI pitch) through `octaves` octaves, top tonic included."""
+    steps = MAJOR if mode == "major" else HARMONIC_MINOR
+    return [tonic + 12 * o + s for o in range(octaves) for s in steps] + [tonic + 12 * octaves]
+
+
+def scale_fingering(tonic: int, mode: str, hand: str, octaves: int = 1, down: bool = False) -> list[int] | None:
+    """The standard fingers for `scale_pitches(tonic, mode, octaves)` going up (or the same notes
+    going down, `down=True`), or None when the table has no entry."""
+    entry = SCALE_TABLE.get((mode, tonic % 12), {}).get(hand)
+    if not entry:
+        return None
+    first, cycle, top = entry
+    fs = [first] + list(cycle[1:])
+    for _ in range(octaves - 1):
+        fs += list(cycle)
+    fs.append(top)
+    return fs[::-1] if down else fs
+
+
+def arpeggio_fingering(tonic: int, hand: str, octaves: int = 1) -> list[int] | None:
+    """Root-position arpeggio fingers (tonic, third, fifth, ... top tonic) for a white-key root:
+    right hand 1 2 3 (1 2 3) 5, left hand 5 4 2 (1 4 2) 1. Black-key roots use other shapes and are
+    left to the search (None)."""
+    if tonic % 12 in BLACK:
+        return None
+    if hand == "R":
+        return [1, 2, 3] * octaves + [5]
+    return [5, 4, 2] + [1, 4, 2] * (octaves - 1) + [1]
+
+
+def table_fingers(pitches: list[int], hand: str) -> dict[int, int]:
+    """Fingers from the scale table for runs in `pitches` (one hand's melody, in order) that go
+    stepwise through whole octaves of a major or harmonic minor scale, from tonic to tonic, up or
+    down: index -> finger."""
+    out: dict[int, int] = {}
+    i, n = 0, len(pitches)
+    while i <= n - 8:
+        best = None
+        for mode in ("major", "minor"):
+            up = scale_pitches(pitches[i], mode, 3)
+            down = list(reversed(scale_pitches(pitches[i] - 36, mode, 3)))
+            for is_down, seq in ((False, up), (True, down)):
+                k = 0
+                while i + k < n and k < len(seq) and pitches[i + k] == seq[k]:
+                    k += 1
+                if k >= 8 and (best is None or k > best[0]):
+                    best = (k, mode, is_down)
+        if best is None:
+            i += 1
+            continue
+        k, mode, is_down = best
+        octaves = (k - 1) // 7
+        k = octaves * 7 + 1                       # whole octaves only, tonic to tonic
+        tonic = pitches[i + k - 1] if is_down else pitches[i]
+        fs = scale_fingering(tonic, mode, hand, octaves, down=is_down)
+        if fs:
+            out.update({i + j: f for j, f in enumerate(fs)})
+        i += k - 1
+    return out
 
 
 def white_index(p: int) -> int | None:
@@ -193,6 +295,16 @@ def generate(nota: dict, position: dict[str, str] | None = None) -> dict:
                            "rest": prev_end is not None and start > prev_end + 1e-6})
             idx.append(ids)
             prev_end = max(float(notes[i]["start"]) + float(notes[i]["duration"]) for i in ids)
+        # scale runs (single notes, no chord in between) take the table's fingers first
+        seg: list[int] = []
+        for k in range(len(events) + 1):
+            if k < len(events) and len(events[k]["pitches"]) == 1:
+                seg.append(k)
+                continue
+            for j, f in table_fingers([events[e]["pitches"][0] for e in seg], hand).items():
+                if events[seg[j]]["fixed"][0] is None:
+                    events[seg[j]]["fixed"][0] = f
+            seg = []
         for ids, fs in zip(idx, plan_hand(events, hand)):
             for i, f in zip(ids, fs):
                 notes[i].setdefault("finger", f)

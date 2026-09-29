@@ -24,6 +24,9 @@ cards:
     notes: C4 D4 E4 F4 G4
     fingers: [1, 2, 3, 4, 5]
     hand: R
+  - kind: echo
+    text: Listen, then play it back. Start on C with your thumb.
+    play: C4 D4 E4
   - kind: check
     questions:
       - text: Which key does your thumb play? Tap it or play it.

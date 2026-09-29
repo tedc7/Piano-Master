@@ -25,3 +25,10 @@ cards:
     questions:
       - text: Play the first note of the waltz, C.
         answer: C4
+      - text: How many beats are in each bar of three-four time?
+        choices: ["2", "3", "4"]
+        answer: "3"
+      - text: Listen. Is this in three or in four?
+        hear: C4:2 G4 E4:2 G4 C4:3
+        choices: [Three, Four]
+        answer: Three

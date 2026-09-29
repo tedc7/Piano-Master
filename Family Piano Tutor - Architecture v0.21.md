@@ -1,6 +1,36 @@
-# Family Piano Tutor — Architecture v0.20
+# Family Piano Tutor — Architecture v0.21
 
 Sep 28, 2026 · @Someone
+
+**What changed in v0.21** (from building M6, the app's piano for the other hand, keyboard-day preparation and the song import skill v1):
+- **Diagnostics built (8.8):** the five detectors use the table's thresholds. They read per-note results, which every attempt now stores: the notation index and timing of each written note in the scored pass. A wrong key is paired with the missed written note within half a beat. Diagnostics runs when each day's session is built, and for the parent's report. First-version choices:
+  - accuracy is taken before the practice-aid factor;
+  - rushing or dragging on every note is one "steady beat" pattern, and a single rhythm figure counts only when it is further off than the rest;
+  - a pattern is resolved after 2 days, after it was found, on which its notes score 4 stars;
+  - it is stuck after 3 remedies or 2 weeks without such a day;
+  - it is set aside after 14 days without being seen.
+
+  One known limit: the matcher counts a wrong key that matches the next note's pitch as that note played early. So a stepwise confusion (F played for G, just before a G) can stay hidden.
+- **Remedies lead the Practice slot (8.5, 8.8):** they appear in the session as **Focus** items:
+  - note confusion: a generated reading drill;
+  - rhythm: a rhythm tap drill (any key counts, and only timing is scored), then the bars with the metronome;
+  - hands together: the weaker hand alone, then hands together one preset slower;
+  - position shift: the bars around the shift, looped;
+  - tempo ceiling: the slower preset, then the faster one.
+
+  A test simulator (`api/tests/test_planted.py`) plants each pattern in a simulated student: each is found within 2 days and gets its remedy the same day. It resolves once the remedy works, and a pattern that never improves is marked stuck.
+- **Drill generator (8.9):** drills are §5 notation served per student and built only from passed skills' material: reading, rhythm, scale, arpeggio and five-finger drills. There are standard fingering tables for all 12 major and harmonic minor scales and for arpeggios on white-key roots. A scale run of an octave or more in a piece takes the table's fingers.
+- **Theory and ear-training scoring (7.8):**
+  - Check questions score 1 point right the first time and 0.5 the second.
+  - A question may be answered with buttons, for an identify question after listening.
+  - A new **Echo** card plays a 2–8 note phrase for the student to play back. It is scored by edit distance, with 10% off for each replay.
+  - A lesson's score is stored, and a theory skill passes on it.
+- **The app plays the other hand (3, 4):** Listen mode, concept lessons and one-hand practice use a sampled piano, the Salamander Grand Piano (CC BY 3.0, 2 MB), served by the piano server. When a child practises one hand, the app plays the other. This is a per-student setting, on by default, and it is the backing for solo piano pieces.
+- **Keyboard day (2.6):** Config > Latency calibration (the tap-along, 2.6.1) is built. The piano check saves the pedal and touch sensitivity it detects to the DeviceProfile, and the parent can also set them. `docs/keyboard-day.md` lists the tests that need the keyboard.
+- **Song import skill v1 (10.4):** a project skill in `.claude/skills/import-song/`, with `tools/import_song.py` to convert, check, compare, report and promote.
+  - Batches wait in `content/incoming/` for the parent's approval. Until staging exists (M7), approved pieces are promoted into `content/pieces/`.
+  - The melody fingerprint (10.8) is built, and the checks use it.
+  - The edition licence whitelist matches exactly: CC BY-NC and ND editions are used for checking only.
 
 **What changed in v0.20** (from building M3 without the Faber books, and from a first hand import of 20 classical arrangements, `content/incoming/classical/NOTES.md`):
 - **Song analysis built (6.8):** each thing an arrangement uses (a pitch in a hand, a note length, a time or key signature, the hands taking turns or playing together) is credited to the earliest skill whose constraints allow it. Those skills are its required skills. The featured skills are the newest one, plus the next newest when its notes or hands are in at least half the bars; a time signature, key or note length alone never makes a skill featured. Anything no skill allows is **beyond the map**, and that arrangement never unlocks until the map covers it. A skill map's `pieces` list now only says which skill a core piece was written for, and the build warns when the analysis disagrees. The analysis also records each bar's note count, so implicit review can score a required skill's own bars (8.4).
@@ -174,7 +204,7 @@ Three measurements, all recorded in the DeviceProfile:
 | --- | --- | --- |
 | Browser delivery delay (automatic) | The MIDI test page logs, for every note, the gap between the MIDI event's timestamp and the moment the app handles it, plus the audio latency the browser reports. It shows median and worst case. | Delay inside the device, and any jitter |
 | Key-to-screen and key-to-sound (slow-motion video) | Film the keyboard and screen together with a phone in slow motion (240 fps, about 4 ms per frame). Press a key 10 times; count frames from key-down to the on-screen key lighting, and to the app's click sound in the audio track. | True end-to-end delay a child experiences |
-| Tap-along offset (calibration) | The app plays 24 metronome clicks; the parent taps one key in time with them. The app records the average and spread of tap time minus click time. | The combined audio-output and MIDI-input offset. This offset is subtracted from every note time before timing is scored (section 7), and can be re-run from settings. |
+| Tap-along offset (calibration) | The app counts in 4 clicks, then plays 24 more; the parent taps one key in time with them. The app records the average and spread (standard deviation) of tap time minus click time, leaving out stray taps more than 80 ms from the median; 16 of the 24 are needed. Built in Config > Latency calibration (v0.21). | The combined audio-output and MIDI-input offset. This offset is subtracted from every note time before timing is scored (section 7), and can be re-run from settings. |
 
 ### 2.7 Current family deployment (September 2026)
 
@@ -331,6 +361,7 @@ Accompaniment and vocals are audio **stems** produced for each arrangement by th
 - **Vocal stem:** a sung vocal in a style matched to the song's genre, with a **Vocals on/off** button on the Play screen, remembered per song. Known YuE2 limits: a melisma (one syllable over several notes) is sung as one held pitch, the first word can be soft or unclear, and a take can put a stretch of words on other notes than the staff shows. Each song's check results are stored with its stems and shown in the parent's review list, so a badly affected song can be re-rendered or left with vocals off.
 - **When stems play:** Listen and Play modes, at every tempo preset (100%, 90%, 75%, and 50%); each is rendered in advance.
 - **No vocals or accompaniment in wait mode:** recorded audio cannot pause mid-word or mid-bar. If wait mode is built (optional, M10), it plays only the metronome and the student's own notes.
+- **Solo piano pieces (v0.21):** the pianist's other hand is the accompaniment. When a child practises one hand, the app plays the other on its sampled piano (a per-student setting, on by default); Listen mode uses the same piano for every note.
 - **No stems yet:** the Audio Engine plays a **soft chord pad** from the arrangement's chord symbols and the **choir voice** (the melody on a soft "ooh" sound) with lyrics highlighted, so every song has something to sing along with.
 
 ### Visual style
@@ -398,7 +429,7 @@ flowchart TD
 | --- | --- | --- |
 | MIDI Input | Connect to the piano (chosen by name, ignoring virtual ports), emit note-on/off and pedal events with timestamps, handle reconnects, detect capabilities (pedal, velocity, range). Has a replay adapter that feeds recorded events for tests. | `onNote(pitch, velocity, time)`, `onPedal(value, time)`, `getCapabilities()` |
 | Performance Evaluator | Match played notes to expected notes in real time; decide when to rewind; run the scorers enabled for the level and device; apply the latency offset and practice-aid factor (section 7) | `start(arrangement, mode, conditions)`, emits `NoteResult`, returns `AttemptResult` |
-| Audio Engine | Demo playback, stems, chord pad, choir voice, metronome, count-in; resumes audio when the page is shown again after a lock or app switch | `play(arrangement, tempo)`, `metronome(bpm)` |
+| Audio Engine | Demo playback on a sampled piano, the other hand in one-hand practice, stems, chord pad, choir voice, metronome, count-in; resumes audio when the page is shown again after a lock or app switch | `play(arrangement, tempo)`, `metronome(bpm)` |
 | API client | Load the student's session, songs and media; post attempts (with an outbox for Wi-Fi drops); post client logs | `getSession()`, `postAttempt()`, `log()` |
 | UI Layer | Screens, staff rendering, keyboard, feedback, parent mode; holds a screen wake lock during practice; full-screen check and reminder | Consumes the modules above |
 
@@ -460,12 +491,12 @@ Everything is stored in the server's SQLite database, except media files (in the
 
 | Entity | Key fields |
 | --- | --- |
-| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, vocals off for songs\[\]) |
+| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, the app playing the other hand in one-hand practice, vocals off for songs\[\]) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
 | DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
-| Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
+| Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), noteResults\[\] (each written note of the scored pass: its timing, or missed; v0.21), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
 | SkillState | studentId, skillId, status (locked, current, passed, mastered), capabilityHold (true/false), **mastery** (0 to 1, stored running value, 8.2), **bestMastery**, bestAccuracyStars, bestTimingStars, attemptsWithoutPass (completed attempts while Current), **stuck** (true/false), stuckSince?, lastPracticed, reviewStep (0 to 7), nextReviewDate |
 | ErrorPattern | id, studentId, kind (note confusion, rhythm, hands together, position shift, tempo ceiling), details, skillIds\[\], firstSeen, lastSeen, remediesTried\[\], status (active, improving, resolved, stuck) |
 | PracticeDay | studentId, date (local calendar day), guidedMinutes, freeMinutes, targetMinutes, sessionCompleted |
@@ -761,6 +792,8 @@ Dynamics (from key velocity), pedal timing (from the sustain pedal), and articul
 | Ear training: play back | The app plays a 2 to 8 note phrase using only known notes; the student plays it back. Accuracy = 1 − (note edit distance ÷ phrase length). Rhythm is not scored until Level 3; then each note's length ratio must be within ±25% of the original. Up to 2 replays of the phrase, each applying a 0.9 factor | Accuracy stars |
 | Ear training: identify | Name an interval, chord quality, or major/minor by tapping an answer; scored like theory questions | Accuracy stars |
 
+**Built (v0.21):** in concept lessons, Check questions (a key, or a button answer after an optional phrase to listen to) and **Echo** cards (play-back) are scored as above. The lesson's points go to the server with the lesson; a **theory** skill, which has no play-along piece, passes on 3 stars and its mastery moves with each score. Rhythm tapping is the generated rhythm drill: any key counts as the drill's note, and the result shows timing stars only.
+
 ### 7.9 Worked example
 
 A 40-note play-along piece at full tempo, both hands, default hints (factor 1.0):
@@ -923,6 +956,15 @@ Mastery scores show *that* a skill is weak; Diagnostics finds *why*, using the p
 
 Each detected pattern becomes an ErrorPattern record. **Priority:** one remedy per session in the Practice slot (two if the target length is 20 minutes or more), choosing first patterns that affect a stuck or Current skill, then the pattern with the most occurrences, then the oldest. A pattern is resolved when the affected notes or measures score 4 stars or more on 2 separate days. If it has not improved after 3 remedies or 2 weeks, it is marked **stuck** and highlighted in the parent's progress report.
 
+**Built (v0.21, `api/app/diagnostics.py`):** each attempt stores every written note of its scored pass with its timing (or missed). Each wrong key is paired with the missed written note within half a beat, so the pair (written, played) is known. The first-version choices beyond the table:
+- accuracy is before the practice-aid factor;
+- rushing or dragging on every note is one pattern, "a steady beat", and a figure then counts only when it is further off than the rest;
+- the 2 good days must come after the pattern was found;
+- a pattern not seen for 14 days is set aside;
+- a resolved pattern is found again only from later attempts.
+
+The remedies are session items with the reason **Focus**, listed in the table's order. A remedy counts as tried when one of its items is done.
+
 ### 8.9 Generators
 
 All generators build material only from notes, rhythms, keys and hand positions of skills the student has already passed, so their output counts as parent-approved (section 1).
@@ -943,6 +985,8 @@ All generators build material only from notes, rhythms, keys and hand positions 
    - the same finger on two different consecutive notes;
    - hand-position changes, with less cost at rests and phrase ends.
 5. **Chords:** fingers in ascending order for ascending notes, within the span table; chords wider than an octave are flagged.
+
+**Built (v0.21):** the scale table covers all 12 major and harmonic minor scales, and root-position arpeggios on white-key roots (black-key roots are left to the search). The drill generator makes reading, rhythm, scale, arpeggio and five-finger drills as §5 notation, stored per student and served to the Play screen like any piece.
 
 Test goal: at least 80% agreement with the printed fingering in a set of public-domain editions that include fingering. Parents or a teacher can correct fingering through the song import skill (fingeringSource becomes "edited").
 
@@ -1047,6 +1091,15 @@ flowchart LR
 Each skill is a folder with instructions and scripts, run from Claude Code on the dev box. The skills use a Python library shared with the server (convert with music21, validate, analyze, fingerprint, fingering, package); the server uses the same library only for its deterministic intake checks and re-analysis. Claude runs the same validator the server uses, so most problems are fixed before upload. The skills read what they need and submit packages through the Skill API (10.9).
 
 ### 10.4 Song import skill
+
+**Built (v0.21), first version:** a project skill in the repository (`.claude/skills/import-song/`), so it travels with the code it uses, with `tools/import_song.py`:
+- **convert:** MusicXML through xml2abc (LGPL, vendored like abc2xml), with kern, MIDI and MEI first through music21, to a draft piece file.
+- **check:** the content build's own code, plus bar lengths, metadata, the source and licence fields, the deleted list (`content/deleted.yaml`) and duplicates by melody fingerprint.
+- **compare:** lines the piece's notes up with a reference file, by line (melody, a hand, or everything).
+- **report:** `REVIEW.md` for the parent.
+- **promote:** moves only the approved pieces into `content/pieces/`.
+
+Until the Skill API and staging (M7), batches wait in `content/incoming/`, which builds and deploys ignore. The edition licence must be public domain, CC0, CC BY, CC BY-SA or parent-supplied; otherwise the notes are retyped and the edition is only used to check them.
 
 Contents:
 
@@ -1176,6 +1229,8 @@ YouTube's terms of service restrict downloading, so this is for private family v
 
 ### 10.8 Melody fingerprint
 
+**Built (v0.21)** in `api/app/fingerprint.py`, shared by the import skill's checks and the server's intake to come.
+
 Used to catch duplicates and deleted songs, even in a different key, tempo, or arrangement.
 
 1. **Melody line:** notes marked as melody (or the highest right-hand note at each moment), in playback order, with ties merged and grace notes dropped.
@@ -1262,15 +1317,15 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 
 | # | Milestone | Delivers | Done when |
 | --- | --- | --- | --- |
-| M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Done in M1 and M2 (Sep 28, 2026):** App API and SQLite skeleton. **Dropped:** Tone.js (plain Web Audio, v0.18). **Remaining:** MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log) with the new keyboard; tap-along latency calibration; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
+| M0 | Hosting, device qualification, and tool checks | **Done in the feasibility tests (Sep 24, 2026):** piano site over HTTPS by IP address; storage, wake lock, audio (resume, memory, instant restart), speech, video, and VexFlow grand-staff scrolling and glide at 60 fps on the iPad; full-screen detection. **Done in M1 and M2 (Sep 28, 2026):** App API and SQLite skeleton. **Dropped:** Tone.js (plain Web Audio, v0.18). **Built, waiting for the keyboard (Sep 28, 2026):** the MIDI test page (pressed keys, pedal, velocity, capability detection, delivery-delay log; detected pedal and touch saved to the DeviceProfile) and the tap-along latency calibration; `docs/keyboard-day.md` is the checklist. **Remaining:** running them with the new keyboard; the no-internet check; the lockdown decision | Device qualification test (2.6) passes on the target student device, including latency measurements and the no-internet check |
 | M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`). **Extended in v0.17** with real hymns and songs, the song clock and alignment on the iPad (`feasibility/sync-probe/RESULTS.md`): YuE2 input rules, alignment method and checks settled (10.5) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs. **Built (Sep 28, 2026)** at `https://192.168.2.128/app/` with a placeholder skill map and 6 songs; the acceptance test waits for the MIDI keyboard | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures. **Built (Sep 28, 2026)** with the App API storing attempts and raw events, and 16 scripted fixtures; recorded fixtures and the "fair over 10 plays" check wait for the MIDI keyboard | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map (**built without the books, Sep 28, 2026:** content build with validation, song analysis, coverage report, concept-lesson format and player, finger-number generator v1, grace notes, tuplets, clef changes, per-note hands, songs with several arrangements; waiting for the books: the Prep A to Level 2 map, its lessons and 3 core pieces per skill) | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
 | M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure; per-student settings moved out of the Play screen into each student (set by the parent in Config), device settings in Config > Device settings (v0.18). **Built (Sep 28, 2026)** with API tests for the PIN lockout, parent-only functions and separate progress, and the browser check adding two students from a new server; the backup and restore test are with the Server repo, and the two-device check waits for real use | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
 | M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles). **Built (Sep 28, 2026)** in `api/app/engine.py`; the practice simulator runs fast, slow, inconsistent and one-hard-skill learners for 8 weeks on a generated 60-skill branching map (`api/tests/test_simulator.py`); the 200-bubble render test is in Config and ran at 59 fps in desktop Chromium, and waits for the iPad | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
-| M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring | Errors planted in simulated data are detected and get the right remedy |
-| M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
+| M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring. **Built (Sep 28, 2026)** in `api/app/diagnostics.py` and `api/app/drills.py`, with scale and arpeggio fingering tables, Check and Echo scoring in the concept lessons, and the planted-pattern simulator (`api/tests/test_planted.py`); tuning waits for real attempts from the keyboard | Errors planted in simulated data are detected and get the right remedy |
+| M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports. **Started (Sep 28, 2026):** song import skill v1 and the melody fingerprint; the rest remains | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
 | M8 | Media and concept videos | Media skill v1 (vocals and accompaniment with all checks and tempo versions), stem playback, chord pad and choir voice, vocal-style change requests, concept-video skill | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
 | M9 | AI advisor (exploratory, optional) | A short write-up of where AI could help, based on real data from M5 and M6 | Decision: design and build an advisor, or drop it |
 | M10 | Polish | Stickers, streaks, favorites, visual polish; optional wait mode | The children use it daily without help |
@@ -1293,6 +1348,9 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 - [ ] Listen to the untested genre defaults (Folk, kids' songs, Classical, Pop) with their first songs
 - [ ] Build a slow automatic backing level for YuE2's swings within a song (10.5 step 6)
 - [ ] Continue M0 (App API and SQLite skeleton, MIDI test page)
+- [ ] When the keyboard arrives: run `docs/keyboard-day.md`
+- [ ] Feasibility test: backing for wordless ensemble pieces rendered from notation with FluidSynth (10.5)
+- [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill once the backing decision is made
 
 ## 13. Later-phase design (placeholders)
 
@@ -1361,6 +1419,10 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Remedies (v0.21) | Diagnostics' remedies are Focus items at the head of the Practice slot; a generated drill is served per student | One remedy a day keeps the session balanced; drills are built from what the student has passed |
+| Rhythm tapping (v0.21) | A rhythm drill counts any key as its note and shows timing stars only | The point is the rhythm, not finding the key (7.8) |
+| The app's piano (v0.21) | A sampled piano served by the piano server plays Listen mode and the other hand in one-hand practice | Solo piano pieces are accompanied by the other hand; it works offline and needs no alignment |
+| Import batches (v0.21) | Batches wait in `content/incoming/`; the parent approves from `REVIEW.md`; approved pieces are promoted into `content/pieces/` | The single parent approval (10.3) before staging exists; nothing unapproved reaches a build |
 | Song analysis (v0.20) | Each thing used is credited to the earliest skill allowing it; anything no skill allows is beyond the map and never unlocks | Replaces hand-assigned songs; a library song can't open before the map teaches what it needs |
 | Re-run analysis (v0.20) | In every content build and deploy, shown in Config > Content and analysis | Content ships with the deploy, so there is nothing to re-run on the server yet |
 | Beginner fingering (v0.20) | A finger over the thumb costs more than a hand shift; the thumb passing under is cheap | Matches printed beginner fingering and the standard scale fingering |
@@ -1454,6 +1516,7 @@ Not planned for v1; revisit when needed.
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.21 | Sep 28, 2026 | From building M6 and preparing for the keyboard: Diagnostics with five detectors and Focus remedies; the drill generator and scale and arpeggio fingering tables; Check and Echo scoring; the app's sampled piano for the other hand; tap-along latency calibration; the song import skill v1 and the melody fingerprint |
 | v0.20 | Sep 28, 2026 | From building M3 without the books and a first hand import of classical pieces: song analysis and beyond-the-map pieces; analysis in every content build; the concept-lesson format; finger-number generator v1; grace notes, tuplets, clef changes, per-note hands, passes vs verses; songs with several arrangements; keyboard size per arrangement; backing for wordless pieces is an open question |
 | v0.19 | Sep 28, 2026 | From building M4 and M5 and the practice simulator: students and parent login on the server; content bundled into the App API; a concept lesson for every skill and a Ready-to-learn state; stuck contact alternates section and slower whole piece; bounded New-slot replacement; implicit review after half an interval; sessions fill their time |
 | v0.18 | Sep 28, 2026 | From building M1 and M2 and the layout review: display offset is behind the audio clock; plain Web Audio instead of Tone.js; rewind threshold 6 because a wrong key counts twice; built stack recorded; M0, M1 and M2 status; parent as a player and tab-bar navigation; Play and Listen modes with a bars picker and a Rewind button; per-student settings flagged for M4 |

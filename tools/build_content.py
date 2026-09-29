@@ -165,7 +165,7 @@ def build_sync_probe_piece(pid, meta, phrase_bars):
 
 
 LESSONS = CONTENT / "lessons"
-CARD_KINDS = {"explain", "show", "hear", "try", "check", "watch"}
+CARD_KINDS = {"explain", "show", "hear", "try", "check", "echo", "watch"}
 
 
 def parse_notes(text):
@@ -185,6 +185,21 @@ def parse_notes(text):
         if any(not 21 <= p <= 108 for p in pitches):
             raise ValueError(f"{tok} is off the piano")
         out.append({"pitches": pitches, "spelled": spelled, "beats": float(m.group(2) or 1)})
+    return out
+
+
+def check_question(q):
+    """A Check question: find a key (`answer: C4`), or tap one of `choices` (`answer: "3"`), after
+    optionally hearing something (`hear: C4 E4 G4`: an identify question, §7.8)."""
+    if "choices" in q:
+        choices = [str(x) for x in q["choices"]]
+        if str(q["answer"]) not in choices:
+            raise ValueError(f"answer {q['answer']!r} is not one of the choices")
+        out = {"text": q["text"], "choices": choices, "answer": str(q["answer"])}
+    else:
+        out = {"text": q["text"], "answer": parse_notes(q["answer"])[0]}
+    if q.get("hear"):
+        out["hear"] = parse_notes(q["hear"])
     return out
 
 
@@ -213,7 +228,11 @@ def build_lesson(path, skill_ids):
                 if c.get("contrast"):
                     card["contrast"] = {"text": c["contrast"].get("text", ""), "play": parse_notes(c["contrast"]["play"])}
             if kind == "check":
-                card["questions"] = [{"text": q["text"], "answer": parse_notes(q["answer"])[0]} for q in c["questions"]]
+                card["questions"] = [check_question(q) for q in c["questions"]]
+            if kind == "echo":
+                card.update(play=parse_notes(c["play"]), tempo=c.get("tempo", 80))
+                if not 2 <= len(card["play"]) <= 8:
+                    raise ValueError("an echo phrase has 2 to 8 notes (arch §7.8)")
             if kind == "watch":
                 card["video"] = c["video"]
         except (KeyError, ValueError) as e:
@@ -234,6 +253,43 @@ def content_version() -> str:
     return h.hexdigest()[:12]
 
 
+ANALYSIS_KEYS = ("barNotes", "requiredSkills", "featuredSkills", "mapPoint", "skillMeasures", "beyondMap")
+
+
+def make_piece(pid, meta, skills, parsed, version, written_for=None):
+    """One piece built, analysed and fingered, as the client and the API read it: (piece,
+    index entry, warnings). Also used by the song import skill's checks (tools/import_song.py)."""
+    nota, media, warnings = build_piece(pid, meta)
+    warnings = list(warnings)
+    lo, hi = nota["header"]["range"]
+    keyboard = 61 if KEYS_61[0] <= lo and hi <= KEYS_61[1] else 88
+    if keyboard == 88:
+        warnings.append(f"range {pitch.Pitch(midi=lo).nameWithOctave}-{pitch.Pitch(midi=hi).nameWithOctave} "
+                        "goes beyond C2-C7, so it needs an 88-key keyboard")
+    an = analysis.analyze(nt.jsonable(nota), skills, parsed)
+    # finger numbers for every note without one (§8.9), in the featured skill's hand position if it has one
+    feat = next((s for s in skills if an["featuredSkills"] and s["id"] == an["featuredSkills"][0]), None)
+    fing = fingering.generate(nota, ((feat or {}).get("constraints") or {}).get("position"))
+    warnings += fing["flagged"]
+    if written_for and written_for not in an["featuredSkills"]:
+        why = f"beyond the map: {', '.join(an['beyondMap'])}" if an["beyondMap"] else f"features {an['featuredSkills']}"
+        warnings.append(f"written for {written_for}, but the analysis says {why}")
+    piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": meta.get("kind", "core"),
+             # several arrangements of one song (arch §5 Song -> Arrangements): `song` ties them, `version` names each
+             "song": meta.get("song", pid), "songTitle": meta.get("songTitle", meta["title"]), "version": meta.get("version"),
+             "genre": meta.get("genre"), "level": meta.get("level"), "hands": meta.get("hands", "R"),
+             # the skill it practises most: the newest featured skill (analysis, §6.8)
+             "skillId": an["featuredSkills"][0] if an["featuredSkills"] and not an["beyondMap"] else None,
+             "contentVersion": version, "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
+             "notation": nt.jsonable(nota), "media": media}
+    entry = ({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
+                                    "song", "songTitle", "version")}
+             | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
+                "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
+                "hasMedia": media is not None} | an)
+    return piece, entry, warnings
+
+
 def main():
     version = content_version()
     pieces_meta = {p.stem: yaml.safe_load(p.read_text()) for p in sorted((CONTENT / "pieces").glob("*.yaml"))}
@@ -251,40 +307,15 @@ def main():
     index, analyses, kinds = [], {}, {}
     for pid, meta in pieces_meta.items():
         try:
-            nota, media, w = build_piece(pid, meta)
+            piece, entry, w = make_piece(pid, meta, skills, parsed, version, written_for.get(pid))
         except ContentError as e:
             print(f"error: {e}", file=sys.stderr)
             return 1
         warnings += [f"{pid}: {x}" for x in w]
-        lo, hi = nota["header"]["range"]
-        keyboard = 61 if KEYS_61[0] <= lo and hi <= KEYS_61[1] else 88
-        if keyboard == 88:
-            warnings.append(f"{pid}: range {pitch.Pitch(midi=lo).nameWithOctave}-{pitch.Pitch(midi=hi).nameWithOctave} "
-                            "goes beyond C2-C7, so it needs an 88-key keyboard")
-        an = analysis.analyze(nt.jsonable(nota), skills, parsed)
-        # finger numbers for every note without one (§8.9), in the featured skill's hand position if it has one
-        feat = next((s for s in skills if an["featuredSkills"] and s["id"] == an["featuredSkills"][0]), None)
-        fing = fingering.generate(nota, ((feat or {}).get("constraints") or {}).get("position"))
-        warnings += [f"{pid}: {x}" for x in fing["flagged"]]
+        nota, media, an = piece["notation"], piece["media"], {k: piece[k] for k in ANALYSIS_KEYS}
         analyses[pid], kinds[pid] = an, meta.get("kind", "core")
-        meant = written_for.get(pid)
-        if meant and meant not in an["featuredSkills"]:
-            why = f"beyond the map: {', '.join(an['beyondMap'])}" if an["beyondMap"] else f"features {an['featuredSkills']}"
-            warnings.append(f"{pid}: written for {meant}, but the analysis says {why}")
-        piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": meta.get("kind", "core"),
-                 # several arrangements of one song (arch §5 Song -> Arrangements): `song` ties them, `version` names each
-                 "song": meta.get("song", pid), "songTitle": meta.get("songTitle", meta["title"]), "version": meta.get("version"),
-                 "genre": meta.get("genre"), "level": meta.get("level"), "hands": meta.get("hands", "R"),
-                 # the skill it practises most: the newest featured skill (analysis, §6.8)
-                 "skillId": an["featuredSkills"][0] if an["featuredSkills"] and not an["beyondMap"] else None,
-                 "contentVersion": version, "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
-                 "notation": nt.jsonable(nota), "media": media}
         (OUT / "pieces" / f"{pid}.json").write_text(json.dumps(piece, indent=1))
-        index.append({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
-                                            "song", "songTitle", "version")}
-                     | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
-                        "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
-                        "hasMedia": media is not None} | an)
+        index.append(entry)
         print(f"{pid}: {len(nota['notes'])} notes, {len(nota['playbackOrder'])} bars in playback order, "
               f"{len(nota['phrases'])} phrases" + (f", media {', '.join(media['presets'])}" if media else ""))
 

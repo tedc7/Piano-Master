@@ -19,7 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from . import content, db, parent, students
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 MAX_BODY = 4 * 1024 * 1024          # an attempt with every key press is well under this
 LOG_DAYS = 90                       # client logs are kept for 90 days (§11.3)
 UUID = r"^[0-9a-fA-F-]{8,64}$"
@@ -112,6 +112,7 @@ class AttemptIn(BaseModel):
     section: dict[str, float] | None = None
     perPhraseErrors: list[int] = Field(default_factory=list, max_length=2000)
     noteErrors: list[dict[str, Any]] = Field(default_factory=list, max_length=20000)
+    noteResults: list[list[float | None]] = Field(default_factory=list, max_length=20000)   # [note index, ms or null]
     tricky: dict[str, Any] | None = None
     rawEvents: list[dict[str, Any]] = Field(default_factory=list, max_length=50000)
     passes: list[dict[str, Any]] = Field(default_factory=list, max_length=2000)
@@ -279,14 +280,14 @@ def post_attempt(a: AttemptIn, response: Response):
                 "INSERT INTO attempts (id, device_id, student_id, piece_id, arrangement_id, content_version, context, mode, "
                 "completed, started_at, received_at, duration_sec, tempo_preset, conditions, conditions_factor, raw_accuracy, "
                 "raw_timing, accuracy, timing_score, accuracy_stars, timing_stars, latency_offset_ms, display_offset_ms, section, "
-                "per_phrase_errors, note_errors, tricky, evaluation, raw_events, passes, client_version, skill_id, item_id) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "per_phrase_errors, note_errors, tricky, evaluation, raw_events, passes, client_version, skill_id, item_id, "
+                "note_results) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (a.id, a.deviceId, a.studentId, a.pieceId, a.arrangementId or a.pieceId, a.contentVersion, a.context, a.mode,
                  int(a.completed), a.startedAt.isoformat(), now(), a.durationSec, a.conditions.tempoPreset,
                  dumps(a.conditions.model_dump()), e.factor, e.rawAccuracy, e.rawTiming, e.accuracy, e.timing,
                  e.accuracyStars, e.timingStars, a.latencyOffsetMs, a.displayOffsetMs, dumps(a.section),
                  dumps(a.perPhraseErrors), dumps(a.noteErrors), dumps(a.tricky), dumps(e.model_dump()),
-                 dumps(a.rawEvents), dumps(a.passes), a.clientVersion, a.skillId, a.itemId),
+                 dumps(a.rawEvents), dumps(a.passes), a.clientVersion, a.skillId, a.itemId, dumps(a.noteResults)),
             )
             effects = students.after_attempt(con, a.studentId, a, content.load()) if a.studentId else None
         return {"id": a.id, "stored": True, "effects": effects}
@@ -312,7 +313,7 @@ def attempt_out(row, full: bool) -> dict:
     if full:
         for col, key in (("conditions", "conditions"), ("section", "section"), ("per_phrase_errors", "perPhraseErrors"),
                          ("note_errors", "noteErrors"), ("evaluation", "evaluation"), ("raw_events", "rawEvents"),
-                         ("passes", "passes")):
+                         ("passes", "passes"), ("note_results", "noteResults")):
             out[key] = json.loads(row[col]) if row[col] else None
         out.update({"arrangementId": row["arrangement_id"], "contentVersion": row["content_version"],
                     "receivedAt": row["received_at"], "latencyOffsetMs": row["latency_offset_ms"],

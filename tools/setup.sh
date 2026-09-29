@@ -14,5 +14,7 @@ tools/.venv/bin/pip install -q -r tools/requirements.txt
 tools/.venv/bin/python -m playwright install chromium
 # abc2xml 268 by Willem Vree (LGPL): ABC with several voices -> MusicXML (music21's ABC reader merges voices)
 mkdir -p tools/.vendor && curl -sL -o tools/.vendor/abc2xml.zip https://wim.vree.org/svgParse/abc2xml.py-268.zip
-(cd tools/.vendor && unzip -o -q abc2xml.zip)
+# xml2abc 177 by the same author (LGPL): MusicXML -> ABC, for the song import skill (tools/import_song.py convert)
+curl -sL -o tools/.vendor/xml2abc.zip https://wim.vree.org/svgParse/xml2abc.py-177.zip
+(cd tools/.vendor && unzip -o -q abc2xml.zip && unzip -o -q xml2abc.zip)
 echo "ready: tools/.venv/bin/python tools/build_content.py, then (cd client && npm run build)"

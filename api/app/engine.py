@@ -3,8 +3,8 @@ stuck handling, today's session queue, and the adaptive session length.
 
 Everything takes `today` (the local calendar day) so the practice simulator can run months of
 days in seconds. The numbers are the first version from the architecture, tuned with the
-simulator and with the children (§7.10, §11.4). Diagnostics and generated drills (M6) are not
-here yet: the Practice slot's remedy position stays empty until then.
+simulator and with the children (§7.10, §11.4). Diagnostics (diagnostics.py) runs when each
+day's session is built, and its remedies lead the Practice slot (8.8).
 """
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from dataclasses import asdict, dataclass, field, fields
 from datetime import date, timedelta
 from typing import Any
 
+from . import diagnostics
 from .content import Content, Piece, Skill
 
 # 8.1, 8.2
@@ -47,6 +48,12 @@ ITEM_OVERHEAD_SEC = 45
 RUNWAY_SKILLS, RUNWAY_DAYS = 15, 21
 SLOWER = {"100": "90", "90": "75", "75": "50", "50": "50"}
 PRESETS = ("50", "75", "90", "100")
+# 7.6: score -> stars
+STAR_TABLE = [(0.96, 5.0), (0.91, 4.5), (0.86, 4.0), (0.80, 3.5), (0.74, 3.0), (0.67, 2.5), (0.60, 2.0), (0.50, 1.5), (0.40, 1.0)]
+
+
+def stars(score: float) -> float:
+    return next((s for lo, s in STAR_TABLE if score >= lo - 1e-9), 0.5)
 
 
 def iso(d: date | None) -> str | None:
@@ -336,18 +343,41 @@ def implicit_review_due(st: SkillState, today: date) -> bool:
 
 
 def lesson_done(con: sqlite3.Connection, content: Content, student_id: str, skill_id: str, today: date,
-                item_id: str | None = None, seconds: float = 0, caps: dict[str, bool] | None = None) -> dict[str, Any]:
-    """A concept lesson gone through: the skill becomes Current (8.1); a refresher is cleared."""
+                item_id: str | None = None, seconds: float = 0, caps: dict[str, bool] | None = None,
+                check: tuple[int, float] | None = None) -> dict[str, Any]:
+    """A concept lesson gone through: the skill becomes Current (8.1); a refresher is cleared.
+    `check` is its Check cards' result (questions, points; 7.8): it is kept, and for a theory
+    skill, which has no play-along piece, 3 stars pass it and move its mastery."""
     if skill_id not in content.skills:
         raise KeyError(skill_id)
     states = load_states(con, content, student_id)
     st = states[skill_id]
     st.concept_done, st.refresher = True, False
     refresh(content, states, caps)
+    result = None
+    if check and check[0] > 0:
+        score = max(0.0, min(1.0, check[1] / check[0]))
+        result = {"questions": check[0], "points": check[1], "stars": stars(score)}
+        con.execute("INSERT INTO lesson_results (student_id, skill_id, date, questions, points, stars, created) "
+                    "VALUES (?, ?, ?, ?, ?, ?, datetime('now'))", (student_id, skill_id, iso(today), check[0], check[1], result["stars"]))
+        if content.skills[skill_id].track == "theory" and st.status in ("current", "passed"):
+            st.mastery = score if st.mastery is None else st.mastery + MASTERY_STEP * (score - st.mastery)
+            st.best_mastery = max(st.best_mastery or 0, st.mastery)
+            st.best_accuracy_stars = max(st.best_accuracy_stars or 0, result["stars"])
+            st.last_practiced = iso(today)
+            if st.status == "current" and result["stars"] >= PASS_STARS:
+                st.status, st.passed_date = "passed", iso(today)
+            if st.status == "passed" and st.mastery >= MASTERY_LEVEL and iso(today) not in st.high_days:
+                st.high_days.append(iso(today))
+            if st.status == "passed" and len(st.high_days) >= MASTERY_DAYS:
+                st.status, st.mastered_date = "mastered", iso(today)
+                st.review_step, st.last_review_date = 0, iso(today)
+                st.next_review_date = iso(today + timedelta(days=REVIEW_DAYS[0]))
+            refresh(content, states, caps)
     save_states(con, student_id, states)
     if seconds:
         add_practice(con, student_id, today, seconds, guided=item_id is not None)
-    out: dict[str, Any] = {"status": st.status, "item": None}
+    out: dict[str, Any] = {"status": st.status, "item": None, "check": result}
     item = find_item(con, student_id, item_id, today) if item_id else None
     if item is not None and item["kind"] == "lesson":
         out["item"] = mark_done(con, student_id, item, None)
@@ -441,8 +471,10 @@ def piece_seconds(p: Piece, preset: str | None = None) -> float:
 class Planner:
     """Builds one day's queue in slot order: warm-up review, new, practice, reward (8.5)."""
 
-    def __init__(self, content: Content, states: dict[str, SkillState], today: date, target_minutes: float):
+    def __init__(self, content: Content, states: dict[str, SkillState], today: date, target_minutes: float,
+                 remedies: list[dict[str, Any]] | None = None):
         self.c, self.states, self.today = content, states, today
+        self.remedies = remedies or []
         self.total = target_minutes * 60
         self.items: list[dict[str, Any]] = []
         self.used: set[str] = set()
@@ -519,9 +551,11 @@ class Planner:
                         added = True
         left_over = max(0.0, budget - spent)
 
-        # practice: (diagnostic remedy, M6), support for a stuck skill, polish, a tricky spot, polish of mastered skills
+        # practice: Diagnostics' remedies, support for a stuck skill, polish, a tricky spot, polish of mastered skills
         budget = share["practice"] * self.total + left_over
         spent = 0.0
+        for it in self.remedies:
+            spent += self.add(it)
         for s in stuck:
             st = states[s.id]
             p = next((x for x in c.pieces_of(s.id) if guided_ready(x, states)), None)
@@ -640,7 +674,9 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
     states = load_states(con, content, student_id)
     refresh(content, states, caps)
     save_states(con, student_id, states)
-    items, end = Planner(content, states, today, target).build()
+    diagnostics.run(con, content, student_id, today)       # after the last session, before this one (8.8)
+    remedies = diagnostics.remedy_items(con, content, student_id, states, today, target, new_item, piece_seconds)
+    items, end = Planner(content, states, today, target, remedies).build()
     con.execute("INSERT INTO sessions (student_id, date, target_minutes, queue, end_of_content, created_at, updated_at) "
                 "VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
                 (student_id, iso(today), target, json.dumps(items), int(end)))
@@ -685,11 +721,13 @@ def update_item(con: sqlite3.Connection, content: Content, student_id: str, a: A
     round the item's section. Tries count toward "Try it another way" while the skill is not passed."""
     if not a.completed:
         return None
-    if item["kind"] == "piece" and item.get("section") is not None:
+    if item["kind"] == "piece" and (item.get("section") is not None or item.get("bars")):
         if a.mode != "loop":
             return None
     elif a.mode != "play":
         return None
+    if item.get("patternId"):
+        diagnostics.remedy_tried(con, item["patternId"], a.day)
     piece = content.pieces.get(a.piece_id)
     result = {"accuracyStars": a.accuracy_stars, "timingStars": a.timing_stars}
     if item["kind"] == "pick" and piece:

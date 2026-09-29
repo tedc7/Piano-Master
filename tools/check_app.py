@@ -17,6 +17,7 @@ import sys
 import tempfile
 import threading
 import time
+import uuid
 from pathlib import Path
 
 import uvicorn
@@ -103,6 +104,41 @@ def test_piece(pid, abc, hands):
     return {"id": pid, "title": pid, "kind": "core", "hands": hands, "notation": nt.jsonable(nota), "media": None}
 
 
+def wait_api(page, js: str, timeout: float = 15000) -> None:
+    """Wait until `js` (an expression that fetches from the API) resolves to something truthy.
+    Polls with evaluate, which awaits the promise (a pending promise must not count as true)."""
+    t0 = time.monotonic()
+    while not page.evaluate(js):
+        if (time.monotonic() - t0) * 1000 > timeout:
+            raise TimeoutError(f"waited {timeout / 1000:g} s for {js}")
+        page.wait_for_timeout(100)
+
+
+def plant_rushed_eighths() -> str:
+    """A student whose last two days of Hot Cross Buns rushed every eighth note by 140 ms, written
+    straight into the check's throwaway database (the MIDI keyboard's data, in advance)."""
+    import sqlite3
+    from datetime import date, datetime, timedelta
+    notes = json.loads((DIST / "content" / "pieces" / "hot-cross-buns.json").read_text())["notation"]["notes"]
+    res = [[i, -140 if n["duration"] == 0.5 else 0] for i, n in enumerate(notes)]
+    con = sqlite3.connect(os.environ["PIANO_DB"])
+    sid, now = str(uuid.uuid4()), datetime.now().astimezone()
+    con.execute("INSERT INTO students (id, name, avatar, start_date, sort, created_at) VALUES (?, 'Cleo', '🐢', ?, 9, ?)",
+                (sid, (date.today() - timedelta(days=3)).isoformat(), now.isoformat()))
+    con.execute("INSERT OR IGNORE INTO devices (id, created_at, last_seen) VALUES ('planted', ?, ?)", (now.isoformat(),) * 2)
+    for k in (2, 1):
+        when = (now - timedelta(days=k)).isoformat()
+        con.execute(
+            "INSERT INTO attempts (id, device_id, student_id, piece_id, arrangement_id, context, mode, completed, started_at, received_at, "
+            "tempo_preset, conditions, conditions_factor, raw_accuracy, accuracy, accuracy_stars, per_phrase_errors, note_errors, "
+            "evaluation, raw_events, passes, note_results) VALUES (?, 'planted', ?, 'hot-cross-buns', 'hot-cross-buns', 'guided', "
+            "'play', 1, ?, ?, '100', '{\"hands\": \"both\"}', 1, 1, 1, 5, '[]', '[]', '{}', '[]', '[]', ?)",
+            (str(uuid.uuid4()), sid, when, when, json.dumps(res)))
+    con.commit()
+    con.close()
+    return sid
+
+
 def serve():
     """The App API plus the built client at /, on a free local port, with a throwaway database."""
     os.environ["PIANO_DB"] = str(Path(tempfile.mkdtemp()) / "piano.db")
@@ -148,9 +184,12 @@ def main():
         pad = lambda digits: [page.locator(".pad").get_by_role("button", name=d, exact=True).click() for d in digits]
 
         def do_lesson(wrong_first=False):
-            """Go through a concept lesson: play the lit keys on Try, tap the answers on Check."""
+            """Go through a concept lesson: play the lit keys on Try, tap the answers on Check, play
+            the phrase back on Echo. Returns whether a wrong answer went back to Show, and the
+            Check and Echo points (arch §7.8) just before the end."""
             page.wait_for_function("window.__lesson && window.__lesson.card")
             went_back = False
+            points = {}
             for _ in range(40):
                 kind = page.evaluate("__lesson.card.kind")
                 if kind == "try":
@@ -163,7 +202,18 @@ def main():
                         page.wait_for_timeout(50)
                 elif kind == "check":
                     while not page.evaluate("__lesson.done"):
-                        want = page.evaluate("__lesson.card.questions[__lesson.progress].answer.pitches[0]")
+                        q = page.evaluate("__lesson.card.questions[__lesson.progress]")
+                        if isinstance(q["answer"], str):
+                            wrong = next(c for c in q["choices"] if c != q["answer"])
+                            if wrong_first and not went_back:
+                                page.locator(".choice", has_text=wrong).click()
+                                page.wait_for_function("__lesson.card.kind === 'show'", timeout=5000)
+                                went_back = True
+                                break
+                            page.locator(".choice", has_text=q["answer"]).click()
+                            page.wait_for_timeout(700)
+                            continue
+                        want = q["answer"]["pitches"][0]
                         if wrong_first and not went_back:
                             page.locator(f".keys [data-pitch='{want + 1}']").dispatch_event("pointerdown")
                             page.wait_for_function("__lesson.card.kind === 'show'", timeout=5000)
@@ -173,12 +223,21 @@ def main():
                         page.wait_for_timeout(700)
                     if page.evaluate("__lesson.card.kind") == "show":
                         continue
-                if page.get_by_role("button", name="Next ›").is_disabled():
+                elif kind == "echo":
+                    # a key pressed while the app is still playing the phrase doesn't count
+                    page.wait_for_timeout(900 + 60000 / page.evaluate("__lesson.card.tempo") * len(page.evaluate("__lesson.card.play")) + 300)
+                    for ps in page.evaluate("__lesson.card.play.map(n => n.pitches)"):
+                        page.evaluate("ps => { for (const p of ps) __midiSend([0x90, p, 80]); for (const p of ps) __midiSend([0x80, p, 0]); }", ps)
+                        page.wait_for_timeout(120)
+                    page.wait_for_function("__lesson.echo.result !== null", timeout=5000)
+                if page.locator("button.next").is_disabled():
                     raise AssertionError(f"lesson: can't leave the {kind} card")
                 last = page.evaluate("__lesson.step === document.querySelectorAll('.steps .dot').length - 1")
-                page.get_by_role("button", name="Next ›").click()
                 if last:
-                    return went_back
+                    points = page.evaluate("__lesson.points")
+                page.locator("button.next").click()
+                if last:
+                    return went_back, points
                 page.wait_for_timeout(100)
             raise AssertionError("lesson: never finished")
 
@@ -231,7 +290,9 @@ def main():
         page.screenshot(path=str(OUT / "lesson-show.png"))
         check(page.locator(".mini .pm-glow").count() + page.locator(".keys .kb-t-R").count() > 0, "lesson: Show lights the keys and the staff notes")
         page.get_by_role("button", name="‹ Back").click()
-        do_lesson()
+        _, pts = do_lesson()
+        check(sorted(pts.values()) == [1, 1, 1] and any(k.endswith("/echo") for k in pts),
+              f"lesson: the echo card and the Check questions each earn a point, right first time ({pts})")
         page.wait_for_selector(".path .bubble.done")
         check("Hot Cross Buns" in page.locator(".upnext").inner_text(), "practice: after the lesson (played on the piano), its first song is up next")
 
@@ -248,7 +309,7 @@ def main():
         page.wait_for_selector(".bubble.done >> nth=1")
         check(page.locator(".bubble.done").count() == 2 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
               "practice: the lesson and the song are checked off, the song with its 5 stars")
-        page.wait_for_function("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.studentId))", timeout=15000)
+        wait_api(page, "fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.studentId))", timeout=15000)
         stored = page.evaluate("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json())")["attempts"][0]
         check(stored["context"] == "guided" and stored["itemId"] and stored["skillId"] == "placeholder.rh-c-position",
               f"practice: the attempt is stored for Ada's session item ({stored['context']}, {stored['skillId']})")
@@ -297,8 +358,9 @@ def main():
         check("New idea" in page.locator(".upnext").inner_text() and page.locator(".bubble.done").count() == 0,
               "practice: Ben's progress is separate from Ada's")
         page.get_by_role("button", name="Start").click()
-        went_back = do_lesson(wrong_first=True)
+        went_back, pts = do_lesson(wrong_first=True)
         check(went_back, "lesson: a wrong answer on Check goes back to Show")
+        check(sorted(pts.values()) == [0.5, 1, 1], f"lesson: right on the second try earns half a point ({pts})")
         page.wait_for_selector(".path .bubble.done")
         page.get_by_role("button", name="Start").click()
         page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
@@ -352,6 +414,24 @@ def main():
               "piano check: keys, chord, velocity and pedal are counted")
         page.screenshot(path=str(OUT / "nav-config-midi.png"))
         page.get_by_role("button", name="‹ Config").click()
+
+        # latency calibration: the scripted keyboard taps 40 ms after each click is heard
+        tile("Latency calibration").click()
+        page.get_by_role("button", name="Start").click()
+        page.evaluate("""() => new Promise((res) => { const c = window.__calib, done = new Set();
+            const i = setInterval(() => { const now = c.heardNow();
+              c.clicks.forEach((t, k) => { if (!done.has(k) && now >= t + 0.040) { done.add(k); __midiSend([0x90, 60, 80]); __midiSend([0x80, 60, 0]); } });
+              if (c.state === 'done') { clearInterval(i); res(); } }, 2); })""")
+        cal = page.evaluate("__calib.result")
+        check(cal["ok"] and cal["steady"] and abs(cal["offsetMs"] - 40) <= 6 and cal["used"] == 24,
+              f"calibration: 24 taps 40 ms late measure a steady offset ({cal['offsetMs']} ms, spread {cal['spreadMs']} ms)")
+        page.screenshot(path=str(OUT / "nav-config-calibrate.png"))
+        page.get_by_role("button", name=f"Use {cal['offsetMs']} ms").click()
+        page.wait_for_timeout(300)
+        dev = page.evaluate("fetch('api/devices/' + JSON.parse(localStorage.getItem('pm.device.v1'))).then(r => r.json())")
+        check(dev.get("profile", {}).get("latencyOffsetMs") == cal["offsetMs"] and dev["profile"].get("latencySpreadMs") == cal["spreadMs"],
+              f"calibration: the offset and spread are saved to the DeviceProfile ({dev.get('profile', {}).get('latencyOffsetMs')})")
+        page.get_by_role("button", name="‹ Config").click()
         tile("Device settings").click()
         page.get_by_role("button", name="88 keys").click()
         page.wait_for_timeout(300)
@@ -368,6 +448,11 @@ def main():
         tab("Songs").click()
         page.wait_for_selector(".song")
         check(page.locator(".song .card[disabled]").count() == 0, "parent: every song opens")
+        # the 3/4 lesson's identify questions: tap an answer, after listening to a phrase
+        page.goto(url + "#/lesson/placeholder.three-four-time")
+        _, pts = do_lesson()
+        check(len(pts) == 3 and sum(pts.values()) == 3, f"lesson: tap-an-answer questions score like key questions ({pts})")
+        page.goto(url + "#/config")
         tab("Config").click()
         tile("Journey render test").click()
         page.wait_for_function("window.__journeyTest", timeout=15000)
@@ -460,7 +545,7 @@ def main():
         check(page.locator(".result").count() == 1, "twinkle clean run: result card shown")
         check(page.locator('.result [aria-label="Notes: 5 of 5 stars"]').count() == 1 and
               page.locator('.result [aria-label="Timing: 5 of 5 stars"]').count() == 1, "twinkle clean run: 5 stars for notes and timing")
-        page.wait_for_function("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json()).then(j => j.attempts.length > 0)", timeout=15000)
+        wait_api(page, "fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json()).then(j => j.attempts.length > 0)", timeout=15000)
         stored = page.evaluate("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json())")["attempts"]
         check(len(stored) == 1 and stored[0]["completed"] and stored[0]["accuracyStars"] == 5 and stored[0]["tempoPreset"] == "100",
               f"twinkle clean run: attempt stored by the API ({[(a['completed'], a['accuracyStars']) for a in stored]})")
@@ -493,7 +578,7 @@ def main():
         page.wait_for_selector(".loopnote")
         page.screenshot(path=str(OUT / "hcb-loop.png"))
         check("6 of 6 notes" in page.locator(".loopnote").inner_text(), f"tricky part: a clean loop pass shows its result ({page.locator('.loopnote').inner_text()})")
-        page.wait_for_function("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
+        wait_api(page, "fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
         loops = [a for a in page.evaluate("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json())")["attempts"] if a["mode"] == "loop"]
         check(len(loops) == 1 and loops[0]["accuracyStars"] == 3.5 and loops[0]["tempoPreset"] == "90",
               f"tricky part: loop pass stored as a section attempt (0.9 x 0.92 = 83%, 3.5 stars: {[(a['accuracyStars'], a['tempoPreset']) for a in loops]})")
@@ -505,6 +590,15 @@ def main():
         faint = page.evaluate("__pm.tl.notes.filter(n => __pm.layout.noteEls[n.id].classList.contains('pm-other')).map(n => n.hand)")
         check(len(faint) == 13 and set(faint) == {"L"}, f"echo song: right hand only dims the 13 left-hand notes ({len(faint)})")
         page.screenshot(path=str(OUT / "echo-right-hand.png"))
+        # playing the right hand, the app plays the left hand on its sampled piano
+        page.evaluate("__pm.audio.pianoLog.length = 0")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").first.click()
+        page.evaluate(AUTOPLAY, [[], 0, 30, False])
+        heard = page.evaluate("__pm.audio.pianoLog")
+        left = set(page.evaluate("__pm.tl.notes.filter(n => n.hand === 'L').map(n => n.pitch)"))
+        check(len(heard) == 13 and all(h["sampled"] and h["pitch"] in left for h in heard),
+              f"echo song: the app plays the 13 left-hand notes on the sampled piano ({len(heard)}, sampled {sum(h['sampled'] for h in heard)})")
         bars = page.locator(".loopbars")
         check(bars.inner_text() == "All bars", "bars: all bars by default")
         page.get_by_role("button", name="Later bars").click()
@@ -553,6 +647,45 @@ def main():
         page.screenshot(path=str(OUT / "grace-listen.png"))
         check(pos["logic"] > 2, f"amazing grace: stems load and the song moves at 50% (beat {pos['logic']:.2f})")
         page.get_by_role("button", name="Pause").click()
+
+        # 7. Diagnostics (M6): two days of rushed eighth notes, planted for a new student, give
+        # today's session a rhythm tap drill; any key counts, and playing it checks the item off
+        sid = plant_rushed_eighths()
+        page.goto(url)
+        page.wait_for_selector(".student")
+        page.locator(".student", has_text="Cleo").click()
+        page.wait_for_selector(".path .bubble")
+        for _ in range(10):                     # skip what comes before the remedy (skipped items go to the end)
+            items = page.evaluate(f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items)")
+            nxt = next(i for i in items if not i["done"])
+            if nxt["reason"] == "Focus":
+                break
+            page.evaluate(f"fetch('api/students/{sid}/session/skip', {{method: 'POST', headers: {{'Content-Type': 'application/json'}}, body: JSON.stringify({{itemId: '{nxt['id']}'}})}})")
+        focus = [i for i in items if i["reason"] == "Focus"]
+        check([i["kind"] for i in focus] == ["drill", "piece"] and focus[1].get("click") is True and focus[1].get("bars"),
+              f"diagnostics: rushed eighth notes get a rhythm tap drill, then the bars with the metronome ({[(i['kind'], i['title']) for i in focus]})")
+        page.reload()
+        page.wait_for_selector(".upnext, .student")
+        if page.locator(".student", has_text="Cleo").count():
+            page.locator(".student", has_text="Cleo").click()
+        page.wait_for_selector(".upnext")
+        try:            # the cached session shows first; the refresh from the server follows
+            page.wait_for_function("document.querySelector('.upnext').innerText.toLowerCase().includes('focus')", timeout=10000)
+        except Exception:
+            pass
+        check("focus" in page.locator(".upnext").inner_text().lower(), f"diagnostics: the remedy is up next, as Focus ({page.locator('.upnext').inner_text()[:50]!r})")
+        page.get_by_role("button", name="Start").click()
+        page.wait_for_function("window.__pm && window.__pm.player.piece.kind === 'drill' && window.__pm.layout")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").first.click()
+        beats = page.evaluate("__pm.tl.notes.map(n => n.beat)")
+        res = page.evaluate(AUTOPLAY, [beats, 0, 40, True])          # every note a semitone off: any key counts
+        m = res["debug"]["matcher"]
+        check(res["state"] == "finished" and m["hits"] == m["expected"] and m["wrong"] == 0,
+              f"diagnostics: the tap drill counts any key ({m})")
+        wait_api(page, f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items.find(i => i.id === '{focus[0]['id']}').done)", timeout=10000)
+        page.screenshot(path=str(OUT / "drill-rhythm.png"))
+        check(True, "diagnostics: playing the drill checks the Focus item off")
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
         browser.close()

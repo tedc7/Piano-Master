@@ -9,6 +9,7 @@
   import { go } from "../lib/route";
   import AnalysisPage from "./parent/AnalysisPage.svelte";
   import AppStatus from "./parent/AppStatus.svelte";
+  import CalibratePage from "./parent/CalibratePage.svelte";
   import ContentPreview from "./parent/ContentPreview.svelte";
   import DevicePage from "./parent/DevicePage.svelte";
   import MidiTest from "./parent/MidiTest.svelte";
@@ -34,7 +35,7 @@
     ] },
     { name: "This device", tiles: [
       { id: "midi", icon: "🎹", name: "Piano check", what: "Keys, chords, velocity, pedal and MIDI delay (the device qualification test)." },
-      { id: "calibrate", icon: "⏱", name: "Latency calibration", what: "The app plays 24 clicks and you tap one key in time; it sets the latency offset from the average and checks the spread is under about 20 ms.", milestone: "M0" },
+      { id: "calibrate", icon: "⏱", name: "Latency calibration", what: "The app plays 24 clicks and you tap one key in time; it sets the latency offset from the average and checks the spread is under about 20 ms." },
       { id: "device", icon: "⚙️", name: "Device settings", what: "Display and latency offsets, keyboard size and the piano input." },
       { id: "journey-test", icon: "🗺️", name: "Journey render test", what: "A 200-bubble Journey map that scrolls by itself and reports its frame times (M5)." },
       { id: "status", icon: "🩺", name: "App status", what: "Versions, the piano server, plays waiting to send, and recent problems." },
@@ -45,7 +46,7 @@
     ] },
   ];
   const BUILT: Record<string, true> = {
-    content: true, analysis: true, midi: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
+    content: true, analysis: true, midi: true, calibrate: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
   };
   function openTile(id: string): void {
     if (id === "journey-test") go("journey/test"); else go(`config/${id}`);
@@ -84,6 +85,8 @@
       <PinPage />
     {:else if page === "midi"}
       <MidiTest />
+    {:else if page === "calibrate"}
+      <CalibratePage />
     {:else if page === "device"}
       <DevicePage />
     {:else if page === "status"}

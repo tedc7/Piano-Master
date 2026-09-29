@@ -1,8 +1,9 @@
 <script lang="ts">
   // Piano check (arch §2.6 checks 1-4, §2.6.1): which piano is connected, every key heard, chords,
   // velocity, pedal, fast repeats, and the browser's MIDI delivery delay. A key can also click,
-  // for the slow-motion video measurement of key-to-screen and key-to-sound delay. The results go
-  // to the client log until the DeviceProfile is stored on the server (M4).
+  // for the slow-motion video measurement of key-to-screen and key-to-sound delay. Save results
+  // writes the full results to the client log and the detected pedal and touch sensitivity to this
+  // device's DeviceProfile, which the lesson engine uses to hold pedal skills (§2.4).
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
@@ -105,7 +106,12 @@
 
   function save(): void {
     api.log("info", "piano check", summary);
-    saved = `Saved to the piano server's log at ${new Date().toLocaleTimeString()}.`;
+    const found: { hasPedal?: boolean; velocitySensitive?: boolean } = {};
+    if (pedalSeen) found.hasPedal = true;
+    if (velocities.length >= 20) found.velocitySensitive = velocitySensitive;
+    if (Object.keys(found).length) app.setDevice(found);
+    saved = `Saved at ${new Date().toLocaleTimeString()}: results in the piano server's log` +
+      (Object.keys(found).length ? "; pedal and touch in Device settings." : ".");
   }
 </script>
 
