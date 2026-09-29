@@ -1,44 +1,55 @@
 <script lang="ts">
   // Config, the parent's Parental Controls hub (arch §3 "Parent mode", §10.1), and its pages.
-  // Built so far: the piano check, device settings, app status and the content preview; the rest
-  // are placeholders that say what they will do and in which milestone.
+  // Built so far: students, progress reports, the PIN, the piano check, device settings, app
+  // status and the content preview; the rest are placeholders that say what they will do and in
+  // which milestone.
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
-  import { app, PARENT_IDLE_MS } from "../lib/app.svelte.js";
+  import { app } from "../lib/app.svelte.js";
   import { go } from "../lib/route";
+  import AnalysisPage from "./parent/AnalysisPage.svelte";
   import AppStatus from "./parent/AppStatus.svelte";
   import ContentPreview from "./parent/ContentPreview.svelte";
   import DevicePage from "./parent/DevicePage.svelte";
   import MidiTest from "./parent/MidiTest.svelte";
+  import PinPage from "./parent/PinPage.svelte";
+  import ReportsPage from "./parent/ReportsPage.svelte";
+  import StudentsPage from "./parent/StudentsPage.svelte";
 
   let { page }: { page: string | null } = $props();
 
   interface Tile { id: string; icon: string; name: string; what: string; milestone?: string }
   const GROUPS: { name: string; tiles: Tile[] }[] = [
     { name: "Family", tiles: [
-      { id: "students", icon: "👧", name: "Students", what: "Add, edit, archive or delete students; avatars; per-student settings such as hints, auto-rewind and default tempo.", milestone: "M4" },
+      { id: "students", icon: "👧", name: "Students", what: "Add, edit, archive or delete students; avatars; each student's auto-rewind, rewind distance and backing volume." },
       { id: "rules", icon: "🛡️", name: "Songs and genres", what: "Allow or block genres and single songs for each child. Lesson pieces are always allowed; other genres start blocked.", milestone: "M7" },
-      { id: "reports", icon: "📈", name: "Progress reports", what: "Each child's skills, star trends, practice days, stuck skills and what the app suggests next.", milestone: "M4–M7" },
+      { id: "reports", icon: "📈", name: "Progress reports", what: "Each child's skills, star trends, practice days, stuck skills and the content runway." },
     ] },
     { name: "Songs and lessons", tiles: [
       { id: "content", icon: "📚", name: "Content preview", what: "Every skill and song in sequence order, open for review." },
       { id: "review", icon: "📥", name: "Review list", what: "Songs and media staged by the Claude skills, waiting for approval. Nothing staged reaches a child.", milestone: "M7" },
       { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "M7" },
       { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "M8" },
-      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "Load content, re-run song analysis, the coverage report (skills with fewer than 3 ready pieces) and the content runway.", milestone: "M3" },
+      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (skills with fewer than 3 core pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
     ] },
     { name: "This device", tiles: [
       { id: "midi", icon: "🎹", name: "Piano check", what: "Keys, chords, velocity, pedal and MIDI delay (the device qualification test)." },
       { id: "calibrate", icon: "⏱", name: "Latency calibration", what: "The app plays 24 clicks and you tap one key in time; it sets the latency offset from the average and checks the spread is under about 20 ms.", milestone: "M0" },
-      { id: "device", icon: "⚙️", name: "Device settings", what: "Display and latency offsets, auto-rewind, backing volume and the piano input." },
+      { id: "device", icon: "⚙️", name: "Device settings", what: "Display and latency offsets, keyboard size and the piano input." },
+      { id: "journey-test", icon: "🗺️", name: "Journey render test", what: "A 200-bubble Journey map that scrolls by itself and reports its frame times (M5)." },
       { id: "status", icon: "🩺", name: "App status", what: "Versions, the piano server, plays waiting to send, and recent problems." },
     ] },
     { name: "Settings", tiles: [
-      { id: "pin", icon: "🔑", name: "PIN and log out", what: "Change the parent PIN (checked by the server, with lockout after failed tries) and the auto-logout time.", milestone: "M4" },
+      { id: "pin", icon: "🔑", name: "PIN and log out", what: "Change the parent PIN (checked by the server, with lockout after failed tries) and the auto-logout time." },
       { id: "ai", icon: "🤖", name: "AI settings", what: "Turn the optional AI advisor on or off.", milestone: "M9" },
     ] },
   ];
-  const BUILT: Record<string, true> = { content: true, midi: true, device: true, status: true };
+  const BUILT: Record<string, true> = {
+    content: true, analysis: true, midi: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
+  };
+  function openTile(id: string): void {
+    if (id === "journey-test") go("journey/test"); else go(`config/${id}`);
+  }
   const tile = $derived(page ? GROUPS.flatMap((g) => g.tiles).find((t) => t.id === page) ?? null : null);
 </script>
 
@@ -49,7 +60,7 @@
     <div class="bar">
       {#if page}<button class="quiet" onclick={() => go("config")}>‹ Config</button>{/if}
       <span class="spacer"></span>
-      <span class="muted small">Switch player logs the parent out; so do {PARENT_IDLE_MS / 60000} minutes without a touch.</span>
+      <span class="muted small">Switch player logs the parent out; so do {app.autoLogoutMinutes} minutes without a touch.</span>
     </div>
 
     {#if !page}
@@ -57,7 +68,7 @@
         <h2 class="group">{g.name}</h2>
         <div class="tiles">
           {#each g.tiles as t (t.id)}
-            <button class="tile" class:todo={!BUILT[t.id]} onclick={() => go(`config/${t.id}`)}>
+            <button class="tile" class:todo={!BUILT[t.id]} onclick={() => openTile(t.id)}>
               <span class="tile-head"><span class="tile-icon">{t.icon}</span><span class="tile-name">{t.name}</span></span>
               <span class="tile-what">{t.what}</span>
               {#if !BUILT[t.id]}<span class="soon">Coming in {t.milestone}</span>{/if}
@@ -65,12 +76,20 @@
           {/each}
         </div>
       {/each}
+    {:else if page === "students"}
+      <StudentsPage />
+    {:else if page === "reports"}
+      <ReportsPage />
+    {:else if page === "pin"}
+      <PinPage />
     {:else if page === "midi"}
       <MidiTest />
     {:else if page === "device"}
       <DevicePage />
     {:else if page === "status"}
       <AppStatus />
+    {:else if page === "analysis"}
+      <AnalysisPage />
     {:else if page === "content"}
       <ContentPreview />
     {:else if tile}

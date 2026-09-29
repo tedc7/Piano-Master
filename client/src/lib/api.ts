@@ -1,13 +1,21 @@
-// API client (arch §4): the device id, attempts through a small local outbox, and client logs.
-// The outbox keeps finished attempts through a Wi-Fi drop and sends them when the piano server
-// is reachable again (§2.1). iPadOS may clear local storage when space is low; the device then
-// registers again as a new device (§5), and practice never waits on the network.
+// API client (arch §4): the device id, attempts through a small local outbox, client logs, and
+// requests to the rest of the App API (students, the session, parent login). The outbox keeps
+// finished attempts through a Wi-Fi drop and sends them when the piano server is reachable again
+// (§2.1). iPadOS may clear local storage when space is low; the device then registers again as a
+// new device (§5), and practice never waits on the network.
 
 const API = "/api";
 const DEVICE_KEY = "pm.device.v1";
 const OUTBOX_KEY = "pm.outbox.v1";
 const OUTBOX_MAX = 200;
-export const CLIENT_VERSION = "0.3.0";
+export const CLIENT_VERSION = "0.4.0";
+
+/** An App API refusal: `detail` is the server's reason (a string, or e.g. {triesLeft}). */
+export class ApiError extends Error {
+  constructor(readonly status: number, readonly detail: unknown) {
+    super(typeof detail === "string" ? detail : (detail as { message?: string })?.message ?? `HTTP ${status}`);
+  }
+}
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -30,14 +38,14 @@ function newId(): string {
   });
 }
 
-async function send(path: string, method: string, body: unknown): Promise<Response> {
+async function send(path: string, method: string, body: unknown, headers: Record<string, string> = {}): Promise<Response> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
   try {
     return await fetch(API + path, {
       method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json", ...headers },
+      body: body === undefined ? undefined : JSON.stringify(body),
       signal: ctrl.signal,
     });
   } finally {
@@ -47,14 +55,20 @@ async function send(path: string, method: string, body: unknown): Promise<Respon
 
 interface LogEntry { time: string; level: "info" | "warning" | "error"; message: string; context?: unknown }
 
+/** What the lesson engine changed after a stored attempt (api students.after_attempt). */
+export interface AttemptEffects { passed: string[]; mastered: string[]; reviewed: string[]; item: unknown }
+
 class ApiClient {
   readonly deviceId: string;
   pending = 0;                         // attempts waiting in the outbox
   online: boolean | null = null;       // null until the first request
+  parentToken: string | null = null;   // the parent session, in memory only (arch §11.1)
+  studentId: string | null = null;     // who is playing, for the client log
   private flushing = false;
   private logs: LogEntry[] = [];
   private logTimer = 0;
   private listeners = new Set<() => void>();
+  private storedListeners = new Set<(id: string, effects: AttemptEffects | null) => void>();
 
   constructor() {
     let id = read<string | null>(DEVICE_KEY, null);
@@ -73,6 +87,29 @@ class ApiClient {
 
   private changed(): void {
     for (const fn of this.listeners) fn();
+  }
+
+  /** Called when the server has stored an attempt from the outbox, with what it changed. */
+  onStored(fn: (id: string, effects: AttemptEffects | null) => void): () => void {
+    this.storedListeners.add(fn);
+    return () => this.storedListeners.delete(fn);
+  }
+
+  /** A JSON request to the App API; throws ApiError for a refusal, TypeError when unreachable. */
+  async request<T>(path: string, method = "GET", body?: unknown): Promise<T> {
+    const headers: Record<string, string> = this.parentToken ? { "X-Parent-Token": this.parentToken } : {};
+    let r: Response;
+    try {
+      r = await send(path, method, body, headers);
+    } catch (e) {
+      this.online = false;
+      this.changed();
+      throw e;
+    }
+    this.online = true;
+    const data = await r.json().catch(() => null);
+    if (!r.ok) throw new ApiError(r.status, data?.detail ?? null);
+    return data as T;
   }
 
   /** Register (or refresh) this device, then send anything left in the outbox. */
@@ -118,6 +155,10 @@ class ApiClient {
         // 2xx: stored; 4xx: the server will never take it (log it and drop it); 5xx: retry later
         if (r.status >= 500) break;
         if (!r.ok) this.log("error", `attempt rejected: HTTP ${r.status}`, { id: box[0].id, body: (await r.text()).slice(0, 500) });
+        else {
+          const out = await r.json().catch(() => null);
+          for (const fn of this.storedListeners) fn(box[0].id, out?.effects ?? null);
+        }
         const rest = read<{ id: string }[]>(OUTBOX_KEY, []).filter((a) => a.id !== box[0].id);
         write(OUTBOX_KEY, rest);
         this.pending = rest.length;
@@ -140,7 +181,7 @@ class ApiClient {
     if (!this.logs.length) return;
     const batch = this.logs.splice(0);
     try {
-      const r = await send("/logs", "POST", { deviceId: this.deviceId, entries: batch });
+      const r = await send("/logs", "POST", { deviceId: this.deviceId, studentId: this.studentId, entries: batch });
       if (!r.ok && r.status >= 500) this.logs.unshift(...batch);
     } catch {
       this.logs.unshift(...batch);

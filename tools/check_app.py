@@ -74,9 +74,39 @@ AUTOPLAY = """
 """
 
 
+# Test-only notation (never content): triplets, grace notes, the left hand crossing onto the
+# treble staff ("_L"), a clef change, and a repeat; then a first bar packed with sixteenths.
+NOTATION_ABC = """X:1
+M:4/4
+L:1/8
+Q:1/4=90
+K:G
+%%score {RH LH}
+V:RH clef=treble
+V:LH clef=bass
+[V:RH] |: (3DEF G2 {f}g2 "_L"B2 | (3ABc (3dcB A4 :| G8 |]
+[V:LH] |: G,,8 | D,8 :| [K:clef=treble] G8 |]
+"""
+WIDE_ABC = """X:1
+M:4/4
+L:1/16
+Q:1/4=60
+K:C
+CEGc eGce CEGc eGce | c16 |]
+"""
+
+
+def test_piece(pid, abc, hands):
+    sys.path.insert(0, str(ROOT / "tools"))
+    import notation as nt
+    nota, _ = nt.build_notation(nt.parse_abc(abc), phrase_bars=2)
+    return {"id": pid, "title": pid, "kind": "core", "hands": hands, "notation": nt.jsonable(nota), "media": None}
+
+
 def serve():
     """The App API plus the built client at /, on a free local port, with a throwaway database."""
     os.environ["PIANO_DB"] = str(Path(tempfile.mkdtemp()) / "piano.db")
+    os.environ["PIANO_CONTENT"] = str(DIST / "content")        # the lesson engine plans from the built content
     sys.path.insert(0, str(ROOT / "api"))
     from starlette.staticfiles import StaticFiles
     from app.main import app
@@ -109,48 +139,140 @@ def main():
             failures.append(what)
 
     def navigation(page):
-        """The screens around the Play screen (arch §3): picker, Today's Practice, Journey, Songs,
-        My Progress, and the parent (PIN, Config, piano check). Progress there is sample data."""
+        """The screens around the Play screen (arch §3) on a new piano server, through M4 and M5:
+        the first parent PIN, adding students, Today's Practice from the lesson engine, a concept
+        lesson and a song checked off, the Journey map and Songs following the skill states,
+        separate progress for each child, "Try it another way", and the parent's pages."""
         tab = lambda name: page.locator("nav.tabbar button", has_text=name)
         tile = lambda name: page.locator(".tile", has_text=name)
-        page.locator(".student").first.click()
-        page.wait_for_selector(".path .bubble")
-        page.wait_for_timeout(200)
-        check(page.locator(".path .bubble").count() == 5 and page.locator(".bubble.next").count() == 1,
-              f"practice: the sample session is a path of 5 items ({page.locator('.path .bubble').count()})")
-        check("Hot Cross Buns" in page.locator(".upnext").inner_text(), "practice: up next is the review song")
-        page.screenshot(path=str(OUT / "nav-session.png"))
+        pad = lambda digits: [page.locator(".pad").get_by_role("button", name=d, exact=True).click() for d in digits]
 
-        # play the first item cleanly; its bubble is checked off with its stars
+        def do_lesson(wrong_first=False):
+            """Go through a concept lesson: play the lit keys on Try, tap the answers on Check."""
+            page.wait_for_function("window.__lesson && window.__lesson.card")
+            went_back = False
+            for _ in range(40):
+                kind = page.evaluate("__lesson.card.kind")
+                if kind == "try":
+                    for _k in range(20):
+                        if page.evaluate("__lesson.done"):
+                            break
+                        page.wait_for_selector(".keys [data-pitch].kb-t-R, .keys [data-pitch].kb-t-L")
+                        pitches = page.evaluate("[...document.querySelectorAll('.keys .kb-t-R, .keys .kb-t-L')].map(k => +k.dataset.pitch)")
+                        page.evaluate("ps => { for (const p of ps) __midiSend([0x90, p, 80]); for (const p of ps) __midiSend([0x80, p, 0]); }", pitches)
+                        page.wait_for_timeout(50)
+                elif kind == "check":
+                    while not page.evaluate("__lesson.done"):
+                        want = page.evaluate("__lesson.card.questions[__lesson.progress].answer.pitches[0]")
+                        if wrong_first and not went_back:
+                            page.locator(f".keys [data-pitch='{want + 1}']").dispatch_event("pointerdown")
+                            page.wait_for_function("__lesson.card.kind === 'show'", timeout=5000)
+                            went_back = True
+                            break
+                        page.locator(f".keys [data-pitch='{want}']").dispatch_event("pointerdown")
+                        page.wait_for_timeout(700)
+                    if page.evaluate("__lesson.card.kind") == "show":
+                        continue
+                if page.get_by_role("button", name="Next ›").is_disabled():
+                    raise AssertionError(f"lesson: can't leave the {kind} card")
+                last = page.evaluate("__lesson.step === document.querySelectorAll('.steps .dot').length - 1")
+                page.get_by_role("button", name="Next ›").click()
+                if last:
+                    return went_back
+                page.wait_for_timeout(100)
+            raise AssertionError("lesson: never finished")
+
+        def ok_pin(digits):
+            pad(digits)
+            page.get_by_role("button", name="OK").click()
+
+        check(page.locator(".student").count() == 1 and page.get_by_text("No players yet").count() == 1,
+              "picker: a new piano server has only the Parent card")
+        page.locator(".student.parent").click()
+        page.wait_for_selector("text=Choose a parent PIN")
+        ok_pin("2468")
+        page.wait_for_selector("text=Enter it again")
+        ok_pin("2468")
+        page.wait_for_selector(".tile")
+        check(page.locator(".status .player.parent").count() == 1, "parent: choosing the first PIN logs the parent in")
+        tile("Students").click()
+        for name, av in (("Ada", "🦊"), ("Ben", "🐢")):
+            page.get_by_role("button", name="＋ Add a student").click()
+            page.get_by_placeholder("First name").fill(name)
+            page.get_by_role("button", name=f"Avatar {av}").click()
+            page.get_by_role("button", name="Save").click()
+            page.wait_for_selector(f".student h2:text-is('{name}')")
+        # Ben practises with auto-rewind off (a per-student setting)
+        ben = page.locator(".panel.student", has=page.locator("h2", has_text="Ben"))
+        ben.get_by_role("button", name="On").click()
+        page.wait_for_function("[...document.querySelectorAll('.panel.student')].some(p => p.innerText.includes('Ben') && p.innerText.includes('Off'))")
+        page.screenshot(path=str(OUT / "nav-config-students.png"))
+        page.get_by_role("button", name="Switch player").click()
+        page.wait_for_selector("button.student.parent")        # the picker, not the Students page
+        page.wait_for_selector("button.student >> text=Ben")
+        n = page.locator("button.student").count()
+        check(n == 3, f"picker: the two students added and the parent ({n})")
+        page.screenshot(path=str(OUT / "nav-picker.png"))
+
+        # Ada: the lesson engine starts her with the first lightbulb
+        page.locator(".student", has_text="Ada").click()
+        page.wait_for_selector(".path .bubble")
+        up = page.locator(".upnext").inner_text()
+        check("New idea" in up and "Right hand in C position" in up, f"practice: a new student starts with the first concept lesson ({up[:60]!r})")
+        n_items = page.locator(".path .bubble").count()
+        page.screenshot(path=str(OUT / "nav-session.png"))
+        page.get_by_role("button", name="Start").click()
+        page.wait_for_selector(".card-big")
+        page.wait_for_timeout(300)
+        page.screenshot(path=str(OUT / "lesson-explain.png"))
+        page.get_by_role("button", name="Next ›").click()
+        page.wait_for_selector(".mini svg")
+        page.wait_for_timeout(1200)
+        page.screenshot(path=str(OUT / "lesson-show.png"))
+        check(page.locator(".mini .pm-glow").count() + page.locator(".keys .kb-t-R").count() > 0, "lesson: Show lights the keys and the staff notes")
+        page.get_by_role("button", name="‹ Back").click()
+        do_lesson()
+        page.wait_for_selector(".path .bubble.done")
+        check("Hot Cross Buns" in page.locator(".upnext").inner_text(), "practice: after the lesson (played on the piano), its first song is up next")
+
         page.get_by_role("button", name="Start").click()
         page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
+        check(page.get_by_role("button", name="Settings").count() == 0, "play: no test settings for a student")
         page.get_by_role("button", name="100%").click()
         page.locator(".modes button").first.click()
         r = page.evaluate(AUTOPLAY, [[], 0, 40, False])
-        check(r["state"] == "finished", f"practice: the review song is played to the end ({r['state']})")
+        check(r["state"] == "finished", f"practice: the song is played to the end ({r['state']})")
         page.wait_for_selector(".result")
         check(page.get_by_role("button", name="Next ›").count() == 1, "practice: the result card offers Next")
         page.get_by_role("button", name="‹ Back").click()   # leaving by Back still checks the item off
-        page.wait_for_selector(".bubble.done")
-        check(page.locator(".bubble.done").count() == 1 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
-              "practice: the finished item is checked off with its 5 stars, even when leaving by Back")
-        check("New idea" in page.locator(".upnext").inner_text(), "practice: the concept lesson is up next")
+        page.wait_for_selector(".bubble.done >> nth=1")
+        check(page.locator(".bubble.done").count() == 2 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
+              "practice: the lesson and the song are checked off, the song with its 5 stars")
+        page.wait_for_function("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.studentId))", timeout=15000)
+        stored = page.evaluate("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json())")["attempts"][0]
+        check(stored["context"] == "guided" and stored["itemId"] and stored["skillId"] == "placeholder.rh-c-position",
+              f"practice: the attempt is stored for Ada's session item ({stored['context']}, {stored['skillId']})")
+        page.wait_for_timeout(600)          # the state refresh after the attempt reached the server
         page.screenshot(path=str(OUT / "nav-session-progress.png"))
 
         tab("Journey").click()
         page.wait_for_selector(".map .bubble")
-        states = page.evaluate("[...document.querySelectorAll('.map .bubble')].map(b => [...b.classList].find(c => ['locked', 'current', 'passed', 'mastered'].includes(c)))")
-        check(sorted(states) == ["current", "current", "locked", "mastered", "passed"], f"journey: 5 bubbles in every state ({states})")
+        page.wait_for_timeout(300)
+        states = page.evaluate("[...document.querySelectorAll('.map .bubble')].map(b => [...b.classList].find(c => ['locked', 'open', 'current', 'passed', 'mastered'].includes(c)))")
+        check(sorted(states) == ["locked", "locked", "open", "open", "passed"],
+              f"journey: the first skill passed, its two branches ready to learn, the rest locked ({states})")
         page.screenshot(path=str(OUT / "nav-journey.png"))
-        page.locator(".bubble.locked").click()
+        page.locator(".bubble.locked").first.click()
         check(page.get_by_text("Unlocks after:").count() == 1, "journey: a locked bubble says what it needs")
-        page.screenshot(path=str(OUT / "nav-journey-sheet.png"))
         page.get_by_role("button", name="Close").click()
 
         tab("Songs").click()
         page.wait_for_selector(".song")
         opened = page.locator(".song .card:not([disabled])").count()
-        check(page.locator(".song").count() == 6 and opened == 3, f"songs: 6 songs, 3 open with the sample progress ({opened})")
+        # library songs with no skill yet (until song analysis, M3) need nothing, so they're open too
+        free = sum(1 for p in json.loads((DIST / "content" / "index.json").read_text())["pieces"] if not p.get("skillId"))
+        check(page.locator(".song").count() == 6 + free and opened == 2 + free,
+              f"songs: the passed skill's 2 songs are open, plus {free} with no skill ({opened} of {6 + free})")
         page.locator(".heart").first.click()
         page.get_by_role("button", name="♥ Favorites").click()
         check(page.locator(".song").count() == 1, "songs: a favorite shows under Favorites")
@@ -158,29 +280,67 @@ def main():
         page.screenshot(path=str(OUT / "nav-songs.png"))
         page.locator(".song .card:not([disabled])").first.click()
         page.wait_for_function("window.__pm && window.__pm.layout")
-        page.screenshot(path=str(OUT / "nav-play.png"))
         page.get_by_role("button", name="‹ Back").click()
         page.wait_for_selector(".song")
         check(page.url.endswith("#/library"), "play: ‹ Back returns to the song library")
 
         tab("My Progress").click()
         page.wait_for_selector(".counts")
-        page.wait_for_timeout(300)
+        counts = page.locator(".counts div").all_inner_texts()
+        check(any(c.startswith("1") and "passed" in c for c in counts), f"my progress: one skill passed ({counts})")
         page.screenshot(path=str(OUT / "nav-progress.png"))
 
+        # Ben: his own progress, and "Try it another way" after 3 tries without passing
         page.get_by_role("button", name="Switch player").click()
-        page.wait_for_selector(".student")
-        check(page.locator(".student").count() == 3, "picker: 2 placeholder players and the parent")
+        page.locator(".student", has_text="Ben").click()
+        page.wait_for_selector(".path .bubble")
+        check("New idea" in page.locator(".upnext").inner_text() and page.locator(".bubble.done").count() == 0,
+              "practice: Ben's progress is separate from Ada's")
+        page.get_by_role("button", name="Start").click()
+        went_back = do_lesson(wrong_first=True)
+        check(went_back, "lesson: a wrong answer on Check goes back to Show")
+        page.wait_for_selector(".path .bubble.done")
+        page.get_by_role("button", name="Start").click()
+        page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
+        page.get_by_role("button", name="100%").click()
+        skip = page.evaluate("__pm.tl.notes.filter((n, i) => i % 3 !== 0).map(n => n.beat)")
+        for k in range(3):
+            if k == 0:
+                page.locator(".modes button").first.click()
+            else:
+                page.get_by_role("button", name="Play again").click()
+            r = page.evaluate(AUTOPLAY, [skip, 0, 40, False])
+            page.wait_for_selector(".result")
+        rw = page.evaluate("__pm.player.debug().rewinds")
+        check(sum(rw) == 0, f"ben: auto-rewind is off for him (rewinds per phrase {rw})")
+        page.screenshot(path=str(OUT / "ben-result.png"))
+        check(page.get_by_role("button", name="Try it another way").count() == 1, "result: after 3 tries without passing, Try it another way")
+        page.get_by_role("button", name="Try it another way").click()
+        choices = page.locator(".choices button").all_inner_texts()
+        check(any("Listen first" in c for c in choices) and any("Slower" in c for c in choices) and any("See the idea again" in c for c in choices),
+              f"result: the gentle choices ({choices})")
+        page.screenshot(path=str(OUT / "ben-another-way.png"))
+        page.locator(".choices button", has_text="Try something else").click()
+        page.wait_for_selector(".path .bubble")
+
+        # the parent
+        page.get_by_role("button", name="Switch player").click()
         page.locator(".student.parent").click()
         page.wait_for_selector(".pad")
-        page.screenshot(path=str(OUT / "nav-pin.png"))
-        for d in "1234":
-            page.locator(".pad").get_by_role("button", name=d, exact=True).click()
+        ok_pin("1111")
+        page.wait_for_selector("text=tries left")
+        check(page.get_by_text("4 tries left").count() == 1, "parent: a wrong PIN says how many tries are left")
+        ok_pin("2468")
         page.wait_for_selector(".tile")
         labels = page.locator("nav.tabbar .tab").all_inner_texts()
-        check(page.locator(".status .player.parent").count() == 1 and any("Config" in t for t in labels) and not any("Practice" in t for t in labels),
-              f"parent: the PIN logs in the parent, with a Config tab ({labels})")
+        check(any("Config" in t for t in labels) and not any("Practice" in t for t in labels), f"parent: the PIN logs in, with a Config tab ({labels})")
         page.screenshot(path=str(OUT / "nav-config.png"))
+        tile("Progress reports").click()
+        page.wait_for_selector(".counts")
+        page.wait_for_selector("text=Content runway")
+        check("left in the authored map" in page.locator("main").inner_text(), "reports: a child's full report, with the content runway")
+        page.screenshot(path=str(OUT / "nav-config-reports.png"))
+        page.get_by_role("button", name="‹ Config").click()
 
         tile("Piano check").click()
         page.wait_for_selector(".midi")
@@ -192,16 +352,28 @@ def main():
               "piano check: keys, chord, velocity and pedal are counted")
         page.screenshot(path=str(OUT / "nav-config-midi.png"))
         page.get_by_role("button", name="‹ Config").click()
+        tile("Device settings").click()
+        page.get_by_role("button", name="88 keys").click()
+        page.wait_for_timeout(300)
+        dev = page.evaluate("fetch('api/devices/' + JSON.parse(localStorage.getItem('pm.device.v1'))).then(r => r.json())")
+        check(dev.get("profile", {}).get("keyboardSize") == 88, f"device settings: copied to the DeviceProfile ({dev.get('profile')})")
+        page.get_by_role("button", name="‹ Config").click()
         tile("App status").click()
         page.wait_for_selector("text=✓ running")
         page.screenshot(path=str(OUT / "nav-config-status.png"))
         page.get_by_role("button", name="‹ Config").click()
-        tile("Students").click()
+        tile("Review list").click()
         page.wait_for_selector(".placeholder")
-        check(page.get_by_text("coming in M4").count() == 1, "config: placeholder pages say when they come")
+        check(page.get_by_text("coming in M7").count() == 1, "config: placeholder pages say when they come")
         tab("Songs").click()
         page.wait_for_selector(".song")
         check(page.locator(".song .card[disabled]").count() == 0, "parent: every song opens")
+        tab("Config").click()
+        tile("Journey render test").click()
+        page.wait_for_function("window.__journeyTest", timeout=15000)
+        report["journey-render-test"] = page.evaluate("window.__journeyTest")
+        check(page.locator(".map .bubble").count() == 200, f"journey render test: 200 bubbles ({report['journey-render-test']})")
+        page.screenshot(path=str(OUT / "journey-200.png"))
         page.get_by_role("button", name="Switch player").click()
         page.wait_for_selector(".student")
         page.goto(url + "#/config")
@@ -235,12 +407,12 @@ def main():
         ctx.add_init_script(FAKE_MIDI)
         page = ctx.new_page()
         page.on("pageerror", lambda e: errors.append(str(e)))
-        page.on("console", lambda m: m.type == "error" and errors.append(m.text))
+        # the deliberate wrong PIN is a 401 the browser logs; anything else counts
+        page.on("console", lambda m: m.type == "error" and "status of 401" not in m.text and errors.append(m.text))
         page.goto(url)
         page.wait_for_selector(".student")
         page.wait_for_timeout(300)
         check(page.get_by_text("Test Piano").count() > 0, "picker: the real piano is chosen, virtual ports skipped")
-        page.screenshot(path=str(OUT / "nav-picker.png"))
         navigation(page)
 
         index = json.loads((DIST / "content" / "index.json").read_text())
@@ -252,6 +424,25 @@ def main():
             check(not lay["p"], f"{piece['id']}: staff renders with no problems ({lay['w']}x{lay['h']} px, {lay['ms']:.0f} ms)")
             check(lay["els"] == lay["n"], f"{piece['id']}: every note has a note-head element ({lay['els']}/{lay['n']})")
             page.screenshot(path=str(OUT / f"play-{piece['id']}.png"))
+
+        # 2b. notation features on a test-only piece, and the idle view of a dense first bar
+        for pid, abc, hands in (("test-notation", NOTATION_ABC, "RL"), ("test-wide", WIDE_ABC, "R")):
+            body = test_piece(pid, abc, hands)
+            page.route(f"**/content/pieces/{pid}.json", lambda route, _request=None, b=body: route.fulfill(json=b))
+        open_piece(page, "test-notation")
+        lay = page.evaluate("""() => ({ p: __pm.layout.problems, els: __pm.layout.noteEls.filter(Boolean).length, n: __pm.tl.notes.length,
+            beats: __pm.tl.notes.filter(n => n.staff === 0).slice(0, 3).map(n => +n.beat.toFixed(3)),
+            left: __pm.tl.notes.filter(n => n.staff === 0 && n.hand === 'L').length,
+            graces: __pm.layout.graces,
+            text: document.querySelector('.strip svg').textContent })""")
+        page.screenshot(path=str(OUT / "test-notation.png"))
+        check(not lay["p"] and lay["els"] == lay["n"], f"notation test: draws with no problems, every note drawn ({lay['p'][:2]}, {lay['els']}/{lay['n']})")
+        check(lay["beats"] == [0.0, 0.333, 0.667], f"notation test: a triplet's notes fall on thirds of the beat ({lay['beats']})")
+        check(lay["graces"] > 0 and lay["left"] == 2, f"notation test: grace notes drawn, the crossing note is the left hand's ({lay['graces']}, {lay['left']})")
+        check("verse" not in lay["text"], "notation test: a repeat in a piece without words isn't labelled 'verse 2'")
+        open_piece(page, "test-wide")
+        first = page.evaluate("() => { const r = __pm.layout.noteEls[0].getBoundingClientRect(), s = document.querySelector('.stage').getBoundingClientRect(); return [r.left, s.right]; }")
+        check(first[0] < first[1] - 100, f"dense first bar: bar 1 is on screen before Play (first note at {first[0]:.0f}, stage ends {first[1]:.0f})")
 
         # 3. Twinkle played cleanly at 100%: no rewinds, every note matched
         open_piece(page, "twinkle-twinkle")
@@ -362,9 +553,6 @@ def main():
         page.screenshot(path=str(OUT / "grace-listen.png"))
         check(pos["logic"] > 2, f"amazing grace: stems load and the song moves at 50% (beat {pos['logic']:.2f})")
         page.get_by_role("button", name="Pause").click()
-        page.get_by_role("button", name="Settings").click()
-        page.wait_for_timeout(200)
-        page.screenshot(path=str(OUT / "settings.png"))
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
         browser.close()

@@ -61,6 +61,7 @@ export class KeyboardView {
   private key(p: number, cls: string): HTMLDivElement {
     const k = document.createElement("div");
     k.className = cls;
+    k.dataset.pitch = String(p);
     const f = document.createElement("span");
     f.className = "kb-f";
     k.appendChild(f);
@@ -102,6 +103,14 @@ export class KeyboardView {
 
   release(pitch: number): void {
     this.keys.get(pitch)?.classList.remove("kb-ok", "kb-late", "kb-wrong", "kb-neutral");
+  }
+
+  /** Taps on the on-screen keys (concept lessons' Check card: "tap the right key"). */
+  onTap(fn: (pitch: number) => void): void {
+    this.el.addEventListener("pointerdown", (e) => {
+      const k = (e.target as HTMLElement).closest("[data-pitch]") as HTMLElement | null;
+      if (k) fn(Number(k.dataset.pitch));
+    });
   }
 
   destroy(): void {

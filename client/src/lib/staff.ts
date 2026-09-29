@@ -1,10 +1,10 @@
 // The moving staff: the whole piece in playback order rendered once by VexFlow into one wide SVG
 // (arch §3; tested at 60 fps with glides on the iPad A16). Ported from the sync probe.
 import {
-  Accidental, Articulation, Beam, Dot, Formatter, FretHandFinger, Modifier, Renderer, Stave,
-  StaveConnector, StaveNote, StaveTie, Voice, type RenderContext, type Tickable,
+  Accidental, Articulation, Beam, Dot, Formatter, FretHandFinger, GraceNote, GraceNoteGroup, Modifier, Renderer, Stave,
+  StaveConnector, StaveNote, StaveTie, Tuplet, Voice, type RenderContext, type Tickable,
 } from "vexflow/bravura";
-import type { Notation } from "./types";
+import type { Grace, Notation, Spelled } from "./types";
 import type { Timeline, TimelineNote } from "./timeline";
 
 export interface StaffLayout {
@@ -16,6 +16,7 @@ export interface StaffLayout {
   noteEls: (Element | null)[];                  // by timeline note id: its note-head group
   lyrics: { beat: number; end: number; el: SVGTextElement }[];
   problems: string[];
+  graces: number;                               // grace notes drawn
   renderMs: number;
 }
 
@@ -39,17 +40,34 @@ function durPieces(d: number): [number, string, number][] {
   return out;
 }
 
-const vexKey = (n: TimelineNote) => n.spelled.step.toLowerCase() + ACC[String(n.spelled.alter)] + "/" + n.spelled.octave;
+const vexKey = (n: { spelled: Spelled }) => n.spelled.step.toLowerCase() + ACC[String(n.spelled.alter)] + "/" + n.spelled.octave;
 const keySpec = (fifths: number) => MAJOR[fifths + 7];
+
+/** The alteration a key signature gives a step (F -> 1 in G major). */
+function keyAlter(fifths: number, step: string): number {
+  const sharps = "FCGDAEB", flats = "BEADGCF";
+  if (fifths > 0) return sharps.indexOf(step) < fifths && sharps.includes(step) ? 1 : 0;
+  if (fifths < 0) return flats.indexOf(step) < -fifths && flats.includes(step) ? -1 : 0;
+  return 0;
+}
+
+/** A length that only a triplet can write (a third of a beat and its multiples). */
+const isTriplet = (len: number) => Math.abs(len * 3 - Math.round(len * 3)) < 1e-6 && Math.abs(len * 32 - Math.round(len * 32)) > 1e-6;
+
+type Clef = "treble" | "bass";
 
 function centerX(n: StaveNote): number {
   try { return (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2; } catch { return n.getAbsoluteX() + 6; }
 }
 
+/** Before the first note (the count-in bar) the staff moves no faster than this, so a first bar
+ *  packed with short notes can't push bar 1 off the screen while the Play screen waits. */
+const LEAD_IN_SLOPE = 90;
+
 export function xAt(map: [number, number][], beat: number): number {
   let lo = 0;
   let hi = map.length - 1;
-  if (beat <= map[0][0]) return map[0][1] + (beat - map[0][0]) * slope(map, 0);
+  if (beat <= map[0][0]) return map[0][1] + (beat - map[0][0]) * Math.min(slope(map, 0), LEAD_IN_SLOPE);
   if (beat >= map[hi][0]) return map[hi][1];
   while (hi - lo > 1) {
     const mid = (lo + hi) >> 1;
@@ -66,8 +84,10 @@ function slope(map: [number, number][], i: number): number {
 
 interface MeasureDraw {
   e: Timeline["entries"][number];
-  perStaff: { voice: Voice; beams: Beam[] }[][];
+  perStaff: { voice: Voice; beams: Beam[]; tuplets: Tuplet[] }[][];
   fmt: Formatter;
+  clefs: Clef[];
+  clefChange: boolean[];
   all: Voice[];
   width: number;
   first: boolean;
@@ -91,11 +111,29 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
   const vfLast: (StaveNote | null)[] = tl.notes.map(() => null);
   const keyIdx: number[] = tl.notes.map(() => 0);
   const measures: MeasureDraw[] = [];
+  // the clef of each staff in each written bar (clef changes carry on until the next)
+  const clefAt: Clef[][] = [];
+  let cur: Clef[] = [...staves];
+  for (const m of nota.measures) {
+    if (m.clefs) { cur = [...cur]; for (const [st, c] of Object.entries(m.clefs)) cur[Number(st)] = c; }
+    clefAt.push(cur);
+  }
+  const graceAt = new Map<string, Grace[]>();
+  for (const g of nota.graces ?? []) {
+    const k = `${g.staff}/${g.voice}/${Number(g.start).toFixed(4)}`;
+    graceAt.set(k, [...(graceAt.get(k) ?? []), g]);
+  }
+  let drawnClefs: Clef[] = [...staves];
+  let graceCount = 0;
 
   // pass 1: notes, voices and widths
   tl.entries.forEach((e, k) => {
     const entryNotes = byEntry[k].map((i) => tl.notes[i]);
-    const perStaff = staves.map((clef, s) => {
+    const clefs = clefAt[e.measure] ?? [...staves];
+    const clefChange = clefs.map((c, i) => k > 0 && c !== drawnClefs[i]);
+    drawnClefs = clefs;
+    const perStaff = staves.map((_, s) => {
+      const clef = clefs[s];
       const voices = new Map<number, TimelineNote[]>();
       for (const x of entryNotes) {
         if (x.staff !== s) continue;
@@ -119,13 +157,30 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
         const end = e.start + e.duration;
         const dir = multi ? (vi === 0 ? 1 : -1) : 0;
         const restKey = clef === "bass" ? (vi ? "f/2" : "d/3") : (vi ? "e/4" : "b/4");
+        // tuplets: consecutive tuplet notes grouped until they fill their span (3 eighths in a beat)
+        const tuplets: Tuplet[] = [];
+        let run: { notes: StaveNote[]; acc: number; base: number; tup: [number, number] } | null = null;
+        const flush = () => {
+          if (run) tuplets.push(new Tuplet(run.notes, { num_notes: run.tup[0], notes_occupied: run.tup[1] }));
+          run = null;
+        };
+        const inTuplet = (n: StaveNote, actual: number, written: number, tup: [number, number]) => {
+          run ??= { notes: [], acc: 0, base: written, tup };
+          run.notes.push(n);
+          run.acc += actual;
+          run.base = Math.min(run.base, written);
+          if (run.acc >= run.base * run.tup[1] - 1e-6) flush();
+        };
         const rest = (len: number) => {
-          for (const p of durPieces(len)) {
+          const tup: [number, number] | null = isTriplet(len) ? [3, 2] : null;
+          const f = tup ? 2 / 3 : 1;
+          for (const p of durPieces(len / f)) {
             const r = new StaveNote({ keys: [restKey], duration: p[1] + "r", dots: p[2], clef });
             if (p[2]) Dot.buildAndAttach([r], { all: true });
             tick.push(r);
             tickInfo.push({ vf: r, beat: cursor });
-            cursor += p[0];
+            cursor += p[0] * f;
+            if (tup) inTuplet(r, p[0] * f, p[0], tup); else flush();
           }
         };
         starts.forEach((s0, gi) => {
@@ -135,8 +190,10 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
           const next = gi + 1 < starts.length ? starts[gi + 1] : end;
           const len = Math.min(Math.min(...g.map((x) => x.duration)), next - s0, end - s0);
           const keys = g.slice().sort((a, b) => a.pitch - b.pitch);
+          const tup = keys[0].tuplet ?? (isTriplet(len) ? [3, 2] as [number, number] : null);
+          const f = tup ? tup[1] / tup[0] : 1;
           let prev: StaveNote | null = null;
-          durPieces(len).forEach((p, pi) => {
+          durPieces(len / f).forEach((p, pi) => {
             const opts: ConstructorParameters<typeof StaveNote>[0] = {
               keys: keys.map(vexKey), duration: p[1], dots: p[2], clef,
             };
@@ -144,6 +201,18 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
             const n = new StaveNote(opts);
             if (p[2]) Dot.buildAndAttach([n], { all: true });
             if (pi === 0) {
+              const gs = graceAt.get(`${s}/${v}/${keys[0].start.toFixed(4)}`);
+              if (gs) {
+                const gn = gs.sort((a, b) => a.order - b.order).map((x) => {
+                  const q = new GraceNote({ keys: [vexKey(x)], duration: "8", slash: x.slash, clef });
+                  if (x.spelled.alter !== keyAlter(h.keySig, x.spelled.step)) q.addModifier(new Accidental(ACC[String(x.spelled.alter)] || "n"), 0);
+                  return q;
+                });
+                graceCount += gn.length;
+                const group = new GraceNoteGroup(gn, true);
+                if (gn.length > 1) group.beamNotes();
+                n.addModifier(group, 0);
+              }
               if (keys.some((x) => x.fermata)) n.addModifier(new Articulation("a@a").setPosition(dir < 0 ? 4 : 3), 0);
               keys.forEach((x, ki) => {
                 if (x.finger) {
@@ -159,11 +228,13 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
             tickInfo.push({ vf: n, beat: cursor });
             if (prev) splitTies.push({ a: prev, b: n, idx: keys.map((_, i) => i) });
             prev = n;
-            cursor += p[0];
+            cursor += p[0] * f;
+            if (tup) inTuplet(n, p[0] * f, p[0], tup); else flush();
           });
           for (const x of keys) vfLast[x.id] = prev;
         });
         if (cursor < end - 1e-6 && (vi === 0 || starts.length)) rest(end - cursor);
+        flush();
         const voice = new Voice({ num_beats: Math.max(1, Math.round(e.duration * 8)), beat_value: 32 }).setMode(Voice.Mode.SOFT);
         voice.addTickables(tick as Tickable[]);
         let beams: Beam[] = [];
@@ -173,7 +244,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
             ? { groups: Beam.getDefaultBeamGroups(ts), stem_direction: dir, maintain_stem_directions: true }
             : { groups: Beam.getDefaultBeamGroups(ts) });
         } catch (err) { problems.push(`m${e.m.number} beams: ${(err as Error).message}`); }
-        return { voice, beams };
+        return { voice, beams, tuplets };
       });
     });
     const all = perStaff.flatMap((vs) => vs.map((v) => v.voice));
@@ -190,9 +261,9 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     }
     const first = k === 0;
     const change = !first && (e.m.keySig !== undefined || e.m.timeSig !== undefined);
-    const extra = first ? (grand ? 95 : 85) + Math.abs(h.keySig) * 10 : (change ? 50 : 0);
+    const extra = (first ? (grand ? 95 : 85) + Math.abs(h.keySig) * 10 : (change ? 50 : 0)) + (clefChange.some(Boolean) ? 40 : 0);
     const width = Math.max(minW * 1.35 + 40, lyricW + 20, 100) + extra;
-    measures.push({ e, perStaff, fmt, all, width, first, change });
+    measures.push({ e, perStaff, fmt, all, width, first, change, clefs, clefChange });
   });
 
   // pass 2: draw
@@ -212,8 +283,9 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     const bass = grand ? new Stave(x, TOP + GAP, m.width) : null;
     const st = bass ? [treble, bass] : [treble];
     st.forEach((s, i) => {
-      if (m.first) s.addClef(staves[i]).addKeySignature(key).addTimeSignature(ts);
-      else if (m.change) {
+      if (m.first) s.addClef(m.clefs[i]).addKeySignature(key).addTimeSignature(ts);
+      else if (m.clefChange[i]) s.addClef(m.clefs[i]);
+      if (!m.first && m.change) {
         if (m.e.m.keySig !== undefined) s.addKeySignature(keySpec(m.e.m.keySig));
         if (m.e.m.timeSig !== undefined) s.addTimeSignature(m.e.m.timeSig);
       }
@@ -239,6 +311,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
       m.perStaff.forEach((vs, i) => vs.forEach((v) => {
         v.voice.draw(ctx, st[i]);
         v.beams.forEach((b) => b.setContext(ctx).draw());
+        v.tuplets.forEach((t) => t.setContext(ctx).draw());
       }));
     } catch (err) { problems.push(`m${m.e.m.number} draw: ${(err as Error).message}`); }
     x += m.width;
@@ -312,8 +385,51 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     return vf.noteHeads[keyIdx[n.id]]?.getSVGElement() ?? null;
   });
   return {
-    svg, scale, map, noteEls, lyrics, problems,
+    svg, scale, map, noteEls, lyrics, problems, graces: graceCount,
     width: Math.round(total * scale), height: Math.round(H * scale),
     renderMs: performance.now() - t0,
   };
+}
+
+
+export interface MiniNote { pitches: number[]; spelled: Spelled[]; beats: number }
+
+const MINI_DUR: Record<number, [string, number]> = { 0.5: ["8", 0], 1: ["q", 0], 1.5: ["q", 1], 2: ["h", 0], 3: ["h", 1], 4: ["w", 0] };
+
+/** A small staff for a concept lesson's Show card: the notes in order, on the treble, bass or
+ *  grand staff (a note goes on the bass staff below middle C). Returns each note's note-head
+ *  group, to light up in turn. */
+export function renderMini(host: HTMLElement, notes: MiniNote[], clef: "treble" | "bass" | "grand"): Element[][] {
+  host.innerHTML = "";
+  const grand = clef === "grand";
+  const width = Math.max(260, 90 + notes.length * 62);
+  const renderer = new Renderer(host as HTMLDivElement, Renderer.Backends.SVG);
+  renderer.resize(width, grand ? 250 : 150);
+  const ctx = renderer.getContext();
+  const staves = grand ? [new Stave(10, 10, width - 20), new Stave(10, 120, width - 20)] : [new Stave(10, 20, width - 20)];
+  const clefs: ("treble" | "bass")[] = grand ? ["treble", "bass"] : [clef];
+  staves.forEach((st, i) => st.addClef(clefs[i]).setContext(ctx).draw());
+  if (grand) new StaveConnector(staves[0], staves[1]).setType(StaveConnector.type.BRACE).setContext(ctx).draw();
+  const staffOf = (n: MiniNote) => (grand ? (Math.min(...n.pitches) < 60 ? 1 : 0) : 0);
+  const voices = staves.map((_, si) => {
+    const tick: StaveNote[] = notes.map((n) => {
+      const [d, dots] = MINI_DUR[n.beats] ?? ["q", 0];
+      const mine = staffOf(n) === si;
+      const vn = mine
+        ? new StaveNote({ keys: n.spelled.map((x) => vexKey({ spelled: x })), duration: d, dots, clef: clefs[si], auto_stem: true })
+        : new StaveNote({ keys: [clefs[si] === "bass" ? "d/3" : "b/4"], duration: d + "r", dots, clef: clefs[si] });
+      if (dots) Dot.buildAndAttach([vn], { all: true });
+      if (mine) n.spelled.forEach((x, i) => { if (x.alter) vn.addModifier(new Accidental(ACC[String(x.alter)]), i); });
+      return vn;
+    });
+    const v = new Voice({ num_beats: 4, beat_value: 4 }).setMode(Voice.Mode.SOFT);
+    v.addTickables(tick as Tickable[]);
+    return { v, tick };
+  });
+  new Formatter().joinVoices(voices.map((x) => x.v)).format(voices.map((x) => x.v), width - 100);
+  voices.forEach((x, i) => x.v.draw(ctx, staves[i]));
+  return notes.map((n, i) => {
+    const vn = voices[staffOf(n)].tick[i];
+    return vn.noteHeads.map((h) => h.getSVGElement()).filter((e): e is SVGElement => !!e);
+  });
 }

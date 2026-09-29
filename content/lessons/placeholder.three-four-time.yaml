@@ -1,0 +1,27 @@
+# Concept lesson for the PLACEHOLDER skill map (our own words; see placeholder.rh-c-position.yaml).
+skill: placeholder.three-four-time
+title: Three-four time
+cards:
+  - kind: explain
+    text: Most songs count to four in each bar. Some count to three instead, ONE two three, ONE two three. That's three-four time, and it feels like a waltz.
+  - kind: show
+    text: A dotted half note lasts all three beats of the bar.
+    notes: C4 E4 G4 C4:3
+    hand: R
+    clef: treble
+  - kind: hear
+    text: Listen to the strong first beat in every bar.
+    play: C4 E4 G4 C4:3 E4 G4 C5 G4:3
+    tempo: 100
+    contrast:
+      text: Now the same notes counted in four. Can you hear the difference?
+      play: C4 E4 G4 C4 C4:4 E4 G4 C5 G4 G4:4
+  - kind: try
+    text: Play C E G, then hold C for three beats.
+    notes: C4 E4 G4 C4
+    fingers: [1, 3, 5, 1]
+    hand: R
+  - kind: check
+    questions:
+      - text: Play the first note of the waltz, C.
+        answer: C4

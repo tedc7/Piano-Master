@@ -1,9 +1,12 @@
 <script lang="ts">
   // Player picker (arch §3 screen 1): one large card per child, and the parent, who is a player
-  // of their own behind the PIN. The students are placeholders until the server holds them (M4).
+  // of their own behind the PIN. The parent adds the students under Config > Students.
+  import { onMount } from "svelte";
   import Status from "../components/Status.svelte";
-  import { app, SAMPLE_STUDENTS } from "../lib/app.svelte.js";
+  import { app } from "../lib/app.svelte.js";
   import { go } from "../lib/route";
+
+  onMount(() => { void app.loadStudents(); });
 </script>
 
 <div class="screen">
@@ -14,7 +17,7 @@
     {/if}
     <h1>Who's playing?</h1>
     <div class="students">
-      {#each SAMPLE_STUDENTS as s (s.id)}
+      {#each app.students as s (s.id)}
         <button class="student" onclick={() => app.chooseStudent(s)}>
           <span class="avatar">{s.avatar}</span>
           <span class="name">{s.name}</span>
@@ -25,7 +28,11 @@
         <span class="name">Parent</span>
       </button>
     </div>
-    <p class="muted">Placeholder players <span class="sample">sample</span> — the parent adds the real students under Config once they are stored on the piano server (M4).</p>
+    {#if app.studentsStatus === "offline"}
+      <p class="notice error">Can't reach the piano server{app.students.length ? "; these are the players from last time" : ""}.</p>
+    {:else if app.studentsStatus === "ok" && !app.students.length}
+      <p class="notice">No players yet. A parent adds them: tap <b>Parent</b>, then <b>Students</b>.</p>
+    {/if}
   </main>
 </div>
 

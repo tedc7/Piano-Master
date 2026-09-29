@@ -8,8 +8,9 @@
 #                   └── lh-c-position ─┐
 #   rh-c-position ─────────────────────┴── hands-take-turns
 #
-# `pieces` hand-assigns pieces to skills. That is a stand-in for song analysis (§6.8, built in
-# M3), which will compute each arrangement's required and featured skills from the constraints.
+# `pieces` says which skill each core piece was written for. Song analysis (§6.8,
+# api/app/analysis.py) decides the required and featured skills from the constraints; the build
+# warns when it disagrees.
 
 map: basic
 level: Prep A
@@ -22,6 +23,7 @@ skills:
     staff: treble
     prerequisites: []
     constraints:
+      position: {R: C4}          # five-finger position: fingers for the finger-number generator
       hands: [R]
       range: {R: [C4, G4]}
       durations: [0.5, 1, 2, 4]
@@ -37,6 +39,7 @@ skills:
     staff: bass
     prerequisites: [placeholder.rh-c-position]
     constraints:
+      position: {L: C3}          # five-finger position: fingers for the finger-number generator
       hands: [L]
       range: {L: [C3, G3]}
       durations: [1, 2, 4]
@@ -67,6 +70,7 @@ skills:
     staff: grand
     prerequisites: [placeholder.rh-c-position, placeholder.lh-c-position]
     constraints:
+      position: {R: C4, L: C3}          # five-finger position: fingers for the finger-number generator
       hands: [R, L]
       range: {R: [C4, G4], L: [C3, G3]}
       durations: [1, 2, 4]
@@ -81,13 +85,14 @@ skills:
     track: rhythm
     staff: treble
     prerequisites: [placeholder.rh-reach-a]
-    # Deliberately beyond this map's notes: Amazing Grace is here to test the YuE2 stems,
-    # vocals button and tempo versions, so the build reports it as outside the constraints.
+    # A test skill: its constraints are widened to take in Amazing Grace (up to D5, dotted
+    # quarters, G major), so the song with the YuE2 stems, vocals button and tempo versions stays
+    # reachable for students on the placeholder map.
     constraints:
       hands: [R]
-      range: {R: [C4, A4]}
-      durations: [1, 2, 3]
+      range: {R: [C4, D5]}
+      durations: [0.5, 1, 1.5, 2, 3]
       timeSigs: ["3/4"]
-      keySigs: [0]
+      keySigs: [0, 1]
     description: "Three beats in a bar. Test piece: the Amazing Grace melody with the YuE2 vocal and backing."
     pieces: [amazing-grace-melody]

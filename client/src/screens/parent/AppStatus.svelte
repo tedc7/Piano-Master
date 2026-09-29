@@ -8,7 +8,7 @@
 
   interface LogRow { time: string; level: string; message: string; deviceId?: string }
 
-  let health = $state<{ ok: boolean; version: string; schema: number } | null>(null);
+  let health = $state<{ ok: boolean; version: string; schema: number; contentVersion: string | null } | null>(null);
   let healthError = $state("");
   let contentVersion = $state("");
   let problems = $state<LogRow[] | null>(null);
@@ -36,7 +36,7 @@
     <h2>Versions</h2>
     <div class="grid">
       <span>App</span><b>{CLIENT_VERSION}</b>
-      <span>Content</span><b>{contentVersion || "unknown"}</b>
+      <span>Content</span><b>{contentVersion || "unknown"}{health && health.contentVersion !== contentVersion ? ` · the server plans from ${health.contentVersion ?? "no content"}` : ""}</b>
       <span>Piano server</span>
       <b>{health ? `${health.ok ? "✓ running" : "problem"} · API ${health.version} · database ${health.schema}` : healthError ? `not reachable (${healthError})` : "checking…"}</b>
       <span>This device</span><span class="mono">{api.deviceId}</span>

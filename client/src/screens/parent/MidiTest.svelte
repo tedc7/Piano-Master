@@ -115,9 +115,9 @@
       <h2>1 · Connect</h2>
       <p class:ok={app.midiStatus === "connected"}>{app.midiStatus === "connected" ? `✓ Using ${app.pianoName}` : app.midiStatus === "starting" ? "Looking for the piano…" : "No piano found. Plug it in with the USB cable."}</p>
       <div class="inputs">
-        <button class="quiet" class:sel={!app.settings.pianoName} onclick={() => app.choosePiano(null)}>Automatic</button>
+        <button class="quiet" class:sel={!app.device.pianoName} onclick={() => app.choosePiano(null)}>Automatic</button>
         {#each app.midiNames as n}
-          <button class="quiet" class:sel={app.settings.pianoName === n} onclick={() => app.choosePiano(n)}>{n}{isVirtualPort(n) ? " (virtual)" : ""}</button>
+          <button class="quiet" class:sel={app.device.pianoName === n} onclick={() => app.choosePiano(n)}>{n}{isVirtualPort(n) ? " (virtual)" : ""}</button>
         {/each}
       </div>
     </section>

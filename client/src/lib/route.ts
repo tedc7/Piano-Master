@@ -2,7 +2,7 @@
 export type Route =
   | { screen: "picker" }
   | { screen: "session" }
-  | { screen: "journey" }
+  | { screen: "journey"; test: boolean }
   | { screen: "lesson"; skillId: string }
   | { screen: "library" }
   | { screen: "progress" }
@@ -15,7 +15,7 @@ export function parse(hash: string): Route {
   const [head, arg] = path.split("/");
   switch (head) {
     case "session": case "home": return { screen: "session" };
-    case "journey": return { screen: "journey" };
+    case "journey": return { screen: "journey", test: arg === "test" };
     case "library": return { screen: "library" };
     case "progress": return { screen: "progress" };
     case "lesson": if (arg) return { screen: "lesson", skillId: decodeURIComponent(arg) }; break;

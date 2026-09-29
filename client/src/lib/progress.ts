@@ -1,46 +1,42 @@
-// Skill states, song readiness and today's session (arch §6.8, §8.1, §8.5).
-//
-// SAMPLE DATA: until the students (M4) and the lesson engine (M5) exist, every student gets the
-// same made-up progress so the Journey map, Song library and Home show all their states: the
-// first 40% of skills by sequence are passed (the first one mastered), the rest follow from the
-// prerequisites. The readiness rules below are the real ones.
+// Skill states, song readiness and today's session, as the lesson engine on the piano server
+// reports them (arch §6.8, §8.1, §8.5). The server is the one that decides; the client shows it
+// and keeps its own copy up to date between requests.
 import type { PieceSummary, Skill, SkillMap } from "./types";
 
 export type SkillStatus = "locked" | "current" | "passed" | "mastered";
 
 export interface SkillProgress {
+  skillId: string;
   status: SkillStatus;
+  lessonOpen: boolean;            // the lightbulb opens when the prerequisites are passed
+  conceptDone: boolean;
+  hold: boolean;                  // needs a capability this setup lacks, e.g. a pedal
+  mastery: number | null;
+  bestMastery: number | null;
   accuracyStars: number | null;   // best, after practice-aid scaling (arch §3 "Journey map star display")
   timingStars: number | null;
+  stuck: boolean;
+  due: boolean;                   // due for review: the refresh badge
+  today: boolean;                 // in today's session
+  attemptsWithoutPass: number;
+  tryAnotherWay: boolean;
+  refresher: boolean;
+  nextReview: string | null;
 }
 
 export type Progress = Map<string, SkillProgress>;
 
-export const isPassed = (p: SkillProgress | undefined) => p?.status === "passed" || p?.status === "mastered";
+export const isPassed = (p: SkillProgress | undefined) => p?.status === "passed" || p?.status === "mastered" || !!p?.hold;
 
-export function sampleProgress(map: SkillMap): Progress {
-  const skills = [...map.skills].sort((a, b) => a.sequence - b.sequence);
-  const passedCount = Math.ceil(skills.length * 0.4);
-  const out: Progress = new Map();
-  skills.forEach((s, i) => {
-    if (i === 0) out.set(s.id, { status: "mastered", accuracyStars: 5, timingStars: 4.5 });
-    else if (i < passedCount) out.set(s.id, { status: "passed", accuracyStars: 3.5, timingStars: 3 });
-  });
-  for (const s of skills) {
-    if (out.has(s.id)) continue;
-    const ready = s.prerequisites.every((p) => isPassed(out.get(p)));
-    out.set(s.id, { status: ready ? "current" : "locked", accuracyStars: null, timingStars: null });
-  }
-  return out;
-}
-
-/** The skills a piece needs. Until song analysis (M3), a piece needs its hand-assigned skill. */
+/** The skills a piece needs, from song analysis (§6.8). */
 export function requiredSkills(piece: PieceSummary): string[] {
-  return piece.skillId ? [piece.skillId] : [];
+  return piece.requiredSkills ?? (piece.skillId ? [piece.skillId] : []);
 }
 
-/** Library-ready: every required skill passed (§6.8). Otherwise the skills still to reach. */
-export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progress): { ready: boolean; toReach: Skill[] } {
+/** Library-ready: every required skill passed (§6.8). Otherwise the skills still to reach; a
+ *  piece needing something no skill in the map covers yet is never ready (`beyond`). */
+export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progress): { ready: boolean; toReach: Skill[]; beyond: string[] } {
+  const beyond = piece.beyondMap ?? [];
   const byId = new Map(map.skills.map((s) => [s.id, s]));
   const toReach = new Map<string, Skill>();
   const visit = (id: string) => {
@@ -52,34 +48,41 @@ export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progr
   };
   requiredSkills(piece).forEach(visit);
   const list = [...toReach.values()].sort((a, b) => a.sequence - b.sequence);
-  return { ready: list.length === 0, toReach: list };
+  return { ready: list.length === 0 && beyond.length === 0, toReach: list, beyond };
 }
 
-export type SessionReason = "Review" | "New" | "Practice" | "Your pick";
+export type SessionReason = "Review" | "New" | "Tricky spot" | "Polish" | "Support" | "Your pick";
+
+export interface ItemResult { accuracyStars: number | null; timingStars: number | null; title?: string }
 
 export interface SessionItem {
+  id: string;
   kind: "lesson" | "piece" | "pick";   // pick: the student chooses from the library
   reason: SessionReason;
   skillId: string | null;
   pieceId: string | null;
   title: string;
+  preset: string | null;               // suggested tempo preset (a stuck skill, one slower)
+  section: number | null;              // a phrase to loop (a tricky spot)
+  est: number;                         // estimated seconds
+  done: boolean;
+  result: ItemResult | null;
+  tries: number;                       // completed attempts without passing the skill
+  skipped?: boolean;
 }
 
-/** A sample session in the §8.5 slot order: warm-up review, new (concept lesson and a piece),
- *  practice, and the reward pick. The server builds the real queue in M5. */
-export function sampleSession(map: SkillMap, pieces: PieceSummary[], progress: Progress): SessionItem[] {
-  const skills = [...map.skills].sort((a, b) => a.sequence - b.sequence);
-  const piecesOf = (s: Skill) => (s.pieces ?? []).map((id) => pieces.find((p) => p.id === id)).filter((p): p is PieceSummary => !!p);
-  const items: SessionItem[] = [];
-  const passed = skills.filter((s) => isPassed(progress.get(s.id)));
-  const current = skills.filter((s) => progress.get(s.id)?.status === "current");
-  const review = passed.map(piecesOf).flat()[0];
-  if (review) items.push({ kind: "piece", reason: "Review", skillId: review.skillId ?? null, pieceId: review.id, title: review.title });
-  current.forEach((s, i) => {
-    if (i === 0) items.push({ kind: "lesson", reason: "New", skillId: s.id, pieceId: null, title: s.name });
-    const p = piecesOf(s)[0];
-    if (p) items.push({ kind: "piece", reason: i === 0 ? "New" : "Practice", skillId: s.id, pieceId: p.id, title: p.title });
-  });
-  items.push({ kind: "pick", reason: "Your pick", skillId: null, pieceId: null, title: "Any song you like" });
-  return items;
+export interface Session { date: string; targetMinutes: number; items: SessionItem[]; endOfContent: boolean }
+
+export interface Day { date: string; guidedSec: number; freeSec: number; targetMinutes: number; streak: number; completed: boolean }
+
+/** GET /api/students/{id}/state */
+export interface StudentState {
+  student: { id: string; name: string; avatar: string; settings: unknown };
+  contentVersion: string;
+  skills: SkillProgress[];
+  session: Session;
+  day: Day;
+  favorites: string[];
 }
+
+export const TRY_ANOTHER_WAY = 3;

@@ -1,0 +1,24 @@
+# Concept lesson for the PLACEHOLDER skill map (our own words; see placeholder.rh-c-position.yaml).
+skill: placeholder.rh-reach-a
+title: Right hand reaches up to A
+cards:
+  - kind: explain
+    text: Some songs need one note higher than G. Keep your hand in C position and stretch finger 5 up to A, then bring it back.
+  - kind: show
+    text: Finger 5 moves from G up to A, one white key higher.
+    notes: E4 F4 G4 A4 G4
+    fingers: [3, 4, 5, 5, 5]
+    hand: R
+    clef: treble
+  - kind: hear
+    text: This is the start of a song you know. Listen for the high A.
+    play: C4 C4 G4 G4 A4 A4 G4:2
+  - kind: try
+    text: Play G, then stretch up to A, then back to G, all with finger 5.
+    notes: G4 A4 G4
+    fingers: [5, 5, 5]
+    hand: R
+  - kind: check
+    questions:
+      - text: Find A, the note just above G.
+        answer: A4

@@ -3,49 +3,50 @@
   // path of bubbles, like the Journey map, so it is clear how many items finish it: done items
   // are checked off with the stars they earned, and the next one has an "Up next" card with the
   // reason and a big Start button. The ring shows today's practice minutes toward the target.
-  // The queue is sample data until the server builds it (M5).
+  // The lesson engine on the piano server builds the queue; it is resumed on any device today.
   import { onMount } from "svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { loadContent, type Content } from "../lib/content";
-  import { sampleProgress, sampleSession, type SessionItem } from "../lib/progress";
+  import type { SessionItem, SessionReason } from "../lib/progress";
   import { go } from "../lib/route";
 
-  const TARGET_MIN = 15;              // per student in M5 (§8.6)
   const STEP = 200, BUBBLE = 84, X0 = 30, Y0 = 30, WAVE = 56;
 
   let content = $state<Content | null>(null);
   let error = $state("");
 
   onMount(async () => {
-    try {
-      const c = await loadContent();
-      content = c;
-      app.ensureSession(() => sampleSession(c.map, c.pieces, sampleProgress(c.map)));
-    } catch (e) {
-      error = `Can't load today's practice from the piano server (${(e as Error).message}).`;
-    }
+    try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
+    void app.refresh();
   });
 
   const s = $derived(app.session);
   const item = $derived(app.sessionItem);
   const skill = $derived(item?.skillId ? content?.map.skills.find((k) => k.id === item.skillId) ?? null : null);
-  const minutes = $derived(Math.floor((s?.seconds ?? 0) / 60));
-  const ring = $derived(Math.min(1, minutes / TARGET_MIN));
-  const starsToday = $derived((s?.results ?? []).reduce((n, r) => n + (r?.accuracyStars ?? 0), 0));
+  const target = $derived(app.day?.targetMinutes ?? 15);
+  const minutes = $derived(Math.floor(((app.day?.guidedSec ?? 0) + (app.day?.freeSec ?? 0)) / 60));
+  const ring = $derived(Math.min(1, minutes / target));
+  const doneCount = $derived(s ? s.items.filter((i) => i.done).length : 0);
+  const starsToday = $derived((s?.items ?? []).reduce((n, i) => n + (i.result?.accuracyStars ?? 0), 0));
   const pos = (i: number) => ({ x: X0 + i * STEP, y: Y0 + (i % 2 ? WAVE : 0) });
   const width = $derived(X0 * 2 + Math.max(0, (s?.items.length ?? 1) - 1) * STEP + 170);
 
-  const reasonIcon: Record<string, string> = { Review: "🔁", New: "✨", Practice: "🎯", "Your pick": "🎁" };
-  const why: Record<string, string> = {
-    Review: "Warm up with a song you already know.",
+  const reasonIcon: Record<SessionReason, string> = {
+    Review: "🔁", New: "✨", "Tricky spot": "🎯", Polish: "💎", Support: "🧱", "Your pick": "🎁",
+  };
+  const why: Record<SessionReason, string> = {
+    Review: "Warm up with something you already know.",
     New: "Something new today!",
-    Practice: "Let's make this one even better.",
+    "Tricky spot": "A short practice on the tricky part. Take it slowly.",
+    Polish: "Let's make this one shine.",
+    Support: "This builds up to the tricky one.",
     "Your pick": "You choose! Pick any song you've unlocked.",
   };
   const label = (it: SessionItem) => (it.kind === "lesson" ? `💡 ${it.title}` : it.title);
+  const refresher = $derived(item?.kind === "lesson" && item.reason === "Review");
 
   function curve(i: number): string {
     const a = pos(i), b = pos(i + 1), h = BUBBLE / 2;
@@ -63,9 +64,9 @@
 
 <div class="screen">
   <Status title="Today's Practice">
-    {#if s}<span class="muted">{Math.min(s.index, s.items.length)} of {s.items.length} done</span>{/if}
+    {#if s}<span class="muted">{doneCount} of {s.items.length} done</span>{/if}
     <span>★ {starsToday} today</span>
-    <span>🔥 3 days <span class="sample">sample</span></span>
+    {#if app.day}<span>🔥 {app.day.streak} day{app.day.streak === 1 ? "" : "s"}</span>{/if}
   </Status>
 
   <main class="body">
@@ -73,20 +74,22 @@
       <p class="notice">Turn on full screen in MIDIWeb Browser to hide the address bar.</p>
     {/if}
     {#if error}<p class="notice error">{error}</p>{/if}
+    {#if app.stateError}<p class="notice error">{app.stateError}</p>{/if}
+    {#if !s && app.stateStatus === "loading"}<p class="muted">Getting today's practice ready…</p>{/if}
 
     {#if s}
       <div class="top">
         <section class="panel path-panel">
           <div class="path" style:width="{width}px">
             <svg class="lines" width={width} height={Y0 * 2 + WAVE + BUBBLE} aria-hidden="true">
-              {#each s.items.slice(0, -1) as _, i (i)}
-                <path d={curve(i)} class:done={i < s.index} />
+              {#each s.items.slice(0, -1) as it, i (it.id)}
+                <path d={curve(i)} class:done={it.done && s.items[i + 1].done} />
               {/each}
             </svg>
-            {#each s.items as it, i (i)}
+            {#each s.items as it, i (it.id)}
               {@const p = pos(i)}
-              {@const r = s.results[i]}
-              {@const st = i < s.index ? "done" : i === s.index ? "next" : "later"}
+              {@const r = it.result}
+              {@const st = it.done ? "done" : it === item ? "next" : "later"}
               <div class="node" style:left="{p.x}px" style:top="{p.y}px">
                 <button class="bubble {st}" disabled={st !== "next"} onclick={start}
                         aria-label="{i + 1}. {label(it)}: {st === 'done' ? 'done' : st === 'next' ? 'up next' : 'later'}">
@@ -107,8 +110,8 @@
             {/each}
           </div>
         </section>
-        <div class="ring" style:--p={ring} aria-label="{minutes} of {TARGET_MIN} minutes today">
-          <div class="ring-inner"><b>{minutes}</b><span>of {TARGET_MIN} min</span></div>
+        <div class="ring" style:--p={ring} aria-label="{minutes} of {target} minutes today">
+          <div class="ring-inner"><b>{minutes}</b><span>of {target} min</span></div>
         </div>
       </div>
 
@@ -116,23 +119,26 @@
         <div class="upnext">
           <div class="upnext-text">
             <p class="label">Up next · {item.reason}</p>
-            <h1>{item.kind === "lesson" ? `New idea: ${item.title}` : item.title}</h1>
-            <p class="why">{why[item.reason]}{skill && item.kind !== "lesson" ? ` Skill: ${skill.name}.` : ""}</p>
+            <h1>{item.kind === "lesson" ? (refresher ? `See the idea again: ${item.title}` : `New idea: ${item.title}`) : item.title}</h1>
+            <p class="why">{refresher ? "A quick look back at this idea." : why[item.reason]}{skill && item.kind !== "lesson" ? ` Skill: ${skill.name}.` : ""}{item.section !== null ? " Just the tricky bars." : item.preset ? ` At ${item.preset}% speed.` : ""}</p>
           </div>
           <div class="upnext-actions">
             <button class="start" onclick={start}>{item.kind === "pick" ? "Choose a song" : "Start"}</button>
-            {#if s.index < s.items.length - 1}<button class="quiet" onclick={() => app.skipItem()}>Skip for now</button>{/if}
+            {#if !item.skipped && s.items.filter((i) => !i.done).length > 1}<button class="quiet" onclick={() => app.skipItem(item.id)}>Skip for now</button>{/if}
           </div>
         </div>
       {:else}
         <div class="upnext done">
           <div class="upnext-text">
-            <p class="label">🎉 All done for today!</p>
+            <p class="label">🎉 Today's Practice Complete!</p>
             <h1>You played {s.items.length} things and earned {starsToday} stars.</h1>
-            <p class="why">See you tomorrow! You can keep playing any song you like.</p>
+            <p class="why">{s.endOfContent ? "New lessons coming soon! " : ""}See you tomorrow! You can keep playing any song you like.</p>
           </div>
           <div class="upnext-actions"><button class="start" onclick={() => go("library")}>Songs</button></div>
         </div>
+      {/if}
+      {#if s.endOfContent && item}
+        <p class="muted soon">✨ New lessons coming soon! Until then, today is for making your songs shine.</p>
       {/if}
     {/if}
   </main>
@@ -178,4 +184,5 @@
   .why { font-size: 18px; margin: 0; }
   .upnext-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
   .start { font-size: 24px; min-width: 240px; min-height: 72px; border-radius: 18px; }
+  .soon { margin-top: 12px; }
 </style>

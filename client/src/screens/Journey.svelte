@@ -1,17 +1,21 @@
 <script lang="ts">
   // Journey map (arch §3 screen 3, "Journey maps"): the branching skill map as a path of bubbles,
   // left to right like the music, with a lightbulb (concept lesson) before each skill. Each
-  // bubble shows locked, current, passed or mastered, and two star rows. Tapping one shows its
-  // lesson and songs. In parent mode every bubble opens (the content preview).
+  // bubble shows locked, ready to learn (its lightbulb open), current, passed or mastered, and
+  // two star rows; a refresh badge when it is due for review, and "Today" when it is in today's
+  // session. Tapping one shows its lesson and songs. In parent mode every bubble opens (the
+  // content preview). `test` draws a generated 200-bubble map, the M5 render test.
   import { onMount } from "svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { handsLabel, loadContent, type Content } from "../lib/content";
-  import { isPassed, sampleProgress, type Progress } from "../lib/progress";
+  import { isPassed, type Progress, type SkillProgress } from "../lib/progress";
   import { go } from "../lib/route";
-  import type { PieceSummary, Skill } from "../lib/types";
+  import type { PieceSummary, Skill, SkillMap } from "../lib/types";
+
+  let { test = false }: { test?: boolean } = $props();
 
   const COL = 250, ROW = 190, X0 = 150, Y0 = 20, BUBBLE = 92;
 
@@ -19,11 +23,73 @@
   let error = $state("");
   let open = $state<Skill | null>(null);
 
+  let frame = $state("");
+
   onMount(async () => {
+    if (test) {
+      content = testContent(200);
+      measureScroll();
+      return;
+    }
     try { content = await loadContent(); } catch (e) { error = `Can't load the skill map (${(e as Error).message}).`; }
+    void app.refresh();
   });
 
-  const progress = $derived<Progress>(content ? sampleProgress(content.map) : new Map());
+  /** The render test (arch §3 "Journey maps", M5): a generated map of `n` bubbles on 3 branches
+   *  that join every 9 skills, with every state shown. */
+  function testContent(n: number): Content {
+    const tracks = ["reading", "technique", "rhythm"], last: Record<string, string> = {};
+    const skills: Skill[] = [];
+    for (let i = 0; i < n; i++) {
+      const track = tracks[i % 3];
+      let pre = last[track] ? [last[track]] : [];
+      if (i && i % 9 === 0) pre = [...new Set([...pre, ...Object.values(last)])];
+      skills.push({ id: `test.${i}`, name: `Skill ${i + 1}`, sequence: 10 * (i + 1), track, staff: "treble", prerequisites: pre,
+                    map: "basic", level: `Level ${Math.floor(i / 50) + 1}`, placeholder: true, pieces: [] });
+      last[track] = `test.${i}`;
+    }
+    const map: SkillMap = { placeholder: true, maps: [{ map: "basic", level: "Render test", file: "" }], skills };
+    return { map, pieces: [], version: "test" };
+  }
+
+  /** Frame times while the map scrolls by itself for 3 seconds. */
+  function measureScroll(): void {
+    const el = document.querySelector(".map-body") as HTMLElement | null;
+    if (!el) { requestAnimationFrame(measureScroll); return; }
+    const times: number[] = [];
+    let last = 0;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      if (last) times.push(now - last);
+      last = now;
+      el.scrollLeft = ((now - t0) / 3000) * (el.scrollWidth - el.clientWidth);
+      if (now - t0 < 3000) requestAnimationFrame(step);
+      else {
+        const sorted = [...times].sort((a, b) => a - b);
+        frame = `${Math.round(1000 / (times.reduce((a, b) => a + b, 0) / times.length))} fps, worst ${Math.round(sorted[sorted.length - 1])} ms, ` +
+          `${times.filter((d) => d > 25).length} frames over 25 ms`;
+        (window as unknown as { __journeyTest: string }).__journeyTest = frame;
+      }
+    };
+    requestAnimationFrame(step);
+  }
+
+  /** The test map shows every state; parent mode shows the content with no progress. */
+  const progress = $derived<Progress>(test && content ? testProgress(content.map) : app.parentMode ? new Map() : app.progress);
+  function testProgress(map: SkillMap): Progress {
+    const states = ["mastered", "passed", "current", "locked"] as const;
+    return new Map(map.skills.map((s, i) => {
+      const status = states[Math.min(3, Math.floor(i / 50))];
+      const p: SkillProgress = { skillId: s.id, status, lessonOpen: status !== "locked" || i % 7 === 0, conceptDone: status !== "locked",
+        hold: false, mastery: null, bestMastery: null, accuracyStars: status === "locked" ? null : 3 + (i % 5) / 2,
+        timingStars: status === "locked" ? null : 2.5 + (i % 4) / 2, stuck: false, due: status === "mastered" && i % 5 === 0,
+        today: status === "current" && i % 3 === 0, attemptsWithoutPass: 0, tryAnotherWay: false, refresher: false, nextReview: null };
+      return [s.id, p];
+    }));
+  }
+  type Shown = "locked" | "open" | "current" | "passed" | "mastered";
+  /** Locked, but with its lightbulb open: ready to learn. */
+  const shown = (p: SkillProgress | undefined): Shown => (p?.status === "locked" && p.lessonOpen ? "open" : p?.status ?? "locked");
 
   // columns by depth (the longest prerequisite chain), rows in sequence order within a column
   const placed = $derived.by(() => {
@@ -55,14 +121,14 @@
     return `M${x1},${y1} C${xm},${y1} ${xm},${y2} ${x2},${y2}`;
   }
 
-  const icon = { locked: "🔒", current: "▶", passed: "✓", mastered: "🏆" };
-  const statusText = { locked: "Locked", current: "Learning now", passed: "Passed", mastered: "Mastered" };
+  const icon: Record<Shown, string> = { locked: "🔒", open: "✨", current: "▶", passed: "✓", mastered: "🏆" };
+  const statusText: Record<Shown, string> = { locked: "Locked", open: "Ready to learn", current: "Learning now", passed: "Passed", mastered: "Mastered" };
 
   function piecesOf(s: Skill): PieceSummary[] {
     return (s.pieces ?? []).map((id) => content?.pieces.find((p) => p.id === id)).filter((p): p is PieceSummary => !!p);
   }
   function canOpen(s: Skill): boolean {
-    return app.parentMode || progress.get(s.id)?.status !== "locked";
+    return app.parentMode || shown(progress.get(s.id)) !== "locked";
   }
   function needs(s: Skill): string {
     const names = s.prerequisites.filter((p) => !isPassed(progress.get(p))).map((p) => content?.map.skills.find((k) => k.id === p)?.name ?? p);
@@ -71,14 +137,14 @@
 </script>
 
 <div class="screen">
-  <Status title="Journey">
+  <Status title={test ? "Journey render test" : "Journey"}>
     {#if content}<span class="muted">{content.map.maps.map((m) => m.level).join(", ")}</span>{/if}
-    <span class="sample">sample progress</span>
+    {#if test}<span>{placed.length} bubbles{frame ? ` · ${frame}` : " · scrolling…"}</span>{/if}
   </Status>
 
   <main class="body map-body">
     {#if error}<p class="notice error">{error}</p>{/if}
-    {#if content?.map.placeholder}
+    {#if content?.map.placeholder && !test}
       <p class="muted note">Placeholder skill map until the Faber books arrive.{app.parentMode ? " Parent mode: every bubble opens." : ""}</p>
     {/if}
     <div class="map" style:width="{width}px" style:height="{height}px">
@@ -89,15 +155,17 @@
         {/each}
       </svg>
       {#each placed as p (p.skill.id)}
-        {@const st = progress.get(p.skill.id)?.status ?? "locked"}
         {@const pr = progress.get(p.skill.id)}
+        {@const st = shown(pr)}
         <div class="node" style:left="{p.x}px" style:top="{p.y}px">
-          <button class="bulb" class:dim={st === "locked"} disabled={!canOpen(p.skill)}
+          <button class="bulb" class:dim={st === "locked"} class:glow={st === "open"} disabled={!canOpen(p.skill)}
                   onclick={() => go(`lesson/${encodeURIComponent(p.skill.id)}`)} aria-label="Concept lesson: {p.skill.name}">💡</button>
           <button class="bubble {st}" onclick={() => { open = p.skill; }} aria-label="{p.skill.name}: {statusText[st]}">
             <span>{icon[st]}</span>
           </button>
-          {#if st === "current"}<span class="today">Today</span>{/if}
+          {#if pr?.due}<span class="badge" title="Time to review">🔁</span>
+          {:else if pr?.today}<span class="today">Today</span>{/if}
+          {#if pr?.hold}<span class="hold">Needs {(p.skill.requiredCapabilities ?? []).join(", ")}</span>{/if}
           <div class="name">{p.skill.name}</div>
           <div class="stars">
             <Stars compact size={15} label="♪" value={pr?.accuracyStars ?? null} />
@@ -109,7 +177,7 @@
   </main>
 
   {#if open}
-    {@const st = progress.get(open.id)?.status ?? "locked"}
+    {@const st = shown(progress.get(open.id))}
     <div class="sheet">
       <div class="sheet-head">
         <h2>{open.name}</h2>
@@ -119,6 +187,8 @@
       {#if open.description}<p>{open.description}</p>{/if}
       {#if st === "locked" && !app.parentMode}
         <p class="notice">Unlocks after: {needs(open)}</p>
+      {:else if st === "open" && !app.parentMode}
+        <p class="notice">Start with the lightbulb: it shows the new idea, then the songs open.</p>
       {/if}
       <div class="cards">
         <button class="card" disabled={!canOpen(open)} onclick={() => go(`lesson/${encodeURIComponent(open!.id)}`)}>
@@ -126,7 +196,8 @@
           <span class="card-meta">Learn the new idea</span>
         </button>
         {#each piecesOf(open) as p (p.id)}
-          <button class="card" class:locked={!canOpen(open)} disabled={!canOpen(open)} onclick={() => app.openPiece(p.id, "journey")}>
+          {@const playable = app.parentMode || st === "current" || st === "passed" || st === "mastered"}
+          <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(p.id, "journey")}>
             <span class="card-title">{p.title}</span>
             <span class="card-meta">{handsLabel(p.hands)} · {p.timeSig}{p.hasMedia ? " · with singing" : ""}</span>
           </button>
@@ -158,6 +229,11 @@
   .bubble.current { background: var(--accent); color: #fff; box-shadow: 0 0 0 6px rgba(47, 111, 219, 0.25), 0 6px 16px rgba(0, 0, 0, 0.15); }
   .bubble.passed { background: var(--ok); color: #fff; }
   .bubble.mastered { background: #f2b01e; color: #fff; }
+  .bubble.open { background: #fff7d1; color: #b07a00; border-color: #efd58a; }
+  .bulb.glow { box-shadow: 0 0 0 5px rgba(242, 176, 30, 0.35); }
+  .badge { position: absolute; top: -10px; right: -10px; background: #fff; border-radius: 50%; width: 34px; height: 34px;
+           display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); font-size: 18px; }
+  .hold { font-size: 12px; font-weight: 700; color: #8a5a00; }
   .bulb {
     position: absolute; left: -48px; top: 24px; width: 44px; height: 44px; min-width: 44px; min-height: 44px;
     padding: 0; border-radius: 50%; background: #fff7d1; border: 2px solid #efd58a; font-size: 20px;
