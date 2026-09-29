@@ -14,7 +14,7 @@
   import { TRY_ANOTHER_WAY } from "../lib/progress";
   import { LYRIC_FILL, renderStaff, xAt, type StaffLayout } from "../lib/staff";
   import { go } from "../lib/route";
-  import { buildTimeline, type Timeline } from "../lib/timeline";
+  import { buildTimeline, phraseIndexAt, type Timeline } from "../lib/timeline";
   import { PRESETS, type Piece, type Preset } from "../lib/types";
   import type { MidiNote, MidiPedal } from "../lib/midi";
 
@@ -60,7 +60,8 @@
   const hasMedia = $derived(!!piece?.media);
   const vocalsOn = $derived(piece ? !app.prefs.vocalsOff.includes(piece.id) : true);
   // songs with singing default to no click during play; the count-in always clicks
-  const clickOn = $derived(piece ? app.prefs.click[piece.id] ?? !piece.media : true);
+  let clickOverride = $state<boolean | null>(null);      // a remedy item's metronome, until the student changes it
+  const clickOn = $derived(clickOverride ?? (piece ? app.prefs.click[piece.id] ?? !piece.media : true));
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
   const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
@@ -73,7 +74,8 @@
     return it && app.student && (it.pieceId === id || it.kind === "pick") ? { ...it } : null;
   });
   const inSession = opened !== null;
-  const sectionItem = opened?.section !== null && opened?.section !== undefined;
+  const sectionItem = (opened?.section !== null && opened?.section !== undefined) || !!opened?.bars;
+  let itemSection: [number, number] | null = null;       // the phrases the item loops
   const itemNow = $derived(opened ? app.item(opened.id) : null);
   const itemSkill = $derived(opened?.skillId ?? piece?.skillId ?? null);
   const stillLearning = $derived(!!itemSkill && app.progress.get(itemSkill)?.status === "current");
@@ -93,9 +95,15 @@
 
     (async () => {
       try {
-        const r = await fetch(`content/pieces/${id}.json`);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        piece = await r.json();
+        if (id.startsWith("drill-")) {
+          // a generated drill belongs to one student (arch §8.9)
+          if (!app.student) throw new Error("drills are made for a student");
+          piece = await api.request<Piece>(`/students/${app.student.id}/drills/${id}`);
+        } else {
+          const r = await fetch(`content/pieces/${id}.json`);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          piece = await r.json();
+        }
       } catch (e) {
         error = `Can't load this song (${(e as Error).message}).`;
         return;
@@ -154,7 +162,7 @@
           clearTimeout(loopTimer);
           loopTimer = window.setTimeout(() => { loopNote = null; }, 3000);
           // a tricky-spot item is done once round its section
-          if (opened && sectionItem && section && section[0] === opened.section) {
+          if (opened && sectionItem && section && itemSection && section[0] === itemSection[0] && section[1] === itemSection[1]) {
             app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars });
           }
         },
@@ -169,12 +177,23 @@
         loading: (f) => { loadingFrac = f; },
         error: (m) => { error = m; api.log("error", "play screen: " + m, { piece: id }); },
       }, preset);
-      if (sectionItem && opened!.section! < tl.phrases.length) {
-        section = [opened!.section!, opened!.section!];
+      if (opened?.bars) itemSection = phrasesFor(opened.bars);
+      else if (sectionItem && opened!.section! < tl.phrases.length) itemSection = [opened!.section!, opened!.section!];
+      if (itemSection) {
+        section = itemSection;
         player.setSection(section);
       }
+      if (opened?.hands && opened.hands !== "both" && p.hands === "RL") {
+        hands = opened.hands;
+        player.setHands(hands);
+        markHands();
+      }
+      if (opened?.click !== undefined) {
+        clickOverride = opened.click;
+        player.forceClick = opened.click;
+      }
       void player.preload();
-      (window as unknown as { __pm: unknown }).__pm = { player, tl, get layout() { return layout; } };
+      (window as unknown as { __pm: unknown }).__pm = { player, tl, audio: app.audio, get layout() { return layout; } };
 
       const loop = (now: number) => {
         raf = requestAnimationFrame(loop);
@@ -361,7 +380,19 @@
   }
   function toggleClick(): void {
     if (!piece) return;
-    app.setSongPref(piece.id, { click: !clickOn });
+    const on = !clickOn;
+    clickOverride = null;
+    if (player) player.forceClick = null;
+    app.setSongPref(piece.id, { click: on });
+  }
+  /** The phrases covering written bars a..b (their first time through). */
+  function phrasesFor([a, b]: [number, number]): [number, number] | null {
+    const inBars = tl.entries.filter((e) => e.m.number >= a && e.m.number <= b);
+    if (!inBars.length) return null;
+    const from = inBars[0].start;
+    const last = inBars.find((e, i) => i + 1 === inBars.length || inBars[i + 1].start !== e.start + e.duration) ?? inBars[inBars.length - 1];
+    const to = last.start + last.duration;
+    return [phraseIndexAt(tl.phrases, from), phraseIndexAt(tl.phrases, to - 1e-6)];
   }
   /** "Try it another way" (arch §8.1): gentle practice choices after 3 tries without passing. */
   function listenFirst(): void { result = null; another = false; tapMode("listen"); }
@@ -424,11 +455,14 @@
     {/if}
     {#if result}
       {@const e = result.evaluation}
+      {@const tapping = piece?.drill?.anyKey !== undefined}
+      {@const main = tapping ? e.timingStars ?? 0 : e.accuracyStars}
       <div class="result">
-        <h2>{e.accuracyStars >= 4.5 ? "Beautiful!" : e.accuracyStars >= 3 ? "Well played!" : "Nice work, keep going!"}</h2>
-        <Stars label="Notes" value={e.accuracyStars} />
+        <h2>{main >= 4.5 ? "Beautiful!" : main >= 3 ? "Well played!" : "Nice work, keep going!"}</h2>
+        <!-- rhythm tapping scores timing only (§7.8) -->
+        {#if !tapping}<Stars label="Notes" value={e.accuracyStars} />{/if}
         <Stars label="Timing" value={e.timingStars} />
-        <p class="meaning">{STAR_MEANING[e.accuracyStars]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</p>
+        <p class="meaning">{STAR_MEANING[main]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</p>
         <p class="detail">{e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.conditions.rewinds ? ` · ${result.conditions.rewinds} rewind${result.conditions.rewinds > 1 ? "s" : ""}` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</p>
         {#if e.aids.length}
           <p class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</p>

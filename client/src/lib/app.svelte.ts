@@ -296,7 +296,9 @@ class AppState {
   }
 
   /** A concept lesson gone through: its skill becomes Current (§8.1). Parent reviews record nothing. */
-  lessonDone(skillId: string, itemId: string | null, seconds: number): void {
+  /** `check`: the lesson's Check and Echo cards (arch §7.8), kept on the server; a theory skill
+   *  passes on them. */
+  lessonDone(skillId: string, itemId: string | null, seconds: number, check?: { questions: number; points: number }): void {
     if (!this.student) return;
     if (itemId) this.completeItem(itemId, null);
     const p = this.progress.get(skillId);
@@ -307,7 +309,7 @@ class AppState {
     this.addPractice(seconds, !!itemId);
     const sid = this.student.id;
     api.request(`/students/${sid}/lessons/${encodeURIComponent(skillId)}/done`, "POST",
-      { itemId, seconds: Math.round(seconds), deviceId: api.deviceId })
+      { itemId, seconds: Math.round(seconds), deviceId: api.deviceId, ...(check ? { check } : {}) })
       .then(() => this.refresh()).catch(() => {});
   }
 

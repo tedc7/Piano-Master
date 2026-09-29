@@ -2,7 +2,8 @@
   // A student's progress report (arch §8.11), from the lesson engine: skills, star trends,
   // practice days, strengths by track and "working on". The student sees it in kid-friendly words
   // (My Progress); the parent sees the full detail (Config > Progress reports): mastery, stuck
-  // skills, Guided and Free Play minutes, the target length and the content runway (§8.10).
+  // skills, Guided and Free Play minutes, the target length, the content runway (§8.10) and what
+  // Diagnostics found (§8.8), with stuck patterns highlighted.
   import { onMount } from "svelte";
   import Stars from "./Stars.svelte";
   import { api } from "../lib/api";
@@ -27,9 +28,18 @@
     guidedMinutes28: number;
     freeMinutes28: number;
     runway: { remaining: number; passedLast28Days: number; daysLeft: number | null; alert: boolean; heldBy: string[] };
+    patterns: Pattern[];
     recent: { startedAt: string; pieceId: string; mode: string; completed: boolean; tempoPreset: string;
               accuracyStars: number | null; timingStars: number | null; context: string }[];
   }
+
+  interface Pattern {
+    id: string; kind: string; details: { text?: string }; occurrences: number; firstSeen: string; lastSeen: string;
+    remediesTried: string[]; goodDays: string[]; status: "active" | "improving" | "resolved" | "stuck"; resolvedDate: string | null;
+  }
+  const KIND: Record<string, string> = {
+    note: "Note mix-up", rhythm: "Rhythm", hands: "Hands together", shift: "Hand moves", tempo: "Speed step",
+  };
 
   let report = $state<Report | null>(null);
   let content = $state<Content | null>(null);
@@ -46,7 +56,8 @@
   });
 
   const skillName = (id: string) => content?.map.skills.find((s) => s.id === id)?.name ?? id;
-  const title = (id: string) => content?.pieces.find((p) => p.id === id)?.title ?? id;
+  const title = (id: string) => (id.startsWith("drill-") ? "Practice game" : content?.pieces.find((p) => p.id === id)?.title ?? id);
+  const day = (d: string) => new Date(`${d}T12:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" });
   const seq = (id: string) => content?.map.skills.find((s) => s.id === id)?.sequence ?? 0;
   const shownSkills = $derived((report?.skills ?? []).filter((s) => s.status !== "locked").sort((a, b) => seq(a.skillId) - seq(b.skillId)));
   const last14 = $derived((report?.days ?? []).slice(-14));
@@ -120,6 +131,23 @@
     </section>
   </div>
 
+  {#if full}
+    <section class="panel">
+      <h2>What Diagnostics found</h2>
+      <p class="muted small">Patterns in the last 14 days of playing (arch §8.8). Each gets a short practice game or exercise
+        in Today's Practice; it is resolved after two good days, and marked stuck after 3 tries or 2 weeks without one.</p>
+      {#each r.patterns as p (p.id)}
+        <div class="pattern" class:stuck={p.status === "stuck"}>
+          <span class="chip {p.status}">{p.status}</span>
+          <span class="ptext"><b>{KIND[p.kind] ?? p.kind}:</b> {p.details.text ?? p.kind}</span>
+          <span class="muted small">since {day(p.firstSeen)} · {p.remediesTried.length} practice{p.remediesTried.length === 1 ? "" : "s"}{p.status === "resolved" && p.resolvedDate ? ` · resolved ${day(p.resolvedDate)}` : ""}</span>
+        </div>
+      {:else}
+        <p class="muted">Nothing found. Patterns need a few days of playing to show up.</p>
+      {/each}
+    </section>
+  {/if}
+
   <section class="panel">
     <h2>{full ? "Recent plays" : "My recent plays"}</h2>
     {#if !r.recent.length}
@@ -165,6 +193,14 @@
   .weeks div { background: #f4f2ec; border-radius: 10px; padding: 6px; display: flex; flex-direction: column; align-items: center; font-size: 14px; }
   .gap { margin-top: 16px !important; }
   .alert { color: #8a5a00; font-weight: 650; }
+  .small { font-size: 14px; }
+  .pattern { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .pattern.stuck { background: #fff4e0; }
+  .ptext { flex: 1; min-width: 240px; }
+  .chip { border-radius: 999px; padding: 1px 10px; font-size: 13px; font-weight: 700; background: #ecebe6; }
+  .chip.stuck { background: #fde8e6; color: var(--wrong); }
+  .chip.improving { background: #e7f4e4; color: var(--ok); }
+  .chip.resolved { background: #e7f4e4; color: var(--ok); }
   table { width: 100%; border-collapse: collapse; }
   td { padding: 6px 8px; border-top: 1px solid var(--line); }
 </style>

@@ -35,7 +35,7 @@
   const width = $derived(X0 * 2 + Math.max(0, (s?.items.length ?? 1) - 1) * STEP + 170);
 
   const reasonIcon: Record<SessionReason, string> = {
-    Review: "🔁", New: "✨", "Tricky spot": "🎯", Polish: "💎", Support: "🧱", "Your pick": "🎁",
+    Review: "🔁", New: "✨", "Tricky spot": "🎯", Polish: "💎", Support: "🧱", "Your pick": "🎁", Focus: "🔍",
   };
   const why: Record<SessionReason, string> = {
     Review: "Warm up with something you already know.",
@@ -44,6 +44,7 @@
     Polish: "Let's make this one shine.",
     Support: "This builds up to the tricky one.",
     "Your pick": "You choose! Pick any song you've unlocked.",
+    Focus: "A short game aimed at one thing that keeps slipping.",
   };
   const label = (it: SessionItem) => (it.kind === "lesson" ? `💡 ${it.title}` : it.title);
   const refresher = $derived(item?.kind === "lesson" && item.reason === "Review");
@@ -57,7 +58,7 @@
   function start(): void {
     if (!item) return;
     if (item.kind === "lesson" && item.skillId) go(`lesson/${encodeURIComponent(item.skillId)}`);
-    else if (item.kind === "piece" && item.pieceId) app.openPiece(item.pieceId, "session");
+    else if ((item.kind === "piece" || item.kind === "drill") && item.pieceId) app.openPiece(item.pieceId, "session");
     else go("library");
   }
 </script>
@@ -120,7 +121,7 @@
           <div class="upnext-text">
             <p class="label">Up next · {item.reason}</p>
             <h1>{item.kind === "lesson" ? (refresher ? `See the idea again: ${item.title}` : `New idea: ${item.title}`) : item.title}</h1>
-            <p class="why">{refresher ? "A quick look back at this idea." : why[item.reason]}{skill && item.kind !== "lesson" ? ` Skill: ${skill.name}.` : ""}{item.section !== null ? " Just the tricky bars." : item.preset ? ` At ${item.preset}% speed.` : ""}</p>
+            <p class="why">{refresher ? "A quick look back at this idea." : why[item.reason]}{skill && item.kind !== "lesson" ? ` Skill: ${skill.name}.` : ""}{item.section !== null || item.bars ? " Just the tricky bars." : item.preset ? ` At ${item.preset}% speed.` : ""}{item.hands === "R" ? " Right hand only." : item.hands === "L" ? " Left hand only." : ""}{item.click ? " With the metronome." : ""}</p>
           </div>
           <div class="upnext-actions">
             <button class="start" onclick={start}>{item.kind === "pick" ? "Choose a song" : "Start"}</button>

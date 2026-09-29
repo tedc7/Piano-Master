@@ -3,7 +3,7 @@
 //    and the keyboard size. Kept in this browser, which is where they are measured, and copied to
 //    the piano server's DeviceProfile when the parent changes them.
 //  - Each student (Student.settings on the piano server; Config > Students): auto-rewind, rewind
-//    bars and backing volume, set by the parent, and the Play screen's per-song choices (vocals,
+//    bars, backing volume and the app playing the other hand, set by the parent, and the Play screen's per-song choices (vocals,
 //    metronome, tempo preset), remembered as the student makes them.
 //  - The parent playing: the same student-style settings, kept in this browser.
 // Storage can be missing or cleared on iPadOS, so defaults always work.
@@ -11,15 +11,20 @@ import type { Preset } from "./types";
 
 export interface DeviceSettings {
   displayOffsetMs: number;   // staff drawn this much behind the estimated audio clock (80 ms on the iPad A16)
-  latencyOffsetMs: number;   // subtracted from played-note times before matching (tap-along calibration, M0)
+  latencyOffsetMs: number;   // subtracted from played-note times before matching (tap-along calibration)
+  latencySpreadMs: number | null;    // the calibration's spread; under about 20 ms passes (§2.6)
+  latencyCheckedAt: string | null;   // when it was last calibrated
   pianoName: string | null;  // the MIDI input to use; null = the first real (non-virtual) input
   keyboardSize: 61 | 88 | null;   // parent-set (arch §5)
+  hasPedal: boolean | null;          // from the piano check, or set by the parent (§2.4); null = not checked
+  velocitySensitive: boolean | null;
 }
 
 export interface StudentSettings {
   autoRewind: boolean;
   rewindBars: number;        // how far the Rewind button goes back while playing
   backingVolume: number;     // 2 = the 200% found right on the iPad
+  otherHand: boolean;        // practising one hand, the app plays the other on its piano
   vocalsOff: string[];       // piece ids with vocals off (remembered per song, arch §3)
   click: Record<string, boolean>;  // metronome during play, per piece (default: on unless the song has singing)
   presets: Record<string, Preset>;
@@ -34,17 +39,22 @@ const OLD_KEY = "pm.settings.v1";          // before M4, everything was kept per
 
 export const DEVICE_DEFAULTS: DeviceSettings = {
   displayOffsetMs: 80,
-  // Until the tap-along calibration exists, assume the key presses line up with what the child
-  // sees and hears, which the display offset already measures on this device.
+  // Until the tap-along calibration has run on this device (Config > Latency calibration), assume
+  // the key presses line up with what the child sees and hears, which the display offset measures.
   latencyOffsetMs: 80,
+  latencySpreadMs: null,
+  latencyCheckedAt: null,
   pianoName: null,
   keyboardSize: null,
+  hasPedal: null,
+  velocitySensitive: null,
 };
 
 export const STUDENT_DEFAULTS: StudentSettings = {
   autoRewind: true,
   rewindBars: 2,
   backingVolume: 2,
+  otherHand: true,
   vocalsOff: [],
   click: {},
   presets: {},

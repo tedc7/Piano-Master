@@ -25,7 +25,13 @@ export interface AttemptOptions {
   preset: Preset;
 }
 
-export interface NoteError { kind: "missed" | "wrong"; beat: number; pitch: number; hand?: string; bar: number }
+/** A missed written note, or a wrong key. A wrong key is paired with the missed written note
+ *  nearest it (within half a beat), which is how Diagnostics finds note confusions (arch §8.8). */
+export interface NoteError {
+  kind: "missed" | "wrong"; beat: number; pitch: number; hand?: string; bar: number;
+  note?: number;          // missed: the note's index in the notation
+  expected?: number;      // wrong: the written pitch it was played for
+}
 
 export interface AttemptResult {
   evaluation: Evaluation;
@@ -33,6 +39,9 @@ export interface AttemptResult {
   completed: boolean;
   perPhraseErrors: number[];    // missed + wrong in the last pass of each phrase
   noteErrors: NoteError[];
+  /** Each written note of the scored pass: [index in the notation, timing in ms, or null when
+   *  missed]. Notes the attempt never reached (stopped part-way) are left out. */
+  noteResults: [number, number | null][];
   tricky: { phrase: number; bars: [number, number] } | null;
 }
 
@@ -141,10 +150,28 @@ export class Attempt {
       for (const x of this.tl.entries) if (x.start <= b + 1e-6) e = x;
       return e.m.number;
     };
+    const missed = m.expected.filter((e) => m.missed.has(e.id) || (completed && !m.hits.has(e.id)));
+    const missedIds = new Set(missed.map((e) => e.id));
+    const noteResults: [number, number | null][] = m.expected
+      .filter((e) => m.hits.has(e.id) || missedIds.has(e.id))
+      .map((e) => [this.tl.notes[e.id].index, m.hits.has(e.id) ? Math.round(m.hits.get(e.id)!.deltaMs) : null]);
+    const pairFor = (beat: number, pitch: number) => {
+      let best: Expected | null = null;
+      for (const e of missed) {
+        if (Math.abs(e.beat - beat) > 0.5) continue;
+        if (!best || Math.abs(e.beat - beat) < Math.abs(best.beat - beat) ||
+            (Math.abs(e.beat - beat) === Math.abs(best.beat - beat) && Math.abs(e.pitch - pitch) < Math.abs(best.pitch - pitch))) best = e;
+      }
+      return best;
+    };
     const noteErrors: NoteError[] = [
-      ...m.expected.filter((e) => m.missed.has(e.id) || (completed && !m.hits.has(e.id)))
-        .map((e) => ({ kind: "missed" as const, beat: e.beat, pitch: e.pitch, hand: this.tl.notes[e.id].hand, bar: barAt(e.beat) })),
-      ...m.wrongs.filter((w) => !w.retracted).map((w) => ({ kind: "wrong" as const, beat: w.beat, pitch: w.pitch, bar: barAt(w.beat) })),
+      ...missed.map((e) => ({ kind: "missed" as const, beat: e.beat, pitch: e.pitch, hand: this.tl.notes[e.id].hand, bar: barAt(e.beat),
+                              note: this.tl.notes[e.id].index })),
+      ...m.wrongs.filter((w) => !w.retracted).map((w) => {
+        const e = pairFor(w.beat, w.pitch);
+        return { kind: "wrong" as const, beat: w.beat, pitch: w.pitch, bar: barAt(w.beat),
+                 ...(e ? { expected: e.pitch, hand: this.tl.notes[e.id].hand } : {}) };
+      }),
     ].sort((a, b) => a.beat - b.beat);
     // the tricky spot: the phrase rewound most, else the one with the most errors (2 or more)
     let tp = this.policy.trickiest();
@@ -160,6 +187,6 @@ export class Attempt {
       const last = inside[inside.length - 1] ?? first;
       tricky = { phrase: tp, bars: [first.m.number, last.m.number] };
     }
-    return { evaluation, conditions, completed, perPhraseErrors, noteErrors, tricky };
+    return { evaluation, conditions, completed, perPhraseErrors, noteErrors, noteResults, tricky };
   }
 }

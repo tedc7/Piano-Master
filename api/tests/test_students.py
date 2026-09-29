@@ -76,9 +76,10 @@ def test_students_are_added_edited_archived_and_deleted(client, parent):
     b = client.post("/api/students", json={"name": "Ben", "avatar": "🐢"}, headers=parent).json()
     assert a["name"] == "Ada" and a["settings"]["rewindBars"] == 2 and a["targetMinutes"] == 15
     assert [s["name"] for s in client.get("/api/students").json()["students"]] == ["Ada", "Ben"]
-    r = client.patch(f"/api/students/{a['id']}", json={"settings": {"autoRewind": False, "rewindBars": 3, "backingVolume": 1.5}},
+    r = client.patch(f"/api/students/{a['id']}", json={"settings": {"autoRewind": False, "rewindBars": 3, "backingVolume": 1.5, "otherHand": False}},
                      headers=parent).json()
     assert r["settings"]["autoRewind"] is False and r["settings"]["rewindBars"] == 3 and r["settings"]["backingVolume"] == 1.5
+    assert a["settings"]["otherHand"] is True and r["settings"]["otherHand"] is False
     client.patch(f"/api/students/{b['id']}", json={"status": "archived"}, headers=parent)
     assert [s["name"] for s in client.get("/api/students").json()["students"]] == ["Ada"]
     assert len(client.get("/api/students", params={"all": True}, headers=parent).json()["students"]) == 2

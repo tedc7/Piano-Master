@@ -51,19 +51,23 @@ export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progr
   return { ready: list.length === 0 && beyond.length === 0, toReach: list, beyond };
 }
 
-export type SessionReason = "Review" | "New" | "Tricky spot" | "Polish" | "Support" | "Your pick";
+export type SessionReason = "Review" | "New" | "Tricky spot" | "Polish" | "Support" | "Your pick" | "Focus";
 
 export interface ItemResult { accuracyStars: number | null; timingStars: number | null; title?: string }
 
 export interface SessionItem {
   id: string;
-  kind: "lesson" | "piece" | "pick";   // pick: the student chooses from the library
+  kind: "lesson" | "piece" | "pick" | "drill";   // pick: the student chooses from the library; drill: generated (§8.9)
   reason: SessionReason;
   skillId: string | null;
   pieceId: string | null;
   title: string;
   preset: string | null;               // suggested tempo preset (a stuck skill, one slower)
   section: number | null;              // a phrase to loop (a tricky spot)
+  bars?: [number, number];             // written bars to loop (a Diagnostics remedy, §8.8)
+  hands?: "R" | "L" | "both";          // play with these hands
+  click?: boolean;                     // the metronome on, whatever the song's own choice
+  patternId?: string;                  // the error pattern this item remedies
   est: number;                         // estimated seconds
   done: boolean;
   result: ItemResult | null;

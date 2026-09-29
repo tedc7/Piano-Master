@@ -5,10 +5,14 @@
   //  - Show: the keys light up in order with their finger numbers, and the notes on a small staff;
   //  - Hear: the app plays the example, then a contrast;
   //  - Try: the student plays it on the piano; each note is confirmed, with the next key lit as a hint;
-  //  - Check: tap the right key on screen or play it; a wrong answer goes back to Show;
+  //  - Check: tap the right key on screen or play it, or tap one of the answers (after listening,
+  //    for an "identify" question); a wrong answer goes back to Show;
+  //  - Echo: the app plays a short phrase and the student plays it back (ear training);
   //  - Watch: a parent-approved video, if one has been added.
   // Going through it makes the skill Current (arch §8.1); in parent mode nothing is recorded, and
-  // the parent can skip the Try and Check cards to review the rest.
+  // the parent can skip the Try, Check and Echo cards to review the rest. Check questions score 1
+  // right first time and 0.5 the second; Echo scores by edit distance, 10% less per replay; the
+  // total goes to the server with the lesson (§7.8), where it passes a theory skill.
   import { onMount, tick, untrack } from "svelte";
   import Status from "../components/Status.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -17,12 +21,16 @@
   import type { MidiNote, MidiPedal } from "../lib/midi";
   import { go } from "../lib/route";
   import { renderMini, type MiniNote } from "../lib/staff";
+  import { stars } from "../lib/scoring";
+  import { echoScore, MAX_REPLAYS, questionPoints } from "../lib/theory";
+  import Stars from "../components/Stars.svelte";
   import type { Hand, Skill } from "../lib/types";
 
   let { skillId }: { skillId: string } = $props();
 
+  interface Question { text: string; answer: MiniNote | string; choices?: string[]; hear?: MiniNote[] }
   interface Card {
-    kind: "explain" | "show" | "hear" | "try" | "check" | "watch";
+    kind: "explain" | "show" | "hear" | "try" | "check" | "echo" | "watch";
     text: string;
     notes?: MiniNote[];
     fingers?: number[] | null;
@@ -31,13 +39,13 @@
     play?: MiniNote[];
     tempo?: number;
     contrast?: { text: string; play: MiniNote[] };
-    questions?: { text: string; answer: MiniNote }[];
+    questions?: Question[];
     video?: string;
   }
   interface Lesson { skill: string; title: string; cards: Card[] }
 
   const NAMES: Record<Card["kind"], [string, string]> = {
-    explain: ["Explain", "💬"], show: ["Show", "👀"], hear: ["Hear", "👂"], try: ["Try", "🎹"], check: ["Check", "✅"], watch: ["Watch", "🎬"],
+    explain: ["Explain", "💬"], show: ["Show", "👀"], hear: ["Hear", "👂"], try: ["Try", "🎹"], check: ["Check", "✅"], echo: ["Echo", "🦜"], watch: ["Watch", "🎬"],
   };
 
   let skill = $state<Skill | null>(null);
@@ -52,6 +60,14 @@
   let kb: KeyboardView | null = null;
   let heads: Element[][] = [];
   let timers: number[] = [];
+  // scoring (§7.8): wrong answers so far and the points of the first right answer, per question
+  let wrongTries: Record<string, number> = {};
+  let points: Record<string, number> = {};
+  let echoPlayed = $state<number[]>([]);
+  let replays = $state(0);
+  let echoResult = $state<number | null>(null);
+  let echoTimer = 0;
+  let hearingUntil = 0;
 
   // fixed when the screen opens, like the Play screen's session item
   const itemId = untrack(() => app.session?.items.find((i) => !i.done && i.kind === "lesson" && i.skillId === skillId)?.id ?? null);
@@ -61,14 +77,16 @@
   onMount(() => {
     const off = app.midi.onEvent(onMidi);
     (window as unknown as { __lesson: unknown }).__lesson = { get card() { return card; }, get progress() { return progress; },
-                                                             get step() { return step; }, get done() { return done[step]; } };
+                                                             get step() { return step; }, get done() { return done[step]; },
+                                                             get echo() { return { played: echoPlayed, result: echoResult }; },
+                                                             get points() { return points; } };
     void (async () => {
       try { skill = (await loadContent()).map.skills.find((s) => s.id === skillId) ?? null; } catch { /* title only */ }
       try {
         const r = await fetch(`content/lessons/${encodeURIComponent(skillId)}.json`);
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         lesson = await r.json();
-        done = lesson!.cards.map((c) => c.kind !== "try" && c.kind !== "check");
+        done = lesson!.cards.map((c) => c.kind !== "try" && c.kind !== "check" && c.kind !== "echo");
         await enter();
       } catch (e) {
         error = `This lesson isn't ready yet (${(e as Error).message}).`;
@@ -101,7 +119,8 @@
     const c = card;
     if (!c) return;
     if (c.text) speak(c.text);
-    const all = [...(c.notes ?? []), ...(c.play ?? []), ...(c.questions ?? []).map((q) => q.answer), ...(c.contrast?.play ?? [])];
+    const answers = (c.questions ?? []).flatMap((q) => [...(typeof q.answer === "string" ? [] : [q.answer]), ...(q.hear ?? [])]);
+    const all = [...(c.notes ?? []), ...(c.play ?? []), ...answers, ...(c.contrast?.play ?? [])];
     if (kbHost && all.length) {
       const ps = all.flatMap((n) => n.pitches);
       const [lo, hi] = keyboardRange(Math.min(...ps), Math.max(...ps));
@@ -111,6 +130,12 @@
     if (staffHost && c.notes) heads = renderMini(staffHost, c.notes, c.clef ?? "treble");
     if (c.kind === "show") showMe();
     if (c.kind === "try") hint();
+    if (c.kind === "echo") {
+      echoPlayed = [];
+      replays = 0;
+      echoResult = null;
+      timers.push(window.setTimeout(() => void hear(c.play ?? [], c.tempo), 900));
+    }
   }
 
   const handOf = (c: Card, i: number): Hand => (c.hand === "RL" ? (Math.min(...c.notes![i].pitches) < 60 ? "L" : "R") : (c.hand ?? "R") as Hand);
@@ -132,13 +157,15 @@
     timers.push(window.setTimeout(() => light(null), 400 + c.notes!.length * gap + 600));
   }
 
-  /** Hear: the notes on the app's tone, at the card's tempo. */
+  /** Hear: the notes on the app's piano, at the card's tempo. */
   async function hear(notes: MiniNote[], tempo = 90): Promise<void> {
     const ctx = await app.audio.ensure();
+    await app.audio.loadPiano(notes.flatMap((n) => n.pitches));
     const spb = 60 / tempo;
     let t = ctx.currentTime + 0.1;
+    hearingUntil = performance.now() + (0.1 + notes.reduce((n, x) => n + x.beats, 0) * spb) * 1000;
     for (const n of notes) {
-      for (const p of n.pitches) app.audio.tone(p, t, n.beats * spb * 0.95);
+      for (const p of n.pitches) app.audio.piano(p, t, n.beats * spb * 0.95);
       const at = t;
       timers.push(window.setTimeout(() => {
         for (const p of n.pitches) { kb?.press(p, "neutral"); timers.push(window.setTimeout(() => kb?.release(p), n.beats * spb * 900)); }
@@ -160,6 +187,7 @@
     held.add(ev.pitch);
     if (card.kind === "try") tryKey(ev.pitch);
     else if (card.kind === "check") answer(ev.pitch);
+    else if (card.kind === "echo") echoKey(ev.pitch);
     else kb?.press(ev.pitch, "neutral");
   }
 
@@ -182,24 +210,83 @@
     }
   }
 
-  /** Check: the answer is a tapped or played key (a chord needs all its keys). */
+  /** Check: the answer is a tapped or played key (a chord needs all its keys)... */
   function answer(pitch: number): void {
     const c = card!;
     if (done[step] || !c.questions) return;
     const q = c.questions[progress];
+    if (typeof q.answer === "string") return;           // a question answered with the buttons
     if (q.answer.pitches.includes(pitch)) {
       kb?.press(pitch, "ok");
       if (q.answer.pitches.length > 1 && !q.answer.pitches.every((p) => held.has(p) || p === pitch)) return;
-      progress++;
-      if (progress >= c.questions.length) { done[step] = true; feedback = "All right! 🎉"; speak("All right!"); }
-      else { feedback = "Yes!"; timers.push(window.setTimeout(() => { kb?.release(pitch); speak(c.questions![progress].text); }, 600)); }
+      rightAnswer(() => kb?.release(pitch));
     } else {
       kb?.press(pitch, "wrong");
-      feedback = "Let's look at it again.";
-      speak("Let's look at it again.");
-      const show = lesson!.cards.findIndex((x) => x.kind === "show");
-      if (show >= 0) timers.push(window.setTimeout(() => { step = show; void enter(); }, 1200));
+      wrongAnswer();
     }
+  }
+
+  /** ...or one of the answers on the buttons. */
+  function choose(choice: string): void {
+    const c = card!;
+    if (done[step] || !c.questions) return;
+    if (choice === c.questions[progress].answer) rightAnswer(); else wrongAnswer();
+  }
+
+  const qKey = () => `${step}/${progress}`;
+
+  function rightAnswer(after?: () => void): void {
+    const c = card!;
+    const k = qKey();
+    if (!(k in points)) points[k] = questionPoints(wrongTries[k] ?? 0);   // the first time it is got right
+    progress++;
+    if (progress >= c.questions!.length) { done[step] = true; feedback = "All right! 🎉"; speak("All right!"); }
+    else { feedback = "Yes!"; timers.push(window.setTimeout(() => { after?.(); speak(c.questions![progress].text); }, 600)); }
+  }
+
+  function wrongAnswer(): void {
+    const k = qKey();
+    wrongTries[k] = (wrongTries[k] ?? 0) + 1;
+    feedback = "Let's look at it again.";
+    speak("Let's look at it again.");
+    const show = lesson!.cards.findIndex((x) => x.kind === "show");
+    if (show >= 0) timers.push(window.setTimeout(() => { step = show; void enter(); }, 1200));
+  }
+
+  /** Echo: the student plays the phrase back; it is scored when they have played as many notes,
+   *  or stop for 2.5 seconds. Keys pressed while the app is still playing it don't count. */
+  function echoKey(pitch: number): void {
+    kb?.press(pitch, "neutral");
+    if (echoResult !== null || performance.now() < hearingUntil) return;
+    echoPlayed = [...echoPlayed, pitch];
+    clearTimeout(echoTimer);
+    if (echoPlayed.length >= echoWant().length) finishEcho();
+    else echoTimer = window.setTimeout(finishEcho, 2500);
+  }
+
+  const echoWant = () => (card?.play ?? []).flatMap((n) => n.pitches);
+
+  function finishEcho(): void {
+    clearTimeout(echoTimer);
+    echoResult = echoScore(echoWant(), echoPlayed, replays);
+    const k = `${step}/echo`;
+    if (!(k in points)) points[k] = echoResult;          // the first play-back counts; more are practice
+    done[step] = true;
+    feedback = echoResult >= 0.99 ? "Perfect! 🎉" : echoResult >= 0.74 ? "Nice listening! 🎉" : "Good try! Listen again and play it back.";
+    speak(feedback.replace(" 🎉", ""));
+  }
+
+  function echoReplay(): void {
+    if (echoPlayed.length || replays >= MAX_REPLAYS) return;
+    replays++;
+    void hear(card!.play ?? [], card!.tempo);
+  }
+
+  function echoAgain(): void {
+    echoPlayed = [];
+    echoResult = null;
+    feedback = "";
+    void hear(card!.play ?? [], card!.tempo);
   }
 
   function speak(text: string): void {
@@ -217,7 +304,9 @@
   }
 
   function finish(): void {
-    app.lessonDone(skillId, itemId, (performance.now() - opened) / 1000);
+    const questions = lesson!.cards.reduce((n, c) => n + (c.kind === "check" ? c.questions?.length ?? 0 : c.kind === "echo" ? 1 : 0), 0);
+    const got = Object.values(points).reduce((a, b) => a + b, 0);
+    app.lessonDone(skillId, itemId, (performance.now() - opened) / 1000, questions ? { questions, points: got } : undefined);
     if (inSession) go("session"); else leave();
   }
 
@@ -243,7 +332,18 @@
           <div class="head"><span class="icon">{NAMES[card.kind][1]}</span><h1>{NAMES[card.kind][0]}</h1></div>
           {#if card.text}<p class="text">{card.text}</p>{/if}
           {#if card.kind === "check" && card.questions && !done[step]}
-            <p class="text question">{card.questions[progress].text}</p>
+            {@const q = card.questions[progress]}
+            <p class="text question">{q.text}</p>
+            {#if q.hear}<button class="quiet" onclick={() => hear(q.hear ?? [], 90)}>▶ Listen</button>{/if}
+            {#if q.choices}
+              <div class="choices">
+                {#each q.choices as ch (ch)}<button class="choice" onclick={() => choose(ch)}>{ch}</button>{/each}
+              </div>
+            {/if}
+          {/if}
+          {#if card.kind === "echo"}
+            <p class="muted">{echoResult !== null ? `${echoPlayed.length} note${echoPlayed.length === 1 ? "" : "s"} played` : echoPlayed.length ? `${echoPlayed.length} of ${echoWant().length}…` : "Listen, then play it back."}</p>
+            {#if echoResult !== null}<Stars label="♪" value={stars(echoResult)} />{/if}
           {/if}
           {#if card.notes}<div class="mini" bind:this={staffHost}></div>{/if}
           {#if card.kind === "watch" && card.video}
@@ -258,7 +358,14 @@
               <button onclick={() => hear(card.play ?? [], card.tempo)}>▶ Play it</button>
               {#if card.contrast}<button class="quiet" onclick={() => { feedback = card.contrast!.text; speak(card.contrast!.text); void hear(card.contrast!.play, card.tempo); }}>▶ Now listen to this</button>{/if}
             {/if}
-            {#if card.kind === "try" && app.midiStatus !== "connected"}<span class="muted">Connect the piano to try it.</span>{/if}
+            {#if card.kind === "echo"}
+              {#if echoResult === null}
+                <button class="quiet" onclick={echoReplay} disabled={!!echoPlayed.length || replays >= MAX_REPLAYS}>▶ Play it again{replays ? ` (${MAX_REPLAYS - replays} left)` : ""}</button>
+              {:else}
+                <button class="quiet" onclick={echoAgain}>🔁 Try again</button>
+              {/if}
+            {/if}
+            {#if (card.kind === "try" || card.kind === "echo") && app.midiStatus !== "connected"}<span class="muted">Connect the piano to try it.</span>{/if}
           </div>
         </div>
         {#if card.notes || card.play || card.questions}<div class="keys" bind:this={kbHost}></div>{/if}
@@ -292,6 +399,8 @@
   .icon { font-size: 40px; }
   .text { font-size: 21px; line-height: 1.45; margin: 10px 0; }
   .question { font-weight: 700; }
+  .choices { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 8px 0; }
+  .choice { min-width: 110px; min-height: 60px; font-size: 22px; }
   .mini { display: flex; justify-content: center; margin: 4px 0; }
   .feedback { font-size: 20px; font-weight: 700; color: #8a5a00; margin: 6px 0; }
   .feedback.good { color: var(--ok); }

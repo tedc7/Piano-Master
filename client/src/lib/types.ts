@@ -75,11 +75,19 @@ export interface Media {
   } | null;
 }
 
+/** A generated drill (arch §8.9): served by the piano server for one student. */
+export interface DrillInfo {
+  kind: string;               // reading, rhythm, scale…
+  patternId?: string;         // the error pattern it remedies (§8.8)
+  anyKey?: number;            // rhythm tapping: any key counts as this pitch; only timing matters
+}
+
 export interface Piece {
   id: string;
   title: string;
   composer?: string;
-  kind: "core" | "library";
+  kind: "core" | "library" | "drill";
+  drill?: DrillInfo;
   genre?: string;
   level?: string;
   hands: "R" | "L" | "RL";

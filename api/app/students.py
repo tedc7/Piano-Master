@@ -15,7 +15,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 from . import content as content_mod
-from . import db, engine
+from . import db, diagnostics, engine
 from .parent import is_parent, require_parent
 
 router = APIRouter()
@@ -24,8 +24,9 @@ UUID = r"^[0-9a-fA-F-]{8,64}$"
 SLUG = r"^[A-Za-z0-9_.-]{1,100}$"
 PRESET = r"^(50|75|90|100)$"
 
-# Student.settings (arch §5); the parent sets the first three, the Play screen remembers the rest per song
-DEFAULTS: dict[str, Any] = {"autoRewind": True, "rewindBars": 2, "backingVolume": 2.0, "vocalsOff": [], "click": {}, "presets": {}}
+# Student.settings (arch §5); the parent sets the first four, the Play screen remembers the rest per song
+DEFAULTS: dict[str, Any] = {"autoRewind": True, "rewindBars": 2, "backingVolume": 2.0, "otherHand": True, "vocalsOff": [],
+                            "click": {}, "presets": {}}
 
 
 def today() -> date:
@@ -80,6 +81,7 @@ class StudentSettingsIn(BaseModel):
     autoRewind: bool | None = None
     rewindBars: int | None = Field(None, ge=1, le=8)
     backingVolume: float | None = Field(None, ge=0, le=3)
+    otherHand: bool | None = None       # one-hand practice: the app plays the other hand
     resetSongChoices: bool = False
 
 
@@ -99,10 +101,17 @@ class SongPrefIn(BaseModel):
     preset: str | None = Field(None, pattern=PRESET)
 
 
+class CheckIn(BaseModel):
+    """A concept lesson's Check cards (7.8): 1 point right first time, 0.5 the second time."""
+    questions: int = Field(ge=0, le=200)
+    points: float = Field(ge=0, le=200)
+
+
 class LessonDoneIn(BaseModel):
     itemId: str | None = Field(None, max_length=40)
     seconds: float = Field(0, ge=0, le=3600)
     deviceId: str | None = Field(None, pattern=UUID)
+    check: CheckIn | None = None
 
 
 class SkipIn(BaseModel):
@@ -145,7 +154,7 @@ def edit_student(student_id: str, body: StudentPatch):
             r = get_student(con, student_id)
             s = settings_of(r["settings"])
             if body.settings:
-                for k in ("autoRewind", "rewindBars", "backingVolume"):
+                for k in ("autoRewind", "rewindBars", "backingVolume", "otherHand"):
                     v = getattr(body.settings, k)
                     if v is not None:
                         s[k] = v
@@ -252,7 +261,8 @@ def lesson_done(student_id: str, skill_id: str, body: LessonDoneIn):
             get_student(con, student_id)
             try:
                 return engine.lesson_done(con, c, student_id, skill_id, today(), body.itemId, body.seconds,
-                                          caps_for(con, body.deviceId))
+                                          caps_for(con, body.deviceId),
+                                          (body.check.questions, body.check.points) if body.check else None)
             except KeyError:
                 raise HTTPException(404, "no such skill")
     finally:
@@ -273,15 +283,31 @@ def skip(student_id: str, body: SkipIn):
         con.close()
 
 
+@router.get("/api/students/{student_id}/drills/{drill_id}")
+def get_drill(student_id: str, drill_id: str = Path(pattern=SLUG)):
+    """A generated drill (8.9), as a piece the Play screen plays like any other."""
+    con = db.connect()
+    try:
+        r = con.execute("SELECT piece FROM drills WHERE id = ? AND student_id = ?", (drill_id, student_id)).fetchone()
+        if not r:
+            raise HTTPException(404, "no such drill")
+        return json.loads(r["piece"])
+    finally:
+        con.close()
+
+
 @router.get("/api/students/{student_id}/progress")
 def progress(student_id: str):
     """The progress report (8.11), for My Progress and the parent's reports: skills, star trends,
-    practice days, strengths by track, working-on areas, and the content runway."""
+    practice days, strengths by track, working-on areas, error patterns (8.8; found again for the
+    report), and the content runway."""
     c = need_content()
     con = db.connect()
     try:
         r = get_student(con, student_id)
         t = today()
+        with db.transaction(con):
+            found = diagnostics.run(con, c, student_id, t)
         states = engine.load_states(con, c, student_id)
         engine.refresh(c, states)
         since = t - timedelta(days=27)
@@ -331,6 +357,7 @@ def progress(student_id: str):
             "guidedMinutes28": round(sum(d["guidedSec"] for d in days) / 60, 1),
             "freeMinutes28": round(sum(d["freeSec"] for d in days) / 60, 1),
             "runway": engine.runway(con, c, student_id, states, t),
+            "patterns": [p for p in found if p["status"] != "resolved" or (p["resolvedDate"] or "") >= (t - timedelta(days=28)).isoformat()],
             "recent": [{"startedAt": a["started_at"], "pieceId": a["piece_id"], "mode": a["mode"], "completed": bool(a["completed"]),
                         "tempoPreset": a["tempo_preset"], "accuracyStars": a["accuracy_stars"], "timingStars": a["timing_stars"],
                         "context": a["context"]} for a in attempts[:12]],

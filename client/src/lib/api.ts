@@ -8,7 +8,7 @@ const API = "/api";
 const DEVICE_KEY = "pm.device.v1";
 const OUTBOX_KEY = "pm.outbox.v1";
 const OUTBOX_MAX = 200;
-export const CLIENT_VERSION = "0.4.0";
+export const CLIENT_VERSION = "0.5.0";
 
 /** An App API refusal: `detail` is the server's reason (a string, or e.g. {triesLeft}). */
 export class ApiError extends Error {
