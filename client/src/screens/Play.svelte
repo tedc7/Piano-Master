@@ -58,6 +58,7 @@
   let loopTimer = 0;
 
   const hasMedia = $derived(!!piece?.media);
+  const hasVocals = $derived(!!piece?.media && Object.values(piece.media.presets).some((p) => p?.vocals));
   const vocalsOn = $derived(piece ? !app.prefs.vocalsOff.includes(piece.id) : true);
   // songs with singing default to no click during play; the count-in always clicks
   let clickOverride = $state<boolean | null>(null);      // a remedy item's metronome, until the student changes it
@@ -522,7 +523,7 @@
         <button class:sel={preset === p} onclick={() => setPreset(p)}>{p}%</button>
       {/each}
     </div>
-    {#if hasMedia}
+    {#if hasVocals}
       <button class="toggle" class:off={!vocalsOn} onclick={toggleVocals}>Vocals</button>
     {/if}
     <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>

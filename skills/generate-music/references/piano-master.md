@@ -1,6 +1,12 @@
 # Piano-Master profile
 
-For the Family Piano Tutor app (repo `~/repos/Piano-Master`, architecture v0.21 section 10.5): each arrangement gets a sung **vocal stem** and an **accompaniment stem**, so a child can play the piano part along with them. Use `"profile": "piano-master"`.
+For the Family Piano Tutor app (repo `~/repos/Piano-Master`, architecture v0.22 section 10.5): each arrangement gets a sung **vocal stem** and an **accompaniment stem**, so a child can play the piano part along with them. Use `"profile": "piano-master"`.
+
+**Which of YuE2's stems the app uses (v0.22):**
+- **The vocal: always.**
+- **The accompaniment: only for a song with no backing notes.** An arrangement with backing notes (a hymn's four-part harmony, ensemble parts, or chord symbols) gets its backing rendered from those notes with FluidSynth and the MuseScore General SoundFont (Piano-Master's `feasibility/fluid-probe/`). In the listening test it sounded better than YuE2's backing.
+
+Keep giving YuE2 the chord symbols and a named-instrument accompaniment either way. They keep its backing, and so the vocal it sings against, in the written harmony, and the demixed vocal then carries no clashing backing.
 
 ## Request
 

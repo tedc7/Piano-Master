@@ -3,7 +3,7 @@
 // feasibility tests proved in MIDIWeb Browser.
 import type { Media, Preset } from "./types";
 
-export interface StemBuffers { vocals: AudioBuffer; accompaniment: AudioBuffer }
+export interface StemBuffers { vocals: AudioBuffer | null; accompaniment: AudioBuffer }
 
 interface Playing { src: AudioBufferSourceNode; gain: GainNode }
 interface Voice extends Playing { end: number }
@@ -107,7 +107,7 @@ export class AudioEngine {
     if (busy) return busy;
     const st = media.presets[preset];
     if (!st) return Promise.reject(new Error(`no ${preset}% stems`));
-    const total = st.vocals.bytes + st.accompaniment.bytes;
+    const total = (st.vocals?.bytes ?? 0) + st.accompaniment.bytes;
     let got = 0;
     const fetchOne = async (url: string) => {
       const r = await fetch(url);
@@ -131,8 +131,8 @@ export class AudioEngine {
     };
     const p = (async () => {
       const ctx = this.create();
-      const [v, a] = await Promise.all([fetchOne(st.vocals.url), fetchOne(st.accompaniment.url)]);
-      const [vocals, accompaniment] = await Promise.all([ctx.decodeAudioData(v), ctx.decodeAudioData(a)]);
+      const [v, a] = await Promise.all([st.vocals ? fetchOne(st.vocals.url) : null, fetchOne(st.accompaniment.url)]);
+      const [vocals, accompaniment] = await Promise.all([v ? ctx.decodeAudioData(v) : null, ctx.decodeAudioData(a)]);
       const bufs = { vocals, accompaniment };
       this.stems.set(key, bufs);
       onProgress?.(1);
@@ -148,6 +148,7 @@ export class AudioEngine {
   startStems(bufs: StemBuffers, offset: number, when: number, fade: number): void {
     const ctx = this.ctx!;
     for (const [buf, bus] of [[bufs.vocals, this.vocalBus], [bufs.accompaniment, this.backingBus]] as const) {
+      if (!buf) continue;
       const src = ctx.createBufferSource();
       const gain = ctx.createGain();
       src.buffer = buf;
