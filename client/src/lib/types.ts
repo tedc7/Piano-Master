@@ -93,6 +93,10 @@ export interface PieceSummary {
   tempo: number;
   timeSig: string;
   measures: number;
+  beats?: number;
+  phrases?: number;
+  requiredSkills?: string[];
+  featuredSkills?: string[];
   hasMedia: boolean;
 }
 
@@ -105,6 +109,8 @@ export interface Skill {
   prerequisites: string[];
   description?: string;
   pieces?: string[];
+  requiredCapabilities?: string[];
+  conceptLesson?: boolean;
   map: string;
   level: string;
   placeholder: boolean;

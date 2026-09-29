@@ -1,39 +1,27 @@
 <script lang="ts">
   // Song library, for Free Play (arch §3 screen 7, §6.8, §10.1): library-ready songs can be
   // played; songs further along the map show "Coming soon" with the skills still to reach. Grouped
-  // by level, with a favorites heart. Progress is sample data until M5; parent mode opens every
-  // song for review.
+  // by level, with a favorites heart (kept per student on the piano server). Parent mode opens
+  // every song for review.
   import { onMount } from "svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { handsLabel, loadContent, type Content } from "../lib/content";
-  import { libraryState, sampleProgress } from "../lib/progress";
+  import { libraryState } from "../lib/progress";
   import type { PieceSummary } from "../lib/types";
-
-  const FAV_KEY = "pm.favorites.v1";   // per student, on this device until M10 stores favorites
 
   let content = $state<Content | null>(null);
   let error = $state("");
   let filter = $state<"all" | "favorites">("all");
-  let favs = $state<Record<string, string[]>>(readFavs());
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
+    void app.refresh();
   });
 
-  function readFavs(): Record<string, string[]> {
-    try { return JSON.parse(localStorage.getItem(FAV_KEY) ?? "{}"); } catch { return {}; }
-  }
-  const who = $derived(app.student?.id ?? "parent");
-  const mine = $derived(new Set(favs[who] ?? []));
-  function toggleFav(id: string): void {
-    const next = mine.has(id) ? [...mine].filter((x) => x !== id) : [...mine, id];
-    favs = { ...favs, [who]: next };
-    try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch { /* not saved */ }
-  }
-
-  const progress = $derived(content ? sampleProgress(content.map) : new Map());
+  const mine = $derived(new Set(app.favorites));
+  const progress = $derived(app.progress);
   const rows = $derived.by(() => {
     if (!content) return [];
     const c = content;
@@ -51,7 +39,6 @@
 <div class="screen">
   <Status title="Songs">
     {#if content}<span class="muted">{openCount} of {rows.length} open</span>{/if}
-    <span class="sample">sample progress</span>
   </Status>
 
   <main class="body">
@@ -75,7 +62,7 @@
                   <span class="soon">Coming soon · learn {r.toReach.map((s) => s.name).join(", then ")}</span>
                 {/if}
               </button>
-              <button class="heart" class:on={mine.has(r.p.id)} onclick={() => toggleFav(r.p.id)} aria-label="Favorite">♥</button>
+              <button class="heart" class:on={mine.has(r.p.id)} onclick={() => app.toggleFavorite(r.p.id)} aria-label="Favorite">♥</button>
             </div>
           {/each}
         </div>

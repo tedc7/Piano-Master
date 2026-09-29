@@ -168,7 +168,7 @@ def build_sync_probe_piece(pid, meta, phrase_bars):
 def content_version() -> str:
     """A short hash of every content source file: stored with each attempt (arch §5 ContentVersion)."""
     h = hashlib.sha256()
-    for p in sorted(CONTENT.rglob("*.yaml")):
+    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("pieces/*.yaml")]):   # not content/incoming/
         h.update(str(p.relative_to(CONTENT)).encode() + b"\0" + p.read_bytes())
     return h.hexdigest()[:12]
 
@@ -203,7 +203,11 @@ def main():
         (OUT / "pieces" / f"{pid}.json").write_text(json.dumps(piece, indent=1))
         index.append({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId")}
                      | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
-                        "measures": len(nota["playbackOrder"]), "hasMedia": media is not None})
+                        "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
+                        # song analysis (M3) will compute these; until then, the assigned skill
+                        "requiredSkills": [piece["skillId"]] if piece["skillId"] else [],
+                        "featuredSkills": [piece["skillId"]] if piece["skillId"] else [],
+                        "hasMedia": media is not None})
         print(f"{pid}: {len(nota['notes'])} notes, {len(nota['playbackOrder'])} bars in playback order, "
               f"{len(nota['phrases'])} phrases" + (f", media {', '.join(media['presets'])}" if media else ""))
 

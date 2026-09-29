@@ -1,6 +1,15 @@
-# Family Piano Tutor — Architecture v0.18
+# Family Piano Tutor — Architecture v0.19
 
 Sep 28, 2026 · @Someone
+
+**What changed in v0.19** (from building M4 and M5, `api/app/engine.py`, and the practice simulator, `api/tests/simulator.py`):
+- **Students and parent login built (M4):** the parent adds the students under Config; the first PIN is chosen in the app on a new piano server, and a forgotten PIN is cleared on the server (`python -m app.admin reset-pin`, 11.1). Per-student settings live on the server; device settings stay in the browser where they are measured and are copied to the DeviceProfile (5). The parent's own plays are stored with no student (3).
+- **Content on the server:** until the content loader (M3), each deploy bundles the built skill map and piece index into the App API, so the lesson engine plans from the same content version the client shows (6.10). A piece's required and featured skills are its assigned skill until song analysis (6.8).
+- **Every skill has a concept lesson** unless the skill map says `conceptLesson: false`. A skill whose prerequisites are passed but whose lesson is not done is shown as **Ready to learn** (its lightbulb glows); its songs open once the lesson is done (3, 8.1).
+- **Stuck contact alternates (8.1):** the stuck skill's one short item is the tricky section one day and the whole piece one preset slower the next. The simulator showed that a section alone never passes the skill (only whole-item attempts pass), so a stuck skill stayed stuck for good.
+- **The New slot's replacement is bounded (8.5):** when a skill passes mid-session, its remaining New items are replaced by the next skill's, taking no more time than they did. Without the bound a quick learner's session grew with every pass and was never completed, so the target never stepped up.
+- **Implicit review needs half an interval (8.4):** a strong play counts as a review only once at least half the current review interval has passed, so a run of good plays on one day cannot climb the whole ladder.
+- **Sessions fill their time (8.5, 8.6):** a longer target adds more of the new skills' pieces, and time still unplanned becomes extra "Your pick" items (up to 4). With nothing new to learn (end of content, or everything else waiting on a stuck skill), polish is no longer capped at 2.
 
 **What changed in v0.18** (from building M1 and M2, `client/`, `api/`):
 - **Display offset direction:** the staff is drawn a per-device offset **behind** the estimated audio clock, not ahead of it (3, 5). v0.17 said "ahead"; the code and the iPad test hold it behind.
@@ -798,7 +807,7 @@ A Current skill is marked **stuck** when it has not passed after 6 completed att
 
 - **More support practice:** the Practice slot grows to about 30% of the target time (taken from the New slot's time on the stuck skill) and fills with **support pieces**: Guided-ready pieces and drills that exercise what the stuck skill builds on (its prerequisites and skills on the same track) but do not require the stuck skill itself.
 - **Other branches continue:** Current skills on other branches of the map keep their place in the New slot, so progress continues elsewhere.
-- **Short, regular contact:** the stuck skill appears once per session as a short, low-pressure item (often a section or a slower preset), so it is practiced regularly without dominating the session.
+- **Short, regular contact:** the stuck skill appears once per session as a short, low-pressure item, so it is practiced regularly without dominating the session: the tricky section one day, the whole piece one preset slower the next (v0.19: a section alone never passes a skill).
 - **Find the cause:** Diagnostics (8.8) looks for an underlying error pattern; its remedy takes the first Practice position.
 - **Parent visibility:** the stuck skill appears in the parent's progress report.
 
@@ -838,7 +847,7 @@ At most 2 polish items per session, so polish never crowds out new material.
 
 Any strong use of a skill counts as a review of it, so explicit review stays small as the skill map grows to hundreds of skills.
 
-- **Featured skills** of the arrangement played (and the skill the item was assigned for): a completed attempt with 4 or more accuracy stars (after the practice-aid factor) counts as a good review and updates mastery.
+- **Featured skills** of the arrangement played (and the skill the item was assigned for): a completed attempt with 4 or more accuracy stars (after the practice-aid factor) counts as a good review and updates mastery, once at least half the current review interval has passed since the last review (v0.19).
 - **Other required skills:** count as a good review only if the measures that use that skill (from the analysis, 6.8) scored 4 stars or more on their own. They get review credit only; their mastery is not changed. This stops one good overall score from hiding a weak spot in a particular skill.
 - **Free Play:** the same review rules apply. Mastery updates for featured skills use half the step (8.2, 8.7).
 
@@ -859,9 +868,9 @@ The Journey map shows the same information visually: refresh badges on due skill
 | Slot | Content | Share of target time |
 | --- | --- | --- |
 | Warm-up | Review items due today | About 25% |
-| New | Current skills, lowest sequence first: concept lesson plus exercises. When one passes, the next available skill follows | About 40% |
+| New | Current skills, lowest sequence first: concept lesson plus exercises. When one passes, the next available skill follows, in no more time than the items it replaces (v0.19) | About 40% |
 | Practice | In priority order: an active diagnostic remedy; support practice for a stuck skill (8.1); polish for passed-not-mastered skills; a tricky song section; polish for mastered skills under 5 stars | About 20% (about 30% while a skill is stuck) |
-| Reward | Student's choice from approved, library-ready songs | About 15% |
+| Reward | Student's choice from approved, library-ready songs; time the other slots leave unplanned adds more picks, up to 4 (v0.19) | About 15% |
 
 ### 8.6 Adaptive session length
 
@@ -1194,7 +1203,7 @@ Used to catch duplicates and deleted songs, even in a different key, tempo, or a
 | --- | --- |
 | Network | The reverse proxy is bound to the server's home-network address only, port 443 only (no port 80), behind the firewall; no port forwarding. HTTPS uses the server's own certificate authority (2.5). Remote access (for example a VPN) is a future option |
 | Student functions | No login on the home network; choosing a student is enough. The family accepts this, since the student side only records practice |
-| Parent functions | Require a parent session. The PIN is checked by the server against a stored hash; 5 wrong tries lock parent login for 5 minutes, doubling with each further lockout. The session ends after 10 minutes idle or on logout. A longer PIN is allowed |
+| Parent functions | Require a parent session. The PIN is checked by the server against a stored hash (scrypt); 5 wrong tries lock parent login for 5 minutes, doubling with each further lockout. The session ends after 10 minutes idle (the parent can change this) or on logout. A PIN is 4 to 8 digits. The first PIN is chosen in the app on a new server; a forgotten one is cleared on the server with `python -m app.admin reset-pin` in the API container (v0.19) |
 | Skill API | Home network only; per-skill tokens (kept in each skill's configuration on the dev box) scoped to read and submit; no token can approve, change rules, delete, or read student progress; the parent can rotate tokens |
 | AI proxy (optional) | Callable only by the App API, not by clients; daily call limit; the API key lives only in the server's environment file |
 | Downloads | The server never fetches URLs on request; all downloading happens in the Claude skills |
@@ -1212,7 +1221,7 @@ The piano app is added to the server's existing backup procedure. What must be c
 | Server configuration | Reverse proxy site, environment file with tokens and keys (encrypted as the existing system does) |
 | Staging area | Optional; can be recreated by re-running the skills |
 
-Restore is tested once after M4, then after major changes. A per-student data export remains available in parent mode.
+Restore is tested once after M4, then after major changes. Since M4 the database holds the students, their settings, skill states, sessions and practice days as well as attempts. A per-student data export remains available in parent mode.
 
 ### 11.3 Logging
 
@@ -1248,8 +1257,8 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs. **Built (Sep 28, 2026)** at `https://192.168.2.128/app/` with a placeholder skill map and 6 songs; the acceptance test waits for the MIDI keyboard | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures. **Built (Sep 28, 2026)** with the App API storing attempts and raw events, and 16 scripted fixtures; recorded fixtures and the "fair over 10 plays" check wait for the MIDI keyboard | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
 | M3 | Content pipeline and skill map | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A to Level 2 skill map with prerequisites (branches) and sequence numbers, concept lessons, core pieces (3 or more per skill), coverage report, Re-run analysis button | The skill map and lessons load with no hand edits and pass validation |
-| M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure; per-student settings moved out of the Play screen into each student (set by the parent in Config), device settings in Config > Device settings (v0.18) | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
-| M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles) | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
+| M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure; per-student settings moved out of the Play screen into each student (set by the parent in Config), device settings in Config > Device settings (v0.18). **Built (Sep 28, 2026)** with API tests for the PIN lockout, parent-only functions and separate progress, and the browser check adding two students from a new server; the backup and restore test are with the Server repo, and the two-device check waits for real use | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
+| M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles). **Built (Sep 28, 2026)** in `api/app/engine.py`; the practice simulator runs fast, slow, inconsistent and one-hard-skill learners for 8 weeks on a generated 60-skill branching map (`api/tests/test_simulator.py`); the 200-bubble render test is in Config and ran at 59 fps in desktop Chromium, and waits for the iPad | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
 | M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring | Errors planted in simulated data are detected and get the right remedy |
 | M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
 | M8 | Media and concept videos | Media skill v1 (vocals and accompaniment with all checks and tempo versions), stem playback, chord pad and choir voice, vocal-style change requests, concept-video skill | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
@@ -1342,6 +1351,11 @@ Not planned for v1; revisit when needed.
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Stuck contact (v0.19) | The tricky section one day, the whole piece one preset slower the next | In the simulator a section-only contact never passed, so the skill stayed stuck |
+| New slot after a pass (v0.19) | Replacement items take no more time than the ones they replace | Otherwise a quick learner's session never ends and the target never steps up |
+| Implicit review (v0.19) | Counts once half the current interval has passed | One day of good plays must not climb the review ladder |
+| Content on the server (v0.19) | The deploy bundles the built skill map and index into the App API until the M3 content loader | The engine and the client plan from one content version |
+| First PIN and reset (v0.19) | Chosen in the app on a new server; cleared with a server command | No secret to set up in the server's environment; a forgotten PIN needs the server, not the app |
 | Rewind threshold (v0.18) | 6 missed plus wrong notes per phrase, or 25% of its notes; tighten after the MIDI tests if needed | A wrong key is 2 errors (a missed note and a wrong note), so 2 rewound on a single slip |
 | Client audio (v0.18) | Plain Web Audio; Tone.js dropped | Only stems, clicks and a simple tone are needed; the song clock reads the `AudioContext` directly |
 | Display offset direction (v0.18) | The staff is drawn behind the estimated audio clock | Corrects v0.17's "ahead"; matches the code and the iPad test |
@@ -1427,6 +1441,7 @@ Not planned for v1; revisit when needed.
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.19 | Sep 28, 2026 | From building M4 and M5 and the practice simulator: students and parent login on the server; content bundled into the App API; a concept lesson for every skill and a Ready-to-learn state; stuck contact alternates section and slower whole piece; bounded New-slot replacement; implicit review after half an interval; sessions fill their time |
 | v0.18 | Sep 28, 2026 | From building M1 and M2 and the layout review: display offset is behind the audio clock; plain Web Audio instead of Tone.js; rewind threshold 6 because a wrong key counts twice; built stack recorded; M0, M1 and M2 status; parent as a player and tab-bar navigation; Play and Listen modes with a bars picker and a Rewind button; per-student settings flagged for M4 |
 | v0.17 | Sep 27, 2026 | From feasibility tests 2–4 and YuE2 listening: one song clock with a per-device display offset; pitch spelling in the notation; ABC Plus via abc2xml; YuE2 input with one note per syllable, chords and an "Oh" lead-in; named backing instruments; pitch-window alignment with lyric forced alignment; backing level for tablet speakers; Vocals on/off button; YuE2 limitations documented |
 | v0.16 | Sep 24, 2026 | From the feasibility tests: HTTPS by IP address with the internal certificate authority; iPad client checks passed (storage, wake lock, audio, speech, video, 60 fps staff); keyboard without MIDI, new keyboard needed; full-screen reminder; status-only top strip; M0-S decision: proceed with YuE2 |

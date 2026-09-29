@@ -3,6 +3,7 @@
   // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
   import { onMount, tick, untrack } from "svelte";
   import DeviceSettings from "../components/DeviceSettings.svelte";
+  import PlayerSettings from "../components/PlayerSettings.svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import { api } from "../lib/api";
@@ -10,7 +11,7 @@
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
-  import { toggleIn } from "../lib/settings";
+  import { TRY_ANOTHER_WAY } from "../lib/progress";
   import { LYRIC_FILL, renderStaff, xAt, type StaffLayout } from "../lib/staff";
   import { go } from "../lib/route";
   import { buildTimeline, type Timeline } from "../lib/timeline";
@@ -34,6 +35,7 @@
   let phraseCount = $state(1);
   let pending = $state(api.pending);
   let sheet = $state(false);
+  let another = $state(false);          // the "Try it another way" choices (arch §8.1)
   let countIn = $state<{ total: number; current: number } | null>(null);
   let wrongText = $state("");
   let recent = $state<{ text: string; key: number }[]>([]);
@@ -56,19 +58,26 @@
   let loopTimer = 0;
 
   const hasMedia = $derived(!!piece?.media);
-  const vocalsOn = $derived(piece ? !app.settings.vocalsOff.includes(piece.id) : true);
+  const vocalsOn = $derived(piece ? !app.prefs.vocalsOff.includes(piece.id) : true);
   // songs with singing default to no click during play; the count-in always clicks
-  const clickOn = $derived(piece ? app.settings.click[piece.id] ?? !piece.media : true);
+  const clickOn = $derived(piece ? app.prefs.click[piece.id] ?? !piece.media : true);
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
   const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
-  // in a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too
-  // the session item this song was opened for, fixed when the screen opens: it stays the same
-  // after the item is checked off, so "Play again" can still improve its stars
-  const opened = app.sessionItem;
-  const sessionIndex = untrack(() => (opened && (opened.pieceId === id || opened.kind === "pick") ? app.session!.index : null));
-  const inSession = sessionIndex !== null;
+  // In a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too.
+  // The session item this song was opened for is fixed when the screen opens: it stays the same
+  // after the item is checked off, so "Play again" can still improve its stars.
+  const opened = untrack(() => {
+    const it = app.sessionItem;
+    return it && app.student && (it.pieceId === id || it.kind === "pick") ? { ...it } : null;
+  });
+  const inSession = opened !== null;
+  const sectionItem = opened?.section !== null && opened?.section !== undefined;
+  const itemNow = $derived(opened ? app.item(opened.id) : null);
+  const itemSkill = $derived(opened?.skillId ?? piece?.skillId ?? null);
+  const stillLearning = $derived(!!itemSkill && app.progress.get(itemSkill)?.status === "current");
+  const offerAnother = $derived(inSession && stillLearning && (itemNow?.tries ?? 0) >= TRY_ANOTHER_WAY);
 
   onMount(() => {
     let raf = 0;
@@ -94,7 +103,7 @@
       const p = piece!;
       tl = buildTimeline(p.notation);
       phraseCount = tl.phrases.length;
-      const saved = app.settings.presets[p.id];
+      const saved = (opened?.preset as Preset | null) ?? app.prefs.presets[p.id];
       preset = saved && (!p.media || p.media.presets[saved]) ? saved : "100";
       applyMix();
       await tick();
@@ -133,9 +142,10 @@
         },
         finished: (r) => {
           result = r;
-          if (sessionIndex !== null) {
+          another = false;
+          if (opened && !sectionItem) {
             const e = r.evaluation;
-            app.completeItem(sessionIndex, { accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: opened?.kind === "pick" ? piece?.title : undefined });
+            app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: opened.kind === "pick" ? piece?.title : undefined });
           }
         },
         loopPass: (r) => {
@@ -143,14 +153,26 @@
           loopNote = { text: `${e.matched} of ${e.expected} notes`, stars: e.accuracyStars };
           clearTimeout(loopTimer);
           loopTimer = window.setTimeout(() => { loopNote = null; }, 3000);
+          // a tricky-spot item is done once round its section
+          if (opened && sectionItem && section && section[0] === opened.section) {
+            app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars });
+          }
         },
         save: (r) => {
-          api.saveAttempt({ ...r, contentVersion: piece?.contentVersion });
-          app.addPractice(r.durationSec);
+          // the parent's plays are never recorded to a student (arch §3)
+          api.saveAttempt({
+            ...r, contentVersion: piece?.contentVersion, studentId: app.student?.id ?? null,
+            skillId: itemSkill, itemId: opened?.id ?? null, context: opened ? "guided" : "free",
+          });
+          app.addPractice(r.durationSec, inSession);
         },
         loading: (f) => { loadingFrac = f; },
         error: (m) => { error = m; api.log("error", "play screen: " + m, { piece: id }); },
       }, preset);
+      if (sectionItem && opened!.section! < tl.phrases.length) {
+        section = [opened!.section!, opened!.section!];
+        player.setSection(section);
+      }
       void player.preload();
       (window as unknown as { __pm: unknown }).__pm = { player, tl, get layout() { return layout; } };
 
@@ -281,7 +303,7 @@
     if (!piece) return;
     app.audio.mix.vocals = vocalsOn;
     app.audio.mix.backing = true;
-    app.audio.mix.backingVolume = app.settings.backingVolume;
+    app.audio.mix.backingVolume = app.prefs.backingVolume;
     app.audio.applyMix();
   }
 
@@ -300,8 +322,8 @@
     player.setMode(m);
     void player.play();
   }
-  function rewind(): void { player?.rewindBars(app.settings.rewindBars); }
-  function playAgain(): void { void player?.play(); }
+  function rewind(): void { player?.rewindBars(app.prefs.rewindBars); }
+  function playAgain(): void { another = false; void player?.play(); }
   function setHands(): void {
     const order: Hands[] = ["both", "R", "L"];
     hands = order[(order.indexOf(hands) + 1) % 3];
@@ -329,21 +351,28 @@
   function setPreset(p: Preset): void {
     if (!piece || !player) return;
     preset = p;
-    app.settings.presets = { ...app.settings.presets, [piece.id]: p };
-    app.save();
+    app.setSongPref(piece.id, { preset: p });
     void player.setPreset(p);
   }
   function toggleVocals(): void {
     if (!piece) return;
-    app.settings.vocalsOff = toggleIn(app.settings.vocalsOff, piece.id, vocalsOn);
-    app.save();
+    app.setSongPref(piece.id, { vocalsOff: vocalsOn });
     applyMix();
   }
   function toggleClick(): void {
     if (!piece) return;
-    app.settings.click = { ...app.settings.click, [piece.id]: !clickOn };
-    app.save();
+    app.setSongPref(piece.id, { click: !clickOn });
   }
+  /** "Try it another way" (arch §8.1): gentle practice choices after 3 tries without passing. */
+  function listenFirst(): void { result = null; another = false; tapMode("listen"); }
+  function slower(): void {
+    const next: Record<Preset, Preset> = { "100": "90", "90": "75", "75": "50", "50": "50" };
+    result = null;
+    another = false;
+    setPreset(next[preset]);
+    if (mode !== "play") tapMode("play"); else void player?.play();
+  }
+  function oneHand(): void { result = null; another = false; hands = "both"; setHands(); }
   /** Back to the screen that opened the song: the session, the song library, the map... */
   function back(): void {
     player?.stop();
@@ -405,15 +434,32 @@
           <p class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</p>
           <p class="hint">{e.hint}</p>
         {/if}
-        <div class="row">
-          {#if result.tricky}<button onclick={practiceTricky}>Practice tricky part</button>{/if}
-          <button class:quiet={!!result.tricky || inSession} onclick={playAgain}>Play again</button>
-          {#if inSession}
-            <button onclick={next}>Next ›</button>
-          {:else}
-            <button class="quiet" onclick={back}>Done</button>
-          {/if}
-        </div>
+        {#if another}
+          <p class="meaning">This one's tricky! Want to try it another way?</p>
+          <div class="choices">
+            <button class="quiet" onclick={listenFirst}>👂 Listen first</button>
+            {#if result.tricky}<button class="quiet" onclick={practiceTricky}>🎯 Practice the tricky part</button>{/if}
+            {#if preset !== "50"}<button class="quiet" onclick={slower}>🐢 Slower</button>{/if}
+            {#if piece?.hands === "RL"}<button class="quiet" onclick={oneHand}>✋ One hand at a time</button>{/if}
+            {#if itemSkill}<button class="quiet" onclick={() => { player?.stop(); go(`lesson/${encodeURIComponent(itemSkill)}`); }}>💡 See the idea again</button>{/if}
+            <button class="quiet" onclick={next}>🔀 Try something else</button>
+            <button class="quiet" onclick={() => { player?.stop(); go("library"); }}>🎵 Free Play</button>
+          </div>
+        {:else}
+          <div class="row">
+            {#if offerAnother}
+              <button onclick={() => { another = true; }}>Try it another way</button>
+            {:else if result.tricky}
+              <button onclick={practiceTricky}>Practice tricky part</button>
+            {/if}
+            <button class:quiet={!!result.tricky || inSession || offerAnother} onclick={playAgain}>Play again</button>
+            {#if inSession}
+              <button class:quiet={offerAnother} onclick={next}>Next ›</button>
+            {:else}
+              <button class="quiet" onclick={back}>Done</button>
+            {/if}
+          </div>
+        {/if}
       </div>
     {/if}
   </div>
@@ -446,7 +492,9 @@
       <button class="toggle" class:off={!vocalsOn} onclick={toggleVocals}>Vocals</button>
     {/if}
     <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>
-    <button class="quiet" onclick={() => { sheet = !sheet; }} aria-label="Settings">⚙</button>
+    {#if app.parentMode}
+      <button class="quiet" onclick={() => { sheet = !sheet; }} aria-label="Settings">⚙</button>
+    {/if}
   </div>
 
   <div class="keys" bind:this={kbHost}></div>
@@ -454,8 +502,10 @@
   {#if sheet}
     <div class="sheet">
       <div class="sheet-head"><h2>Test settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
+      <p class="muted small">For the parent. Students' own settings are under Config › Students.</p>
       <div class="grid">
-        <DeviceSettings backing={hasMedia} />
+        <DeviceSettings />
+        <PlayerSettings settings={app.prefs} backing={hasMedia} onchange={(p) => { app.setParentPrefs(p); applyMix(); }} />
         <span>MIDI delivery delay</span>
         <span>{delayStats()}</span>
         <span>Last MIDI events</span>
@@ -484,7 +534,8 @@
   .message { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: #fff4d6; border: 1px solid #efd58a; border-radius: 12px; padding: 10px 16px; }
   .message.error { background: #fde8e6; border-color: #f0b3ac; }
   .result {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -40%);
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    max-height: calc(100% - 16px); overflow: auto; touch-action: pan-y;
     background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px 26px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); text-align: center; min-width: 420px;
   }
@@ -502,6 +553,8 @@
   .hands { min-width: 118px; }
   .muted { color: var(--muted); }
   .row { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
+  .choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+  .small { font-size: 14px; margin: 4px 0 0; }
   .controls {
     flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
     padding: 10px 10px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);

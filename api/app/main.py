@@ -1,7 +1,8 @@
-"""Piano App API (arch §4, §5, §11): devices, attempts with raw events, and client logs.
+"""Piano App API (arch §4, §5, §11): devices, attempts with raw events, client logs, and (in
+parent.py and students.py) parent login, students and the lesson engine.
 
 Serves everything under /api (Caddy passes the prefix through). Home network only, behind Caddy;
-student functions need no login (§11.1). Parent-only reads arrive with parent mode in M4.
+student functions need no login (§11.1); parent functions need a parent session.
 """
 from __future__ import annotations
 
@@ -12,13 +13,13 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 from typing import Any, Literal
 
-from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi import FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import db
+from . import content, db, parent, students
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 MAX_BODY = 4 * 1024 * 1024          # an attempt with every key press is well under this
 LOG_DAYS = 90                       # client logs are kept for 90 days (§11.3)
 UUID = r"^[0-9a-fA-F-]{8,64}$"
@@ -36,6 +37,8 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="Piano App API", version=VERSION, lifespan=lifespan,
               docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url=None)
+app.include_router(parent.router)
+app.include_router(students.router)
 
 
 @app.middleware("http")
@@ -91,8 +94,10 @@ class Evaluation(Loose):
 class AttemptIn(BaseModel):
     id: str = Field(pattern=UUID)
     deviceId: str = Field(pattern=UUID)
-    studentId: str | None = Field(None, pattern=UUID)
+    studentId: str | None = Field(None, pattern=UUID)   # none for the parent: those plays are never a student's
     pieceId: str = Field(pattern=SLUG)
+    skillId: str | None = Field(None, max_length=120)    # the skill the session item was for
+    itemId: str | None = Field(None, max_length=40)      # the session item (Guided)
     arrangementId: str | None = Field(None, pattern=SLUG)
     contentVersion: str | None = Field(None, max_length=64)
     context: Literal["guided", "free"] = "free"
@@ -154,11 +159,14 @@ def index():
             "raw_accuracy, id FROM attempts ORDER BY started_at DESC LIMIT 25").fetchall()
         counts = con.execute("SELECT COUNT(*), COUNT(DISTINCT device_id) FROM attempts").fetchone()
         devices = con.execute("SELECT COUNT(*) FROM devices").fetchone()[0]
+        kids = con.execute("SELECT COUNT(*) FROM students WHERE status = 'active'").fetchone()[0]
         problems = con.execute(
             "SELECT time, level, message FROM client_logs WHERE level != 'info' ORDER BY id DESC LIMIT 10").fetchall()
     finally:
         con.close()
     e = html.escape
+    c = content.load()
+    cv = c.version if c else None
     rows = "".join(
         f"<tr><td>{e(local_time(a['started_at']))}</td><td>{e(a['piece_id'])}</td><td>{e(a['mode'])}</td>"
         f"<td>{e(a['tempo_preset'])}%</td><td>{'done' if a['completed'] else 'stopped'}</td>"
@@ -177,7 +185,8 @@ def index():
  .muted {{ color: #6c6a72; }}
 </style></head><body>
 <h1>Piano App API</h1>
-<p>Version {VERSION}, database schema {schema_version}. {counts[0]} attempts from {counts[1]} device(s); {devices} device(s) registered.
+<p>Version {VERSION}, database schema {schema_version}, content {e(cv or "not deployed")}. {kids} student(s);
+{counts[0]} attempts from {counts[1]} device(s); {devices} device(s) registered.
 The app itself is at <a href="/app/">/app/</a>.</p>
 <h2>Recent attempts</h2>
 <table><tr><th>Started</th><th>Piece</th><th>Mode</th><th>Tempo</th><th></th><th>Notes</th><th>Timing</th><th>Accuracy × aids</th><th></th></tr>{rows}</table>
@@ -185,7 +194,8 @@ The app itself is at <a href="/app/">/app/</a>.</p>
 <h2>Endpoints (JSON)</h2>
 <ul>
  <li><a href="health">GET /api/health</a></li>
- <li><a href="attempts">GET /api/attempts</a> <span class=muted>?piece_id=… &amp;device_id=… &amp;limit=…</span>, and <code>GET /api/attempts/&lt;id&gt;</code> with every key press</li>
+ <li><a href="attempts">GET /api/attempts</a> <span class=muted>?piece_id=… &amp;device_id=… &amp;student_id=… &amp;limit=…</span>, and <code>GET /api/attempts/&lt;id&gt;</code> with every key press</li>
+ <li><a href="students">GET /api/students</a>, and per student <code>/state</code> (skills and today's session) and <code>/progress</code></li>
  <li><a href="logs">GET /api/logs</a> <span class=muted>?level=error</span></li>
  <li><code>POST /api/attempts</code>, <code>PUT /api/devices/&lt;id&gt;</code>, <code>POST /api/logs</code>: used by the app</li>
  <li><a href="docs">Interactive docs</a> <span class=muted>(loads its script from the internet)</span></li>
@@ -200,7 +210,8 @@ def health():
         con.execute("SELECT 1").fetchone()
     finally:
         con.close()
-    return {"ok": True, "version": VERSION, "schema": schema_version}
+    c = content.load()
+    return {"ok": True, "version": VERSION, "schema": schema_version, "contentVersion": c.version if c else None}
 
 
 def touch_device(con, device_id: str, body: DeviceIn | None = None) -> None:
@@ -218,13 +229,28 @@ def touch_device(con, device_id: str, body: DeviceIn | None = None) -> None:
 
 
 @app.put("/api/devices/{device_id}")
-def put_device(device_id: str, body: DeviceIn):
+def put_device(device_id: str, body: DeviceIn, x_parent_token: str | None = Header(default=None)):
+    """Registers the device; the DeviceProfile (its settings) changes only in parent mode."""
     if not re.match(UUID, device_id):
         raise HTTPException(422, "bad device id")
+    if body.profile is not None and not parent.is_parent(x_parent_token):
+        raise HTTPException(401, "parent login needed to change device settings")
     con = db.connect()
     try:
         touch_device(con, device_id, body)
         row = con.execute("SELECT * FROM devices WHERE id = ?", (device_id,)).fetchone()
+        return device_out(row)
+    finally:
+        con.close()
+
+
+@app.get("/api/devices/{device_id}")
+def get_device(device_id: str):
+    con = db.connect()
+    try:
+        row = con.execute("SELECT * FROM devices WHERE id = ?", (device_id,)).fetchone()
+        if not row:
+            raise HTTPException(404, "no such device")
         return device_out(row)
     finally:
         con.close()
@@ -237,34 +263,40 @@ def device_out(row) -> dict:
 
 @app.post("/api/attempts", status_code=201)
 def post_attempt(a: AttemptIn, response: Response):
+    """Stores an attempt once (outbox resends are harmless) and, for a student, updates their
+    practice time, skill states and today's session in the same transaction."""
     con = db.connect()
     try:
         with db.transaction(con):
             if con.execute("SELECT 1 FROM attempts WHERE id = ?", (a.id,)).fetchone():
                 response.status_code = 200            # an outbox resend: already stored
                 return {"id": a.id, "stored": False}
+            if a.studentId and not con.execute("SELECT 1 FROM students WHERE id = ?", (a.studentId,)).fetchone():
+                raise HTTPException(422, "no such student")
             touch_device(con, a.deviceId)
             e = a.evaluation
             con.execute(
                 "INSERT INTO attempts (id, device_id, student_id, piece_id, arrangement_id, content_version, context, mode, "
                 "completed, started_at, received_at, duration_sec, tempo_preset, conditions, conditions_factor, raw_accuracy, "
                 "raw_timing, accuracy, timing_score, accuracy_stars, timing_stars, latency_offset_ms, display_offset_ms, section, "
-                "per_phrase_errors, note_errors, tricky, evaluation, raw_events, passes, client_version) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "per_phrase_errors, note_errors, tricky, evaluation, raw_events, passes, client_version, skill_id, item_id) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (a.id, a.deviceId, a.studentId, a.pieceId, a.arrangementId or a.pieceId, a.contentVersion, a.context, a.mode,
                  int(a.completed), a.startedAt.isoformat(), now(), a.durationSec, a.conditions.tempoPreset,
                  dumps(a.conditions.model_dump()), e.factor, e.rawAccuracy, e.rawTiming, e.accuracy, e.timing,
                  e.accuracyStars, e.timingStars, a.latencyOffsetMs, a.displayOffsetMs, dumps(a.section),
                  dumps(a.perPhraseErrors), dumps(a.noteErrors), dumps(a.tricky), dumps(e.model_dump()),
-                 dumps(a.rawEvents), dumps(a.passes), a.clientVersion),
+                 dumps(a.rawEvents), dumps(a.passes), a.clientVersion, a.skillId, a.itemId),
             )
-        return {"id": a.id, "stored": True}
+            effects = students.after_attempt(con, a.studentId, a, content.load()) if a.studentId else None
+        return {"id": a.id, "stored": True, "effects": effects}
     finally:
         con.close()
 
 
 SUMMARY = ("id, device_id, student_id, piece_id, mode, completed, started_at, duration_sec, tempo_preset, "
-           "conditions_factor, raw_accuracy, raw_timing, accuracy, timing_score, accuracy_stars, timing_stars, tricky")
+           "conditions_factor, raw_accuracy, raw_timing, accuracy, timing_score, accuracy_stars, timing_stars, tricky, "
+           "context, skill_id, item_id")
 
 
 def attempt_out(row, full: bool) -> dict:
@@ -275,6 +307,7 @@ def attempt_out(row, full: bool) -> dict:
         "rawAccuracy": row["raw_accuracy"], "rawTiming": row["raw_timing"], "accuracy": row["accuracy"],
         "timing": row["timing_score"], "accuracyStars": row["accuracy_stars"], "timingStars": row["timing_stars"],
         "tricky": json.loads(row["tricky"]) if row["tricky"] else None,
+        "context": row["context"], "skillId": row["skill_id"], "itemId": row["item_id"],
     }
     if full:
         for col, key in (("conditions", "conditions"), ("section", "section"), ("per_phrase_errors", "perPhraseErrors"),
@@ -282,15 +315,17 @@ def attempt_out(row, full: bool) -> dict:
                          ("passes", "passes")):
             out[key] = json.loads(row[col]) if row[col] else None
         out.update({"arrangementId": row["arrangement_id"], "contentVersion": row["content_version"],
-                    "context": row["context"], "receivedAt": row["received_at"], "latencyOffsetMs": row["latency_offset_ms"],
+                    "receivedAt": row["received_at"], "latencyOffsetMs": row["latency_offset_ms"],
                     "displayOffsetMs": row["display_offset_ms"], "clientVersion": row["client_version"]})
     return out
 
 
 @app.get("/api/attempts")
 def list_attempts(piece_id: str | None = Query(None, pattern=SLUG), device_id: str | None = Query(None, pattern=UUID),
-                  limit: int = Query(50, ge=1, le=500)):
+                  student_id: str | None = Query(None, pattern=UUID), limit: int = Query(50, ge=1, le=500)):
     where, args = [], []
+    if student_id:
+        where.append("student_id = ?"); args.append(student_id)
     if piece_id:
         where.append("piece_id = ?"); args.append(piece_id)
     if device_id:

@@ -1,6 +1,7 @@
 <script lang="ts">
   // Concept lesson (arch §3 screen 4, "Teaching concepts"): a short sequence of cards the student
   // taps through. PLACEHOLDER: each card says what it will do; the lessons are authored in M3.
+  // Going through it makes the skill Current (arch §8.1); in parent mode nothing is recorded.
   import { onMount, untrack } from "svelte";
   import Status from "../components/Status.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -27,8 +28,9 @@
   ]);
   const card = $derived(cards[step]);
   // fixed when the screen opens, like the Play screen's session item
-  const inSession = untrack(() => app.sessionItem?.kind === "lesson" && app.sessionItem.skillId === skillId);
-  const sessionIndex = inSession ? app.session!.index : -1;
+  const itemId = untrack(() => app.session?.items.find((i) => !i.done && i.kind === "lesson" && i.skillId === skillId)?.id ?? null);
+  const inSession = itemId !== null;
+  const opened = performance.now();
 
   function speak(text: string): void {
     try {
@@ -37,10 +39,8 @@
     } catch { /* no speech on this device */ }
   }
   function done(): void {
-    if (inSession) {
-      app.completeItem(sessionIndex, { accuracyStars: null, timingStars: null });
-      go("session");
-    } else leave();
+    app.lessonDone(skillId, itemId, (performance.now() - opened) / 1000);
+    if (inSession) go("session"); else leave();
   }
   function leave(): void {
     if (inSession) go("session"); else if (history.length > 1) history.back(); else go("journey");

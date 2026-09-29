@@ -1,42 +1,29 @@
 <script lang="ts">
-  // The per-device settings (arch §5 DeviceProfile, kept in this browser until M4): offsets,
-  // auto-rewind, backing volume and which MIDI input is the piano. Used by Parent > Device
-  // settings and the Play screen's test sheet.
+  // This device's settings (arch §5 DeviceProfile), set by the parent: the offsets, the keyboard
+  // size and which MIDI input is the piano. Used by Config > Device settings and the Play
+  // screen's test sheet. Rows for a two-column grid.
   import { app } from "../lib/app.svelte.js";
 
-  let { backing = true }: { backing?: boolean } = $props();
-
   function nudge(key: "displayOffsetMs" | "latencyOffsetMs", by: number): void {
-    app.settings[key] += by;
-    app.save();
-  }
-  function rewind(by: number): void {
-    app.settings.rewindBars = Math.max(1, Math.min(8, app.settings.rewindBars + by));
-    app.save();
-  }
-  function volume(by: number): void {
-    app.settings.backingVolume = Math.max(0, Math.min(3, Math.round((app.settings.backingVolume + by) * 4) / 4));
-    app.save();
+    app.setDevice({ [key]: app.device[key] + by });
   }
 </script>
 
-<span>Auto-rewind</span>
-<span><button class="toggle" class:off={!app.settings.autoRewind} onclick={() => { app.settings.autoRewind = !app.settings.autoRewind; app.save(); }}>{app.settings.autoRewind ? "On" : "Off"}</button></span>
-<span>Rewind button</span>
-<span><button class="quiet" onclick={() => rewind(-1)}>−</button> <b>{app.settings.rewindBars} bar{app.settings.rewindBars > 1 ? "s" : ""}</b> <button class="quiet" onclick={() => rewind(1)}>+</button></span>
 <span>Display offset</span>
-<span><button class="quiet" onclick={() => nudge("displayOffsetMs", -10)}>−10</button> <b>{app.settings.displayOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("displayOffsetMs", 10)}>+10</button></span>
+<span><button class="quiet" onclick={() => nudge("displayOffsetMs", -10)}>−10</button> <b>{app.device.displayOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("displayOffsetMs", 10)}>+10</button></span>
 <span>Latency offset</span>
-<span><button class="quiet" onclick={() => nudge("latencyOffsetMs", -10)}>−10</button> <b>{app.settings.latencyOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("latencyOffsetMs", 10)}>+10</button></span>
-{#if backing}
-  <span>Backing volume</span>
-  <span><button class="quiet" onclick={() => volume(-0.25)}>−</button> <b>{Math.round(app.settings.backingVolume * 100)}%</b> <button class="quiet" onclick={() => volume(0.25)}>+</button></span>
-{/if}
+<span><button class="quiet" onclick={() => nudge("latencyOffsetMs", -10)}>−10</button> <b>{app.device.latencyOffsetMs} ms</b> <button class="quiet" onclick={() => nudge("latencyOffsetMs", 10)}>+10</button></span>
+<span>Keyboard size</span>
+<span class="wrap">
+  {#each [61, 88] as k (k)}
+    <button class="quiet" class:sel={app.device.keyboardSize === k} onclick={() => app.setDevice({ keyboardSize: k as 61 | 88 })}>{k} keys</button>
+  {/each}
+</span>
 <span>Piano input</span>
 <span class="wrap">
-  <button class="quiet" class:sel={!app.settings.pianoName} onclick={() => app.choosePiano(null)}>Automatic</button>
+  <button class="quiet" class:sel={!app.device.pianoName} onclick={() => app.choosePiano(null)}>Automatic</button>
   {#each app.midiNames as n}
-    <button class="quiet" class:sel={app.settings.pianoName === n} onclick={() => app.choosePiano(n)}>{n}</button>
+    <button class="quiet" class:sel={app.device.pianoName === n} onclick={() => app.choosePiano(n)}>{n}</button>
   {/each}
 </span>
 

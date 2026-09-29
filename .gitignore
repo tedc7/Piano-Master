@@ -9,3 +9,5 @@ client/dist/
 client/public/content/
 client/public/media/
 tests-output/
+# the content bundled into the API at deploy (tools/deploy.sh)
+api/app/content/

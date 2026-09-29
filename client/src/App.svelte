@@ -53,7 +53,9 @@
 {:else if route.screen === "session"}
   <Session />
 {:else if route.screen === "journey"}
-  <Journey />
+  {#key route.test}
+    <Journey test={route.test} />
+  {/key}
 {:else if route.screen === "lesson"}
   {#key route.skillId}
     <Lesson skillId={route.skillId} />
