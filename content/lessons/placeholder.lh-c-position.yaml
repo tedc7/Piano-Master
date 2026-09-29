@@ -1,0 +1,29 @@
+# Concept lesson for the PLACEHOLDER skill map (our own words; see placeholder.rh-c-position.yaml).
+skill: placeholder.lh-c-position
+title: Left hand in C position
+cards:
+  - kind: explain
+    text: Now the left hand gets a turn. Put your left little finger on the C below middle C. Your left thumb lands on G. These notes are written on the bass staff.
+  - kind: show
+    text: Finger 5 on C, then fingers 4, 3, 2 and your thumb on D, E, F and G.
+    notes: C3 D3 E3 F3 G3
+    fingers: [5, 4, 3, 2, 1]
+    hand: L
+    clef: bass
+  - kind: hear
+    text: Listen to the left hand going up from C.
+    play: C3 D3 E3 F3 G3:2
+    contrast:
+      text: Here is the same tune an octave higher, in the right hand. Hear how the left hand sounds lower?
+      play: C4 D4 E4 F4 G4:2
+  - kind: try
+    text: Play C D E F G with your left hand, from finger 5 up to your thumb.
+    notes: C3 D3 E3 F3 G3
+    fingers: [5, 4, 3, 2, 1]
+    hand: L
+  - kind: check
+    questions:
+      - text: Which key does your left little finger play? Tap it or play it.
+        answer: C3
+      - text: And your left thumb?
+        answer: G3

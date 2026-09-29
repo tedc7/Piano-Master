@@ -5,15 +5,18 @@
 Writes client/public/content/ (skillmap.json, index.json, pieces/<id>.json) and copies test
 media into client/public/media/. Both are generated and gitignored.
 
-The skill-map checks are the first part of the content loader's validation (arch §6.10):
-unique ids and sequence numbers, prerequisites that exist and come earlier. Pieces are checked
-against the constraints of the skills that list them; for the placeholder map those are
-warnings, since song analysis (M3) will replace the hand-assigned `pieces` lists.
+The skill-map checks are the content loader's validation (arch §6.10): unique ids and sequence
+numbers, prerequisites that exist and come earlier, constraints that parse, and at least 3 core
+pieces featuring each skill (a warning on the placeholder map). Every piece then goes through
+song analysis (api/app/analysis.py, §6.8), which decides its required and featured skills, map
+point and skill measures; a skill map's `pieces` list only says which skill a core piece was
+written for, and the build warns when the analysis disagrees.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -23,6 +26,9 @@ from music21 import pitch
 
 import notation as nt
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "api"))
+from app import analysis, fingering  # noqa: E402  (shared with the App API)
+
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "content"
 OUT = ROOT / "client" / "public" / "content"
@@ -30,6 +36,7 @@ MEDIA = ROOT / "client" / "public" / "media"
 SYNC_PROBE = ROOT / "feasibility" / "sync-probe" / "dist"
 TRACKS = {"reading", "rhythm", "technique", "theory", "repertoire", "musicianship"}
 PRESETS = ("100", "90", "75", "50")
+KEYS_61 = (36, 96)          # C2-C7: a 61-key keyboard (arch §2.3); anything outside needs 88 keys
 
 
 class ContentError(Exception):
@@ -82,36 +89,28 @@ def validate_skill_maps(maps, piece_ids):
                 errors.append(f"{sid}: prerequisite {p} does not exist")
             elif isinstance(s.get("sequence"), int) and by_id[p].get("sequence", 1e9) >= s["sequence"]:
                 errors.append(f"{sid}: prerequisite {p} must have a lower sequence number")
-        pieces = s.get("pieces", [])
-        for p in pieces:
+        for p in s.get("pieces", []):
             if p not in piece_ids:
                 errors.append(f"{sid}: piece {p} does not exist")
-        if len(pieces) < 3:
-            (warnings if s["placeholder"] else errors).append(f"{sid}: {len(pieces)} piece(s); the loader will need at least 3 (§6.10)")
+        try:
+            analysis.Constraints(s)
+        except (ValueError, TypeError) as e:
+            errors.append(f"{sid}: constraints don't parse ({e})")
     skills.sort(key=lambda s: s.get("sequence", 0))
     return skills, errors, warnings
 
 
-def check_constraints(piece_id, nota, skill):
-    """Notes outside a skill's constraints (the part of song analysis M1 can use)."""
-    c, out = skill.get("constraints", {}), []
-    hands = set(c.get("hands", ["R", "L"]))
-    for hand in sorted({n["hand"] for n in nota["notes"]} - hands):
-        out.append(f"uses the {hand} hand")
-    for hand, (lo, hi) in (c.get("range") or {}).items():
-        ps = [n["pitch"] for n in nota["notes"] if n["hand"] == hand]
-        if ps and (min(ps) < midi(lo) or max(ps) > midi(hi)):
-            out.append(f"{hand} hand range {pitch.Pitch(midi=min(ps)).nameWithOctave}-{pitch.Pitch(midi=max(ps)).nameWithOctave} is outside {lo}-{hi}")
-    allowed = c.get("durations")
-    if allowed:
-        odd = sorted({float(n["duration"]) for n in nota["notes"]} - {float(d) for d in allowed})
-        if odd:
-            out.append(f"note lengths {odd} (beats) are not in {allowed}")
-    if c.get("timeSigs") and nota["header"]["timeSig"] not in c["timeSigs"]:
-        out.append(f"time signature {nota['header']['timeSig']} is not in {c['timeSigs']}")
-    if c.get("keySigs") is not None and nota["header"]["keySig"] not in c["keySigs"]:
-        out.append(f"key signature {nota['header']['keySig']} is not in {c['keySigs']}")
-    return [f"{piece_id} vs {skill['id']}: {x}" for x in out]
+def coverage(skills, analyses, kinds):
+    """Core pieces featuring each skill: the loader needs at least 3 (§6.8, §6.10); a warning on
+    the placeholder map. Returns (errors, warnings, pieces featuring each skill)."""
+    errors, warnings = [], []
+    featuring = {s["id"]: [p for p, a in analyses.items() if s["id"] in a["featuredSkills"]] for s in skills}
+    for s in skills:
+        core = [p for p in featuring[s["id"]] if kinds.get(p, "core") == "core"]
+        if len(core) < 3:
+            (warnings if s.get("placeholder") else errors).append(
+                f"{s['id']}: {len(core)} core piece(s) feature it; the loader needs at least 3 (§6.10)")
+    return errors, warnings, featuring
 
 
 def build_piece(pid, meta):
@@ -165,10 +164,72 @@ def build_sync_probe_piece(pid, meta, phrase_bars):
     return nota, media, []
 
 
+LESSONS = CONTENT / "lessons"
+CARD_KINDS = {"explain", "show", "hear", "try", "check", "watch"}
+
+
+def parse_notes(text):
+    """'C4 D4:2 [C4,E4,G4]' -> [{pitches, spelled, beats}]: a note or chord, and its beats (default 1)."""
+    out = []
+    for tok in str(text).split():
+        m = re.fullmatch(r"(\[[^\]]+\]|[^:\s]+)(?::([\d.]+))?", tok)
+        if not m:
+            raise ValueError(f"can't read {tok!r}")
+        names = m.group(1).strip("[]").split(",")
+        pitches = [analysis.midi(n) for n in names]
+        spelled = []
+        for n in names:
+            nm = re.fullmatch(r"([A-Ga-g])([#♯b♭]*)(-?\d+)", n.strip())
+            spelled.append({"step": nm.group(1).upper(), "alter": sum(1 if c in "#♯" else -1 for c in nm.group(2)),
+                            "octave": int(nm.group(3))})
+        if any(not 21 <= p <= 108 for p in pitches):
+            raise ValueError(f"{tok} is off the piano")
+        out.append({"pitches": pitches, "spelled": spelled, "beats": float(m.group(2) or 1)})
+    return out
+
+
+def build_lesson(path, skill_ids):
+    """A concept lesson (arch §3, §6.9): YAML cards -> the JSON the lesson screen plays."""
+    data = yaml.safe_load(path.read_text())
+    sid = data.get("skill")
+    if sid not in skill_ids:
+        raise ContentError(f"{path.name}: skill {sid!r} is not in the skill map")
+    cards = []
+    for i, c in enumerate(data.get("cards") or []):
+        kind = c.get("kind")
+        where = f"{path.name} card {i + 1}"
+        if kind not in CARD_KINDS:
+            raise ContentError(f"{where}: unknown kind {kind!r}")
+        card = {"kind": kind, "text": c.get("text", "")}
+        try:
+            if kind in ("show", "try"):
+                card["notes"] = parse_notes(c["notes"])
+                fingers = c.get("fingers")
+                if fingers is not None and len(fingers) != len(card["notes"]):
+                    raise ValueError("fingers and notes differ in length")
+                card.update(fingers=fingers, hand=c.get("hand", "R"), clef=c.get("clef", "treble"))
+            if kind == "hear":
+                card.update(play=parse_notes(c["play"]), tempo=c.get("tempo", 90))
+                if c.get("contrast"):
+                    card["contrast"] = {"text": c["contrast"].get("text", ""), "play": parse_notes(c["contrast"]["play"])}
+            if kind == "check":
+                card["questions"] = [{"text": q["text"], "answer": parse_notes(q["answer"])[0]} for q in c["questions"]]
+            if kind == "watch":
+                card["video"] = c["video"]
+        except (KeyError, ValueError) as e:
+            raise ContentError(f"{where}: {e}")
+        cards.append(card)
+    kinds = [c["kind"] for c in cards]
+    if "explain" not in kinds:
+        raise ContentError(f"{path.name}: needs an explain card")
+    return {"skill": sid, "title": data.get("title", sid), "cards": cards}
+
+
 def content_version() -> str:
     """A short hash of every content source file: stored with each attempt (arch §5 ContentVersion)."""
     h = hashlib.sha256()
-    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("pieces/*.yaml")]):   # not content/incoming/
+    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("pieces/*.yaml"),
+                     *CONTENT.glob("lessons/*.yaml")]):   # not content/incoming/
         h.update(str(p.relative_to(CONTENT)).encode() + b"\0" + p.read_bytes())
     return h.hexdigest()[:12]
 
@@ -185,8 +246,9 @@ def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / "pieces").mkdir(parents=True)
-    skill_of = {p: s["id"] for s in skills for p in s.get("pieces", [])}
-    index = []
+    written_for = {p: s["id"] for s in skills for p in s.get("pieces", [])}
+    parsed = {s["id"]: analysis.Constraints(s) for s in skills}
+    index, analyses, kinds = [], {}, {}
     for pid, meta in pieces_meta.items():
         try:
             nota, media, w = build_piece(pid, meta)
@@ -194,31 +256,75 @@ def main():
             print(f"error: {e}", file=sys.stderr)
             return 1
         warnings += [f"{pid}: {x}" for x in w]
-        for s in skills:
-            if pid in s.get("pieces", []):
-                warnings += check_constraints(pid, nota, s)
+        lo, hi = nota["header"]["range"]
+        keyboard = 61 if KEYS_61[0] <= lo and hi <= KEYS_61[1] else 88
+        if keyboard == 88:
+            warnings.append(f"{pid}: range {pitch.Pitch(midi=lo).nameWithOctave}-{pitch.Pitch(midi=hi).nameWithOctave} "
+                            "goes beyond C2-C7, so it needs an 88-key keyboard")
+        an = analysis.analyze(nt.jsonable(nota), skills, parsed)
+        # finger numbers for every note without one (§8.9), in the featured skill's hand position if it has one
+        feat = next((s for s in skills if an["featuredSkills"] and s["id"] == an["featuredSkills"][0]), None)
+        fing = fingering.generate(nota, ((feat or {}).get("constraints") or {}).get("position"))
+        warnings += [f"{pid}: {x}" for x in fing["flagged"]]
+        analyses[pid], kinds[pid] = an, meta.get("kind", "core")
+        meant = written_for.get(pid)
+        if meant and meant not in an["featuredSkills"]:
+            why = f"beyond the map: {', '.join(an['beyondMap'])}" if an["beyondMap"] else f"features {an['featuredSkills']}"
+            warnings.append(f"{pid}: written for {meant}, but the analysis says {why}")
         piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": meta.get("kind", "core"),
+                 # several arrangements of one song (arch §5 Song -> Arrangements): `song` ties them, `version` names each
+                 "song": meta.get("song", pid), "songTitle": meta.get("songTitle", meta["title"]), "version": meta.get("version"),
                  "genre": meta.get("genre"), "level": meta.get("level"), "hands": meta.get("hands", "R"),
-                 "skillId": skill_of.get(pid), "contentVersion": version, "notation": nt.jsonable(nota), "media": media}
+                 # the skill it practises most: the newest featured skill (analysis, §6.8)
+                 "skillId": an["featuredSkills"][0] if an["featuredSkills"] and not an["beyondMap"] else None,
+                 "contentVersion": version, "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
+                 "notation": nt.jsonable(nota), "media": media}
         (OUT / "pieces" / f"{pid}.json").write_text(json.dumps(piece, indent=1))
-        index.append({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId")}
+        index.append({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
+                                            "song", "songTitle", "version")}
                      | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
                         "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
-                        # song analysis (M3) will compute these; until then, the assigned skill
-                        "requiredSkills": [piece["skillId"]] if piece["skillId"] else [],
-                        "featuredSkills": [piece["skillId"]] if piece["skillId"] else [],
-                        "hasMedia": media is not None})
+                        "hasMedia": media is not None} | an)
         print(f"{pid}: {len(nota['notes'])} notes, {len(nota['playbackOrder'])} bars in playback order, "
               f"{len(nota['phrases'])} phrases" + (f", media {', '.join(media['presets'])}" if media else ""))
 
+    # concept lessons: one for every skill unless the map says `conceptLesson: false` (§6.10)
+    (OUT / "lessons").mkdir()
+    lessons = {}
+    for path in sorted(LESSONS.glob("*.yaml")):
+        try:
+            lesson = build_lesson(path, {s["id"] for s in skills})
+        except ContentError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        if lesson["skill"] in lessons:
+            print(f"error: two lessons for {lesson['skill']}", file=sys.stderr)
+            return 1
+        lessons[lesson["skill"]] = lesson
+        (OUT / "lessons" / f"{lesson['skill']}.json").write_text(json.dumps(lesson, indent=1))
+    for s in skills:
+        if s.get("conceptLesson", True) is not False and s["id"] not in lessons:
+            msg = f"{s['id']}: no concept lesson in content/lessons/"
+            if not s.get("placeholder"):
+                print(f"error: {msg}", file=sys.stderr)
+                return 1
+            warnings.append(msg)
+
+    cov_errors, cov_warnings, featuring = coverage(skills, analyses, kinds)
+    warnings += cov_warnings
+    if cov_errors:
+        print("Coverage errors:\n  " + "\n  ".join(cov_errors), file=sys.stderr)
+        return 1
+    # `pieces` in the built map: the pieces featuring each skill, from the analysis
     skillmap = {"contentVersion": version, "placeholder": any(m.get("placeholder") for m in maps),
                 "maps": [{k: m[k] for k in ("map", "level", "file")} for m in maps],
-                "skills": [{k: v for k, v in s.items()} for s in skills]}
+                "skills": [{**s, "pieces": featuring[s["id"]], "lesson": s["id"] in lessons} for s in skills]}
     (OUT / "skillmap.json").write_text(json.dumps(skillmap, indent=1))
     (OUT / "index.json").write_text(json.dumps({"contentVersion": version, "pieces": index}, indent=1))
     if warnings:
         print("Warnings:\n  " + "\n  ".join(warnings))
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(index)} pieces, content version {version}")
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(index)} pieces, {len(lessons)} lessons, "
+          f"content version {version}")
     return 0
 
 

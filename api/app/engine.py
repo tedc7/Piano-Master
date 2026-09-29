@@ -164,12 +164,14 @@ def lesson_open(s: Skill, states: dict[str, SkillState]) -> bool:
 def guided_ready(p: Piece, states: dict[str, SkillState], learning: str | None = None) -> bool:
     """Guided sessions may use pieces that need one Current skill beyond the passed ones (8.1).
     `learning` is a skill whose concept lesson comes just before, in the same session."""
+    if p.beyond:
+        return False
     beyond = [r for r in p.required if r in states and not states[r].counts_passed]
     return len(beyond) == 0 or (len(beyond) == 1 and (states[beyond[0]].status == "current" or beyond[0] == learning))
 
 
 def library_ready(p: Piece, states: dict[str, SkillState]) -> bool:
-    return all(states[r].counts_passed for r in p.required if r in states)
+    return not p.beyond and all(states[r].counts_passed for r in p.required if r in states)
 
 
 # ------------------------------------------------------------------------------ attempts
@@ -190,6 +192,8 @@ class AttemptInfo:
     skill_id: str | None = None           # the skill the session item was for
     item_id: str | None = None
     tricky_phrase: int | None = None
+    factor: float = 1.0                   # the practice-aid factor (7.5)
+    note_errors: list[dict] = field(default_factory=list)   # {kind: missed or wrong, bar}
 
 
 def passes(skill: Skill, a: AttemptInfo) -> bool:
@@ -267,6 +271,14 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
                     review(st, a.accuracy_stars, a.day)      # implicit review (8.4): only ever a good one
                     effects["reviewed"].append(sid)
 
+        if a.mode == "play":
+            for sid in piece.required:
+                st = states.get(sid)
+                if (st is None or sid in hit or st.status != "mastered" or not implicit_review_due(st, a.day)
+                        or bars_accuracy(piece, sid, a) < MASTERY_LEVEL):
+                    continue
+                review(st, GOOD_REVIEW, a.day)        # review credit only; its mastery is not changed (8.4)
+                effects["reviewed"].append(sid)
         refresh(content, states, caps)
         save_states(con, student_id, states)
         if effects["passed"]:
@@ -275,6 +287,18 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
     if item is not None:
         effects["item"] = update_item(con, content, student_id, a, item, states)
     return effects
+
+
+def bars_accuracy(piece: Piece, skill_id: str, a: AttemptInfo) -> float:
+    """How well the bars that use a skill went on their own (skill measures, §6.8), after the
+    practice-aid factor: 1 less the missed notes and half the wrong ones, per note in those bars."""
+    bars = set(piece.skill_measures.get(skill_id, []))
+    expected = sum(piece.bar_notes.get(b, 0) for b in bars)
+    if not expected:
+        return 0.0
+    missed = sum(1 for e in a.note_errors if e.get("bar") in bars and e.get("kind") == "missed")
+    wrong = sum(1 for e in a.note_errors if e.get("bar") in bars and e.get("kind") == "wrong")
+    return max(0.0, 1 - (missed + wrong / 2) / expected) * a.factor
 
 
 def review(st: SkillState, stars: float, today: date) -> None:

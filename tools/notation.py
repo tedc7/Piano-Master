@@ -5,6 +5,12 @@ real hymns and songs; the YuE2 export stays there until the media skill (M8) nee
 
 Beats are quarter notes in the written score. `phrases` are start beats on the playback
 timeline (repeats and verses unrolled), which is what the Play screen rewinds to.
+
+The hand comes from the staff (upper staff right hand, lower staff left hand), except where an
+annotation below the note says otherwise: `"_L"` or `"_R"` in ABC (for example the left hand
+crossing up onto the treble staff). Grace notes are kept apart in `graces`, drawn but never
+scored; tuplet notes carry `tuplet: [actual, normal]` (3, 2 for a triplet); a clef change at the
+start of a bar is recorded on that measure as `clefs: {staff: clef}`.
 """
 from __future__ import annotations
 
@@ -16,7 +22,7 @@ import tempfile
 from fractions import Fraction
 from pathlib import Path
 
-from music21 import articulations, bar, chord, clef, converter, harmony, spanner
+from music21 import articulations, bar, chord, clef, converter, expressions, harmony, spanner
 
 HERE = Path(__file__).resolve().parent
 ABC2XML = HERE / ".vendor" / "abc2xml_268" / "abc2xml.py"
@@ -110,35 +116,56 @@ def build_notation(score, *, hand_for_single_staff: str = "R", phrase_bars: int 
     pickup = measures[0]["duration"] if measures[0]["duration"] < bar_len else Fraction(0)
 
     single = len(layout) == 1
-    notes, lyrics, warnings = [], [], []
+    notes, lyrics, graces, warnings = [], [], [], []
     for staff_no, (clef_name, parts) in enumerate(layout):
-        hand = hand_for_single_staff if single else ("R" if staff_no == 0 else "L")
+        staff_hand = hand_for_single_staff if single else ("R" if staff_no == 0 else "L")
         voice_base = 0
-        for part in parts:
+        current_clef = clef_name
+        for pi_, part in enumerate(parts):
             part_measures = list(part.getElementsByClass("Measure"))
             if len(part_measures) != len(measures):
                 warnings.append(f"staff {staff_no} part has {len(part_measures)} measures, expected {len(measures)}")
             n_voices = 1
             for mi, m in enumerate(part_measures[:len(measures)]):
+                if pi_ == 0:
+                    for c in m.recurse().getElementsByClass(clef.Clef):
+                        name = "bass" if isinstance(c, clef.BassClef) else "treble"
+                        if Q(c.offset) != 0:
+                            warnings.append(f"bar {m.number}: a clef change inside the bar is drawn at the bar's start")
+                        if name != current_clef and mi > 0:
+                            measures[mi].setdefault("clefs", {})[staff_no] = name
+                        current_clef = name
+                # "_L" / "_R" below a note: the hand that plays it
+                hand_at = {Q(t.offset): t.content.strip() for t in m.recurse().getElementsByClass(expressions.TextExpression)
+                           if (t.content or "").strip() in ("L", "R")}
                 containers = list(m.voices) or [m]
                 n_voices = max(n_voices, len(containers))
                 for vi, cont in enumerate(containers):
                     voice = voice_base + vi + 1
                     for el in cont.notes:
-                        if el.duration.isGrace or el.quarterLength == 0:
-                            continue
                         start = measures[mi]["start"] + Q(el.offset)
+                        hand = hand_at.get(Q(el.offset), staff_hand)
+                        if el.duration.isGrace or el.quarterLength == 0:
+                            for p in el.pitches:
+                                graces.append({"pitch": p.midi, "spelled": spelled(p), "start": start, "staff": staff_no,
+                                               "voice": voice, "hand": hand, "slash": bool(getattr(el.duration, "slash", False)),
+                                               "order": len(graces)})
+                            continue
                         pitches = sorted(el.pitches, key=lambda p: p.midi)
                         members = list(el.notes) if el.isChord else [el]
                         members.sort(key=lambda n: n.pitch.midi)
                         fingers = [a.fingerNumber for a in el.articulations if isinstance(a, articulations.Fingering)]
                         for pi, (p, member) in enumerate(zip(pitches, members)):
-                            tie = member.tie or el.tie
+                            # a tie on one note of a chord ties only that note
+                            tie = member.tie if el.isChord else el.tie
                             entry = {"pitch": p.midi, "spelled": spelled(p), "start": start,
                                      "duration": Q(el.quarterLength), "staff": staff_no,
                                      "hand": hand, "voice": voice}
                             if tie is not None and tie.type in ("start", "continue"):
                                 entry["tieToNext"] = True
+                            if el.duration.tuplets:
+                                t = el.duration.tuplets[0]
+                                entry["tuplet"] = [int(t.numberNotesActual), int(t.numberNotesNormal)]
                             if pi < len(fingers) and fingers[pi] is not None:
                                 entry["finger"] = int(fingers[pi])
                             is_top = pi == len(pitches) - 1
@@ -167,15 +194,17 @@ def build_notation(score, *, hand_for_single_staff: str = "R", phrase_bars: int 
 
     n_verses = max((ly["verse"] for ly in lyrics), default=1)
     if tempo is None:
-        tempo = next((int(round(mm.number)) for mm in score.recurse().getElementsByClass("MetronomeMark")), 80)
+        # quarter notes a minute, whatever the mark's beat unit (Q:1/2=66 in 2/2 is 132)
+        tempo = next((int(round(mm.getQuarterBPM())) for mm in score.recurse().getElementsByClass("MetronomeMark")
+                      if mm.number is not None), 80)
     nota = {
         "units": "start and duration are in quarter notes, in the written score",
         "header": {"keySig": fifths, "timeSig": ts0.ratioString, "barLength": bar_len, "tempo": tempo,
                    "pickupBeats": pickup,
                    "range": [min(n["pitch"] for n in notes), max(n["pitch"] for n in notes)],
                    "staves": [c for c, _ in layout]},
-        "measures": measures, "notes": notes, "lyrics": lyrics, "chordSymbols": chords,
-        "playbackOrder": playback_order(measures, n_verses),
+        "measures": measures, "notes": notes, "lyrics": lyrics, "chordSymbols": chords, "graces": graces,
+        "playbackOrder": playback_order(measures, n_verses, bool(lyrics)),
     }
     finish(nota, phrase_bars)
     return nota, warnings
@@ -190,11 +219,13 @@ def finish(nota, phrase_bars):
     hdr["range"] = [min(n["pitch"] for n in nota["notes"]), max(n["pitch"] for n in nota["notes"])]
 
 
-def playback_order(measures, n_verses):
-    """Expand repeats and first/second endings; a strophic song without repeats plays once per verse."""
+def playback_order(measures, n_verses, has_lyrics=True):
+    """Expand repeats and first/second endings; a strophic song without repeats plays once per verse.
+    Each entry has its `pass` through a repeat; `verse` is the lyric verse sung there, which is the
+    pass in a song with words and always 1 in a piece without (so it isn't labelled "verse 2")."""
     if not any(m.get("repeatStart") or m.get("repeatEnd") for m in measures):
-        return [{"measure": i, "verse": v} for v in range(1, n_verses + 1) for i in range(len(measures))]
-    order, i, start, passno = [], 0, 0, 1
+        return [{"measure": i, "verse": v, "pass": 1} for v in range(1, n_verses + 1) for i in range(len(measures))]
+    order, i, start, passno, end = [], 0, 0, 1, -1
     while i < len(measures):
         m = measures[i]
         if m.get("repeatStart") and start != i:
@@ -202,11 +233,16 @@ def playback_order(measures, n_verses):
         if m.get("volta") and passno not in m["volta"]:
             i += 1
             continue
-        order.append({"measure": i, "verse": passno})
+        if passno > 1 and i > end and not m.get("volta"):
+            passno = 1                     # past the repeat (and its second ending): first time again
+        order.append({"measure": i, "verse": passno if has_lyrics else 1, "pass": passno})
         if m.get("repeatEnd") and passno < 2:
             passno += 1
+            end = i
             i = start
             continue
+        if m.get("repeatEnd"):
+            start = i + 1                  # a later repeat with no start sign goes back to here
         i += 1
     return order
 
@@ -284,6 +320,9 @@ def melody_only(nota, phrase_bars):
     keep = [i for i, n in enumerate(nota["notes"]) if n.get("isMelody")]
     remap = {old: new for new, old in enumerate(keep)}
     nota["notes"] = [{**nota["notes"][i], "staff": 0, "voice": 1, "hand": "R"} for i in keep]
+    nota["graces"] = [{**g, "hand": "R"} for g in nota.get("graces", []) if g["staff"] == 0 and g["voice"] == 1]
+    for m in nota["measures"]:
+        m.pop("clefs", None)
     nota["lyrics"] = [{**ly, "note": remap[ly["note"]]} for ly in nota["lyrics"] if ly["note"] in remap]
     nota["header"]["staves"] = ["treble"]
     finish(nota, phrase_bars)

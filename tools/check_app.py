@@ -74,6 +74,35 @@ AUTOPLAY = """
 """
 
 
+# Test-only notation (never content): triplets, grace notes, the left hand crossing onto the
+# treble staff ("_L"), a clef change, and a repeat; then a first bar packed with sixteenths.
+NOTATION_ABC = """X:1
+M:4/4
+L:1/8
+Q:1/4=90
+K:G
+%%score {RH LH}
+V:RH clef=treble
+V:LH clef=bass
+[V:RH] |: (3DEF G2 {f}g2 "_L"B2 | (3ABc (3dcB A4 :| G8 |]
+[V:LH] |: G,,8 | D,8 :| [K:clef=treble] G8 |]
+"""
+WIDE_ABC = """X:1
+M:4/4
+L:1/16
+Q:1/4=60
+K:C
+CEGc eGce CEGc eGce | c16 |]
+"""
+
+
+def test_piece(pid, abc, hands):
+    sys.path.insert(0, str(ROOT / "tools"))
+    import notation as nt
+    nota, _ = nt.build_notation(nt.parse_abc(abc), phrase_bars=2)
+    return {"id": pid, "title": pid, "kind": "core", "hands": hands, "notation": nt.jsonable(nota), "media": None}
+
+
 def serve():
     """The App API plus the built client at /, on a free local port, with a throwaway database."""
     os.environ["PIANO_DB"] = str(Path(tempfile.mkdtemp()) / "piano.db")
@@ -118,6 +147,41 @@ def main():
         tile = lambda name: page.locator(".tile", has_text=name)
         pad = lambda digits: [page.locator(".pad").get_by_role("button", name=d, exact=True).click() for d in digits]
 
+        def do_lesson(wrong_first=False):
+            """Go through a concept lesson: play the lit keys on Try, tap the answers on Check."""
+            page.wait_for_function("window.__lesson && window.__lesson.card")
+            went_back = False
+            for _ in range(40):
+                kind = page.evaluate("__lesson.card.kind")
+                if kind == "try":
+                    for _k in range(20):
+                        if page.evaluate("__lesson.done"):
+                            break
+                        page.wait_for_selector(".keys [data-pitch].kb-t-R, .keys [data-pitch].kb-t-L")
+                        pitches = page.evaluate("[...document.querySelectorAll('.keys .kb-t-R, .keys .kb-t-L')].map(k => +k.dataset.pitch)")
+                        page.evaluate("ps => { for (const p of ps) __midiSend([0x90, p, 80]); for (const p of ps) __midiSend([0x80, p, 0]); }", pitches)
+                        page.wait_for_timeout(50)
+                elif kind == "check":
+                    while not page.evaluate("__lesson.done"):
+                        want = page.evaluate("__lesson.card.questions[__lesson.progress].answer.pitches[0]")
+                        if wrong_first and not went_back:
+                            page.locator(f".keys [data-pitch='{want + 1}']").dispatch_event("pointerdown")
+                            page.wait_for_function("__lesson.card.kind === 'show'", timeout=5000)
+                            went_back = True
+                            break
+                        page.locator(f".keys [data-pitch='{want}']").dispatch_event("pointerdown")
+                        page.wait_for_timeout(700)
+                    if page.evaluate("__lesson.card.kind") == "show":
+                        continue
+                if page.get_by_role("button", name="Next ›").is_disabled():
+                    raise AssertionError(f"lesson: can't leave the {kind} card")
+                last = page.evaluate("__lesson.step === document.querySelectorAll('.steps .dot').length - 1")
+                page.get_by_role("button", name="Next ›").click()
+                if last:
+                    return went_back
+                page.wait_for_timeout(100)
+            raise AssertionError("lesson: never finished")
+
         def ok_pin(digits):
             pad(digits)
             page.get_by_role("button", name="OK").click()
@@ -159,10 +223,17 @@ def main():
         page.screenshot(path=str(OUT / "nav-session.png"))
         page.get_by_role("button", name="Start").click()
         page.wait_for_selector(".card-big")
-        for _ in range(6):
-            page.get_by_role("button", name="Next ›").click()
+        page.wait_for_timeout(300)
+        page.screenshot(path=str(OUT / "lesson-explain.png"))
+        page.get_by_role("button", name="Next ›").click()
+        page.wait_for_selector(".mini svg")
+        page.wait_for_timeout(1200)
+        page.screenshot(path=str(OUT / "lesson-show.png"))
+        check(page.locator(".mini .pm-glow").count() + page.locator(".keys .kb-t-R").count() > 0, "lesson: Show lights the keys and the staff notes")
+        page.get_by_role("button", name="‹ Back").click()
+        do_lesson()
         page.wait_for_selector(".path .bubble.done")
-        check("Hot Cross Buns" in page.locator(".upnext").inner_text(), "practice: after the lesson, its first song is up next")
+        check("Hot Cross Buns" in page.locator(".upnext").inner_text(), "practice: after the lesson (played on the piano), its first song is up next")
 
         page.get_by_role("button", name="Start").click()
         page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
@@ -226,9 +297,8 @@ def main():
         check("New idea" in page.locator(".upnext").inner_text() and page.locator(".bubble.done").count() == 0,
               "practice: Ben's progress is separate from Ada's")
         page.get_by_role("button", name="Start").click()
-        page.wait_for_selector(".card-big")
-        for _ in range(6):
-            page.get_by_role("button", name="Next ›").click()
+        went_back = do_lesson(wrong_first=True)
+        check(went_back, "lesson: a wrong answer on Check goes back to Show")
         page.wait_for_selector(".path .bubble.done")
         page.get_by_role("button", name="Start").click()
         page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'hot-cross-buns' && window.__pm.layout")
@@ -354,6 +424,25 @@ def main():
             check(not lay["p"], f"{piece['id']}: staff renders with no problems ({lay['w']}x{lay['h']} px, {lay['ms']:.0f} ms)")
             check(lay["els"] == lay["n"], f"{piece['id']}: every note has a note-head element ({lay['els']}/{lay['n']})")
             page.screenshot(path=str(OUT / f"play-{piece['id']}.png"))
+
+        # 2b. notation features on a test-only piece, and the idle view of a dense first bar
+        for pid, abc, hands in (("test-notation", NOTATION_ABC, "RL"), ("test-wide", WIDE_ABC, "R")):
+            body = test_piece(pid, abc, hands)
+            page.route(f"**/content/pieces/{pid}.json", lambda route, _request=None, b=body: route.fulfill(json=b))
+        open_piece(page, "test-notation")
+        lay = page.evaluate("""() => ({ p: __pm.layout.problems, els: __pm.layout.noteEls.filter(Boolean).length, n: __pm.tl.notes.length,
+            beats: __pm.tl.notes.filter(n => n.staff === 0).slice(0, 3).map(n => +n.beat.toFixed(3)),
+            left: __pm.tl.notes.filter(n => n.staff === 0 && n.hand === 'L').length,
+            graces: __pm.layout.graces,
+            text: document.querySelector('.strip svg').textContent })""")
+        page.screenshot(path=str(OUT / "test-notation.png"))
+        check(not lay["p"] and lay["els"] == lay["n"], f"notation test: draws with no problems, every note drawn ({lay['p'][:2]}, {lay['els']}/{lay['n']})")
+        check(lay["beats"] == [0.0, 0.333, 0.667], f"notation test: a triplet's notes fall on thirds of the beat ({lay['beats']})")
+        check(lay["graces"] > 0 and lay["left"] == 2, f"notation test: grace notes drawn, the crossing note is the left hand's ({lay['graces']}, {lay['left']})")
+        check("verse" not in lay["text"], "notation test: a repeat in a piece without words isn't labelled 'verse 2'")
+        open_piece(page, "test-wide")
+        first = page.evaluate("() => { const r = __pm.layout.noteEls[0].getBoundingClientRect(), s = document.querySelector('.stage').getBoundingClientRect(); return [r.left, s.right]; }")
+        check(first[0] < first[1] - 100, f"dense first bar: bar 1 is on screen before Play (first note at {first[0]:.0f}, stage ends {first[1]:.0f})")
 
         # 3. Twinkle played cleanly at 100%: no rewinds, every note matched
         open_piece(page, "twinkle-twinkle")

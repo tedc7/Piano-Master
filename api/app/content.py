@@ -2,8 +2,8 @@
 
 tools/build_content.py writes skillmap.json and index.json; deploys copy them into
 app/content/ (PIANO_CONTENT overrides the folder), so the server plans from the same content
-version the client shows. Until song analysis (M3), a piece's required and featured skills are
-the one skill it is assigned to.
+version the client shows. Each piece's required and featured skills, map point and skill
+measures come from song analysis (analysis.py, run by the content build).
 """
 from __future__ import annotations
 
@@ -45,6 +45,10 @@ class Piece:
     hands: str = "R"
     kind: str = "core"
     phrases: int = 1
+    beyond: list[str] = field(default_factory=list)     # needs what no skill covers yet (§6.8)
+    map_point: int | None = None
+    skill_measures: dict[str, list[int]] = field(default_factory=dict)
+    bar_notes: dict[int, int] = field(default_factory=dict)     # notes to play per written bar
 
     def play_seconds(self, preset: str = "100") -> float:
         return self.beats * 60 / (self.tempo * int(preset) / 100)
@@ -61,11 +65,9 @@ class Content:
         return sorted(self.skills.values(), key=lambda s: s.sequence)
 
     def pieces_of(self, skill_id: str) -> list[Piece]:
-        s = self.skills.get(skill_id)
-        ids = s.pieces if s else []
-        found = [self.pieces[p] for p in ids if p in self.pieces]
-        found += [p for p in self.pieces.values() if skill_id in p.featured and p.id not in ids]
-        return found
+        """The pieces that feature the skill (song analysis), core pieces first."""
+        found = [p for p in self.pieces.values() if skill_id in p.featured and not p.beyond]
+        return sorted(found, key=lambda p: (p.kind != "core", p.map_point or 0, p.id))
 
     @classmethod
     def from_json(cls, skillmap: dict, index: dict) -> "Content":
@@ -86,7 +88,10 @@ class Content:
                 required=list(p.get("requiredSkills", [sid] if sid else [])),
                 featured=list(p.get("featuredSkills", [sid] if sid else [])),
                 beats=float(beats), tempo=float(p.get("tempo", 100)), hands=p.get("hands", "R"),
-                kind=p.get("kind", "core"), phrases=int(p.get("phrases", 1)))
+                kind=p.get("kind", "core"), phrases=int(p.get("phrases", 1)),
+                beyond=list(p.get("beyondMap", [])), map_point=p.get("mapPoint"),
+                skill_measures=dict(p.get("skillMeasures", {})),
+                bar_notes={int(k): v for k, v in (p.get("barNotes") or {}).items()})
         return cls(version=index.get("contentVersion", skillmap.get("contentVersion", "")), skills=skills, pieces=pieces)
 
 

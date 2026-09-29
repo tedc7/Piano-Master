@@ -18,7 +18,11 @@ export interface Note {
   tieToNext?: boolean;
   finger?: number;
   fermata?: boolean;
+  tuplet?: [number, number];   // [actual, normal]: 3 in the time of 2 for a triplet
 }
+
+/** A grace note: drawn before the note it leads into, never scored or counted. */
+export interface Grace { pitch: number; spelled: Spelled; start: number; staff: number; voice: number; hand: Hand; slash: boolean; order: number }
 
 export interface Measure {
   number: number;
@@ -29,6 +33,7 @@ export interface Measure {
   repeatStart?: boolean;
   repeatEnd?: boolean;
   volta?: number[];
+  clefs?: Record<string, "treble" | "bass">;   // clef changes at the start of this bar, by staff
 }
 
 export interface Lyric { note: number; verse: number; text: string; syllabic: string }
@@ -47,7 +52,8 @@ export interface Notation {
   notes: Note[];
   lyrics: Lyric[];
   chordSymbols: { beat: number; symbol: string; derived?: boolean }[];
-  playbackOrder: { measure: number; verse: number }[];
+  graces?: Grace[];
+  playbackOrder: { measure: number; verse: number; pass?: number }[];
   phrases: number[];   // phrase start beats on the playback timeline
   length: number;      // playback length in beats
 }
@@ -79,6 +85,7 @@ export interface Piece {
   hands: "R" | "L" | "RL";
   skillId?: string | null;
   contentVersion?: string;
+  keyboardSize?: 61 | 88;
   notation: Notation;
   media: Media | null;
 }
@@ -97,6 +104,15 @@ export interface PieceSummary {
   phrases?: number;
   requiredSkills?: string[];
   featuredSkills?: string[];
+  mapPoint?: number | null;
+  skillMeasures?: Record<string, number[]>;
+  beyondMap?: string[];               // what no skill in the map covers yet (song analysis, §6.8)
+  keyboardSize?: 61 | 88;
+  level?: string;
+  genre?: string;
+  song?: string;                      // the song this is an arrangement of (several arrangements share it)
+  songTitle?: string;
+  version?: string | null;            // e.g. "Beginner", when a song has several arrangements
   hasMedia: boolean;
 }
 

@@ -283,3 +283,24 @@ def test_a_strong_week_steps_the_target_up(con, content):
         con.execute("UPDATE practice_days SET session_completed = 1 WHERE student_id = 's1' AND date = ?", (d.isoformat(),))
     assert engine.adjust_target(con, content, "s1", D0 + timedelta(days=7)) == 17.5
     assert engine.adjust_target(con, content, "s1", D0 + timedelta(days=8)) == 17.5   # once a week
+
+
+def test_other_required_skills_get_review_credit_from_their_own_bars(con, content):
+    # pd1 needs t.a in bars 1-2 and features t.d in bars 3-4 (skill measures, §6.8)
+    pd1 = content.pieces["pd1"]
+    pd1.required, pd1.skill_measures = ["t.a", "t.c", "t.d"], {"t.a": [1, 2], "t.d": [3, 4]}
+    pd1.bar_notes = {1: 4, 2: 4, 3: 4, 4: 4}
+    d = master(con, content)                                   # t.a mastered: first review due the next day
+    d += timedelta(days=1)
+    step = states(con, content)["t.a"].review_step
+    m = states(con, content)["t.a"].mastery
+    info = AttemptInfo(piece_id="pd1", day=d, context="free", accuracy=0.7, accuracy_stars=2.5, timing_stars=2,
+                       note_errors=[{"kind": "missed", "bar": 3}, {"kind": "wrong", "bar": 4}] * 2)
+    fx = engine.record_attempt(con, content, "s1", info)
+    st = states(con, content)["t.a"]
+    assert "t.a" in fx["reviewed"] and st.review_step == step + 1 and st.mastery == m   # credit only
+    d += timedelta(days=3)
+    info = AttemptInfo(piece_id="pd1", day=d, context="free", accuracy=0.7, accuracy_stars=2.5,
+                       note_errors=[{"kind": "missed", "bar": 1}] * 3)       # 5 of 8 in its bars: weak
+    fx = engine.record_attempt(con, content, "s1", info)
+    assert "t.a" not in fx["reviewed"]

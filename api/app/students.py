@@ -348,5 +348,6 @@ def after_attempt(con, student_id: str, a, content: content_mod.Content | None) 
         piece_id=a.pieceId, day=local_day(a.startedAt), context=a.context, mode=a.mode, completed=a.completed,
         accuracy=e.accuracy, accuracy_stars=e.accuracyStars, timing_stars=e.timingStars, duration_sec=a.durationSec or 0,
         preset=a.conditions.tempoPreset, skill_id=a.skillId, item_id=a.itemId,
-        tricky_phrase=(a.tricky or {}).get("phrase"))
+        tricky_phrase=(a.tricky or {}).get("phrase"), factor=e.factor,
+        note_errors=[{"kind": x.get("kind"), "bar": x.get("bar")} for x in a.noteErrors])
     return engine.record_attempt(con, content, student_id, info, caps_for(con, a.deviceId))

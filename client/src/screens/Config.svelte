@@ -7,6 +7,7 @@
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { go } from "../lib/route";
+  import AnalysisPage from "./parent/AnalysisPage.svelte";
   import AppStatus from "./parent/AppStatus.svelte";
   import ContentPreview from "./parent/ContentPreview.svelte";
   import DevicePage from "./parent/DevicePage.svelte";
@@ -29,7 +30,7 @@
       { id: "review", icon: "📥", name: "Review list", what: "Songs and media staged by the Claude skills, waiting for approval. Nothing staged reaches a child.", milestone: "M7" },
       { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "M7" },
       { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "M8" },
-      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "Load content, re-run song analysis, the coverage report (skills with fewer than 3 ready pieces) and the content runway.", milestone: "M3" },
+      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (skills with fewer than 3 core pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
     ] },
     { name: "This device", tiles: [
       { id: "midi", icon: "🎹", name: "Piano check", what: "Keys, chords, velocity, pedal and MIDI delay (the device qualification test)." },
@@ -44,7 +45,7 @@
     ] },
   ];
   const BUILT: Record<string, true> = {
-    content: true, midi: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
+    content: true, analysis: true, midi: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
   };
   function openTile(id: string): void {
     if (id === "journey-test") go("journey/test"); else go(`config/${id}`);
@@ -87,6 +88,8 @@
       <DevicePage />
     {:else if page === "status"}
       <AppStatus />
+    {:else if page === "analysis"}
+      <AnalysisPage />
     {:else if page === "content"}
       <ContentPreview />
     {:else if tile}

@@ -1,5 +1,5 @@
 # Piano-Master
-Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.19.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.19.md).
+Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.20.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.20.md).
 
 ## Layout
 
@@ -14,7 +14,17 @@ Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.
 | `skills/` | Backup of the `generate-music` Claude skill (YuE2) |
 
 The skill map in `content/skillmap/` is a **placeholder** (ids start with `placeholder.`) until the
-Faber books arrive; replace it with the real Prep A map.
+Faber books arrive; replace it with the real Prep A map. Its concept lessons are in
+`content/lessons/` (one YAML file per skill, cards explain/show/hear/try/check/watch).
+`content/incoming/` holds pieces waiting for the pipeline (not built or deployed): the classical
+arrangements and their import notes (`incoming/classical/NOTES.md`).
+
+**Content build** (`tools/build_content.py`, arch §6.8–6.10): converts every piece, runs **song
+analysis** (`api/app/analysis.py`: required and featured skills, map point, skill measures, and
+anything beyond the map), fills in finger numbers (`api/app/fingering.py`), builds the concept
+lessons, and checks the skill map (ids, sequences, prerequisites, constraints, 3 core pieces per
+skill, a lesson per skill). In ABC, `"_L"` below a note gives it to the left hand on the upper
+staff; `song:` and `version:` in a piece's YAML make it one arrangement of a song.
 
 **Screens** (arch §3): the player picker (each child, and Parent behind the PIN), then a bottom
 tab bar. Students: Today's Practice (the session as a path of items; the start screen), Journey,

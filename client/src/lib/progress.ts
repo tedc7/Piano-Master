@@ -28,13 +28,15 @@ export type Progress = Map<string, SkillProgress>;
 
 export const isPassed = (p: SkillProgress | undefined) => p?.status === "passed" || p?.status === "mastered" || !!p?.hold;
 
-/** The skills a piece needs. Until song analysis (M3), a piece needs its assigned skill. */
+/** The skills a piece needs, from song analysis (§6.8). */
 export function requiredSkills(piece: PieceSummary): string[] {
   return piece.requiredSkills ?? (piece.skillId ? [piece.skillId] : []);
 }
 
-/** Library-ready: every required skill passed (§6.8). Otherwise the skills still to reach. */
-export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progress): { ready: boolean; toReach: Skill[] } {
+/** Library-ready: every required skill passed (§6.8). Otherwise the skills still to reach; a
+ *  piece needing something no skill in the map covers yet is never ready (`beyond`). */
+export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progress): { ready: boolean; toReach: Skill[]; beyond: string[] } {
+  const beyond = piece.beyondMap ?? [];
   const byId = new Map(map.skills.map((s) => [s.id, s]));
   const toReach = new Map<string, Skill>();
   const visit = (id: string) => {
@@ -46,7 +48,7 @@ export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progr
   };
   requiredSkills(piece).forEach(visit);
   const list = [...toReach.values()].sort((a, b) => a.sequence - b.sequence);
-  return { ready: list.length === 0, toReach: list };
+  return { ready: list.length === 0 && beyond.length === 0, toReach: list, beyond };
 }
 
 export type SessionReason = "Review" | "New" | "Tricky spot" | "Polish" | "Support" | "Your pick";
