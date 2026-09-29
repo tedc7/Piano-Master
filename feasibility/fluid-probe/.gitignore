@@ -1,0 +1,6 @@
+.venv/
+.fluidsynth/
+soundfonts/
+build/
+dist/
+__pycache__/

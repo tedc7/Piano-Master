@@ -1,6 +1,20 @@
-# Family Piano Tutor — Architecture v0.21
+# Family Piano Tutor — Architecture v0.22
 
 Sep 28, 2026 · @Someone
+
+**What changed in v0.22** (from the FluidSynth backing probe, `feasibility/fluid-probe/RESULTS.md`):
+- **Backing is rendered from notation (10.5, decided):**
+  - The accompaniment stem is rendered with **FluidSynth** and the **MuseScore General** SoundFont (MIT) from the arrangement's own notes: ensemble parts in the score, a hymn's four-part harmony, or chord symbols.
+  - **YuE2 now makes the vocal.** Its backing is used only for a song with words that has no backing notes.
+  - **Solo piano pieces** keep the app's own piano for the other hand (v0.21).
+  - The parent's listening test: MuseScore General sounded less synthetic than GeneralUser GS. For Amazing Grace, both FluidSynth backings (organ, and strings with cello) sounded better than YuE2's, and the strings sounded best.
+- **Why it works:**
+  - FluidSynth plays exactly on the beat and renders each tempo preset natively, so there is no stretching and no alignment for the backing.
+  - It plays the written harmony by construction.
+  - It renders in under a second per preset on the dev box's CPU.
+  - Slow-attack instruments (bowed strings, organ) start early by their measured attack time; every part then sounds within 17 ms of its beat.
+- **The YuE2 vocal fits it:** on Amazing Grace, the aligned vocal is 1.5 cents from A440, and its syllables land a median 17 ms before the beat (84% within 100 ms). That's as close to the beat as YuE2's own backing was.
+- **Stems without vocals:** a stem set may now have only an accompaniment (instrumental pieces). The Vocals button shows only when there is a vocal.
 
 **What changed in v0.21** (from building M6, the app's piano for the other hand, keyboard-day preparation and the song import skill v1):
 - **Diagnostics built (8.8):** the five detectors use the table's thresholds. They read per-note results, which every attempt now stores: the notation index and timing of each written note in the scored pass. A wrong key is paired with the missed written note within half a beat. Diagnostics runs when each day's session is built, and for the parent's report. First-version choices:
@@ -40,7 +54,7 @@ Sep 28, 2026 · @Someone
 - **Notation (5):** grace notes are kept apart in `graces` (drawn, never scored); tuplet notes carry `tuplet: [3, 2]`; a clef change at the start of a bar is recorded per staff; `"_L"` or `"_R"` below a note in ABC sets its hand when it differs from its staff's; each playback entry has its `pass` through a repeat, and `verse` stays 1 in a piece without words. The tempo uses the metronome mark's beat unit (`Q:1/2=60` is 120 quarters), and a tie on one note of a chord ties only that note.
 - **Songs and arrangements (5, 10.3):** a piece may name its `song` and `version` ("Beginner"); the library shows one card per song, placed where its easiest version opens, with a button per version.
 - **Keyboard size (2.3, 5):** the build records 61 or 88 keys per arrangement from its range (C2–C7 fits 61) and warns when it needs 88.
-- **Backing for wordless pieces (10.5, open):** YuE2 always sings, so it can't make backing tracks for piano pieces. Most classical piano pieces are accompanied by the pianist's other hand, so the first step is the app playing the other hand when a child practises one. For ensemble originals, a candidate is rendering accompaniment parts written in notation (from the original score, or arranged from the chords) with a sampled-instrument synthesizer such as FluidSynth: exact timing and any tempo, so no alignment step. To be evaluated before importing more songs.
+- **Backing for wordless pieces (10.5, open; decided in v0.22: FluidSynth from notation):** YuE2 always sings, so it can't make backing tracks for piano pieces. Most classical piano pieces are accompanied by the pianist's other hand, so the first step is the app playing the other hand when a child practises one. For ensemble originals, a candidate is rendering accompaniment parts written in notation (from the original score, or arranged from the chords) with a sampled-instrument synthesizer such as FluidSynth: exact timing and any tempo, so no alignment step. To be evaluated before importing more songs.
 
 **What changed in v0.19** (from building M4 and M5, `api/app/engine.py`, and the practice simulator, `api/tests/simulator.py`):
 - **Students and parent login built (M4):** the parent adds the students under Config; the first PIN is chosen in the app on a new piano server, and a forgotten PIN is cleared on the server (`python -m app.admin reset-pin`, 11.1). Per-student settings live on the server; device settings stay in the browser where they are measured and are copied to the DeviceProfile (5). The parent's own plays are stored with no student (3).
@@ -357,7 +371,7 @@ Tempo is chosen from four presets: **50%, 75%, 90%, and 100%** of the written te
 
 Accompaniment and vocals are audio **stems** produced for each arrangement by the Claude media skill before the song is submitted (section 10.5), so the parent hears them when approving the song.
 
-- **Accompaniment stem:** a backing that stays behind the piano part, in named instruments matched to the song's genre (for example pipe organ and string ensemble for hymns, fingerpicked guitar and upright bass for folk; 10.5). Its level is set in the media pipeline for tablet speakers; the student can adjust the volume. YuE2's backing still varies in level and instruments within and between songs.
+- **Accompaniment stem:** a backing that stays behind the piano part, in instruments matched to the song's genre (10.5). **Since v0.22** it is rendered with FluidSynth from the arrangement's own notes (the score's ensemble parts, a hymn's alto, tenor and bass, or its chord symbols). YuE2's backing is kept only for a song with words and no backing notes. Its level is set in the media pipeline for tablet speakers, and the student can adjust the volume. An instrumental piece has an accompaniment stem and no vocal.
 - **Vocal stem:** a sung vocal in a style matched to the song's genre, with a **Vocals on/off** button on the Play screen, remembered per song. Known YuE2 limits: a melisma (one syllable over several notes) is sung as one held pitch, the first word can be soft or unclear, and a take can put a stretch of words on other notes than the staff shows. Each song's check results are stored with its stems and shown in the parent's review list, so a badly affected song can be re-rendered or left with vocals off.
 - **When stems play:** Listen and Play modes, at every tempo preset (100%, 90%, 75%, and 50%); each is rendered in advance.
 - **No vocals or accompaniment in wait mode:** recorded audio cannot pause mid-word or mid-bar. If wait mode is built (optional, M10), it plays only the metronome and the student's own notes.
@@ -1127,6 +1141,30 @@ Contents:
 
 ### 10.5 Media skill: vocals and accompaniment
 
+**Decision (v0.22): what makes the backing.** The backing is rendered from notation whenever the arrangement has backing notes. YuE2 sings the vocals, and its backing is the fallback.
+
+| Kind of piece | Vocal stem | Accompaniment stem |
+| --- | --- | --- |
+| Solo piano piece (the pianist's two hands are the whole piece) | none | none: the app's own piano plays the other hand in one-hand practice (3). A FluidSynth orchestration of the other hand is optional (for example a waltz's bass and chords) |
+| Has backing notes: ensemble parts in the score, a hymn's four-part harmony, or chord symbols | YuE2, when it has words | **FluidSynth with MuseScore General**, from those notes (below) |
+| A song with words and no backing notes (a bare melody) | YuE2 | YuE2's backing, with the steps below |
+
+**Backing from notation (FluidSynth; `feasibility/fluid-probe/` is the prototype):**
+1. **Parts:** taken from the arrangement's notes, laid out in playback order:
+   - the score's own ensemble parts, such as Pachelbel's canon, where violins 2 and 3 are the melody one and two rounds behind;
+   - a hymn's alto, tenor and bass (not the soprano, which is sung and played);
+   - chord symbols, or chords from the left hand, voiced in a genre style;
+   - the piano's left hand, orchestrated, for a piano arrangement of an ensemble piece.
+2. **Style by genre:** the "FluidSynth backing" column of the genre table below. Each style is a small set of General MIDI instruments and a pattern (sustained, waltz, arpeggio).
+3. **Render:** MIDI at each preset's tempo, FluidSynth to audio, and a one-beat lead-in (`padBeats`) so a note on beat 0 can start early. Each preset is rendered at its own tempo, not stretched.
+4. **Timing:** each part's attack is measured alone (the time to 30% of its rise). Slow parts start that much early, up to 250 ms. Pass: every part within 20 ms of its beat.
+5. **Level:** the same loudness as the YuE2 accompaniment stems (about −26 dB RMS where it plays), tuned on the iPad.
+6. **With a YuE2 vocal:** the vocal still goes through steps 1–5 and 7–8 below. Its accompaniment is discarded, and the backing check (step 6) isn't needed. Two more checks:
+   - the vocal's tuning is within 10 cents of A440, because FluidSynth is exact;
+   - the demixed vocal carries no audible YuE2 backing. Demucs separation can leave some, and it would clash if YuE2's harmony differed.
+
+**Cost:** under a second per preset on the CPU, and about 1 MB per minute at 128 kbps. It needs no GPU, so an instrumental piece's media is only a few seconds of work.
+
 The media skill adds a sung vocal and an accompaniment to each arrangement before submission, on the dev box's GPU. It runs directly on that machine, so no job queue or polling worker is needed; it picks up pending media work (new songs, vocal-style changes) from the Skill API.
 
 **Engine is a plugin.** The skill calls a music engine through one interface.
@@ -1146,16 +1184,16 @@ The media skill adds a sung vocal and an accompaniment to each arrangement befor
 - **Name the backing instruments and how they play**, with one solo voice and no "or choir" alternatives. With vague tags, YuE2 guessed; with specific ones, its backing followed the written chords in 81% of chord spans instead of 58%, and listening preferred it (v0.17).
 - **No piano in the backing:** the child plays the piano part.
 
-| Genre | Genre style | Default vocal style | Default accompaniment |
-| --- | --- | --- | --- |
-| Hymns | Traditional hymn | Warm clear solo voice | Soft pipe organ and warm string ensemble playing steady sustained chords, gentle, reverent |
-| Holiday | Traditional holiday carol | Warm clear solo voice | Warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady |
-| Folk | Gentle folk song | Clear natural solo folk singer | Fingerpicked acoustic guitar, soft upright bass, light brushed percussion, steady |
-| Nursery and kids' songs | Children's song | Bright friendly solo voice with very clear words | Strummed acoustic guitar, soft glockenspiel, light hand percussion, steady |
-| Classical (songs with words) | Light classical art song | Light clear classical solo voice | Soft string quartet playing sustained chords, gentle, steady |
-| Movie/TV, Pop | Light pop song | Clean light solo voice | Light brushed drums, warm bass guitar, soft synth pad chords, steady |
+| Genre | Genre style | Default vocal style | FluidSynth backing (v0.22, the default) | YuE2 accompaniment (fallback: no backing notes) |
+| --- | --- | --- | --- | --- |
+| Hymns | Traditional hymn | Warm clear solo voice | **Strings on the alto and tenor, cello on the bass**, from the four-part score (chosen by listening); church organ as the alternative | Soft pipe organ and warm string ensemble playing steady sustained chords, gentle, reverent |
+| Holiday | Traditional holiday carol | Warm clear solo voice | Strings and harp arpeggios from the chords (to test) | Warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady |
+| Folk | Gentle folk song | Clear natural solo folk singer | Guitar and bass from the chords (to test; General MIDI guitar is a weak spot, so this genre may keep YuE2's backing) | Fingerpicked acoustic guitar, soft upright bass, light brushed percussion, steady |
+| Nursery and kids' songs | Children's song | Bright friendly solo voice with very clear words | Glockenspiel and soft strings from the chords (to test) | Strummed acoustic guitar, soft glockenspiel, light hand percussion, steady |
+| Classical | Light classical art song, or the instrumental original | Light clear classical solo voice (songs with words) | **The score's own ensemble parts** (a canon's voices), else strings and cello from the chords or the left hand; a waltz as basses on 1 and horns and strings on 2 and 3 (tested) | Soft string quartet playing sustained chords, gentle, steady |
+| Movie/TV, Pop | Light pop song | Clean light solo voice | Bass and soft pad from the chords (to test) | Light brushed drums, warm bass guitar, soft synth pad chords, steady |
 
-Hymns and Holiday were tested by listening; the other rows follow the same pattern and are checked with their first songs.
+Hymns and Holiday YuE2 styles were tested by listening in v0.17. The FluidSynth styles were tested for hymns and classical in v0.22; the rest are checked with their first songs. A genre whose FluidSynth style doesn't pass the listen keeps YuE2's backing.
 
 **Steps**
 
@@ -1207,6 +1245,7 @@ The parent hears the vocal and accompaniment in the staging review list, so medi
 | librosa | Pitch tracking (pYIN) for alignment and the pitch check; chroma for the harmony check |
 | ctc-forced-aligner (MMS model, ONNX) | Places the known lyric words in the vocal, for the word check and the fallback map |
 | Rubber Band 4 (command line) | Pitch-preserving time-warp to the beat grid (time map) and the tempo versions; the Python bindings can't pass a time map |
+| FluidSynth 2.6 (conda-forge) and the MuseScore General SoundFont (MIT) | Renders the backing from notation at each tempo preset (v0.22); the SoundFont's acknowledgements go in the app's credits |
 | Skill scripts (ours) | Run the steps and build the package (prototypes in `feasibility/sync-probe/`) |
 
 ### 10.6 Concept-video skill
@@ -1326,7 +1365,7 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles). **Built (Sep 28, 2026)** in `api/app/engine.py`; the practice simulator runs fast, slow, inconsistent and one-hard-skill learners for 8 weeks on a generated 60-skill branching map (`api/tests/test_simulator.py`); the 200-bubble render test is in Config and ran at 59 fps in desktop Chromium, and waits for the iPad | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
 | M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring. **Built (Sep 28, 2026)** in `api/app/diagnostics.py` and `api/app/drills.py`, with scale and arpeggio fingering tables, Check and Echo scoring in the concept lessons, and the planted-pattern simulator (`api/tests/test_planted.py`); tuning waits for real attempts from the keyboard | Errors planted in simulated data are detected and get the right remedy |
 | M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports. **Started (Sep 28, 2026):** song import skill v1 and the melody fingerprint; the rest remains | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
-| M8 | Media and concept videos | Media skill v1 (vocals and accompaniment with all checks and tempo versions), stem playback, chord pad and choir voice, vocal-style change requests, concept-video skill | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
+| M8 | Media and concept videos | Media skill v1: YuE2 vocals with all checks and tempo versions, and backing rendered from notation with FluidSynth (v0.22), with YuE2's backing as the fallback; stem playback (accompaniment-only stems work since v0.22); chord pad and choir voice; vocal-style change requests; the concept-video skill | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
 | M9 | AI advisor (exploratory, optional) | A short write-up of where AI could help, based on real data from M5 and M6 | Decision: design and build an advisor, or drop it |
 | M10 | Polish | Stickers, streaks, favorites, visual polish; optional wait mode | The children use it daily without help |
 | M11 | Phase 2: Levels 1 to 4 | Level 1 to 4 content, tempo ramp, dynamics scoring, static-page cursor view, Intermediate map | Design section 13.1 written first; the children progress into Level 3 material |
@@ -1346,11 +1385,13 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 - [x] Prototype the MusicXML / ABC → notation and native ABC converter, the alignment and the media checks (`feasibility/sync-probe/`; M3 and M8 build the real ones)
 - [x] Settle the YuE2 input rules: one note per syllable (checked by the `generate-music` skill), chords kept, "Oh" lead-in, named backing instruments (10.5)
 - [ ] Listen to the untested genre defaults (Folk, kids' songs, Classical, Pop) with their first songs
-- [ ] Build a slow automatic backing level for YuE2's swings within a song (10.5 step 6)
+- [ ] Build a slow automatic backing level for YuE2's swings within a song (10.5 step 6; only for the YuE2 fallback since v0.22)
 - [ ] Continue M0 (App API and SQLite skeleton, MIDI test page)
 - [ ] When the keyboard arrives: run `docs/keyboard-day.md`
-- [ ] Feasibility test: backing for wordless ensemble pieces rendered from notation with FluidSynth (10.5)
-- [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill once the backing decision is made
+- [x] Feasibility test: backing rendered from notation with FluidSynth (`feasibility/fluid-probe/RESULTS.md`): adopted, with MuseScore General (v0.22)
+- [ ] Build the FluidSynth backing into the media skill: parts from notation, genre styles, the timing and level steps (10.5)
+- [ ] Listen to the untested FluidSynth genre styles (holiday, folk, kids' songs, pop) with their first songs
+- [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill, with FluidSynth backings for its ensemble pieces
 
 ## 13. Later-phase design (placeholders)
 
@@ -1422,6 +1463,7 @@ Not planned for v1; revisit when needed.
 | Remedies (v0.21) | Diagnostics' remedies are Focus items at the head of the Practice slot; a generated drill is served per student | One remedy a day keeps the session balanced; drills are built from what the student has passed |
 | Rhythm tapping (v0.21) | A rhythm drill counts any key as its note and shows timing stars only | The point is the rhythm, not finding the key (7.8) |
 | The app's piano (v0.21) | A sampled piano served by the piano server plays Listen mode and the other hand in one-hand practice | Solo piano pieces are accompanied by the other hand; it works offline and needs no alignment |
+| Backing (v0.22) | FluidSynth with MuseScore General renders the backing from the arrangement's notes; YuE2 sings the vocals, and its backing is the fallback for songs without backing notes; solo piano pieces use the app's other-hand piano | Exact beat, written harmony, clean at every preset, no GPU; it sounded better than YuE2's backing in the listening test |
 | Import batches (v0.21) | Batches wait in `content/incoming/`; the parent approves from `REVIEW.md`; approved pieces are promoted into `content/pieces/` | The single parent approval (10.3) before staging exists; nothing unapproved reaches a build |
 | Song analysis (v0.20) | Each thing used is credited to the earliest skill allowing it; anything no skill allows is beyond the map and never unlocks | Replaces hand-assigned songs; a library song can't open before the map teaches what it needs |
 | Re-run analysis (v0.20) | In every content build and deploy, shown in Config > Content and analysis | Content ships with the deploy, so there is nothing to re-run on the server yet |
@@ -1516,6 +1558,7 @@ Not planned for v1; revisit when needed.
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.22 | Sep 28, 2026 | From the FluidSynth probe: backing rendered from notation with FluidSynth and MuseScore General; YuE2 for vocals, its backing only as the fallback; accompaniment-only stems |
 | v0.21 | Sep 28, 2026 | From building M6 and preparing for the keyboard: Diagnostics with five detectors and Focus remedies; the drill generator and scale and arpeggio fingering tables; Check and Echo scoring; the app's sampled piano for the other hand; tap-along latency calibration; the song import skill v1 and the melody fingerprint |
 | v0.20 | Sep 28, 2026 | From building M3 without the books and a first hand import of classical pieces: song analysis and beyond-the-map pieces; analysis in every content build; the concept-lesson format; finger-number generator v1; grace notes, tuplets, clef changes, per-note hands, passes vs verses; songs with several arrangements; keyboard size per arrangement; backing for wordless pieces is an open question |
 | v0.19 | Sep 28, 2026 | From building M4 and M5 and the practice simulator: students and parent login on the server; content bundled into the App API; a concept lesson for every skill and a Ready-to-learn state; stuck contact alternates section and slower whole piece; bounded New-slot replacement; implicit review after half an interval; sessions fill their time |

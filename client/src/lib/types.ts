@@ -65,7 +65,8 @@ export interface Media {
   take: string;
   padBeats: number;    // stem time 0 is this many beats before playback beat 0 (the muted lead-in)
   bpm: number;
-  presets: Partial<Record<Preset, { ratio: number; vocals: StemFile; accompaniment: StemFile }>>;
+  // vocals are optional: an instrumental backing (a FluidSynth render, say) has only accompaniment
+  presets: Partial<Record<Preset, { ratio: number; vocals?: StemFile; accompaniment: StemFile }>>;
   check?: {
     notesOnPitch: number;
     wordsOff: number;

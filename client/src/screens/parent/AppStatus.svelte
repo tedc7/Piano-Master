@@ -49,7 +49,9 @@
     <h2>Credits</h2>
     <p class="muted">The app's piano is the Salamander Grand Piano by Alexander Holm, used under
       <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>.
-      Staff drawing by VexFlow (MIT).</p>
+      Backing tracks rendered from the notation use the MuseScore General SoundFont (MIT): FluidR3 by Frank Wen,
+      FluidR3Mono by Michael Cowgill, adapted by S. Christian Collins, with a Temple Blocks instrument by Ethan
+      Winer and Drumline Cymbals by Michael Schorsch; rendered with FluidSynth. Staff drawing by VexFlow (MIT).</p>
   </section>
   <section class="panel">
     <h2>Recent problems</h2>
