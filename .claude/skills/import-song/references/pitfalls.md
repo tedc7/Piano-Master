@@ -11,6 +11,8 @@
 - **Tempo**: `Q:1/2=66` and `Q:3/8=60` are read correctly (beats per minute of that note). Say the
   tempo the child should aim for, not the concert tempo, if they differ, and explain it in the header.
 - **Repeats** show as passes, not verses, unless there are lyrics (verses come from `w:` lines).
+- **D.C., D.S., segno, coda and Fine aren't read yet** (only repeat signs and first and second
+  endings are). Write the jump out as plain measures, or the song plays without the repeated part.
 - **Two arrangements of one song** share `song:` and have their own `version:`, or the Library
   shows them as two songs.
 - **The matcher** takes a wrong key that matches the *next* note's pitch as that note played early.

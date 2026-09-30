@@ -32,9 +32,9 @@
     { name: "Songs and lessons", tiles: [
       { id: "content", icon: "📚", name: "Content preview", what: "Every skill and song in sequence order, open for review." },
       { id: "review", icon: "📥", name: "Review list", what: "New songs waiting for you: listen, then approve each, send it back with what needs to change, or never allow it. Nothing here reaches a child." },
-      { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "M7" },
-      { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "M8" },
-      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (skills with fewer than 3 core pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
+      { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "a later version" },
+      { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "a later version" },
+      { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (each skill's core pieces and library songs; every skill needs at least 2 core practice pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
     ] },
     { name: "This device", tiles: [
       { id: "midi", icon: "🎹", name: "Piano check", what: "Keys, chords, velocity, pedal and MIDI delay (the device qualification test)." },
@@ -46,7 +46,7 @@
     { name: "Settings", tiles: [
       { id: "devbox", icon: "🔌", name: "Dev box connection", what: "The tokens that let the Claude skills on the dev box submit new songs to the Review list and read your notes. Made once per dev box." },
       { id: "pin", icon: "🔑", name: "PIN and log out", what: "Change the parent PIN (checked by the server, with lockout after failed tries) and the auto-logout time." },
-      { id: "ai", icon: "🤖", name: "AI settings", what: "Turn the optional AI advisor on or off.", milestone: "M9" },
+      { id: "ai", icon: "🤖", name: "AI settings", what: "Turn the optional AI advisor on or off.", milestone: "a later version" },
     ] },
   ];
   const BUILT: Record<string, true> = {
