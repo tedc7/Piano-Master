@@ -1,0 +1,63 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.middle-c-position, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.middle-c-position
+title: Middle C position
+cards:
+- kind: explain
+  text: 'Put both thumbs on Middle C. The right hand covers C D E F G going up, and the left hand C B A G F going
+    down: that''s Middle C position.'
+- kind: show
+  text: 'Both thumbs share Middle C: the left hand down to F, the right hand up to G.'
+  notes: F3 G3 A3 B3 C4 D4 E4 F4 G4
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: RL
+  clef: grand
+- kind: hear
+  text: The left hand steps down from Middle C, then the right hand steps up.
+  play: C4 B3 A3 G3 F3:2 C4 D4 E4 F4 G4:2
+  tempo: 100
+- kind: try
+  text: Left hand from Middle C down to F.
+  notes: C4 B3 A3 G3 F3
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: L
+  clef: bass
+- kind: try
+  text: Right hand from Middle C up to G.
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: check
+  questions:
+  - text: In Middle C position, where do both thumbs go?
+    choices:
+    - Middle C
+    - Bass F
+    - Treble G
+    answer: Middle C
+  - text: Which left-hand finger plays Bass F?
+    choices:
+    - '1'
+    - '3'
+    - '5'
+    answer: '5'

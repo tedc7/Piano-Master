@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.octave). Original music and words for this app.
+title: "Octave Bells"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:Octave Bells
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  K:C clef=bass
+  !1!C !5!C, C C, | C2 C,2 | !5!C, !3!E, !1!G, E, | C,2 C2 | C,4 |]
+  w: Ding, dong, ding, dong, high, low, C, E, G, E, low, high, low.

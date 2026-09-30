@@ -1,0 +1,53 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.round-hand, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.round-hand
+title: A round hand shape
+cards:
+- kind: explain
+  text: 'Let your arms hang down, heavy and loose, then float your hands up onto the keys. Curve your fingers as
+    if your hand is holding a bubble: the fingertips stay firm and the thumb rests on its side tip.'
+- kind: show
+  text: 'A round hand on the two black keys: fingertips firm, a bubble under the palm.'
+  notes: C#4 D#4
+  fingers:
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: 'Keep the bubble: tap each black key twice with firm fingertips.'
+  notes: C#4 C#4 D#4 D#4
+  fingers:
+  - 2
+  - 2
+  - 3
+  - 3
+  hand: R
+- kind: try
+  text: Now the left hand, round and firm.
+  notes: C#3 C#3 D#3 D#3
+  fingers:
+  - 3
+  - 3
+  - 2
+  - 2
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Your hand is curved as if it holds a...
+    choices:
+    - Bubble
+    - Pancake
+    - Stick
+    answer: Bubble
+  - text: Your fingertips should be...
+    choices:
+    - Firm
+    - Floppy
+    answer: Firm
+  - text: The thumb plays on its...
+    choices:
+    - Side tip
+    - Flat middle
+    answer: Side tip

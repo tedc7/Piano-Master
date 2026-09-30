@@ -1,15 +1,24 @@
 """Server-side maintenance, run inside the API container:
 
-    python -m app.admin reset-pin     # forget the parent PIN; the app then asks for a new one
+    python -m app.admin reset-pin          # forget the parent PIN; the app then asks for a new one
+    python -m app.admin skill-token NAME   # a token for a Claude skill on the dev box (Skill API, arch §10.9)
 """
 from __future__ import annotations
 
 import sys
 
-from . import db
+from . import db, library
 
 
 def main(argv: list[str]) -> int:
+    if argv[:1] == ["skill-token"] and len(argv) == 2:
+        db.migrate()
+        con = db.connect()
+        try:
+            print(library.new_token(con, argv[1]))
+        finally:
+            con.close()
+        return 0
     if argv[:1] != ["reset-pin"]:
         print(__doc__.strip())
         return 2

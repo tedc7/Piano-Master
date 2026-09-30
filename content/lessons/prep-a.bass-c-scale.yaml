@@ -1,0 +1,49 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.bass-c-scale, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.bass-c-scale
+title: C position in the bass
+cards:
+- kind: explain
+  text: 'The left hand moves down to C position: finger 5 on Bass C, then D, E, F and G up to the thumb. Bass E
+    is on the third line, above the middle line''s D.'
+- kind: show
+  text: 'Left hand C position: Bass C, D, E, F, G.'
+  notes: C3 D3 E3 F3 G3
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  hand: L
+  clef: bass
+- kind: hear
+  text: Up the C scale in the bass and back down.
+  play: C3 D3 E3 F3 G3:2 F3 E3 D3 C3:2
+  tempo: 100
+- kind: try
+  text: Play C D E F G with left-hand fingers 5 to 1.
+  notes: C3 D3 E3 F3 G3
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  hand: L
+  clef: bass
+- kind: echo
+  text: Listen, then play it back in C position.
+  play: C3 E3 D3 F3 E3
+  tempo: 90
+- kind: check
+  questions:
+  - text: Play Bass E, on the third line of the bass staff.
+    answer: E3
+  - text: In left-hand C position, which finger plays C?
+    choices:
+    - '1'
+    - '3'
+    - '5'
+    answer: '5'

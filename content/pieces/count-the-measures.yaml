@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.the-measure). Original music and words for this app.
+title: "Count the Measures"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Count the Measures
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!C D E F | G2 G2 | F E D C | C4 | z4 | z4 | z4 | z4 |]
+  w: This is mea-sure one, then two, bar lines in be-tween.
+  [V:LH] z4 | z4 | z4 | z4 | !5!C, D, E, F, | G,2 G,2 | F, E, D, C, | C,4 |]
+  w: Mea-sure five and six and sev-en, then comes eight.

@@ -19,6 +19,7 @@ export interface Note {
   finger?: number;
   fermata?: boolean;
   tuplet?: [number, number];   // [actual, normal]: 3 in the time of 2 for a triplet
+  velocity?: number;           // from the piece's dynamic marks: how hard the app's piano plays it
 }
 
 /** A grace note: drawn before the note it leads into, never scored or counted. */
@@ -47,12 +48,14 @@ export interface Notation {
     pickupBeats: number;
     range: [number, number];
     staves: ("treble" | "bass")[];
+    letters?: boolean;   // a pre-staff piece (Prep A Units 1 to 3): each note head shows its letter name
   };
   measures: Measure[];
   notes: Note[];
   lyrics: Lyric[];
   chordSymbols: { beat: number; symbol: string; derived?: boolean }[];
   graces?: Grace[];
+  dynamics?: { beat: number; mark: string }[];    // dynamic marks (f, mf, p...) from a written beat
   playbackOrder: { measure: number; verse: number; pass?: number }[];
   phrases: number[];   // phrase start beats on the playback timeline
   length: number;      // playback length in beats
@@ -123,6 +126,9 @@ export interface PieceSummary {
   songTitle?: string;
   version?: string | null;            // e.g. "Beginner", when a song has several arrangements
   hasMedia: boolean;
+  library?: boolean;                  // approved from the review list: served by the piano server (M7)
+  new?: boolean;                      // approved in the last 14 days (the "New" badge)
+  approvedAt?: string;
 }
 
 export interface Skill {
@@ -133,9 +139,12 @@ export interface Skill {
   staff: string;
   prerequisites: string[];
   description?: string;
-  pieces?: string[];
+  pieces?: string[];                               // its practice pieces: the songs in its Journey bubble
+  featuring?: string[];                            // every piece the song analysis says features it
   requiredCapabilities?: string[];
   conceptLesson?: boolean;
+  unit?: string;                                   // the method book's unit, "Unit 3 · Key Names"
+  bookRefs?: { book: string; pages: string }[];    // the family's own book pages (content/private/, arch §6.2; parent mode)
   map: string;
   level: string;
   placeholder: boolean;
@@ -143,6 +152,6 @@ export interface Skill {
 
 export interface SkillMap {
   placeholder: boolean;
-  maps: { map: string; level: string; file: string }[];
+  maps: { map: string; level: string; file: string; source?: string }[];
   skills: Skill[];
 }

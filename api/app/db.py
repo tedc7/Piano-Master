@@ -18,6 +18,13 @@ def db_path() -> str:
     return os.environ.get("PIANO_DB", "piano.db")
 
 
+def data_dir() -> Path:
+    """Where the song library's files live (library/, and staging/ for every song not in it):
+    PIANO_DATA, else beside the database (/data on the server)."""
+    d = os.environ.get("PIANO_DATA")
+    return Path(d) if d else Path(db_path()).resolve().parent
+
+
 def connect(path: str | None = None) -> sqlite3.Connection:
     con = sqlite3.connect(path or db_path(), timeout=10, isolation_level=None)
     con.row_factory = sqlite3.Row

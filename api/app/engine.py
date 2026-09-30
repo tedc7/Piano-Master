@@ -664,12 +664,22 @@ def save_queue(con: sqlite3.Connection, student_id: str, d: str, items: list[dic
     con.execute("UPDATE practice_days SET session_completed = ? WHERE student_id = ? AND date = ?", (int(done), student_id, d))
 
 
+def stale(content: Content, session: dict[str, Any]) -> bool:
+    """Whether a saved session names a skill, or a piece to play, that the content no longer has."""
+    return any((i.get("skillId") and i["skillId"] not in content.skills)
+               or (i.get("kind") == "piece" and i.get("pieceId") and i["pieceId"] not in content.pieces)
+               for i in session["items"])
+
+
 def get_session(con: sqlite3.Connection, content: Content, student_id: str, today: date,
                 caps: dict[str, bool] | None = None) -> dict[str, Any]:
     """Today's session: built on the first request of the day, then resumed on any device (8.5)."""
     s = load_session(con, student_id, today)
-    if s is not None:
+    if s is not None and not stale(content, s):
         return s
+    if s is not None:
+        # new content took away a skill or piece the session names (a new skill map): plan again
+        con.execute("DELETE FROM sessions WHERE student_id = ? AND date = ?", (student_id, iso(today)))
     target = adjust_target(con, content, student_id, today)
     states = load_states(con, content, student_id)
     refresh(content, states, caps)

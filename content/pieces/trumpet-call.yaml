@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.tie). Original music and words for this app.
+title: "Trumpet Call"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Trumpet Call
+  M:4/4
+  L:1/4
+  Q:1/4=108
+  K:C
+  !1!C D E F | G4- | G4 | G F E D | E4- | E4 | D E D D | C4 |]
+  w: Hear the trum-pets call _ all a-cross the land, _ hear them play-ing loud!

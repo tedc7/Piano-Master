@@ -1,0 +1,43 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.d-e-f, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.d-e-f
+title: Treble D, E and F
+cards:
+- kind: explain
+  text: Between Middle C and Treble G are D, E and F. D sits in the space just under the treble staff, E on its
+    first line and F in its first space. Keep your right thumb on Middle C.
+- kind: show
+  text: 'Middle C, D, E, F, G: fingers 1 to 5.'
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: hear
+  text: D, E and F in a row.
+  play: D4 E4 F4:2 F4 E4 D4:2
+  tempo: 100
+- kind: try
+  text: Play D, E, F with fingers 2, 3, 4.
+  notes: D4 E4 F4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: echo
+  text: Listen, then play it back in Middle C position.
+  play: E4 F4 E4 D4 C4
+  tempo: 90
+- kind: check
+  questions:
+  - text: Play E, the note on the first line of the treble staff.
+    answer: E4
+  - text: Play D, in the space just under the treble staff.
+    answer: D4
+  - text: Play F, in the first space of the treble staff.
+    answer: F4

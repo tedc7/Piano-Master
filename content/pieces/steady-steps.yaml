@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.quarter-note). Original music and words for this app.
+title: "Steady Steps"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Steady Steps
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !2!^C ^C ^C ^C | !3!^D ^D ^D ^D | z4 | z4 |]
+  w: Walk, walk, walk, walk, step, step, step, step.
+  [V:LH] z4 | z4 | !3!^C,, ^C,, ^C,, ^C,, | !2!^D,, ^D,, ^D,, ^D,, |]
+  w: March, march, march, march, stomp, stomp, stomp, stomp.

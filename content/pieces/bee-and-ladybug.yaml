@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.question-answer). Original music and words for this app.
+title: "Bumblebee and Ladybug"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+phraseBars: 2
+abc: |
+  X:1
+  T:Bumblebee and Ladybug
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] z4 | z4 | !5!G F E D | C D E2 | z4 | z4 | E D C D | C4 |]
+  w: Lad-y-bug flies up so high, lad-y, lad-y, bye!
+  [V:LH] !1!G, F, E, D, | C, D, E,2 | z4 | z4 | !5!C, E, G, E, | D, C, D,2 | z4 | C,4 |]
+  w: Bum-ble-bee flies down so low, bum-ble, bum-ble, buzz, buzz, buzz, bye!

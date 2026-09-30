@@ -1,0 +1,49 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.the-measure, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.the-measure
+title: The measure and bar lines
+cards:
+- kind: explain
+  text: In music the beats are grouped into measures, and each measure has the same number of beats. Bar lines are
+    the lines that divide the music into measures.
+- kind: show
+  text: One measure of four quarter notes.
+  notes: C4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: 'Two measures: four beats, then four beats. Can you hear where the second one starts?'
+  play: C4 D4 E4 F4 G4:2 G4:2
+  tempo: 96
+- kind: try
+  text: 'Play one measure: four beats.'
+  notes: C4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: check
+  questions:
+  - text: What divides the music into measures?
+    choices:
+    - Bar lines
+    - Letters
+    - Stems
+    answer: Bar lines
+  - text: Does every measure have the same number of beats?
+    choices:
+    - 'Yes'
+    - 'No'
+    answer: 'Yes'
+  - text: A measure has two half notes. How many beats is that?
+    choices:
+    - '2'
+    - '4'
+    answer: '4'

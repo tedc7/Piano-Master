@@ -40,7 +40,7 @@ def by_id(results):
 def test_a_good_piece_checks_clean_and_is_analysed(content):
     r = by_id(imp.check_files([write(content / "incoming" / "b", "tune")]))["tune"]
     assert r["errors"] == [] and r["summary"]["keyboardSize"] == 61 and r["summary"]["bars"] == 8
-    assert r["summary"]["featured"] == ["placeholder.rh-c-position"]
+    assert r["summary"]["featured"][0] == "prep-a.skips"          # C to E: a skip (Unit 7)
 
 
 def test_the_checks_catch_fields_licenses_bars_duplicates_and_deleted_songs(content):

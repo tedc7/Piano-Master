@@ -21,7 +21,7 @@ def validate(skills, placeholder=True, pieces=("p1", "p2", "p3")):
     return bc.validate_skill_maps(maps, set(pieces))
 
 
-def test_the_placeholder_map_is_valid():
+def test_the_skill_map_is_valid():
     maps = bc.load_skill_maps()
     pieces = {p.stem for p in (bc.CONTENT / "pieces").glob("*.yaml")}
     _, errors, _ = bc.validate_skill_maps(maps, pieces)
@@ -42,13 +42,28 @@ def test_ids_and_sequences_are_unique_and_placeholders_are_marked():
     assert any("must start with 'placeholder.'" in e for e in errors)
 
 
-def test_fewer_than_three_core_pieces_is_an_error_only_on_a_real_map():
-    an = {"p1": {"featuredSkills": ["placeholder.a"]}, "p2": {"featuredSkills": ["placeholder.a"]},
-          "p3": {"featuredSkills": ["placeholder.a"]}}
-    errors, warnings, featuring = bc.coverage([{"id": "placeholder.a", "placeholder": True}], an, {"p3": "library"})
-    assert not errors and any("2 core piece" in w for w in warnings) and featuring["placeholder.a"] == ["p1", "p2", "p3"]
-    errors, _, _ = bc.coverage([{"id": "real.a", "placeholder": False}], an, {"p3": "library"})
-    assert any("at least 3" in e for e in errors)
+def test_each_skill_needs_two_practice_pieces_that_feature_it_and_need_only_earlier_skills():
+    an = {"p1": {"featuredSkills": ["a"], "requiredSkills": ["a"], "beyondMap": []},
+          "p2": {"featuredSkills": ["a"], "requiredSkills": ["a"], "beyondMap": []},
+          "p3": {"featuredSkills": ["b"], "requiredSkills": ["b"], "beyondMap": []},
+          "p4": {"featuredSkills": ["a", "c"], "requiredSkills": ["a", "c"], "beyondMap": []}}
+    skills = [{"id": "a", "pieces": ["p1", "p2"], "prerequisites": []},
+              {"id": "b", "pieces": ["p3"], "prerequisites": ["a"]},          # one piece
+              {"id": "c", "pieces": ["p1"], "prerequisites": ["a"]},          # doesn't feature c
+              {"id": "d", "pieces": ["p4"], "prerequisites": ["a"]}]          # features d? no; needs c, a sibling
+    errors, _, featuring = bc.coverage(skills, an, {})
+    assert not any(e.startswith("a:") for e in errors) and featuring["a"] == ["p1", "p2", "p4"]
+    assert any(e.startswith("b:") and "at least 2" in e for e in errors)
+    assert any(e.startswith("c:") and "not this skill" in e for e in errors)
+    assert any(e.startswith("d:") and "needs c, which isn't before it" in e for e in errors)
+    # the placeholder map only warns
+    errors, warnings, _ = bc.coverage([{**skills[1], "placeholder": True}], an, {})
+    assert not errors and any("at least 2" in w for w in warnings)
+
+
+def test_a_piece_is_a_practice_piece_of_one_skill_only():
+    _, errors, _ = validate([skill("placeholder.a", 10, pieces=("p1", "p2")), skill("placeholder.b", 20, pieces=("p2", "p3"))])
+    assert any("p2 is already a practice piece of placeholder.a" in e for e in errors)
 
 
 def test_constraints_that_do_not_parse_are_errors():
@@ -98,3 +113,21 @@ V:LH clef=bass
     assert [(g["pitch"], float(g["start"])) for g in nota["graces"]] == [(79, 2.0)]
     assert all(n["pitch"] != 79 for n in nota["notes"])                                          # never scored
     assert nota["measures"][1]["clefs"] == {1: "treble"} and "clefs" not in nota["measures"][0]
+
+
+def test_the_tune_passes_to_a_left_hand_with_words():
+    # as beginner books do it: the right hand sings a phrase, then the left hand carries the tune and its words
+    abc = ("X:1\nM:4/4\nL:1/4\n%%score {RH LH}\nK:C\nV:RH clef=treble\nV:LH clef=bass\n"
+           "[V:RH] C D E2 | z4 | E4 |]\nw: I sing high,\n[V:LH] z4 | C B, A,2 | C4 |]\nw: you sing low, hum\n")
+    nota, _ = nt.build_notation(nt.parse_abc(abc))
+    mel = [(n["pitch"], n["hand"]) for n in nota["notes"] if n.get("isMelody")]
+    assert mel == [(60, "R"), (62, "R"), (64, "R"), (60, "L"), (59, "L"), (57, "L"), (64, "R")]
+    words = [ly["text"] for ly in sorted(nota["lyrics"], key=lambda ly: nota["notes"][ly["note"]]["start"])]
+    assert words == ["I", "sing", "high,", "you", "sing", "low,"]      # "hum" is under a held right-hand note
+
+
+def test_a_letters_piece_is_marked_in_the_header():
+    meta = {"title": "t", "hands": "R", "letters": True, "abc": "X:1\nM:4/4\nL:1/4\nK:C\nC D E2 |]\n"}
+    nota, _, _ = bc.build_piece("t", meta)
+    assert nota["header"]["letters"] is True
+    assert "letters" not in bc.build_piece("t", {**meta, "letters": False})[0]["header"]

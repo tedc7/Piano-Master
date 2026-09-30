@@ -9,7 +9,7 @@ One YAML file per arrangement, in the batch folder (and later `content/pieces/`)
 # (simplified bars, octave moves, cut sections, and why).
 title: Minuet in G
 composer: Christian Petzold
-kind: library              # core = written for a skill (placeholder map only, by us); library = everything imported
+kind: library              # core = written for a skill by us (content/pieces/); library = everything imported
 genre: classical           # folk, hymns, kids, classical, pop, lesson-pieces…
 level: Level 2             # your estimate, shown to people; the analysis decides unlocking
 hands: RL                  # R, L or RL, as the student plays it
@@ -19,6 +19,9 @@ songTitle: Minuet in G
 version: Intermediate      # …and each has its own version name
 source: {site: …, url: …, id: …, file: …}
 license: {composition: public-domain, edition: …, evidence: …}
+tempoSource: "…"           # where the 100% tempo came from (below)
+play: melody               # optional: the score has more voices (a hymn's four parts); the child plays the top line
+media: {vocal: yue2, backing: kids}   # optional: the make-media skill's choices (default: from the genre)
 abc: |
   X:1
   T:Minuet in G
@@ -48,11 +51,31 @@ ABC features the build understands:
 | `Q:1/2=60` | Tempo in any beat unit |
 | `%%score {RH LH}` | The grand staff: the first voice is the right hand, the second the left |
 
+## Tempo
+
+The **100% preset is the natural performance tempo**: the speed the song is sung or played, which
+the child works up to. The app's 90%, 75% and 50% presets are the practice speeds, so don't slow
+the written tempo down for beginners.
+
+- **Where to take it from:** the source's own metronome mark if it has one; otherwise published
+  recordings (songbpm.com, tunebat.com and getsongbpm.com list them), taking the middle of several.
+  A word like "Andante" or "Moderato" on a teaching sheet is not enough. Write the evidence in
+  `tempoSource:`, which the parent sees in the review list.
+- **Which note is the beat:** a BPM figure counts the beat you'd clap. Compare it with the written
+  notes: in 6/8 it's the dotted quarter (`Q:3/8=…`); a song notated in quarter notes but sung two
+  beats a bar (London Bridge, Five Little Ducks) is in cut time (`M:2/2`, `Q:1/2=…`). Getting this
+  wrong halves the tempo: the first kids' batch came out at half speed that way.
+- **Check by singing:** the words at 100% should sound like the song, not a practice run.
+- **Leave room for the sung words:** YuE2 runs quick syllables together at a recording's full pace.
+  In the first kids' batch the parent slowed three songs to 80–90% of it (Five Little Ducks, London
+  Bridge, Row, Row). For a song with quick syllables (eighth notes with words), start at about 90%
+  of the recordings, and say so in `tempoSource`.
+
 ## Levelling
 
 Run `check`: its **map point** and **featured skills** come from the skill map's constraints (song
 analysis, §6.8), and they decide when the piece unlocks. Your `level:` is the description people
-see. Use the method-book levels (Prep A, Prep B, Level 1 … Level 10 for Faber; the RCM levels are
+see. Use the app's levels (Prep A, Prep B, Level 1 … Level 10, named after the RCM levels; method books are
 close). If the analysis says **beyond the map**, the piece waits for the map to grow. That's fine
 for a library batch, but say so in the review.
 
@@ -64,6 +87,16 @@ Rough guide at the early levels:
 | Level 1 | Simple hands together (a held note or a fifth under a melody); eighth notes; a hand shift |
 | Level 2 | Hands together throughout; one sharp or flat; 3/4 and 4/4; dotted quarters |
 | Level 3–4 | Scales in the pieces, broken chords, two-voice textures, a few accidentals |
+
+**The real Prep A map (`content/skillmap/prep-a.yaml`) is strict.** A song fits Prep A
+only with quarter, half, dotted half and whole notes (no eighths); the right hand in C to G and the
+left hand in C to G or F to Middle C; steps and skips (a 4th or a wider leap is beyond the map,
+except the jumps between Middle C, Treble G and Bass F); hands together only over a held note; and
+rests, ties and 3/4 each unlock a unit later. Most kids' songs therefore need an **easy Prep A
+arrangement** beside the full one (same `song:`, `version: Easy`). Beginner books' trick is to pass
+the tune between the hands in Middle C position: put the words under both hands (`w:` after each
+voice) and the left hand's turn is sung and shown as melody. Its Twinkle is in G with the low
+notes in the left hand, so no F sharp and no leap (`content/pieces/twinkle-twinkle.yaml`).
 
 ## Arranging to a level
 
@@ -83,4 +116,8 @@ Rough guide at the early levels:
   it's kept.
 - **Chord symbols** in quotes above the melody for melody-only arrangements, so the chord pad has
   something to play. Two-hand pieces don't need them.
-- **Lyrics** (songs): one syllable per note, merge melismas onto one note, verses under the repeats.
+- **Lyrics** (songs): one syllable per note, merge melismas onto one note, verses under the repeats
+  (or, for a strophic song without repeats, one `w:` line per verse under the same bars: it plays
+  once per verse).
+- **Hymns**: type all four parts (`%%score (S A) (T B)`, lyrics under the soprano) with
+  `play: melody`. The child plays the melody; the media skill's backing plays the alto, tenor and bass.

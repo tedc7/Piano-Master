@@ -1,0 +1,69 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.c-five-finger, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.c-five-finger
+title: The C 5-finger scale
+cards:
+- kind: explain
+  text: A scale steps up or down from one key to the next, like stairs. Put one finger on each key, C D E F G, for
+    the C 5-finger scale. C is the lowest note for each hand, and it's the home note.
+- kind: show
+  text: 'Right hand: thumb on C, then fingers 2, 3, 4, 5 on D, E, F, G.'
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: show
+  text: 'Left hand, one C lower: finger 5 on C, up to the thumb on G.'
+  notes: C3 D3 E3 F3 G3
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  hand: L
+  clef: bass
+- kind: hear
+  text: Up the C 5-finger scale and back down to the home note.
+  play: C4 D4 E4 F4 G4:2 F4 E4 D4 C4:2
+  tempo: 100
+- kind: try
+  text: Play C D E F G with right-hand fingers 1 to 5.
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: try
+  text: 'Now the left hand: C D E F G with fingers 5 to 1.'
+  notes: C3 D3 E3 F3 G3
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: In the right-hand C 5-finger scale, which finger plays G?
+    choices:
+    - '3'
+    - '4'
+    - '5'
+    answer: '5'
+  - text: What is the home note of the C 5-finger scale?
+    choices:
+    - C
+    - E
+    - G
+    answer: C

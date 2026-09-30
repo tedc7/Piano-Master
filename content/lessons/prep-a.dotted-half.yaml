@@ -1,0 +1,45 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.dotted-half, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.dotted-half
+title: The dotted half note
+cards:
+- kind: explain
+  text: 'A dot after a note makes it longer by half. A half note gets two beats, so a dotted half note gets three:
+    count 1, 2, 3.'
+- kind: show
+  text: 'A dotted half note, then a quarter note: four beats in all.'
+  notes: C4:3 D4
+  fingers:
+  - 1
+  - 2
+  hand: R
+- kind: hear
+  text: Hold, 2, 3, and step.
+  play: C4:3 D4 E4:3 F4 G4:4
+  tempo: 100
+- kind: try
+  text: Play C and hold it for three beats, then D.
+  notes: C4:3 D4
+  fingers:
+  - 1
+  - 2
+  hand: R
+- kind: echo
+  text: Listen, then play it back. Hold the long notes for three.
+  play: E4:3 D4 C4:3 D4
+  tempo: 90
+- kind: check
+  questions:
+  - text: How many beats does a dotted half note get?
+    choices:
+    - '2'
+    - '3'
+    - '4'
+    answer: '3'
+  - text: Listen. How long was the first note?
+    hear: C4:3 D4
+    choices:
+    - 2 beats
+    - 3 beats
+    answer: 3 beats

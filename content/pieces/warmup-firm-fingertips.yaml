@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.half-note). Warm-up in our own music.
+# Repeated notes on the three black keys, one firm finger at a time.
+title: "Warm-up: Firm Fingertips"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Firm Fingertips
+  M:4/4
+  L:1/4
+  Q:1/4=88
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !2!^F ^F ^F ^F | ^F2 ^F2 | !3!^G ^G ^G ^G | ^G2 ^G2 | z4 | z4 | z4 | z4 |]
+  [V:LH] z4 | z4 | z4 | z4 | !2!^A, ^A, ^A, ^A, | ^A,2 ^A,2 | !3!^G, ^G, ^G, ^G, | ^G,2 ^G,2 |]

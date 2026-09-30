@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.three-four). Original music and words for this app.
+title: "Waltzing Bear"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Waltzing Bear
+  M:3/4
+  L:1/4
+  Q:1/4=120
+  K:C
+  !1!C D E | F E D | E F G | G3 | G F E | F E D | E D D | C3 |]
+  w: One, two, three, dance with me, round and round, go. Twirl a-round, light as air, now we bow, done.

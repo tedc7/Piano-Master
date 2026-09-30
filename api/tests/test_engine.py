@@ -304,3 +304,16 @@ def test_other_required_skills_get_review_credit_from_their_own_bars(con, conten
                        note_errors=[{"kind": "missed", "bar": 1}] * 3)       # 5 of 8 in its bars: weak
     fx = engine.record_attempt(con, content, "s1", info)
     assert "t.a" not in fx["reviewed"]
+
+
+def test_a_new_skill_map_replans_todays_session(con, content):
+    old = engine.get_session(con, content, "s1", D0)
+    assert engine.get_session(con, content, "s1", D0)["items"][0]["id"] == old["items"][0]["id"]      # resumed
+    # the same map under new ids (the placeholder map replaced by the real one)
+    new_id = lambda x: x.replace("t.", "n.") if x else x
+    skills = [{**s, "id": new_id(s["id"]), "prerequisites": [new_id(q) for q in s["prerequisites"]]} for s in SKILLS]
+    pieces = [piece("n" + p["id"], new_id(p["skillId"]), p["title"]) for p in PIECES]
+    new = Content.from_json({"skills": skills}, {"contentVersion": "t2", "pieces": pieces})
+    s = engine.get_session(con, new, "s1", D0)
+    assert s["items"][0]["id"] != old["items"][0]["id"]
+    assert all(not i.get("skillId") or i["skillId"].startswith("n.") for i in s["items"])

@@ -46,7 +46,7 @@ UNDER, OVER = 1.0, 5.0
 
 MAJOR = [0, 2, 4, 5, 7, 9, 11]
 HARMONIC_MINOR = [0, 2, 3, 5, 7, 8, 11]
-# Standard fingerings (as in the ABRSM and Faber scale books), ascending from the tonic:
+# Standard fingerings (as in the published scale books), ascending from the tonic:
 # (first finger on the bottom tonic, fingers for degrees 1-7 inside the run, finger on the top
 # tonic). Descending uses the same fingers in reverse. Keys by the tonic's pitch class.
 _WHITE_R = (1, (1, 2, 3, 1, 2, 3, 4), 5)

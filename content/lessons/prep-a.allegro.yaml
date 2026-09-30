@@ -1,0 +1,37 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.allegro, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.allegro
+title: Allegro
+cards:
+- kind: explain
+  text: Allegro is an Italian word written at the start of a piece. It means fast and lively.
+- kind: hear
+  text: 'This tune played allegro: fast and lively!'
+  play: C4 E4 F4 G4:3 C4 E4 F4 G4:3
+  tempo: 160
+  contrast:
+    text: And the same tune slowly. Which one feels allegro?
+    play: C4 E4 F4 G4:3 C4 E4 F4 G4:3
+- kind: try
+  text: Play C, E, F, G, lively and bright.
+  notes: C4 E4 F4 G4
+  fingers:
+  - 1
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: check
+  questions:
+  - text: What does allegro mean?
+    choices:
+    - Fast and lively
+    - Slow and soft
+    answer: Fast and lively
+  - text: Listen. Is this allegro?
+    hear: C4 E4 G4 E4 C4 E4 G4:2
+    choices:
+    - 'Yes'
+    - 'No'
+    answer: 'Yes'

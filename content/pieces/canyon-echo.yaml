@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.two-black-keys). Original music and words for this app.
+title: "Canyon Echo"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Canyon Echo
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !2!^c !3!^d ^c ^d | ^c ^c ^d ^d | z4 | z4 | ^d ^c ^d ^c | ^d ^d ^c ^c | z4 | z4 |]
+  w: Hel-lo, hel-lo, is some-one there? Who is down be-low? Please tell me!
+  [V:LH] z4 | z4 | !3!^C,, !2!^D,, ^C,, ^D,, | ^C,, ^C,, ^D,, ^D,, | z4 | z4 | ^D,, ^C,, ^D,, ^C,, | ^D,, ^D,, ^C,, ^C,, |]
+  w: Hel-lo, hel-lo, is some-one there? Who is down be-low? Please tell me!

@@ -1,6 +1,7 @@
 // Audio Engine (arch §4): stems, metronome and count-in clicks, and a sampled piano for Listen
 // mode, the other hand in one-hand practice and the concept lessons. Plain Web Audio, the API the
 // feasibility tests proved in MIDIWeb Browser.
+import { api } from "./api";
 import type { Media, Preset } from "./types";
 
 export interface StemBuffers { vocals: AudioBuffer | null; accompaniment: AudioBuffer }
@@ -110,7 +111,8 @@ export class AudioEngine {
     const total = (st.vocals?.bytes ?? 0) + st.accompaniment.bytes;
     let got = 0;
     const fetchOne = async (url: string) => {
-      const r = await fetch(url);
+      // a staged song's stems are the parent's only (arch §10.7)
+      const r = await fetch(url, url.startsWith("/api/review/") && api.parentToken ? { headers: { "X-Parent-Token": api.parentToken } } : undefined);
       if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
       if (!r.body) return r.arrayBuffer();
       const reader = r.body.getReader();

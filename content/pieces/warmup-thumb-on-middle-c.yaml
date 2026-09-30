@@ -1,0 +1,18 @@
+# Core piece (Prep A, prep-a.c-b-a-g-f). Warm-up in our own music.
+# The left thumb on Middle C, stepping down to F and back: the thumb plays on its side tip.
+title: "Warm-up: Thumb on Middle C"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Thumb on Middle C
+  M:4/4
+  L:1/4
+  Q:1/4=88
+  K:C clef=bass
+  !1!C B, A, G, | F,4 | G, A, B, C | C4 | C B, A, B, | C4 |]

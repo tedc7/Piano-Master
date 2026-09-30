@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.bass-c-scale). Original music and words for this app.
+title: "Galloping"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:Galloping
+  M:4/4
+  L:1/4
+  Q:1/4=108
+  K:C clef=bass
+  !5!C, E, G, E, | F, E, D,2 | C, D, E, F, | G, F, E,2 | D, E, F, E, | D, C, D,2 | E, D, C, D, | C,4 |]
+  w: Gal-lop, gal-lop, o-ver hills, up the val-ley, down the road, trot-ting, trot-ting, slow-ing down, in-to the barn, home.

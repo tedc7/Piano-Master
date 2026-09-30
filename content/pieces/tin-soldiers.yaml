@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.four-four). Original music and words for this app.
+title: "Tin Soldiers"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Tin Soldiers
+  M:4/4
+  L:1/4
+  Q:1/4=104
+  K:C
+  !1!C C D D | E E F F | G G F F | E4 | E E D D | C C D D | E F E D | C4 |]
+  w: Left, right, left, right, sol-diers march-ing down the lit-tle road. Turn a-round and march back home a-gain, left, right, left, halt!

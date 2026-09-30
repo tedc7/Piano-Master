@@ -1,0 +1,48 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.tie, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.tie
+title: The tie
+cards:
+- kind: explain
+  text: A tie is a curved line joining two notes on the same line or space. Play the note once and hold it for both
+    notes' beats added together.
+- kind: show
+  text: 'A half note tied to a whole note: play once, hold for six beats.'
+  notes: G4:2 G4:4
+  fingers:
+  - 5
+  - 5
+  hand: R
+- kind: hear
+  text: 'Listen: the tied note sounds once and keeps on ringing.'
+  play: C4 D4 E4 F4 G4:6 F4 E4 D4 C4:4
+  tempo: 100
+  contrast:
+    text: Without the tie, G is played twice.
+    play: C4 D4 E4 F4 G4:2 G4:4 F4 E4 D4 C4:4
+- kind: try
+  text: Play G once and hold it while you count six beats.
+  notes: G4:6
+  fingers:
+  - 5
+  hand: R
+- kind: check
+  questions:
+  - text: A half note tied to a quarter note lasts how many beats?
+    choices:
+    - '2'
+    - '3'
+    - '4'
+    answer: '3'
+  - text: How many times do you play two tied notes?
+    choices:
+    - Once
+    - Twice
+    answer: Once
+  - text: Listen. Was the long note played once or twice?
+    hear: E4 F4 G4:5
+    choices:
+    - Once
+    - Twice
+    answer: Once

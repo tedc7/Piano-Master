@@ -1,0 +1,54 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.low-and-high, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.low-and-high
+title: Low and high
+cards:
+- kind: explain
+  text: Going down the keyboard, to the left, the sounds get lower. Going up, to the right, they get higher. Keep
+    a steady beat as you move.
+- kind: hear
+  text: Two black keys high up on the right. Bright and high!
+  play: C#6 D#6 C#6 D#6
+  tempo: 96
+  contrast:
+    text: Now two black keys down low on the left. Deep and low!
+    play: C#2 D#2 C#2 D#2
+- kind: try
+  text: 'Right hand: play the two black keys up high.'
+  notes: C#5 D#5 C#5 D#5
+  fingers:
+  - 2
+  - 3
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: 'Left hand: play the two black keys down low.'
+  notes: C#2 D#2 C#2 D#2
+  fingers:
+  - 3
+  - 2
+  - 3
+  - 2
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Going to the right on the keyboard, the sounds get...
+    choices:
+    - Higher
+    - Lower
+    answer: Higher
+  - text: Listen. Was that high or low?
+    hear: C#2 D#2 C#2
+    choices:
+    - High
+    - Low
+    answer: Low
+  - text: Listen. Was that high or low?
+    hear: C#6 D#6 C#6
+    choices:
+    - High
+    - Low
+    answer: High

@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.three-four). Warm-up in our own music.
+# Three beats in a bar, flowing over the bar line without a pause.
+title: "Warm-up: Flowing Wheels"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Flowing Wheels
+  M:3/4
+  L:1/4
+  Q:1/4=104
+  K:C
+  !1!C D E | F3 | E D C | D3 | E F G | F3 | E D D | C3 |]

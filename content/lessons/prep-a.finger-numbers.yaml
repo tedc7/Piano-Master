@@ -1,0 +1,54 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.finger-numbers, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.finger-numbers
+title: Finger numbers
+cards:
+- kind: explain
+  text: Your fingers have numbers. The thumbs are 1, then pointer fingers 2, middle fingers 3, ring fingers 4 and
+    little fingers 5, on both hands. A number over a note tells you which finger plays it.
+- kind: show
+  text: 'Right hand: finger 2, then finger 3.'
+  notes: C#4 D#4
+  fingers:
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: 'Play with the fingers the numbers say: 2, 3, 2, 3.'
+  notes: C#4 D#4 C#4 D#4
+  fingers:
+  - 2
+  - 3
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: 'Left hand: finger 3, then finger 2.'
+  notes: C#3 D#3 C#3 D#3
+  fingers:
+  - 3
+  - 2
+  - 3
+  - 2
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Which finger is number 1?
+    choices:
+    - Thumb
+    - Pointer
+    - Little finger
+    answer: Thumb
+  - text: Which finger is number 5?
+    choices:
+    - Thumb
+    - Middle finger
+    - Little finger
+    answer: Little finger
+  - text: Is the left thumb number 1 too?
+    choices:
+    - 'Yes'
+    - 'No'
+    answer: 'Yes'

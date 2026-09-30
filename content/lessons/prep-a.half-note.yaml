@@ -1,0 +1,49 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.half-note, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.half-note
+title: The half note
+cards:
+- kind: explain
+  text: 'A half note is hollow, with a stem. It gets two beats: play it and hold it while you count 1, 2.'
+- kind: show
+  text: Two quarter notes, then a half note.
+  notes: C#4 C#4 C#4:2
+  fingers:
+  - 2
+  - 2
+  - 2
+  hand: R
+- kind: hear
+  text: Tap, tap, hold. Hear the long note at the end?
+  play: C#4 D#4 C#4:2 D#4 C#4 D#4:2
+  tempo: 90
+  contrast:
+    text: Now all quarter notes, no holding.
+    play: C#4 D#4 C#4 C#4 D#4 C#4 D#4 D#4
+- kind: try
+  text: Play two quarter notes and a half note. Count 1, 2 on the long one.
+  notes: C#4 D#4 C#4:2
+  fingers:
+  - 2
+  - 3
+  - 2
+  hand: R
+- kind: echo
+  text: 'Listen, then play it back: some notes are short and some are long.'
+  play: C#4:2 D#4:2 C#4 C#4
+  tempo: 80
+- kind: check
+  questions:
+  - text: How many beats does a half note get?
+    choices:
+    - '1'
+    - '2'
+    - '4'
+    answer: '2'
+  - text: Listen. Was it short, short, long or long, short, short?
+    hear: C#4 C#4 D#4:2
+    choices:
+    - Short, short, long
+    - Long, short, short
+    answer: Short, short, long

@@ -7,6 +7,7 @@
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import { api } from "../lib/api";
+  import { loadContent } from "../lib/content";
   import { app } from "../lib/app.svelte.js";
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
@@ -100,8 +101,13 @@
           // a generated drill belongs to one student (arch §8.9)
           if (!app.student) throw new Error("drills are made for a student");
           piece = await api.request<Piece>(`/students/${app.student.id}/drills/${id}`);
+        } else if (id.startsWith("staged--")) {
+          // a song waiting in the review list: the parent's only (arch §10.7)
+          piece = await api.request<Piece>(`/review/items/${id.slice("staged--".length)}/piece`);
         } else {
-          const r = await fetch(`content/pieces/${id}.json`);
+          // an approved library song is served by the piano server; the rest were built into the app
+          const lib = (await loadContent().catch(() => null))?.pieces.find((p) => p.id === id)?.library;
+          const r = await fetch(lib ? `/api/library/pieces/${id}` : `content/pieces/${id}.json`);
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           piece = await r.json();
         }

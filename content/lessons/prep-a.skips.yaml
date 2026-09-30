@@ -1,0 +1,51 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.skips, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.skips
+title: Skips, line to line
+cards:
+- kind: explain
+  text: A skip goes from a line to the next line. On the piano you skip a key and skip a finger; in the alphabet
+    you skip a letter, like C to E.
+- kind: show
+  text: 'Skips up in C position: C, E, G, line to line.'
+  notes: C4 E4 G4
+  fingers:
+  - 1
+  - 3
+  - 5
+  hand: R
+- kind: hear
+  text: Skips going up and down.
+  play: C4 E4 G4:2 G4 E4 C4:2
+  tempo: 100
+  contrast:
+    text: And steps, for comparison.
+    play: C4 D4 E4:2 E4 D4 C4:2
+- kind: try
+  text: 'Skip up: C, E, G with fingers 1, 3, 5.'
+  notes: C4 E4 G4
+  fingers:
+  - 1
+  - 3
+  - 5
+  hand: R
+- kind: echo
+  text: Listen, then play it back. Steps or skips?
+  play: C4 E4 G4 E4 C4
+  tempo: 90
+- kind: check
+  questions:
+  - text: Line to the next line is a...
+    choices:
+    - Step
+    - Skip
+    answer: Skip
+  - text: Listen. Steps or skips?
+    hear: C4 E4 G4
+    choices:
+    - Steps
+    - Skips
+    answer: Skips
+  - text: Skip up from Middle C. Which note do you land on?
+    answer: E4

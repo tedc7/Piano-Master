@@ -1,0 +1,46 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.more-skips, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.more-skips
+title: Skips, space to space
+cards:
+- kind: explain
+  text: A skip also goes from a space to the next space, like D to F on the treble staff, or G to B on the bass
+    staff.
+- kind: show
+  text: 'Space to space: D, then skip up to F.'
+  notes: D4 F4
+  fingers:
+  - 2
+  - 4
+  hand: R
+- kind: show
+  text: 'On the bass staff: G, then skip up to B.'
+  notes: G3 B3
+  fingers:
+  - 4
+  - 2
+  hand: L
+  clef: bass
+- kind: try
+  text: Skip from D up to F and back.
+  notes: D4 F4 D4 F4
+  fingers:
+  - 2
+  - 4
+  - 2
+  - 4
+  hand: R
+- kind: echo
+  text: 'Listen, then play it back: D to F.'
+  play: D4 F4 F4 D4
+  tempo: 90
+- kind: check
+  questions:
+  - text: Space to the next space is a...
+    choices:
+    - Step
+    - Skip
+    answer: Skip
+  - text: Skip up from D. Play the note you land on.
+    answer: F4

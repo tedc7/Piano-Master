@@ -5,10 +5,11 @@ description: Add songs or pieces to the Piano-Master library - find public-domai
 
 # Import songs (Piano-Master, arch §10.4)
 
-You find, fix, arrange and check; the parent approves. **Nothing reaches a child until the parent
-has said which pieces to add.** Batches wait in `content/incoming/<batch>/`, which the content
-build and deploys ignore. Until the Skill API and staging exist (M7), approved pieces are promoted
-into `content/pieces/` and go live with the next deploy.
+You find, fix, arrange and check; the parent approves in the app. **Nothing reaches a child until
+the parent has approved it.** Batches are made in `content/incoming/<batch>/`, which the content
+build and deploys ignore, then submitted to the piano server's staging area through the Skill API
+(M7, arch §10.7, §10.9). The parent listens, chooses and approves in Config › Review list; approved
+songs join the library on the server straight away, with no deploy.
 
 All commands run from the repo root with `tools/.venv/bin/python tools/import_song.py …`.
 
@@ -17,9 +18,10 @@ All commands run from the repo root with `tools/.venv/bin/python tools/import_so
 - Read the current skill map (`content/skillmap/*.yaml`): it decides where each piece sits. A piece
   needing something no skill covers yet is **beyond the map** and can't unlock until the map grows;
   that's allowed in a batch, but say so in the review.
-- Look at what's already in the library (`content/pieces/`) so you don't bring duplicates; `check`
-  also compares melodies.
-- Check `content/deleted.yaml` (songs the parent said never to add, if it exists).
+- Look at what's already in the library so you don't bring duplicates: the deployed pieces
+  (`content/pieces/`) and the songs approved on the piano server (`GET /api/skill/library` with the
+  skill token). `check` compares melodies with the deployed pieces; the server's intake compares
+  them with everything, and refuses anything on its deleted list (`GET /api/skill/deleted`).
 
 ## 2. Find or take the source
 
@@ -48,6 +50,10 @@ on 61 keys (C2–C7), repeats, phrases, fingering, chord symbols, lyrics, and se
 one song (`song:` and `version:`). Say in the file's header comment what you changed from the
 source. Known traps are in [references/pitfalls.md](references/pitfalls.md).
 
+**Tempo:** the 100% preset is the song's natural performance tempo, not a practice tempo (the app's
+90/75/50% presets are for practice). Take it from a real performance, write where it came from in
+`tempoSource:`, and mind which note the source counts ([references/arranging.md](references/arranging.md#tempo)).
+
 ## 5. Check and compare
 
 ```bash
@@ -68,34 +74,58 @@ tools/.venv/bin/python tools/import_song.py compare content/incoming/BATCH/ID.ya
   build and `tools/check_app.py` (it draws every piece and reports staff problems), then move it
   back. Don't leave it there unapproved.
 
-## 6. Hand the parent one review
+## 6. Add the media, then submit to the review list
+
+Songs get their vocal and backing from the `make-media` skill first (below). Then:
 
 ```bash
-tools/.venv/bin/python tools/import_song.py report content/incoming/BATCH
+tools/.venv/bin/python tools/import_song.py report content/incoming/BATCH   # REVIEW.md: your own record of the batch
+tools/.venv/bin/python tools/import_song.py submit content/incoming/BATCH   # or name the ids to send only some
 ```
 
-This writes `content/incoming/BATCH/REVIEW.md`: one row per piece, with its level, range, where it
-sits on the map, source, license and any remaining problems. Tell the parent in a few lines what's
-in the batch, what was simplified, what's beyond the current map, and anything uncertain. Then
-**stop and wait for their answer.**
+`submit` builds each piece (notation, song analysis, finger numbers and its stems) and sends it to
+the piano server with what the parent needs to decide: source, license and its evidence, the tempo's
+source, level, lyrics, your header notes, the check's warnings and the media checks. The server's
+intake checks it again (license, id, melody fingerprint against the library and the deleted list,
+the skill map) and stages the pieces that pass; its report comes back straight away. The token is
+in `~/.config/piano-master/skill-token` (made in Config › Dev box connection, or with
+`docker exec docmost-piano-api-1 python -m app.admin skill-token NAME` on the server).
 
-## 7. Promote what the parent approved
+Then tell the parent in a few lines what's waiting in **Config › Review list**: what was
+simplified, what's beyond the current map, and anything flagged or uncertain. **Stop there.** They
+listen to each song and approve it, send it back with a note (**Needs improvement**) or never allow
+it. Deleted songs (never allowed, or deleted from the library) wait at the bottom of the Review
+list, where the parent can send one for improvement: its note then shows up in `feedback` like any
+other. A song stays on the list until they decide. A new song reaches each
+child once its genre is allowed (Config › Songs and genres).
+
+## 6b. Fix what the parent sent back
 
 ```bash
-tools/.venv/bin/python tools/import_song.py promote content/incoming/BATCH ID1 ID2 …   # or --all, only if they approved all
+tools/.venv/bin/python tools/import_song.py feedback      # each song sent back, its batch file, and the parent's note
 ```
 
-`promote` re-checks and refuses anything with errors. Then run the content build and the tests,
-and deploy with `tools/deploy.sh` (the app deploy is ours to run; see the deployment notes). A
-piece the parent rejects for good goes on `content/deleted.yaml` (title, composer, reason), so it's
-never offered again.
+Read each note and fix what it says: the arrangement (notes, tempo, key, verses) here, the vocal or
+backing with the `make-media` skill (a changed tempo or score renders new takes by itself). Log the
+problem and the fix in `docs/media-pipeline-notes.md`. Then submit only the fixed songs,
+`import_song.py submit content/incoming/BATCH ID…`: each replaces the one sent back and returns to
+the review list with the parent's note beside it, and the parent decides again. Tell the parent
+what you changed.
+
+## 7. Core pieces
+
+Pieces written for the skill map (`kind: core`, lesson pieces) deploy with the app instead:
+`import_song.py promote content/incoming/BATCH ID…` moves them into `content/pieces/`, then run the
+content build, the tests and `tools/deploy.sh`.
 
 ## Media
 
-Pieces arrive with notation only. Sung vocals and backing come from the `generate-music` skill
-(YuE2), which needs lyrics, so it's only for songs with words. A backing track for wordless pieces
-is an open question, being tested separately with FluidSynth (arch §15). Don't promise media for
-instrumental pieces.
+Pieces arrive with notation only. The `make-media` skill (`.claude/skills/make-media/`) adds
+them before the parent's review: a YuE2 vocal for songs with words, and a FluidSynth backing from
+the piece's own backing notes (arch §10.5, v0.22). So give songs **chord symbols**, and type a
+hymn's **four parts** with `play: melody` (the child plays the melody; the alto, tenor and bass
+become the backing). A song with words and no backing notes keeps YuE2's backing. A solo piano
+piece needs none: the app plays the other hand. Run `make-media` after `check`, then `submit`.
 
 ## Log problems as you go
 

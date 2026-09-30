@@ -1,0 +1,34 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.skips-together, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.skips-together
+title: Skips played together
+cards:
+- kind: explain
+  text: Two notes a skip apart can be played together, like C and E with right-hand fingers 1 and 3.
+- kind: show
+  text: 'C and E together: a skip played at once.'
+  notes: '[C4,E4]:2'
+  fingers:
+  - 1
+  hand: R
+- kind: hear
+  text: Skips played together, stepping up.
+  play: '[C4,E4]:2 [D4,F4]:2 [E4,G4]:2 [C4,E4]:2'
+  tempo: 90
+- kind: try
+  text: Play C and E at the same time, fingers 1 and 3.
+  notes: '[C4,E4] [C4,E4]'
+  fingers:
+  - 1
+  - 1
+  hand: R
+- kind: check
+  questions:
+  - text: Play C and E together.
+    answer: '[C4,E4]'
+  - text: C and E are a...
+    choices:
+    - Step apart
+    - Skip apart
+    answer: Skip apart

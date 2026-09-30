@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.d-e-f). Original music and words for this app.
+title: "The D-E-F Parade"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:The D-E-F Parade
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  K:C
+  !1!C D E F | E D C2 | D E F E | D4 | E F G F | E D E2 | D E D D | C4 |]
+  w: Here comes D and E and F, march-ing in the band, step-ping up and step-ping down, then march back to C.

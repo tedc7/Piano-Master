@@ -1,5 +1,5 @@
 # Piano-Master
-Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.22.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.22.md).
+Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.25.md](Family%20Piano%20Tutor%20-%20Architecture%20v0.25.md).
 
 ## Layout
 
@@ -7,24 +7,43 @@ Piano App with Parental Controls. Design: [Family Piano Tutor - Architecture v0.
 | --- | --- |
 | `client/` | The web client (Svelte 5, TypeScript, Vite; VexFlow 4.2.5 for the staff; plain Web Audio) |
 | `api/` | The App API (FastAPI, SQLite): devices, attempts with raw key presses, client logs, parent login, students, and the lesson engine (`app/engine.py`) |
-| `content/` | Authored content: the skill map (`skillmap/*.yaml`) and pieces (`pieces/*.yaml`, ABC inside) |
-| `tools/` | Python: the notation converter, the content build, tests, the browser check, fixtures and deploy |
-| `docs/` | Briefs for the Server repo session (server setup is done there, not here), and the keyboard-day checklist |
-| `.claude/skills/import-song/` | The song import skill (arch §10.4), a project skill Claude Code loads in this repo |
+| `content/` | Authored content: the skill map (`skillmap/*.yaml`) and pieces (`pieces/*.yaml`, ABC inside); import batches wait in `incoming/`, and each piece's vocal and backing stems in `media/` (both gitignored) |
+| `tools/` | Python: the notation converter, the content build, the song import tools, the media skill's tools (`media/`: YuE2 vocals, FluidSynth backings, alignment and checks), tests, the browser check, fixtures and deploy |
+| `docs/` | Briefs for the Server repo session (server setup is done there, not here), the keyboard-day checklist, and pipeline notes (`media-pipeline-notes.md`) |
+| `.claude/skills/` | Project skills Claude Code loads in this repo: `import-song` (arch §10.4) and `make-media` (§10.5) |
 | `feasibility/` | The feasibility tests and their results |
 | `skills/` | Backup of the `generate-music` Claude skill (YuE2) |
 | `client/public/audio/piano/` | The app's piano samples (Salamander Grand Piano, CC BY 3.0) |
 
-The skill map in `content/skillmap/` is a **placeholder** (ids start with `placeholder.`) until the
-Faber books arrive; replace it with the real Prep A map. Its concept lessons are in
-`content/lessons/` (one YAML file per skill, cards explain/show/hear/try/check/echo/watch).
-`content/incoming/` holds pieces waiting for the parent's approval (never built or deployed): the
-classical arrangements and their import notes (`incoming/classical/NOTES.md`).
+The skill map in `content/skillmap/` is the **Prep A map** (arch v0.25 §6.2): 46 skills in 9 units,
+one concept each (one Journey bubble), each labelled Notes, Rhythm, Technique, Theory or Musicianship. Its
+concept lessons are in `content/lessons/` (one YAML file per skill, one Explain card,
+then show/hear/try/check/echo/watch) and its core pieces in `content/pieces/`: each skill's `pieces` list is
+its practice pieces, 2 to 4 (Units 1 to 3 are pre-staff pieces, `letters: true`; `dynamics:` marks f, mf, p;
+`warmup-*` are the warm-ups). The family's own method-book photos (`Background/`) and page references
+(`content/private/book-refs.yaml`, merged into parent mode by the build) stay out of the repository.
+`content/incoming/` holds batches being prepared (never built or deployed, never committed): the
+classical arrangements and their import notes (`incoming/classical/NOTES.md`), and the kids' songs.
 
 **Importing songs** (arch §10.4): ask Claude Code to import or find songs; it follows the
 `import-song` skill and uses `tools/import_song.py` (`convert`, `check`, `compare`, `report`,
-`promote`). A batch waits in `content/incoming/<batch>/` with a `REVIEW.md`; only the pieces the
-parent approves are promoted into `content/pieces/`, and they go live with the next deploy.
+`submit`, and `promote` for core pieces). A batch is made in `content/incoming/<batch>/` and
+submitted to the app's review list; nothing reaches a child before the parent approves it there.
+
+**Vocals and backing** (arch §10.5, M8): the `make-media` skill and `tools/media/media.py` (`plan`,
+`make`, `report`). A song with words gets a YuE2 vocal (the `generate-music` skill), aligned to the
+beat and checked; a piece with chord symbols or other voices gets a backing rendered from them with
+FluidSynth and the MuseScore General SoundFont. Stems wait with the batch and go to
+the piano server with the song. Setup: `tools/media/setup.sh`.
+
+**The review list and the library** (arch §10.1, §10.7, §10.9; M7): `import_song.py submit` sends a
+batch, with its stems, through the Skill API (a token in `~/.config/piano-master/skill-token`). The
+server's intake checks every song again and stages the ones that pass; the parent listens and
+approves them in Config › Review list, and approved songs join the library on the server at once,
+with no deploy. Config › Songs and genres sets what each child sees (lesson pieces always; other
+genres once allowed) and deletes songs. The library holds only approved songs; every other song
+(waiting, sent back, or deleted) is in the review area, and deleted songs are at the bottom of the
+Review list. The files live beside the database in `/opt/piano/data` (`library/`, `staging/`).
 
 **Content build** (`tools/build_content.py`, arch §6.8–6.10): converts every piece, runs **song
 analysis** (`api/app/analysis.py`: required and featured skills, map point, skill measures, and
@@ -74,7 +93,7 @@ The Amazing Grace test song copies its YuE2 stems from the sync probe's build
 
 ```sh
 (cd client && npm run check && npm test)         # types; unit tests; the performance fixtures
-tools/.venv/bin/python -m pytest -q tools/tests  # skill-map validation, converter, constraint checks, the import tools
+tools/.venv/bin/python -m pytest -q tools/tests  # skill-map validation, converter, constraint checks, the import and media tools
 (cd api && ../tools/.venv/bin/python -m pytest -q tests)   # the App API, the lesson engine and the practice simulator
 (cd client && npm run build) && tools/.venv/bin/python tools/check_app.py
 ```

@@ -1,0 +1,48 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.quarter-note, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.quarter-note
+title: The quarter note
+cards:
+- kind: explain
+  text: Music has a steady beat, like a clock ticking. A quarter note is a filled-in note with a stem, and it gets
+    one beat.
+- kind: show
+  text: 'Four quarter notes: one beat each.'
+  notes: C#4 C#4 C#4 C#4
+  fingers:
+  - 2
+  - 2
+  - 2
+  - 2
+  hand: R
+- kind: hear
+  text: 'Tick, tock, tick, tock: four steady quarter notes.'
+  play: C#4 D#4 C#4 D#4
+  tempo: 90
+- kind: try
+  text: Play four quarter notes, steady like a clock.
+  notes: C#4 D#4 C#4 D#4
+  fingers:
+  - 2
+  - 3
+  - 2
+  - 3
+  hand: R
+- kind: echo
+  text: Listen, then play it back with the same steady beat.
+  play: C#5 C#5 D#5 D#5
+  tempo: 90
+- kind: check
+  questions:
+  - text: How many beats does a quarter note get?
+    choices:
+    - '1'
+    - '2'
+    - '4'
+    answer: '1'
+  - text: A quarter note is...
+    choices:
+    - Filled in, with a stem
+    - Hollow, with no stem
+    answer: Filled in, with a stem

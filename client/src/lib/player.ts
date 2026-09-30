@@ -524,7 +524,9 @@ export class Player {
             k = m;
           }
         }
-        this.audio.piano(n.pitch, Math.max(t, ctx.currentTime), dur * this.clock!.spb * 0.95, level);
+        // a dynamic mark's velocity (100 is forte) makes the note louder or softer
+        this.audio.piano(n.pitch, Math.max(t, ctx.currentTime), dur * this.clock!.spb * 0.95,
+          level * Math.min(1, (n.velocity ?? 100) / 100));
       }
       this.toneCursor++;
     }

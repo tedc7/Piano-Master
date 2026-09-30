@@ -5,25 +5,33 @@
     tools/.venv/bin/python tools/import_song.py check PATH...                         # files or batch folders
     tools/.venv/bin/python tools/import_song.py compare PIECE.yaml REFERENCE [--line melody|R|L|all] [--part N] [--transpose N]
     tools/.venv/bin/python tools/import_song.py report content/incoming/NAME          # REVIEW.md for the parent
-    tools/.venv/bin/python tools/import_song.py promote content/incoming/NAME ID...   # after the parent approves
+    tools/.venv/bin/python tools/import_song.py submit content/incoming/NAME [ID...]  # to the piano server's review list (M7)
+    tools/.venv/bin/python tools/import_song.py feedback                               # the parent's "needs improvement" notes
+    tools/.venv/bin/python tools/import_song.py promote content/incoming/NAME ID...   # core pieces, or without the server
 
 Batches live in content/incoming/<name>/, which the content build and deploys ignore. `check`
 runs the content build's own code on each piece (notation, analysis against the current skill
 map, finger numbers, keyboard range) and adds the import checks: bar lengths, source and license
 fields, duplicates by melody fingerprint (§10.8) against the library and the batch, and the
-deleted list (content/deleted.yaml). Until the Skill API and staging exist (M7), approved pieces
-are promoted into content/pieces/ and go live with the next deploy.
+deleted list (content/deleted.yaml). `submit` sends library songs, with their media, through the
+piano server's Skill API to its staging area: the parent listens and approves them in the app's
+review list (arch §10.7, §10.9). `promote` is for core pieces written for the skill map, which
+deploy with the app.
 """
 from __future__ import annotations
 
 import argparse
 import difflib
 import json
+import os
 import re
 import shutil
+import ssl
 import subprocess
 import sys
 import tempfile
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 import yaml
@@ -182,13 +190,15 @@ def check_files(files: list[Path]) -> list[dict]:
             if not EDITION.match(ed):
                 r["errors"].append(f"`license.edition` {ed or '(missing)'!r} is not an accepted license "
                                    "(public-domain, CC0, CC BY, CC BY-SA, parent-supplied, or 'retyped from …')")
+            if not meta.get("tempoSource"):
+                r["warnings"].append("no `tempoSource`: say where the 100% tempo came from (a metronome mark or recordings)")
         for d in deleted or []:
             if norm(d.get("title")) == norm(meta.get("title")) and norm(d.get("composer")) == norm(meta.get("composer")):
                 r["errors"].append(f"on the deleted list ({d.get('reason') or 'no reason given'}): never add it again")
         if pid in lib:
             r["warnings"].append("a piece with this id is already in the library: promoting it would replace it")
         try:
-            piece, entry, w = bc.make_piece(pid, meta, skills, parsed, "check")
+            piece, entry, w = bc.make_piece(pid, meta, skills, parsed, "check", media_root=f.parent / "media")
         except Exception as e:           # a build error is the most useful thing to report
             r["errors"].append(f"does not build: {e}")
             continue
@@ -368,8 +378,142 @@ def promote(args) -> int:
             return 2
     for f in files:
         shutil.move(str(f), CONTENT / "pieces" / f.name)
-        print(f"promoted {f.stem}")
+        media = batch / "media" / f.stem           # its stems from the media skill (arch §10.5)
+        moved = media.is_dir()
+        if moved:
+            dest = CONTENT / "media" / f.stem
+            if dest.exists():
+                shutil.rmtree(dest)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(media), dest)
+        print(f"promoted {f.stem}" + (" with its media" if moved else ""))
     print("next: tools/.venv/bin/python tools/build_content.py, then tools/deploy.sh")
+    return 0
+
+
+# ------------------------------------------------------------------------------ submit (M7)
+
+SERVER = os.environ.get("PIANO_SERVER", "https://192.168.2.128")
+TOKEN_FILE = Path.home() / ".config" / "piano-master" / "skill-token"
+CA = Path(os.environ.get("CADDY_ROOT_CA", Path.home() / "repos" / "Server" / "caddy-root-ca.crt"))
+
+
+def skill_token() -> str:
+    t = os.environ.get("PIANO_SKILL_TOKEN") or (TOKEN_FILE.read_text().strip() if TOKEN_FILE.exists() else "")
+    if not t:
+        raise SystemExit(f"no skill token: make one in the app (Config > Dev box connection) and save it in {TOKEN_FILE}")
+    return t
+
+
+def call(method: str, path: str, body=None, data: bytes | None = None, ctype: str = "application/json"):
+    """The Skill API on the piano server; returns the JSON reply, or raises with the server's reason."""
+    ctx = ssl.create_default_context(cafile=str(CA)) if CA.exists() else None
+    payload = data if data is not None else (json.dumps(body).encode() if body is not None else None)
+    req = urllib.request.Request(SERVER + path, data=payload, method=method,
+                                 headers={"Authorization": f"Bearer {skill_token()}", "Content-Type": ctype})
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=300) as r:
+            return json.loads(r.read() or b"null")
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode(errors="replace")
+        raise SystemExit(f"{method} {path}: HTTP {e.code} {detail[:500]}")
+
+
+def header_notes(f: Path) -> list[str]:
+    """The piece file's header comment, for the parent (what the piece is and what was changed)."""
+    out = []
+    for line in f.read_text().splitlines():
+        if not line.startswith("#"):
+            break
+        out.append(line.lstrip("# ").rstrip())
+    return [" ".join(out)] if out else []
+
+
+def lyrics_text(nota: dict) -> str:
+    """Every verse's words, one line per verse, for the review list."""
+    un = nt.unroll(nota)
+    verses: dict[int, list[str]] = {}
+    for n in un["notes"]:
+        ly = n.get("lyric")
+        if not ly:
+            continue
+        words = verses.setdefault(n["verse"], [])
+        if words and words[-1].endswith("-"):
+            words[-1] = words[-1][:-1] + ly["text"]
+        else:
+            words.append(ly["text"])
+        if ly["syllabic"] in ("begin", "middle"):
+            words[-1] += "-"
+    return "\n".join(f"{v}. " + " ".join(w) for v, w in sorted(verses.items()))
+
+
+def package_items(batch: Path, ids: list[str]) -> tuple[list[dict], list[dict]]:
+    """Each piece built as the content build does, with its media, and what the parent reads."""
+    skills, parsed = skill_map()
+    files = [batch / f"{i}.yaml" for i in ids] if ids else sorted(batch.glob("*.yaml"))
+    results = {r["id"]: r for r in check_files(files)}
+    items, problems = [], []
+    for f in files:
+        r = results[f.stem]
+        if r["errors"]:
+            problems.append({"id": f.stem, "errors": r["errors"]})
+            continue
+        meta = yaml.safe_load(f.read_text())
+        piece, _, _ = bc.make_piece(f.stem, meta, skills, parsed, "", media_root=batch / "media")
+        mj = batch / "media" / f.stem / "media.json"
+        media = json.loads(mj.read_text()) if mj.exists() else {}
+        info = {k: meta.get(k) for k in ("level", "hands", "version", "songTitle", "source", "license", "tempoSource")}
+        info.update(notes=header_notes(f), flags=r["warnings"], lyrics=lyrics_text(piece["notation"]),
+                    checks=media.get("check"), backing=media.get("backing"), engine=media.get("engine"))
+        items.append({"piece": piece, "info": {k: v for k, v in info.items() if v not in (None, [], "")},
+                      "files": {Path(x["url"]).name: batch / "media" / f.stem / Path(x["url"]).name
+                                for pr in ((piece.get("media") or {}).get("presets") or {}).values()
+                                for x in (pr.get("vocals"), pr.get("accompaniment")) if x}})
+    return items, problems
+
+
+def submit(args) -> int:
+    batch = Path(args.batch)
+    items, problems = package_items(batch, args.ids)
+    for p in problems:
+        print(f"not sent, fix first: {p['id']}: {'; '.join(p['errors'])}", file=sys.stderr)
+    if not items:
+        return 1
+    notes = args.notes or f"{len(items)} song(s) from the {batch.name} batch."
+    pkg = call("POST", "/api/skill/packages", {"name": args.name or batch.name, "notes": notes,
+                                               "items": [{"piece": i["piece"], "info": i["info"]} for i in items]})
+    by_id = {i["piece"]["id"]: i for i in items}
+    for it in pkg["items"]:
+        if not it["accepted"]:
+            print(f"refused by intake: {it['pieceId']}: {'; '.join(it['errors'])}")
+            continue
+        for m in it["media"]:
+            src = by_id[it["pieceId"]]["files"][m["file"]]
+            call("PUT", f"/api/skill/packages/{pkg['id']}/items/{it['itemId']}/media/{m['file']}", data=src.read_bytes(), ctype="audio/mpeg")
+        for w in it["warnings"]:
+            print(f"  {it['pieceId']}: {w}")
+    done = call("POST", f"/api/skill/packages/{pkg['id']}/submit")
+    for it in done["items"]:
+        print(("staged   " if it["staged"] else "not staged ") + it["pieceId"] + ("" if it["staged"] else ": " + "; ".join(it.get("errors", []))))
+    print(f"package {pkg['id']}: {done['staged']} song(s) waiting in the app's review list (Config > Review list)")
+    (batch / "submitted.json").write_text(json.dumps({"package": pkg["id"], "server": SERVER, "staged": done["staged"],
+                                                      "items": done["items"]}, indent=1) + "\n")
+    return 0 if done["staged"] else 1
+
+
+def feedback(args) -> int:
+    """The songs the parent sent back from the review list, with what needs to change. Fix each,
+    then `submit` it again under the same id: it replaces the one sent back, with the note beside it."""
+    items = call("GET", "/api/skill/feedback")["feedback"]
+    if args.json:
+        print(json.dumps(items, indent=1, ensure_ascii=False))
+        return 0
+    if not items:
+        print("no songs waiting for changes")
+    for f in items:
+        batch = next((d.name for d in INCOMING.iterdir() if (d / f"{f['pieceId']}.yaml").exists()), None) if INCOMING.exists() else None
+        where = f"content/incoming/{batch}/{f['pieceId']}.yaml" if batch else "(not in content/incoming)"
+        print(f"{f['pieceId']} ({f['title']}), sent back {f['sentBack']}, from {f['package']}: {where}\n  \u201c{f['feedback']}\u201d")
     return 0
 
 
@@ -397,13 +541,21 @@ def main(argv=None) -> int:
     m.add_argument("--pass-at", type=float, default=0.95, help="exit 0 when at least this share lines up")
     r = sub.add_parser("report", help="write REVIEW.md for a batch")
     r.add_argument("batch")
-    p = sub.add_parser("promote", help="move approved pieces into content/pieces/")
+    u = sub.add_parser("submit", help="send pieces, with their media, to the piano server's review list")
+    u.add_argument("batch")
+    u.add_argument("ids", nargs="*")
+    u.add_argument("--name", help="the package name the parent sees (default: the batch folder)")
+    u.add_argument("--notes", help="a summary for the parent")
+    fb = sub.add_parser("feedback", help="the parent's notes on songs sent back from the review list")
+    fb.add_argument("--json", action="store_true")
+    p = sub.add_parser("promote", help="move core pieces into content/pieces/ (library songs: submit)")
     p.add_argument("batch")
     p.add_argument("ids", nargs="*")
     p.add_argument("--all", action="store_true")
     p.add_argument("--replace", action="store_true")
     args = ap.parse_args(argv)
-    return {"convert": convert, "check": check, "compare": compare, "report": report, "promote": promote}[args.cmd](args)
+    return {"convert": convert, "check": check, "compare": compare, "report": report, "submit": submit, "feedback": feedback,
+            "promote": promote}[args.cmd](args)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,55 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.the-clefs, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.the-clefs
+title: The treble clef and the bass clef
+cards:
+- kind: explain
+  text: 'The upper staff has a treble clef: its notes are high, and the right hand usually plays them. The lower
+    staff has a bass clef: its notes are low, for the left hand.'
+- kind: show
+  text: The right hand on the treble staff...
+  notes: E4 F4 G4
+  fingers:
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: show
+  text: '...and the left hand on the bass staff.'
+  notes: E3 D3 C3
+  fingers:
+  - 3
+  - 4
+  - 5
+  hand: L
+  clef: bass
+- kind: try
+  text: Play the treble clef notes with your right hand.
+  notes: E4 F4 G4
+  fingers:
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: try
+  text: Play the bass clef notes with your left hand.
+  notes: E3 D3 C3
+  fingers:
+  - 3
+  - 4
+  - 5
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Which clef is for the high notes?
+    choices:
+    - Treble clef
+    - Bass clef
+    answer: Treble clef
+  - text: Which hand usually plays the bass clef notes?
+    choices:
+    - Right
+    - Left
+    answer: Left

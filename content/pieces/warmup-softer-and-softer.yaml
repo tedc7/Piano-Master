@@ -1,0 +1,19 @@
+# Core piece (Prep A, prep-a.dotted-half). Warm-up in our own music.
+# One pattern played loud, then moved up an octave and played soft.
+title: "Warm-up: Softer and Softer"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+dynamics: {1: f, 5: p}   # bar: mark
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Softer and Softer
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  K:C
+  !2!D !1!C D !3!E | C3 C | D C D E | C4 | d c d e | c3 c | d c d e | c4 |]
