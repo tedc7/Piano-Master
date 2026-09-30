@@ -1,0 +1,44 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.bass-a, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.bass-a
+title: A below Middle C
+cards:
+- kind: explain
+  text: A is two steps below Middle C, on the top line of the bass staff. Play it with left-hand finger 3.
+- kind: show
+  text: 'Left hand: C, B, A with fingers 1, 2, 3.'
+  notes: C4 B3 A3
+  fingers:
+  - 1
+  - 2
+  - 3
+  hand: L
+  clef: bass
+- kind: hear
+  text: Down C, B, A and back up.
+  play: C4 B3 A3:2 B3 C4:2
+  tempo: 96
+- kind: try
+  text: Play C, B, A with left-hand fingers 1, 2, 3.
+  notes: C4 B3 A3
+  fingers:
+  - 1
+  - 2
+  - 3
+  hand: L
+  clef: bass
+- kind: echo
+  text: Listen, then play it back with your left hand.
+  play: A3 B3 C4 B3 A3
+  tempo: 80
+- kind: check
+  questions:
+  - text: Play A, on the top line of the bass staff.
+    answer: A3
+  - text: Which left-hand finger plays A in Middle C position?
+    choices:
+    - '2'
+    - '3'
+    - '4'
+    answer: '3'

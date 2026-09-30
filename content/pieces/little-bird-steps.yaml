@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.steps-on-the-staff). Original music and words for this app.
+title: "Little Bird Steps"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Little Bird Steps
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  K:C
+  !1!C D E D | C D E2 | E F G F | E F G2 | G F E D | C D E2 | E D C D | C4 |]
+  w: Lit-tle bird is hop-ping up, line to space to line a-gain, step-ping down the lad-der now, step by step back home.

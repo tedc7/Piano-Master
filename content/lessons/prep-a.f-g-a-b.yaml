@@ -1,0 +1,56 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.f-g-a-b, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.f-g-a-b
+title: F, G, A and B
+cards:
+- kind: explain
+  text: 'F, G, A and B are the four white keys by the group of three black keys: F just to the left of the group,
+    then G, A and B.'
+- kind: show
+  text: F, G, A, B beside the three black keys.
+  notes: F4 G4 A4 B4
+  fingers:
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: hear
+  text: Up F, G, A, B and back down.
+  play: F4 G4 A4 B4:2 A4 G4 F4:2
+  tempo: 96
+- kind: try
+  text: Play F, G, A, B going up.
+  notes: F4 G4 A4 B4
+  fingers:
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: try
+  text: 'Left hand: F and G.'
+  notes: F3 G3 F3 G3
+  fingers:
+  - 2
+  - 1
+  - 2
+  - 1
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: F is just to the left of the three black keys. Play the F above Middle C.
+    answer: F4
+  - text: Which key comes after A?
+    choices:
+    - G
+    - B
+    - C
+    answer: B
+  - text: F, G, A and B are next to the group of...
+    choices:
+    - Two black keys
+    - Three black keys
+    answer: Three black keys

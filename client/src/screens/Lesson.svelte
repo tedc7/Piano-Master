@@ -16,7 +16,7 @@
   import { onMount, tick, untrack } from "svelte";
   import Status from "../components/Status.svelte";
   import { app } from "../lib/app.svelte.js";
-  import { loadContent } from "../lib/content";
+  import { conceptType, loadContent } from "../lib/content";
   import { KeyboardView, keyboardRange, noteName } from "../lib/keyboard";
   import type { MidiNote, MidiPedal } from "../lib/midi";
   import { go } from "../lib/route";
@@ -38,7 +38,8 @@
     clef?: "treble" | "bass" | "grand";
     play?: MiniNote[];
     tempo?: number;
-    contrast?: { text: string; play: MiniNote[] };
+    contrast?: { text: string; play: MiniNote[]; level?: number };
+    level?: number;                  // how hard the app's piano plays a Hear card: loud and soft
     questions?: Question[];
     video?: string;
   }
@@ -158,14 +159,14 @@
   }
 
   /** Hear: the notes on the app's piano, at the card's tempo. */
-  async function hear(notes: MiniNote[], tempo = 90): Promise<void> {
+  async function hear(notes: MiniNote[], tempo = 90, level = 1): Promise<void> {
     const ctx = await app.audio.ensure();
     await app.audio.loadPiano(notes.flatMap((n) => n.pitches));
     const spb = 60 / tempo;
     let t = ctx.currentTime + 0.1;
     hearingUntil = performance.now() + (0.1 + notes.reduce((n, x) => n + x.beats, 0) * spb) * 1000;
     for (const n of notes) {
-      for (const p of n.pitches) app.audio.piano(p, t, n.beats * spb * 0.95);
+      for (const p of n.pitches) app.audio.piano(p, t, n.beats * spb * 0.95, level);
       const at = t;
       timers.push(window.setTimeout(() => {
         for (const p of n.pitches) { kb?.press(p, "neutral"); timers.push(window.setTimeout(() => kb?.release(p), n.beats * spb * 900)); }
@@ -329,7 +330,10 @@
           {/each}
         </div>
         <div class="card-big">
-          <div class="head"><span class="icon">{NAMES[card.kind][1]}</span><h1>{NAMES[card.kind][0]}</h1></div>
+          <div class="head"><span class="icon">{NAMES[card.kind][1]}</span><h1>{NAMES[card.kind][0]}</h1>
+            <!-- the kind of idea this lesson teaches: Notes, Rhythm, Technique, Theory, Musicianship -->
+            {#if card.kind === "explain" && skill}<span class="type" style:background={conceptType(skill.track).color}>{conceptType(skill.track).label}</span>{/if}
+          </div>
           {#if card.text}<p class="text">{card.text}</p>{/if}
           {#if card.kind === "check" && card.questions && !done[step]}
             {@const q = card.questions[progress]}
@@ -355,8 +359,8 @@
             <button class="quiet" onclick={() => speak(card.kind === "check" && card.questions && !done[step] ? card.questions[progress].text : card.text)}>🔊 Read it to me</button>
             {#if card.kind === "show"}<button class="quiet" onclick={showMe}>👀 Show me again</button>{/if}
             {#if card.kind === "hear"}
-              <button onclick={() => hear(card.play ?? [], card.tempo)}>▶ Play it</button>
-              {#if card.contrast}<button class="quiet" onclick={() => { feedback = card.contrast!.text; speak(card.contrast!.text); void hear(card.contrast!.play, card.tempo); }}>▶ Now listen to this</button>{/if}
+              <button onclick={() => hear(card.play ?? [], card.tempo, card.level)}>▶ Play it</button>
+              {#if card.contrast}<button class="quiet" onclick={() => { feedback = card.contrast!.text; speak(card.contrast!.text); void hear(card.contrast!.play, card.tempo, card.contrast!.level); }}>▶ Now listen to this</button>{/if}
             {/if}
             {#if card.kind === "echo"}
               {#if echoResult === null}
@@ -396,6 +400,7 @@
   }
   .head { display: flex; align-items: center; justify-content: center; gap: 12px; }
   .head h1 { margin: 0 !important; }
+  .type { color: #fff; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 800; }
   .icon { font-size: 40px; }
   .text { font-size: 21px; line-height: 1.45; margin: 10px 0; }
   .question { font-weight: 700; }

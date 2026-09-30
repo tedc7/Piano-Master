@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.skips-together). Original music and words for this app.
+title: "Snowflakes"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+dynamics: {1: p}   # bar: mark
+phraseBars: 2
+abc: |
+  X:1
+  T:Snowflakes
+  M:4/4
+  L:1/4
+  Q:1/4=84
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!!3![CE]2 !2!!4![DF]2 | !3!!5![EG]2 !2!!4![DF]2 | !1!!3![CE]4 | z4 | z4 |]
+  w: Snow-flakes fall-ing down.
+  [V:LH] z4 | z4 | z4 | !3!!1![A,C]2 !4!!2![G,B,]2 | !3!!1![A,C]4 |]
+  w: Soft and white.

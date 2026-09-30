@@ -1,0 +1,48 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.steps-on-the-staff, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.steps-on-the-staff
+title: Steps on the staff
+cards:
+- kind: explain
+  text: On the staff, a step goes from a line to the very next space, or from a space to the very next line.
+- kind: show
+  text: 'Steps up the staff: line, space, line, space.'
+  notes: C4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: Steps going up, then steps going down.
+  play: C4 D4 E4 F4 G4:2 F4 E4 D4 C4:4
+  tempo: 100
+- kind: try
+  text: 'Read and play: step up from Middle C to G.'
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: echo
+  text: 'Listen, then play it back: does it step up or down?'
+  play: E4 F4 G4 F4 E4
+  tempo: 90
+- kind: check
+  questions:
+  - text: Line to the next space is a...
+    choices:
+    - Step
+    - Repeat
+    answer: Step
+  - text: Listen. Up or down?
+    hear: G4 F4 E4
+    choices:
+    - Up
+    - Down
+    answer: Down

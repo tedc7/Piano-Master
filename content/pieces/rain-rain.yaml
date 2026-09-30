@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.quarter-rest). Traditional nursery rhyme; public domain. Our own arrangement.
+title: "Rain, Rain, Go Away"
+composer: Traditional
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Rain, Rain, Go Away
+  M:4/4
+  L:1/4
+  Q:1/4=108
+  K:C
+  !5!G2 !3!E z | G G E z | G G E E | G G E z | G G E E | G G E z |]
+  w: Rain, rain, go a-way, come a-gain an-oth-er day, lit-tle chil-dren want to play.

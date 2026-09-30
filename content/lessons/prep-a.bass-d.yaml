@@ -1,0 +1,38 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.bass-d, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.bass-d
+title: Bass D
+cards:
+- kind: explain
+  text: Bass D sits on the middle line of the bass staff. It's a skip below Bass F.
+- kind: show
+  text: Bass F, then skip down to Bass D.
+  notes: F3 D3
+  fingers:
+  - 2
+  - 4
+  hand: L
+  clef: bass
+- kind: hear
+  text: 'D and F: a skip on the bass staff.'
+  play: D3 F3 D3 F3 D3:2
+  tempo: 96
+- kind: try
+  text: Play D, F, D with your left hand.
+  notes: D3 F3 D3
+  fingers:
+  - 4
+  - 2
+  - 4
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Play Bass D, on the middle line of the bass staff.
+    answer: D3
+  - text: Bass D is a ... below Bass F.
+    choices:
+    - Step
+    - Skip
+    answer: Skip

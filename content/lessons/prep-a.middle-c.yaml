@@ -1,0 +1,50 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.middle-c, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.middle-c
+title: Middle C on the staff
+cards:
+- kind: explain
+  text: Middle C sits on its own short line, right between the treble staff and the bass staff. Either thumb can
+    play it.
+- kind: show
+  text: Middle C with the right thumb.
+  notes: C4
+  fingers:
+  - 1
+  hand: R
+- kind: show
+  text: Middle C with the left thumb.
+  notes: C4
+  fingers:
+  - 1
+  hand: L
+  clef: bass
+- kind: try
+  text: Play Middle C four times with your right thumb.
+  notes: C4 C4 C4 C4
+  fingers:
+  - 1
+  - 1
+  - 1
+  - 1
+  hand: R
+- kind: try
+  text: Now four times with your left thumb.
+  notes: C4 C4 C4 C4
+  fingers:
+  - 1
+  - 1
+  - 1
+  - 1
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Play Middle C.
+    answer: C4
+  - text: Middle C sits...
+    choices:
+    - Between the two staffs
+    - On the top line
+    answer: Between the two staffs

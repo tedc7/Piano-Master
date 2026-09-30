@@ -1,0 +1,50 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.forte-piano, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.forte-piano
+title: 'Loud and soft: forte and piano'
+cards:
+- kind: explain
+  text: Loud and soft make music more interesting. Forte means loud, and it's written f. Piano means soft, and it's
+    written p.
+- kind: hear
+  text: 'Forte: loud and strong.'
+  play: F#4 G#4 A#4:2
+  tempo: 90
+  contrast:
+    text: 'Piano: soft and gentle.'
+    play: F#4 G#4 A#4:2
+    level: 0.3
+- kind: try
+  text: Play these three keys forte, loud and strong.
+  notes: F#4 G#4 A#4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: try
+  text: Now play them piano, soft and gentle.
+  notes: F#4 G#4 A#4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: check
+  questions:
+  - text: What does f mean?
+    choices:
+    - Loud
+    - Soft
+    answer: Loud
+  - text: What does p mean?
+    choices:
+    - Loud
+    - Soft
+    answer: Soft
+  - text: Which sign tells you to play loudly?
+    choices:
+    - f
+    - p
+    answer: f

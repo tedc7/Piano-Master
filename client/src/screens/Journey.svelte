@@ -1,6 +1,8 @@
 <script lang="ts">
   // Journey map (arch §3 screen 3, "Journey maps"): the branching skill map as a path of bubbles,
-  // left to right like the music, with a lightbulb (concept lesson) before each skill. Each
+  // left to right like the music, with a lightbulb (concept lesson) before each skill: one concept
+  // per bubble (v0.25), labelled with its type (Notes, Rhythm, Technique, Theory), and the bubble's
+  // own practice songs. Each
   // bubble shows locked, ready to learn (its lightbulb open), current, passed or mastered, and
   // two star rows; a refresh badge when it is due for review, and "Today" when it is in today's
   // session. Tapping one shows its lesson and songs. In parent mode every bubble opens (the
@@ -10,14 +12,14 @@
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
-  import { handsLabel, loadContent, type Content } from "../lib/content";
+  import { allowed, conceptType, handsLabel, loadContent, rulesFor, type Content, type Rules } from "../lib/content";
   import { isPassed, type Progress, type SkillProgress } from "../lib/progress";
   import { go } from "../lib/route";
   import type { PieceSummary, Skill, SkillMap } from "../lib/types";
 
   let { test = false }: { test?: boolean } = $props();
 
-  const COL = 250, ROW = 190, X0 = 150, Y0 = 20, BUBBLE = 92;
+  const COL = 250, ROW = 215, X0 = 150, Y0 = 20, BUBBLE = 92;
 
   let content = $state<Content | null>(null);
   let error = $state("");
@@ -32,8 +34,10 @@
       return;
     }
     try { content = await loadContent(); } catch (e) { error = `Can't load the skill map (${(e as Error).message}).`; }
+    if (app.student && !app.parentMode) rules = await rulesFor(app.student.id);
     void app.refresh();
   });
+  let rules = $state<Rules | null>(null);        // the child's genre and song rules (arch §10.1)
 
   /** The render test (arch §3 "Journey maps", M5): a generated map of `n` bubbles on 3 branches
    *  that join every 9 skills, with every state shown. */
@@ -91,7 +95,8 @@
   /** Locked, but with its lightbulb open: ready to learn. */
   const shown = (p: SkillProgress | undefined): Shown => (p?.status === "locked" && p.lessonOpen ? "open" : p?.status ?? "locked");
 
-  // columns by depth (the longest prerequisite chain), rows in sequence order within a column
+  // columns by depth (the longest prerequisite chain); within a column, rows follow the average row
+  // of each skill's prerequisites (then sequence), so the paths cross as little as they can
   const placed = $derived.by(() => {
     if (!content) return [];
     const skills = [...content.map.skills].sort((a, b) => a.sequence - b.sequence);
@@ -101,13 +106,21 @@
       if (!depth.has(s.id)) depth.set(s.id, 1 + Math.max(-1, ...s.prerequisites.map((p) => byId.get(p)).filter((x): x is Skill => !!x).map(d)));
       return depth.get(s.id)!;
     };
-    const rows = new Map<number, number>();
-    return skills.map((s) => {
-      const col = d(s);
-      const row = rows.get(col) ?? 0;
-      rows.set(col, row + 1);
-      return { skill: s, x: X0 + col * COL, y: Y0 + row * ROW };
-    });
+    const cols = new Map<number, Skill[]>();
+    for (const s of skills) cols.set(d(s), [...(cols.get(d(s)) ?? []), s]);
+    const rowOf = new Map<string, number>();
+    const out: { skill: Skill; x: number; y: number }[] = [];
+    for (const col of [...cols.keys()].sort((a, b) => a - b)) {
+      const mean = (s: Skill) => {
+        const rs = s.prerequisites.map((q) => rowOf.get(q)).filter((r): r is number => r !== undefined);
+        return rs.length ? rs.reduce((a, b) => a + b, 0) / rs.length : 0;
+      };
+      cols.get(col)!.sort((a, b) => mean(a) - mean(b) || a.sequence - b.sequence).forEach((s, row) => {
+        rowOf.set(s.id, row);
+        out.push({ skill: s, x: X0 + col * COL, y: Y0 + row * ROW });
+      });
+    }
+    return out;
   });
   const width = $derived(Math.max(...placed.map((p) => p.x), 0) + COL);
   const height = $derived(Math.max(...placed.map((p) => p.y), 0) + ROW);
@@ -125,7 +138,8 @@
   const statusText: Record<Shown, string> = { locked: "Locked", open: "Ready to learn", current: "Learning now", passed: "Passed", mastered: "Mastered" };
 
   function piecesOf(s: Skill): PieceSummary[] {
-    return (s.pieces ?? []).map((id) => content?.pieces.find((p) => p.id === id)).filter((p): p is PieceSummary => !!p);
+    return (s.pieces ?? []).map((id) => content?.pieces.find((p) => p.id === id))
+      .filter((p): p is PieceSummary => !!p && allowed(p, rules));
   }
   function canOpen(s: Skill): boolean {
     return app.parentMode || shown(progress.get(s.id)) !== "locked";
@@ -145,7 +159,9 @@
   <main class="body map-body">
     {#if error}<p class="notice error">{error}</p>{/if}
     {#if content?.map.placeholder && !test}
-      <p class="muted note">Placeholder skill map until the Faber books arrive.{app.parentMode ? " Parent mode: every bubble opens." : ""}</p>
+      <p class="muted note">Placeholder skill map, for testing.{app.parentMode ? " Parent mode: every bubble opens." : ""}</p>
+    {:else if app.parentMode && !test && content}
+      <p class="muted note">Parent mode: every bubble opens. {content.map.maps.map((m) => `${m.level}${m.source ? ` follows ${m.source}` : ""}`).join("; ")}.</p>
     {/if}
     <div class="map" style:width="{width}px" style:height="{height}px">
       <div class="chapter">{content?.map.maps[0]?.level ?? ""}</div>
@@ -167,6 +183,7 @@
           {:else if pr?.today}<span class="today">Today</span>{/if}
           {#if pr?.hold}<span class="hold">Needs {(p.skill.requiredCapabilities ?? []).join(", ")}</span>{/if}
           <div class="name">{p.skill.name}</div>
+          <div class="unit">{p.skill.unit ? `${p.skill.unit.split(" · ")[0]} · ` : ""}<span style:color={conceptType(p.skill.track).color}>{conceptType(p.skill.track).label}</span></div>
           <div class="stars">
             <Stars compact size={15} label="♪" value={pr?.accuracyStars ?? null} />
             <Stars compact size={15} label="⏱" value={pr?.timingStars ?? null} />
@@ -183,8 +200,14 @@
         <h2>{open.name}</h2>
         <button class="quiet" onclick={() => { open = null; }}>Close</button>
       </div>
-      <p class="muted">{statusText[st]} · {open.track} · {open.staff} staff</p>
+      <p class="muted"><span class="type" style:background={conceptType(open.track).color}>{conceptType(open.track).label}</span>
+        {statusText[st]}{open.unit ? ` · ${open.unit}` : ""}</p>
       {#if open.description}<p>{open.description}</p>{/if}
+      {#if app.parentMode && open.bookRefs?.length}
+        <!-- arch §6.2: the family's own book pages for this concept (from content/private/, never committed) -->
+        <p class="refs">📖 {content?.map.maps.find((m) => m.level === open!.level)?.source ?? "Book"}:
+          {open.bookRefs.map((r) => `${r.book} p.${r.pages.replace(/\s*~$/, "")}`).join(" · ")}</p>
+      {/if}
       {#if st === "locked" && !app.parentMode}
         <p class="notice">Unlocks after: {needs(open)}</p>
       {:else if st === "open" && !app.parentMode}
@@ -195,6 +218,7 @@
           <span class="card-title">💡 Concept lesson</span>
           <span class="card-meta">Learn the new idea</span>
         </button>
+        {#if piecesOf(open).length}<p class="practice">Practice songs</p>{/if}
         {#each piecesOf(open) as p (p.id)}
           {@const playable = app.parentMode || st === "current" || st === "passed" || st === "mastered"}
           <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(p.id, "journey")}>
@@ -241,7 +265,11 @@
   .bulb.dim { filter: grayscale(1); opacity: 0.6; }
   .today { position: absolute; top: -12px; right: -26px; background: #ffe7a3; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; }
   .name { width: 190px; text-align: center; font-weight: 700; font-size: 15px; margin-top: 6px; line-height: 1.2; }
+  .unit { width: 190px; text-align: center; white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--muted); }
   .stars { margin-top: 2px; }
+  .type { color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; font-weight: 800; margin-right: 6px; }
+  .practice { margin: 6px 0 0; font-weight: 800; color: var(--muted); }
+  .refs { font-size: 14px; background: #f6f3ea; border-radius: 10px; padding: 8px 12px; }
   .sheet {
     position: fixed; right: 16px; top: var(--deadzone); bottom: 90px; width: min(460px, 92vw); overflow: auto;
     background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px 20px 20px;

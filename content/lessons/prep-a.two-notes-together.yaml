@@ -1,0 +1,44 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.two-notes-together, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.two-notes-together
+title: Two notes together
+cards:
+- kind: explain
+  text: One hand can play two keys at the same time. Drop into Middle C and Treble G together with right-hand fingers
+    1 and 5, then lift.
+- kind: show
+  text: 'Middle C and Treble G at once: fingers 1 and 5.'
+  notes: '[C4,G4]'
+  fingers:
+  - 1
+  hand: R
+- kind: hear
+  text: Two notes together, like a doorbell.
+  play: '[C4,G4]:2 [C4,G4]:2 C4 G4 C4:2'
+  tempo: 90
+- kind: try
+  text: Play Middle C and Treble G together. Drop, then lift.
+  notes: '[C4,G4] [C4,G4]'
+  fingers:
+  - 1
+  - 1
+  hand: R
+- kind: try
+  text: 'Left hand: Bass F and Middle C together, fingers 5 and 1.'
+  notes: '[F3,C4] [F3,C4]'
+  fingers:
+  - 5
+  - 5
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Play Middle C and Treble G at the same time.
+    answer: '[C4,G4]'
+  - text: Which right-hand fingers play Middle C and Treble G together?
+    choices:
+    - 1 and 3
+    - 1 and 5
+    - 2 and 4
+    answer: 1 and 5

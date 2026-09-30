@@ -1,0 +1,52 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.the-staff, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.the-staff
+title: The staff and the grand staff
+cards:
+- kind: explain
+  text: 'Music is written on a staff: 5 lines and 4 spaces. Each note sits on a line or in a space, and the higher
+    it sits, the higher it sounds. Two staffs joined by a brace make the grand staff.'
+- kind: show
+  text: 'Notes stepping up the staff: line, space, line, space, line.'
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: hear
+  text: Up the staff, higher and higher, then back down.
+  play: C4 D4 E4 F4 G4:2 F4 E4 D4 C4:2
+  tempo: 100
+- kind: try
+  text: Play these notes going up the staff.
+  notes: C4 D4 E4 F4 G4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: R
+- kind: check
+  questions:
+  - text: How many lines does a staff have?
+    choices:
+    - '4'
+    - '5'
+    - '6'
+    answer: '5'
+  - text: How many spaces does a staff have?
+    choices:
+    - '3'
+    - '4'
+    - '5'
+    answer: '4'
+  - text: A note higher on the staff sounds...
+    choices:
+    - Higher
+    - Lower
+    answer: Higher

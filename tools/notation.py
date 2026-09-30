@@ -176,10 +176,22 @@ def build_notation(score, *, hand_for_single_staff: str = "R", phrase_bars: int 
                                     if text:
                                         lyrics.append({"note": len(notes), "verse": ly.number or 1, "text": text,
                                                        "syllabic": ly.syllabic or "single"})
+                            elif staff_no == 1 and voice == 1 and is_top and el.lyrics:
+                                # words under the left hand: the tune may pass to it (below)
+                                entry["_lyrics"] = [{"verse": ly.number or 1, "text": lyric_text(ly),
+                                                     "syllabic": ly.syllabic or "single"} for ly in el.lyrics if lyric_text(ly)]
                             if any(e.classes[0] == "Fermata" for e in el.expressions):
                                 entry["fermata"] = True
                             notes.append(entry)
             voice_base += n_voices
+    # beginner pieces pass the tune between the hands: a left-hand note with words, played while
+    # the right hand is silent, is the melody there, and its words are sung (as in beginner books)
+    right = [(n["start"], n["start"] + n["duration"]) for n in notes if n["hand"] == "R"]
+    for i, n in enumerate(notes):
+        words = n.pop("_lyrics", None)
+        if words and not any(a <= n["start"] < b for a, b in right):
+            n["isMelody"] = True
+            lyrics += [{"note": i, **w} for w in words]
     order_idx = sorted(range(len(notes)), key=lambda i: (notes[i]["start"], notes[i]["staff"], notes[i]["voice"], notes[i]["pitch"]))
     remap = {old: new for new, old in enumerate(order_idx)}
     notes = [notes[i] for i in order_idx]

@@ -1,0 +1,47 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.mezzo-forte, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.mezzo-forte
+title: 'Medium loud: mezzo forte'
+cards:
+- kind: explain
+  text: 'p for soft and f for loud are dynamic marks. A new one sits between them: mf, mezzo forte, which means
+    medium loud.'
+- kind: hear
+  text: Piano, soft...
+  play: C4 D4 E4 D4 C4:2
+  tempo: 96
+  level: 0.3
+  contrast:
+    text: '...and mezzo forte, medium loud.'
+    play: C4 D4 E4 D4 C4:2
+    level: 0.65
+- kind: try
+  text: 'Play C, D, E, D, C mezzo forte: not too soft, not too loud.'
+  notes: C4 D4 E4 D4 C4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 2
+  - 1
+  hand: R
+- kind: check
+  questions:
+  - text: What does mf mean?
+    choices:
+    - Very soft
+    - Medium loud
+    - Very loud
+    answer: Medium loud
+  - text: Which is the softest?
+    choices:
+    - p
+    - mf
+    - f
+    answer: p
+  - text: p, mf and f are called...
+    choices:
+    - Dynamic marks
+    - Bar lines
+    answer: Dynamic marks

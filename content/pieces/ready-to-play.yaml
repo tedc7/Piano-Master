@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.sitting). Original music and words for this app.
+title: "Ready to Play"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Ready to Play
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !3!^D ^D !2!^C ^C | ^D ^C ^D ^D | z4 | z4 | ^C ^D ^C ^D | ^C ^C ^C ^C | z4 | z4 |]
+  w: Not too near and not too far, good! Sit on the front part of the bench.
+  [V:LH] z4 | z4 | !2!^D, ^D, !3!^C, ^C, | ^D, ^C, ^D, ^D, | z4 | z4 | ^C, ^D, ^C, ^D, | ^C, ^C, ^C, ^C, |]
+  w: Arms are lev-el, hands are read-y. Now I'm read-y, read-y to play!

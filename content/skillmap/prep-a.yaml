@@ -1,0 +1,607 @@
+# The Prep A skill map (arch §6.2, §6.3): the order of concepts for a first year at the piano, in
+# the common sequence of beginner method books, checked against the RCM Preparatory A level. The
+# lessons are in our own words and the pieces are our own music or our own arrangements of
+# public-domain tunes (§6.2). A piano teacher checks the map before it is final (§6.3 step 6).
+#
+# One concept per skill (v0.25): each skill is one idea, with one Explain in its concept lesson and
+# its own practice pieces (`pieces`, 2 to 4: the songs in its Journey bubble). `track` is the kind
+# of idea the Journey map and the lesson show: reading (Notes), rhythm, technique, theory,
+# musicianship.
+#
+# Ideas the notes can't show (sitting, finger numbers, the measure, a dynamic mark) have no
+# constraints of their own: the pieces written for them practise them (analysis.py). The others
+# own what they add: a key, a note value, a time signature, an interval, two notes at once.
+#
+# The map forks where ideas don't depend on each other (the technique ideas beside the keyboard
+# ones, rhythm beside reading, the right hand's notes beside the left hand's) and joins at the start
+# of the next unit that needs them.
+#
+# Units 1 to 3 are pre-staff: pieces carry `letters: true`, every note head shows its letter name,
+# and the skills with `letters: true` count only those pieces' notes. Reading from the staff starts
+# in Unit 4 with three landmark notes: Middle C, Treble G and Bass F.
+#
+# `position` is a five-finger hand position for the finger-number generator. The family's own
+# method-book page references live outside the repository (content/private/, §6.2).
+
+map: basic
+level: Prep A
+skills:
+  - id: prep-a.sitting
+    name: Sitting at the piano
+    unit: Unit 1 · Getting Started
+    sequence: 10
+    track: technique
+    staff: grand
+    prerequisites: []
+    constraints:                        # the first keys played: the two black keys in the middle
+      letters: true
+      hands: [R, L]
+      pitches: {R: [C#4, D#4], L: [C#3, D#3]}
+      durations: [1]
+      timeSigs: ["4/4"]
+      keySigs: [0]
+    description: "Sit tall and relaxed at the front of the bench, the right distance from the keys and high enough that your arms are level with the keyboard."
+    pieces: [sit-tall, ready-to-play]
+
+  - id: prep-a.round-hand
+    name: A round hand shape
+    unit: Unit 1 · Getting Started
+    sequence: 20
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.sitting]
+    description: "Let your arms hang heavy, then curve your hand as if it holds a bubble: firm fingertips, and the thumb on its side tip."
+    pieces: [warmup-bubble-hands, warmup-heavy-arms]
+
+  - id: prep-a.finger-numbers
+    name: Finger numbers
+    unit: Unit 1 · Getting Started
+    sequence: 30
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.sitting]
+    description: "Each hand's fingers are numbered from the thumb: 1 thumb, 2 pointer, 3 middle, 4 ring, 5 little finger. The numbers over the notes say which finger plays."
+    pieces: [finger-numbers-song, pointer-and-middle]
+
+  - id: prep-a.low-and-high
+    name: Low and high
+    unit: Unit 1 · Getting Started
+    sequence: 40
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.finger-numbers]
+    constraints:                        # the same two black keys, further down and further up
+      letters: true
+      hands: [R, L]
+      pitches: {R: [C#5, D#5, C#6, D#6], L: [C#2, D#2]}
+    description: "Going down the keyboard, to the left, the sounds get lower; going up, to the right, they get higher."
+    pieces: [two-black-keys, warmup-two-key-hops]
+
+  - id: prep-a.two-black-keys
+    name: Groups of two black keys
+    unit: Unit 1 · Getting Started
+    sequence: 50
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.low-and-high, prep-a.round-hand]
+    description: "The black keys come in groups of two and three. Every group of two, low or high, is played with fingers 2 and 3."
+    pieces: [knock-knock, canyon-echo]
+
+  - id: prep-a.three-black-keys
+    name: Groups of three black keys
+    unit: Unit 1 · Getting Started
+    sequence: 60
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.two-black-keys]
+    constraints:
+      letters: true
+      hands: [R, L]
+      pitches: {R: [F#4, G#4, A#4, F#5, G#5, A#5], L: [F#3, G#3, A#3, F#2, G#2, A#2]}
+    description: The groups of three black keys, played with fingers 2, 3 and 4 in either hand.
+    pieces: [balancing-act, three-black-keys, mixed-up-black-keys]
+
+  - id: prep-a.quarter-note
+    name: The quarter note
+    unit: Unit 2 · Beats and Note Values
+    sequence: 70
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.two-black-keys]
+    description: "Music has a steady beat, like a clock ticking. A quarter note gets one beat."
+    pieces: [tick-tock, steady-steps]
+
+  - id: prep-a.half-note
+    name: The half note
+    unit: Unit 2 · Beats and Note Values
+    sequence: 80
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.quarter-note, prep-a.three-black-keys]
+    constraints:
+      durations: [2]
+    description: "A half note is hollow, with a stem. It gets two beats: play it and hold, 1-2."
+    pieces: [ding-dong-bells, tap-and-stretch, warmup-firm-fingertips]
+
+  - id: prep-a.forte-piano
+    name: "Loud and soft: forte and piano"
+    unit: Unit 2 · Beats and Note Values
+    sequence: 90
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.half-note]
+    description: "Forte, written f, means loud. Piano, written p, means soft."
+    pieces: [mouse-and-snail, shout-and-whisper]
+
+  - id: prep-a.whole-note
+    name: The whole note
+    unit: Unit 2 · Beats and Note Values
+    sequence: 100
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.half-note]
+    constraints:
+      durations: [4]
+    description: "A whole note is hollow with no stem. It gets four beats: play it and hold, 1-2-3-4."
+    pieces: [four-slow-beats, sleepy-owl, church-bells]
+
+  - id: prep-a.c-d-e
+    name: C, D and E
+    unit: Unit 3 · Naming the White Keys
+    sequence: 110
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.whole-note, prep-a.forte-piano]
+    constraints:
+      letters: true
+      hands: [R, L]
+      range: {R: [C4, E4], L: [C3, E3]}
+      pitches: {R: [C5, D5, E5], L: [C2, D2, E2]}          # the same keys an octave up or down
+    description: "The white keys by the two black keys: C just to the left, D in the middle and E just to the right. The C in the middle of the piano is Middle C."
+    pieces: [d-in-the-middle, by-the-moonlight]
+
+  - id: prep-a.musical-alphabet
+    name: The musical alphabet
+    unit: Unit 3 · Naming the White Keys
+    sequence: 120
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.c-d-e]
+    description: "The white keys are named with seven letters, A B C D E F G, which start again with A all the way up the keyboard."
+    pieces: [warmup-pattern-up-and-down, hot-cross-buns-left]
+
+  - id: prep-a.steps
+    name: Steps on the keyboard
+    unit: Unit 3 · Naming the White Keys
+    sequence: 130
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.c-d-e]
+    description: "A step goes to the next key, the next finger and the next letter, up or down. Playing the same key again is a repeat."
+    pieces: [hot-cross-buns, merrily-we-roll-along]
+
+  - id: prep-a.f-g-a-b
+    name: F, G, A and B
+    unit: Unit 3 · Naming the White Keys
+    sequence: 140
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.musical-alphabet]
+    constraints:
+      letters: true
+      position: {R: C4, L: C3}          # these pieces sit in C position
+      hands: [R, L]
+      pitches: {R: [F4, G4, A4, B4], L: [F3, G3]}
+    description: "The four white keys by the three black keys: F just to the left, then G, A and B."
+    pieces: [busy-bees, four-white-keys]
+
+  - id: prep-a.c-five-finger
+    name: The C 5-finger scale
+    unit: Unit 3 · Naming the White Keys
+    sequence: 150
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.f-g-a-b, prep-a.steps]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "A scale steps up or down from one key to the next. Put one finger on each key, C D E F G, in either hand: C is the home note."
+    pieces: [up-the-stairs, warmup-bouncing-ball]
+
+  - id: prep-a.the-measure
+    name: The measure and bar lines
+    unit: Unit 3 · Naming the White Keys
+    sequence: 160
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.c-five-finger]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "Beats are grouped into measures, each with the same number of beats. Bar lines divide the music into measures."
+    pieces: [count-the-measures, marching-band]
+
+  - id: prep-a.mezzo-forte
+    name: "Medium loud: mezzo forte"
+    unit: Unit 3 · Naming the White Keys
+    sequence: 170
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.c-five-finger]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "p, f and mf are dynamic marks. mf, mezzo forte, means medium loud: between piano and forte."
+    pieces: [joyful-joyful-letters, three-ways-to-play]
+
+  - id: prep-a.c-b-a-g-f
+    name: "Left hand: C B A G F"
+    unit: Unit 3 · Naming the White Keys
+    sequence: 180
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.c-five-finger]
+    constraints:
+      letters: true
+      hands: [L]
+      pitches: {L: [A3, B3, C4]}
+    description: "The left thumb goes on a C, and the fingers step down through B, A and G to F."
+    pieces: [neighbour-thumbs, musical-alphabet, rocking-horse, warmup-thumb-on-middle-c]
+
+  - id: prep-a.dotted-half
+    name: The dotted half note
+    unit: Unit 3 · Naming the White Keys
+    sequence: 190
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.the-measure]
+    constraints:
+      durations: [3]
+    description: "A dot adds half the note's value, so a dotted half note gets three beats: 1-2-3."
+    pieces: [swing-and-stop, clock-tower, sea-waves, warmup-softer-and-softer]
+
+  - id: prep-a.the-staff
+    name: The staff and the grand staff
+    unit: Unit 4 · Reading the Staff
+    sequence: 200
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.mezzo-forte, prep-a.c-b-a-g-f, prep-a.dotted-half]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "Music is written on a staff of 5 lines and 4 spaces; the higher a note sits, the higher it sounds. Two staffs joined together make the grand staff."
+    pieces: [lines-and-spaces, up-and-down-the-staff]
+
+  - id: prep-a.the-clefs
+    name: The treble clef and the bass clef
+    unit: Unit 4 · Reading the Staff
+    sequence: 210
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.the-staff]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "The treble clef marks the upper staff, for the high notes the right hand usually plays; the bass clef marks the lower staff, for the low notes of the left hand."
+    pieces: [two-clefs, high-and-low-staff]
+
+  - id: prep-a.middle-c
+    name: Middle C on the staff
+    unit: Unit 4 · Reading the Staff
+    sequence: 220
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.the-clefs]
+    constraints:
+      hands: [R, L]
+      pitches: {R: [C4], L: [C4]}
+      intervals: [1]                    # repeats
+    description: "Middle C sits on its own short line between the two staffs, and either thumb can play it."
+    pieces: [middle-c-stomp, thumbs-take-turns]
+
+  - id: prep-a.treble-g
+    name: Treble G
+    unit: Unit 4 · Reading the Staff
+    sequence: 230
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.middle-c]
+    constraints:
+      position: {R: C4}
+      hands: [R]
+      pitches: {R: [G4]}
+      intervals: [5]                    # the jump from Middle C
+    description: "Treble G is the G above Middle C, on the second line of the treble staff: the line the treble clef circles, which is why it's also called the G clef."
+    pieces: [hello-treble-g, c-g-seesaw]
+
+  - id: prep-a.bass-f
+    name: Bass F
+    unit: Unit 4 · Reading the Staff
+    sequence: 240
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.middle-c]
+    constraints:
+      position: {L: F3}
+      hands: [L]
+      pitches: {L: [F3]}
+      intervals: [5]
+    description: "Bass F is the F below Middle C, on the fourth line of the bass staff: the line between the bass clef's two dots, which is why it's also called the F clef."
+    pieces: [down-to-bass-f, f-c-seesaw]
+
+  - id: prep-a.two-notes-together
+    name: Two notes together
+    unit: Unit 4 · Reading the Staff
+    sequence: 250
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.treble-g, prep-a.bass-f]
+    constraints:
+      hands: [R, L]
+      chords: [5]                       # Middle C and Treble G, or Bass F and Middle C
+    description: "One hand can play two keys at once: Middle C and Treble G with right-hand fingers 1 and 5, or Bass F and Middle C with left-hand fingers 5 and 1. Drop into the keys together."
+    pieces: [warmup-drop-and-lift, doorbell]
+
+  - id: prep-a.hands-at-once
+    name: Both hands at once
+    unit: Unit 4 · Reading the Staff
+    sequence: 260
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.two-notes-together]
+    constraints:
+      position: {R: C4, L: F3}          # the landmark notes with fingers 1 and 5
+      handsTogether: held               # one hand holds a long note while the other plays
+    description: "Both hands can play at the same time: one hand holds a long note while the other hand plays."
+    pieces: [chiming-clock, three-friends, drum-beats]
+
+  - id: prep-a.d-e-f
+    name: Treble D, E and F
+    unit: Unit 5 · Right Hand from Middle C
+    sequence: 270
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.hands-at-once]
+    constraints:
+      position: {R: C4}
+      hands: [R]
+      range: {R: [C4, G4]}
+      intervals: [2]                    # steps: line to space, space to line
+    description: "Between Middle C and Treble G are D, in the space under the treble staff, E on its first line and F in its first space. The right thumb stays on Middle C."
+    pieces: [joyful-joyful, d-e-f-parade]
+
+  - id: prep-a.steps-on-the-staff
+    name: Steps on the staff
+    unit: Unit 5 · Right Hand from Middle C
+    sequence: 280
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.d-e-f]
+    constraints:
+      position: {R: C4}
+    description: "On the staff, a step goes from a line to the next space, or from a space to the next line."
+    pieces: [stepping-up-stepping-down, little-bird-steps]
+
+  - id: prep-a.four-four
+    name: The 4/4 time signature
+    unit: Unit 5 · Right Hand from Middle C
+    sequence: 290
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.d-e-f]
+    constraints:
+      position: {R: C4}
+    description: "The 4/4 at the start of the music is the time signature: 4 beats in each measure, and the quarter note gets one beat."
+    pieces: [tin-soldiers, four-beat-band]
+
+  - id: prep-a.hand-shift
+    name: Hopping to a new hand position
+    unit: Unit 5 · Right Hand from Middle C
+    sequence: 300
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.d-e-f]
+    description: "Sometimes the whole hand hops to a new place on the keyboard. The finger number on the first note there says which finger lands on it."
+    pieces: [warmup-hop-to-the-next-key, bunny-hops]
+
+  - id: prep-a.bass-b
+    name: B below Middle C
+    unit: Unit 6 · Left Hand from Middle C
+    sequence: 310
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.hands-at-once]
+    constraints:
+      hands: [L]
+      pitches: {L: [B3]}
+      intervals: [2]
+    description: "B is a step below Middle C, in the space above the bass staff. Play it with left-hand finger 2."
+    pieces: [b-and-c, bouncing-b]
+
+  - id: prep-a.three-four
+    name: The 3/4 time signature
+    unit: Unit 6 · Left Hand from Middle C
+    sequence: 320
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.four-four]
+    constraints:
+      timeSigs: ["3/4"]
+    description: "In 3/4 time there are three beats in each measure, with a strong first beat: ONE two three."
+    pieces: [waltzing-bear, warmup-flowing-wheels]
+
+  - id: prep-a.bass-a
+    name: A below Middle C
+    unit: Unit 6 · Left Hand from Middle C
+    sequence: 330
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.bass-b, prep-a.three-four]
+    constraints:
+      hands: [L]
+      pitches: {L: [A3]}
+    description: "A is two steps below Middle C, on the top line of the bass staff. Play it with left-hand finger 3."
+    pieces: [rock-a-bye, pony-trot]
+
+  - id: prep-a.bass-g
+    name: G below Middle C
+    unit: Unit 6 · Left Hand from Middle C
+    sequence: 340
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.bass-a]
+    constraints:
+      position: {L: F3}
+      hands: [L]
+      range: {L: [F3, C4]}
+    description: "G is in the top space of the bass staff, between A and Bass F. Play it with left-hand finger 4."
+    pieces: [bear-walk, turtle-walk, left-hand-waltz]
+
+  - id: prep-a.middle-c-position
+    name: Middle C position
+    unit: Unit 6 · Left Hand from Middle C
+    sequence: 350
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.bass-g, prep-a.steps-on-the-staff, prep-a.hand-shift]
+    constraints:
+      position: {R: C4, L: F3}
+    description: "Both thumbs share Middle C: the right hand covers C D E F G going up and the left hand C B A G F going down."
+    pieces: [i-call-you-call, warmup-thumb-walk]
+
+  - id: prep-a.skips
+    name: Skips, line to line
+    unit: Unit 7 · Skips
+    sequence: 360
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.middle-c-position]
+    constraints:
+      hands: [R, L]
+      intervals: [3]                    # skip a key, skip a finger, skip a letter
+    description: "A skip goes from a line to the next line: skip a key, skip a finger and skip a letter, like C to E."
+    pieces: [warmup-checkers, twinkle-twinkle, mary-had-a-little-lamb]
+
+  - id: prep-a.allegro
+    name: Allegro
+    unit: Unit 7 · Skips
+    sequence: 370
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.skips]
+    constraints:
+      position: {R: C4, L: F3}
+    description: "Allegro, written at the start of a piece, means fast and lively."
+    pieces: [when-the-saints, are-you-sleeping]
+
+  - id: prep-a.more-skips
+    name: Skips, space to space
+    unit: Unit 7 · Skips
+    sequence: 380
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.skips]
+    constraints:
+      position: {R: C4, L: F3}
+    description: "A skip also goes from a space to the next space, like D to F or F to A."
+    pieces: [kangaroo-skips, space-hops]
+
+  - id: prep-a.skips-together
+    name: Skips played together
+    unit: Unit 7 · Skips
+    sequence: 390
+    track: technique
+    staff: grand
+    prerequisites: [prep-a.more-skips]
+    constraints:
+      hands: [R, L]
+      chords: [3]                       # two notes a skip apart, at once
+    description: "Two notes a skip apart can be played together, like C and E with right-hand fingers 1 and 3."
+    pieces: [skipping-stones, snowflakes]
+
+  - id: prep-a.bass-d
+    name: Bass D
+    unit: Unit 8 · Left Hand in C Position
+    sequence: 400
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.allegro, prep-a.skips-together]
+    constraints:
+      position: {L: C3}
+      hands: [L]
+      pitches: {L: [D3]}
+    description: "Bass D sits on the middle line of the bass staff: a skip below Bass F."
+    pieces: [middle-line-d, d-and-f-drums]
+
+  - id: prep-a.bass-c
+    name: Bass C
+    unit: Unit 8 · Left Hand in C Position
+    sequence: 410
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.bass-d]
+    constraints:
+      position: {L: C3}
+      hands: [L]
+      pitches: {L: [C3]}
+    description: "Bass C is a step below Bass D, in the second space of the bass staff: the C an octave below Middle C."
+    pieces: [down-to-bass-c, c-d-f-dance]
+
+  - id: prep-a.bass-c-scale
+    name: C position in the bass
+    unit: Unit 8 · Left Hand in C Position
+    sequence: 420
+    track: reading
+    staff: grand
+    prerequisites: [prep-a.bass-c]
+    constraints:
+      position: {R: C4, L: C3}
+      hands: [L]
+      range: {L: [C3, G3]}
+    description: "The left hand moves down to C position: finger 5 on Bass C, then D, E, F and G up to the thumb. E is on the third line."
+    pieces: [bass-parade, bass-walk, galloping]
+
+  - id: prep-a.octave
+    name: The octave
+    unit: Unit 8 · Left Hand in C Position
+    sequence: 430
+    track: theory
+    staff: grand
+    prerequisites: [prep-a.bass-c-scale]
+    constraints:
+      hands: [R, L]
+      intervals: [8]                    # Middle C down to Bass C
+    description: "From one C to the next C is 8 white keys: an octave. Leap there with the whole hand instead of stretching."
+    pieces: [warmup-octave-leap, octave-bells]
+
+  - id: prep-a.question-answer
+    name: Musical question and answer
+    unit: Unit 8 · Left Hand in C Position
+    sequence: 440
+    track: musicianship
+    staff: grand
+    prerequisites: [prep-a.bass-c-scale]
+    constraints:
+      position: {R: C4, L: C3}
+    description: "Music can ask and answer. A question ends away from home; the answer ends on the home note, C. A parallel answer starts like the question, a contrasting answer differently."
+    pieces: [echo-song, bee-and-ladybug]
+
+  - id: prep-a.tie
+    name: The tie
+    unit: Unit 9 · Ties and Rests
+    sequence: 450
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.octave, prep-a.question-answer]
+    constraints:
+      ties: true
+    description: A tie joins two notes on the same line or space. Play the note once and hold it for both.
+    pieces: [trumpet-call, long-long-lullaby, warmup-tied-pattern, drone-song]
+
+  - id: prep-a.quarter-rest
+    name: The quarter rest
+    unit: Unit 9 · Ties and Rests
+    sequence: 460
+    track: rhythm
+    staff: grand
+    prerequisites: [prep-a.tie]
+    constraints:
+      rests: true
+    description: A quarter rest is one beat of silence. Lift the hand and keep counting.
+    pieces: [rain-rain, stop-and-go, clap-and-rest, warmup-quick-fist]

@@ -1,0 +1,43 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.two-black-keys, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.two-black-keys
+title: Groups of two black keys
+cards:
+- kind: explain
+  text: The black keys come in groups of two and three, all the way up the keyboard. Every group of two black keys,
+    low or high, is played with fingers 2 and 3.
+- kind: show
+  text: 'A group of two black keys in the middle: fingers 2 and 3.'
+  notes: C#4 D#4
+  fingers:
+  - 2
+  - 3
+  hand: R
+- kind: hear
+  text: 'The same group of two, three times: low, middle and high.'
+  play: C#2 D#2 C#4 D#4 C#6 D#6
+  tempo: 96
+- kind: try
+  text: Find the group of two just above the middle and play it with fingers 2 and 3.
+  notes: C#5 D#5 C#5 D#5
+  fingers:
+  - 2
+  - 3
+  - 2
+  - 3
+  hand: R
+- kind: echo
+  text: Listen, then play it back on the two black keys in the middle.
+  play: C#4 D#4 D#4 C#4
+  tempo: 80
+- kind: check
+  questions:
+  - text: How many black keys are in the smaller group?
+    choices:
+    - '2'
+    - '3'
+    - '4'
+    answer: '2'
+  - text: Play the first of the two black keys in the middle.
+    answer: C#4

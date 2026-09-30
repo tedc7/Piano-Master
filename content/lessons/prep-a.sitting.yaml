@@ -1,0 +1,59 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.sitting, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.sitting
+title: Sitting at the piano
+cards:
+- kind: explain
+  text: 'Sit like a pianist: tall and relaxed, on the front part of the bench, in the middle of the keyboard. Stretch
+    your arms out: your knuckles should just reach the edge behind the keys. Your arms should be level with the
+    keys; if they''re lower, sit on a cushion.'
+- kind: show
+  text: Sitting tall, rest your right hand on the two black keys in the middle.
+  notes: C#4 D#4
+  fingers:
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: Sit tall, then play the two black keys in the middle, one after the other.
+  notes: C#4 D#4 C#4 D#4
+  fingers:
+  - 2
+  - 3
+  - 2
+  - 3
+  hand: R
+- kind: try
+  text: 'Still sitting tall: now the left hand, on the two black keys just below.'
+  notes: C#3 D#3 C#3 D#3
+  fingers:
+  - 3
+  - 2
+  - 3
+  - 2
+  hand: L
+  clef: bass
+- kind: echo
+  text: Sitting tall, listen, then play it back on the two black keys in the middle.
+  play: C#4 D#4 D#4 C#4
+  tempo: 80
+- kind: check
+  questions:
+  - text: Where do you sit on the bench?
+    choices:
+    - On the front part
+    - Right at the back
+    answer: On the front part
+  - text: Your arms should be...
+    choices:
+    - Level with the keys
+    - Way below the keys
+    answer: Level with the keys
+  - text: If your arms are lower than the keys, you can...
+    choices:
+    - Sit on a cushion
+    - Stand up
+    answer: Sit on a cushion
+  - text: Sitting tall, play the first of the two black keys in the middle.
+    answer: C#4

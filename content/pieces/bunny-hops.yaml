@@ -1,0 +1,18 @@
+# Core piece (Prep A, prep-a.hand-shift). Original music and words for this app.
+# The hand hops to a new place: the finger number on the first note there says which finger lands.
+title: "Bunny Hops"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Bunny Hops
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  K:C
+  !1!C !2!D !3!E !2!D | !1!C4 | !1!D !2!E !3!F !2!E | !1!D4 | !1!E !2!F !3!G !2!F | !1!E4 | !3!E !2!D !1!C !2!D | !1!C4 |]
+  w: Hop, bun-ny, hop! Stop. Hop a-long to D. Hop a-long to E. Hop back home to C.

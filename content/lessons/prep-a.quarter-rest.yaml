@@ -1,0 +1,41 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.quarter-rest, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.quarter-rest
+title: The quarter rest
+cards:
+- kind: explain
+  text: A rest is a beat of silence. The quarter rest looks like a little squiggle and gets one beat. Lift your
+    hand and keep counting, then come back in on time.
+- kind: show
+  text: Play, play, play, then lift your hand for the rest on beat four.
+  notes: C4 D4 E4
+  fingers:
+  - 1
+  - 2
+  - 3
+  hand: R
+- kind: hear
+  text: Listen for the silent beat after each group of three.
+  play: C4 D4 E4 r G4 G4 G4 r
+  tempo: 90
+  contrast:
+    text: 'Now without the rests: the notes run on with no gap.'
+    play: C4 D4 E4 E4 G4 G4 G4 G4
+- kind: echo
+  text: Listen, then play it back. Leave the gap!
+  play: G4 E4 G4 E4
+  tempo: 80
+- kind: check
+  questions:
+  - text: How many beats does a quarter rest get?
+    choices:
+    - '1'
+    - '2'
+    - '4'
+    answer: '1'
+  - text: During a rest, you...
+    choices:
+    - Hold the key down
+    - Lift your hand and count
+    answer: Lift your hand and count

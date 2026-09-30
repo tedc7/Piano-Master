@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.quarter-rest). Original music and words for this app.
+title: "Clap and Rest"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Clap and Rest
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  K:C
+  !1!C C C z | E E E z | G F E D | C2 z2 | C C C z | D D D z | E F E D | C4 |]
+  w: Clap, clap, clap, tap, tap, tap, rest be-tween the beats, one, two, three, rest on four, rest-ing keeps the time.

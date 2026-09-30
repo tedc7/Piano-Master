@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.f-g-a-b). Original music and words for this app.
+title: "Four White Keys"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Four White Keys
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !2!F !3!G !4!A !5!B | !5!B !4!A !3!G2 | z4 | z4 | !2!F !3!G !4!A !5!B | !4!A !3!G !2!F2 | z4 | z4 |]
+  w: F, G, A, B, B, A, G, F, G, A, B, A, G, F.
+  [V:LH] z4 | z4 | G, F, G, F, | G, G, F,2 | z4 | z4 | F, G, F, G, | F,4 |]
+  w: Left hand plays the F and G, low F, low G, F.

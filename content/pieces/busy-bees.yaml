@@ -1,0 +1,23 @@
+# Core piece (Prep A, prep-a.f-g-a-b). Original music and words for this app.
+title: "Busy Bees"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Busy Bees
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!C D C D | E F E F | G F E D | C4 | z4 | z4 | z4 | z4 |]
+  w: Bus-y, bus-y bees are buz-zing all a-round the flow'rs.
+  [V:LH] z4 | z4 | z4 | z4 | !1!G, F, G, F, | E, F, E, F, | G, F, E, D, | C,4 |]
+  w: Buzz-y, buzz-y, bum-ble, bum-ble, slow-ly fly-ing home.

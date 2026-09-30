@@ -1,0 +1,49 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.musical-alphabet, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.musical-alphabet
+title: The musical alphabet
+cards:
+- kind: explain
+  text: 'The white keys are named with the musical alphabet: just seven letters, A B C D E F G. After G it starts
+    again with A, all the way up the keyboard.'
+- kind: hear
+  text: 'C, D, E here, and the same C, D, E again higher up: same letters, higher sound.'
+  play: C4 D4 E4:2 C5 D5 E5:2
+  tempo: 96
+- kind: try
+  text: Play C, D, E in the middle...
+  notes: C4 D4 E4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: try
+  text: '...and C, D, E again, one set of keys higher.'
+  notes: C5 D5 E5
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: check
+  questions:
+  - text: How many letters are in the musical alphabet?
+    choices:
+    - '5'
+    - '7'
+    - '26'
+    answer: '7'
+  - text: What letter comes after G?
+    choices:
+    - H
+    - A
+    - C
+    answer: A
+  - text: What letter comes before D?
+    choices:
+    - C
+    - E
+    - B
+    answer: C

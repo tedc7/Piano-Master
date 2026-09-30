@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.mezzo-forte). Ode to Joy, Ludwig van Beethoven (1824); words Henry van Dyke (1907); public domain. Our own arrangement.
+title: "Joyful, Joyful (letter names)"
+composer: Ludwig van Beethoven
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+song: joyful-joyful
+songTitle: "Joyful, Joyful"
+version: Letter names
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+dynamics: {1: mf}   # bar: mark
+phraseBars: 2
+abc: |
+  X:1
+  T:Joyful, Joyful (letter names)
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  K:C
+  !3!E E F G | G F E D | C C D E | E D D2 | E E F G | G F E D | C C D E | D C C2 |]
+  w: Joy-ful, joy-ful, we a-dore Thee, God of glo-ry, Lord of love; hearts un-fold like flow'rs be-fore Thee, op'-ning to the sun a-bove.

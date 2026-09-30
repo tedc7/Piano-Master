@@ -1,0 +1,51 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.steps, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.steps
+title: Steps on the keyboard
+cards:
+- kind: explain
+  text: A step goes to the next key, with the next finger, to the next letter, up or down. Playing the same key
+    again is a repeat.
+- kind: show
+  text: 'Steps up: C to D to E, fingers 2, 3, 4.'
+  notes: C4 D4 E4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: Steps going down, then steps going up.
+  play: E4 D4 C4:2 C4 D4 E4:2
+  tempo: 96
+  contrast:
+    text: 'And repeats: the same key again and again.'
+    play: E4 E4 E4:2
+- kind: try
+  text: 'Step down: E, D, C.'
+  notes: E4 D4 C4
+  fingers:
+  - 4
+  - 3
+  - 2
+  hand: R
+- kind: echo
+  text: Listen, then play it back. Where does it step, and where does it repeat?
+  play: E4 D4 C4 D4 E4 E4 E4
+  tempo: 80
+- kind: check
+  questions:
+  - text: A step goes to the...
+    choices:
+    - Next key
+    - Same key
+    answer: Next key
+  - text: Listen. Steps or repeats?
+    hear: D4 D4 D4
+    choices:
+    - Steps
+    - Repeats
+    answer: Repeats
+  - text: Step up from D. Which key do you land on?
+    answer: E4

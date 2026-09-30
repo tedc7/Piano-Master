@@ -1,0 +1,50 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.c-d-e, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.c-d-e
+title: C, D and E
+cards:
+- kind: explain
+  text: Find a group of two black keys. C is the white key just to the left of it, D sits in the middle between
+    the two black keys, and E is just to the right. The C in the middle of the piano is called Middle C.
+- kind: show
+  text: C, D and E, with right-hand fingers 2, 3 and 4.
+  notes: C4 D4 E4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: E, D, C. Do you know this song?
+  play: E4 D4 C4:2 E4 D4 C4:2
+  tempo: 100
+- kind: try
+  text: Play C, D, E with right-hand fingers 2, 3, 4.
+  notes: C4 D4 E4
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: try
+  text: 'Left hand: E, D, C with fingers 2, 3, 4.'
+  notes: E3 D3 C3
+  fingers:
+  - 2
+  - 3
+  - 4
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Find Middle C and play it.
+    answer: C4
+  - text: D lives between the two black keys. Play the D just above Middle C.
+    answer: D4
+  - text: Which white key is just to the right of the two black keys?
+    choices:
+    - C
+    - D
+    - E
+    answer: E

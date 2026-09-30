@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.bass-b). Original music and words for this app.
+title: "Bouncing B"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:Bouncing B
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  K:C clef=bass
+  !1!C !2!B, B, C | C B, B,2 | C C B, B, | C4 |]
+  w: Bounc-ing ball goes down to B, bounc-ing, bounc-ing, C!

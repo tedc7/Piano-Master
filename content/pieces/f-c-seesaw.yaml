@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.bass-f). Original music and words for this app.
+title: "F and C Seesaw"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:F and C Seesaw
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  K:C clef=bass
+  !5!F, !1!C F, C | F, C F,2 | C C F, F, | F,4 |]
+  w: Bass F, Mid-dle C, back and forth we go to F.

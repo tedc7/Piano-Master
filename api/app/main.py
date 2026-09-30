@@ -17,10 +17,11 @@ from fastapi import FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import content, db, parent, students
+from . import content, db, library, parent, students
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 MAX_BODY = 4 * 1024 * 1024          # an attempt with every key press is well under this
+MAX_PACKAGE = 32 * 1024 * 1024      # a Skill API package: every piece's notation (its stems come one file at a time)
 LOG_DAYS = 90                       # client logs are kept for 90 days (§11.3)
 UUID = r"^[0-9a-fA-F-]{8,64}$"
 SLUG = r"^[A-Za-z0-9_.-]{1,100}$"
@@ -39,12 +40,16 @@ app = FastAPI(title="Piano App API", version=VERSION, lifespan=lifespan,
               docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url=None)
 app.include_router(parent.router)
 app.include_router(students.router)
+app.include_router(library.router)
 
 
 @app.middleware("http")
 async def limit_body(request: Request, call_next):
     size = request.headers.get("content-length")
-    if size and size.isdigit() and int(size) > MAX_BODY:
+    path = request.url.path
+    limit = library.MAX_MEDIA if "/media/" in path and path.startswith("/api/skill/") else \
+        MAX_PACKAGE if path.startswith("/api/skill/") else MAX_BODY
+    if size and size.isdigit() and int(size) > limit:
         return JSONResponse({"detail": "request too large"}, status_code=413)
     return await call_next(request)
 
@@ -212,7 +217,8 @@ def health():
     finally:
         con.close()
     c = content.load()
-    return {"ok": True, "version": VERSION, "schema": schema_version, "contentVersion": c.version if c else None}
+    return {"ok": True, "version": VERSION, "schema": schema_version, "contentVersion": content.deployed_version() if c else None,
+            "libraryVersion": c.version.partition("+")[2] if c else None}
 
 
 def touch_device(con, device_id: str, body: DeviceIn | None = None) -> None:

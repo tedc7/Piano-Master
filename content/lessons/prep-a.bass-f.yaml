@@ -1,0 +1,44 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.bass-f, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.bass-f
+title: Bass F
+cards:
+- kind: explain
+  text: Bass F is the F just below Middle C, on the fourth line of the bass staff. The bass clef's two dots sit
+    either side of that line, so it's also called the F clef.
+- kind: show
+  text: Middle C with the left thumb, then Bass F with finger 5.
+  notes: C4 F3
+  fingers:
+  - 1
+  - 5
+  hand: L
+  clef: bass
+- kind: hear
+  text: Middle C, then down to Bass F.
+  play: C4:2 F3:2 C4:2 F3:2
+  tempo: 90
+- kind: try
+  text: 'Left hand: thumb on Middle C, finger 5 down on Bass F.'
+  notes: C4 F3 C4 F3
+  fingers:
+  - 1
+  - 5
+  - 1
+  - 5
+  hand: L
+  clef: bass
+- kind: echo
+  text: Listen, then play it back with your left hand.
+  play: C4 F3 F3 C4
+  tempo: 80
+- kind: check
+  questions:
+  - text: Play Bass F, the note between the bass clef's two dots.
+    answer: F3
+  - text: The bass clef is also called the...
+    choices:
+    - G clef
+    - F clef
+    answer: F clef

@@ -1,0 +1,39 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.question-answer, in our own words: one concept, one Explain.
+# Type: Musicianship. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.question-answer
+title: Musical question and answer
+cards:
+- kind: explain
+  text: Music can ask and answer. A musical question ends away from home; the answer ends on the home note, C. A
+    parallel answer starts the same way as the question, and a contrasting answer starts differently.
+- kind: hear
+  text: A question, then a parallel answer.
+  play: C4 D4 E4 F4 G4:2 E4:2 D4:4 C4 D4 E4 F4 G4:2 E4:2 C4:4
+  tempo: 100
+  contrast:
+    text: The same question, then a contrasting answer.
+    play: C4 D4 E4 F4 G4:2 E4:2 D4:4 G4 F4 E4 D4 C4:4
+- kind: try
+  text: 'Play the answer: end on the home note, C.'
+  notes: G4 F4 E4 D4 C4
+  fingers:
+  - 5
+  - 4
+  - 3
+  - 2
+  - 1
+  hand: R
+- kind: check
+  questions:
+  - text: A musical answer ends on...
+    choices:
+    - The home note
+    - Any note
+    answer: The home note
+  - text: Listen. Does the answer start the same way as the question?
+    hear: C4 D4 E4 F4 G4:2 E4:2 D4:4 C4 D4 E4 F4 G4:2 E4:2 C4:4
+    choices:
+    - 'Yes: a parallel answer'
+    - 'No: a contrasting answer'
+    answer: 'Yes: a parallel answer'

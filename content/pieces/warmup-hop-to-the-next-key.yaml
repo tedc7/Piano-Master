@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.hand-shift). Warm-up in our own music.
+# The same finger pattern, the hand hopping up one key each time (a hand shift).
+title: "Warm-up: Hop to the Next Key"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Hop to the Next Key
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  K:C
+  !2!C C !3!D D | !2!C4 | !2!D D !3!E E | !2!D4 | !2!E E !3!F F | !2!E4 | !2!F F !3!G G | !2!F4 |]

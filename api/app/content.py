@@ -2,8 +2,13 @@
 
 tools/build_content.py writes skillmap.json, index.json and pieces/<id>.json; deploys copy them
 into app/content/ (PIANO_CONTENT overrides the folder), so the server plans from the same content
-version the client shows. Diagnostics and the drill generator read each piece's full notation. Each piece's required and featured skills, map point and skill
-measures come from song analysis (analysis.py, run by the content build).
+version the client shows. Diagnostics and the drill generator read each piece's full notation.
+Each piece's required and featured skills, map point and skill measures come from song analysis
+(analysis.py, run by the content build, and by intake for library songs).
+
+Songs the parent approved from the review list (M7, arch §10.7) join the deployed pieces: the
+library module keeps their index in <data>/library/index.json and each piece in
+<data>/library/<id>/piece.json. The content version is then "<deployed>+<library>".
 """
 from __future__ import annotations
 
@@ -63,11 +68,14 @@ class Content:
     pieces: dict[str, Piece]
     folder: Path | None = None                 # where pieces/<id>.json are
     notations: dict[str, dict] = field(default_factory=dict)   # loaded (or given, in tests) full notation
+    paths: dict[str, Path] = field(default_factory=dict)       # piece files elsewhere: the approved library
+    genres: dict[str, str] = field(default_factory=dict)       # piece id -> genre (for each child's rules)
+    songs: dict[str, str] = field(default_factory=dict)        # piece id -> song (arrangements share one)
 
     def notation(self, piece_id: str) -> dict | None:
         """A piece's §5 notation, from pieces/<id>.json; None when it isn't there."""
         if piece_id not in self.notations:
-            f = self.folder / "pieces" / f"{piece_id}.json" if self.folder else None
+            f = self.paths.get(piece_id) or (self.folder / "pieces" / f"{piece_id}.json" if self.folder else None)
             if f is None or piece_id not in self.pieces or not f.exists():
                 return None
             self.notations[piece_id] = json.loads(f.read_text())["notation"]
@@ -80,6 +88,11 @@ class Content:
     @property
     def order(self) -> list[Skill]:
         return sorted(self.skills.values(), key=lambda s: s.sequence)
+
+    def only(self, keep) -> "Content":
+        """The same content with only the pieces keep(piece id) allows (a child's rules)."""
+        return Content(version=self.version, skills=self.skills, pieces={k: p for k, p in self.pieces.items() if keep(k)},
+                       folder=self.folder, notations=self.notations, paths=self.paths, genres=self.genres, songs=self.songs)
 
     def pieces_of(self, skill_id: str) -> list[Piece]:
         """The pieces that feature the skill (song analysis), core pieces first."""
@@ -110,25 +123,52 @@ class Content:
                 skill_measures=dict(p.get("skillMeasures", {})),
                 bar_notes={int(k): v for k, v in (p.get("barNotes") or {}).items()}, level=p.get("level") or "")
         return cls(version=index.get("contentVersion", skillmap.get("contentVersion", "")), skills=skills, pieces=pieces,
-                   folder=folder)
+                   folder=folder, genres={p["id"]: p.get("genre") or "lesson-pieces" for p in index["pieces"]},
+                   songs={p["id"]: p.get("song") or p["id"] for p in index["pieces"]})
 
 
-_cache: tuple[float, Content] | None = None
+_cache: tuple[tuple, Content] | None = None
 
 
 def content_dir() -> Path:
     return Path(os.environ.get("PIANO_CONTENT", DEFAULT_DIR))
 
 
-def load() -> Content | None:
-    """The deployed content, reloaded when its files change; None if there is none."""
-    global _cache
+def library_index() -> Path:
+    from .db import data_dir
+    return data_dir() / "library" / "index.json"
+
+
+def deployed_version() -> str | None:
     d = content_dir()
     try:
-        mtime = max((d / "skillmap.json").stat().st_mtime, (d / "index.json").stat().st_mtime)
+        return json.loads((d / "index.json").read_text()).get("contentVersion")
     except OSError:
         return None
-    if _cache is None or _cache[0] != mtime:
-        c = Content.from_json(json.loads((d / "skillmap.json").read_text()), json.loads((d / "index.json").read_text()), d)
-        _cache = (mtime, c)
+
+
+def load() -> Content | None:
+    """The deployed content and the approved library, reloaded when either changes; None if no
+    content is deployed."""
+    global _cache
+    d, lib = content_dir(), library_index()
+    try:
+        key = (str(d), str(lib), (d / "skillmap.json").stat().st_mtime, (d / "index.json").stat().st_mtime,
+               lib.stat().st_mtime if lib.exists() else 0.0)
+    except OSError:
+        return None
+    if _cache is None or _cache[0] != key:
+        index = json.loads((d / "index.json").read_text())
+        paths = {}
+        if lib.exists():
+            extra = json.loads(lib.read_text())
+            if extra.get("pieces"):
+                have = {p["id"] for p in index["pieces"]}
+                added = [p for p in extra["pieces"] if p["id"] not in have]
+                index = {**index, "pieces": index["pieces"] + added,
+                         "contentVersion": f"{index.get('contentVersion', '')}+{extra['version']}"}
+                paths = {p["id"]: lib.parent / p["id"] / "piece.json" for p in added}
+        c = Content.from_json(json.loads((d / "skillmap.json").read_text()), index, d)
+        c.paths = paths
+        _cache = (key, c)
     return _cache[1]

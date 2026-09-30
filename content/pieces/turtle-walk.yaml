@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.bass-g). Original music and words for this app.
+title: "Turtle Walk"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:Turtle Walk
+  M:4/4
+  L:1/4
+  Q:1/4=80
+  K:C clef=bass
+  !1!C B, A, G, | F,2 G,2 | A, G, A, B, | C4 | C B, C B, | A,2 B,2 | A, G, F, G, | F,4 |]
+  w: Tur-tle, tur-tle, walk-ing slow-ly, slow-ly, home. In his lit-tle shell house, sleep-y tur-tle rests.

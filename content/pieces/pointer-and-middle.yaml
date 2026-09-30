@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.finger-numbers). Original music and words for this app.
+# Say each finger number out loud as you play it.
+title: "Pointer and Middle"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Pointer and Middle
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !2!^C !3!^D ^C ^D | ^D ^D ^C ^C | z4 | z4 | ^C ^D ^D ^C | ^C ^D ^C ^C | z4 | z4 |]
+  [V:LH] z4 | z4 | !3!^C, !2!^D, ^C, ^D, | ^D, ^D, ^C, ^C, | z4 | z4 | ^C, ^D, ^D, ^C, | ^C, ^D, ^C, ^C, |]

@@ -1,0 +1,39 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.bass-c, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.bass-c
+title: Bass C
+cards:
+- kind: explain
+  text: Bass C is a step below Bass D, in the second space of the bass staff. It's the C one octave below Middle
+    C.
+- kind: show
+  text: Bass D, then a step down to Bass C.
+  notes: D3 C3
+  fingers:
+  - 4
+  - 5
+  hand: L
+  clef: bass
+- kind: hear
+  text: Down D, C, and back up.
+  play: D3 C3 D3 C3:2
+  tempo: 96
+- kind: try
+  text: Play D, C, D with left-hand fingers 4, 5, 4.
+  notes: D3 C3 D3
+  fingers:
+  - 4
+  - 5
+  - 4
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: Play Bass C.
+    answer: C3
+  - text: Bass C is a ... below Bass D.
+    choices:
+    - Step
+    - Skip
+    answer: Step

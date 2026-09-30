@@ -24,7 +24,7 @@
 {#if error}<p class="notice error">{error}</p>{/if}
 {#if content}
   <p class="muted">
-    {content.map.placeholder ? `Placeholder skill map (${content.map.maps.map((m) => m.level).join(", ")}), for testing until the Faber books arrive. ` : ""}Content version {content.version}.
+    {content.map.placeholder ? `Placeholder skill map (${content.map.maps.map((m) => m.level).join(", ")}), for testing. ` : ""}Content version {content.version}.
   </p>
   {#each skills as s (s.id)}
     <section class="panel">

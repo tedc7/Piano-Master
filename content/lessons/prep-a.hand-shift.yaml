@@ -1,0 +1,42 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.hand-shift, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.hand-shift
+title: Hopping to a new hand position
+cards:
+- kind: explain
+  text: Sometimes the whole hand hops to a new place on the keyboard. The finger number on the first note there
+    tells you which finger lands on it.
+- kind: show
+  text: Fingers 1, 2, 3 on C, D, E; then the hand hops so the thumb lands on D.
+  notes: C4 D4 E4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 1
+  - 2
+  - 3
+  hand: R
+- kind: hear
+  text: 'Listen: the same little pattern, one key higher each time.'
+  play: C4 D4 E4:2 D4 E4 F4:2 E4 F4 G4:2
+  tempo: 96
+- kind: try
+  text: 'Play C, D, E, then hop: thumb on D for D, E, F.'
+  notes: C4 D4 E4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 1
+  - 2
+  - 3
+  hand: R
+- kind: check
+  questions:
+  - text: When the hand hops, which note tells you the finger?
+    choices:
+    - The first note in the new place
+    - The last note of the piece
+    answer: The first note in the new place

@@ -11,3 +11,12 @@ client/public/media/
 tests-output/
 # the content bundled into the API at deploy (tools/deploy.sh)
 api/app/content/
+# the media skill's tools (tools/media/setup.sh) and its work files
+tools/.media/
+# stems made by the media skill (arch §10.5): regenerated, not versioned
+content/media/
+content/incoming/*/media/
+# the family's method-book photos: never committed
+Background/
+# the family's own method-book page references (content/private/book-refs.yaml): never committed
+content/private/

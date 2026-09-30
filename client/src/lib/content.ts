@@ -1,18 +1,75 @@
 // The content index and skill map (written by tools/build_content.py), loaded once per page load
-// and shared by the screens that list songs and skills.
+// and shared by the screens that list songs and skills. Songs the parent approved from the review
+// list (M7, arch §10.7) come from the piano server's library and join the deployed pieces; the
+// content version is then "<deployed>+<library>". Each child sees only the songs their genre and
+// song rules allow (§10.1); the parent sees everything.
+import { api } from "./api";
 import type { PieceSummary, SkillMap } from "./types";
 
 export interface Content { map: SkillMap; pieces: PieceSummary[]; version: string }
 
+/** What kind of idea a concept is (its track, arch §6.6), in the words the Journey map and the
+ *  concept lesson show, and its colour. */
+export const CONCEPT_TYPE: Record<string, { label: string; color: string }> = {
+  reading: { label: "Notes", color: "#2f6fdb" },
+  rhythm: { label: "Rhythm", color: "#c0561a" },
+  technique: { label: "Technique", color: "#2f7d4f" },
+  theory: { label: "Theory", color: "#7a4fc9" },
+  musicianship: { label: "Musicianship", color: "#b0287a" },
+  repertoire: { label: "Pieces", color: "#6b5a2e" },
+};
+export const conceptType = (track: string) => CONCEPT_TYPE[track] ?? { label: track, color: "#6b6b6b" };
+export interface Rules { always: string; genres: Record<string, boolean>; songs: Record<string, boolean> }
+
 let loading: Promise<Content> | null = null;
+
+async function json<T>(url: string): Promise<T> {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json() as Promise<T>;
+}
 
 export function loadContent(): Promise<Content> {
   loading ??= Promise.all([
-    fetch("content/skillmap.json").then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
-    fetch("content/index.json").then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }),
-  ]).then(([map, idx]) => ({ map, pieces: idx.pieces, version: idx.contentVersion ?? "" }))
-    .catch((e) => { loading = null; throw e; });
+    json<SkillMap>("content/skillmap.json"),
+    json<{ contentVersion?: string; pieces: PieceSummary[] }>("content/index.json"),
+    // offline, the library's songs wait until the piano server is reachable again
+    json<{ version: string; pieces: PieceSummary[] }>("/api/library").catch(() => ({ version: "", pieces: [] as PieceSummary[] })),
+  ]).then(([map, idx, lib]) => {
+    const have = new Set(idx.pieces.map((p) => p.id));
+    const added = lib.pieces.filter((p) => !have.has(p.id)).map((p) => ({ ...p, library: true }));
+    const version = (idx.contentVersion ?? "") + (added.length && lib.version ? `+${lib.version}` : "");
+    return { map, pieces: [...idx.pieces, ...added], version };
+  }).catch((e) => { loading = null; throw e; });
   return loading;
+}
+
+/** Forget the loaded content (after the parent approves or deletes songs). */
+export function reloadContent(): void {
+  loading = null;
+}
+
+const rulesCache = new Map<string, Promise<Rules>>();
+
+/** A child's genre and song rules (the piano server's; none offline, which shows only lesson pieces). */
+export function rulesFor(studentId: string, fresh = false): Promise<Rules> {
+  if (fresh) rulesCache.delete(studentId);
+  let r = rulesCache.get(studentId);
+  if (!r) {
+    r = api.request<Rules>(`/students/${studentId}/rules`).catch(() => ({ always: "lesson-pieces", genres: {}, songs: {} }));
+    rulesCache.set(studentId, r);
+  }
+  return r;
+}
+
+/** Whether a child may see a song: a song rule overrides the genre rule; lesson pieces are always
+ *  allowed; any other genre is blocked until the parent allows it (arch §10.1). */
+export function allowed(p: PieceSummary, rules: Rules | null): boolean {
+  if (!rules) return true;
+  const song = p.song ?? p.id;
+  if (song in rules.songs) return rules.songs[song];
+  const g = p.genre ?? rules.always;
+  return g === rules.always || rules.genres[g] === true;
 }
 
 export const handsLabel = (h: string) => (h === "RL" ? "Both hands" : h === "L" ? "Left hand" : "Right hand");

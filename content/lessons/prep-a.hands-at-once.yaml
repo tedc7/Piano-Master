@@ -1,0 +1,40 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.hands-at-once, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.hands-at-once
+title: Both hands at once
+cards:
+- kind: explain
+  text: Both hands can play at the same time. Here one hand holds a long note while the other hand keeps playing.
+- kind: show
+  text: The left hand holds Bass F while the right hand plays Middle C and Treble G.
+  notes: '[F3,C4] G4'
+  fingers:
+  - 5
+  - 5
+  hand: RL
+  clef: grand
+- kind: hear
+  text: 'Listen: the low note keeps ringing while the high notes play over it.'
+  play: '[F3,C4]:2 [F3,G4]:2'
+  tempo: 90
+- kind: try
+  text: Hold Bass F with left-hand finger 5, and play Middle C with your right thumb.
+  notes: '[F3,C4]'
+  fingers:
+  - 5
+  hand: RL
+  clef: grand
+- kind: check
+  questions:
+  - text: Can both hands play at the same time?
+    choices:
+    - 'Yes'
+    - 'No'
+    answer: 'Yes'
+  - text: Listen. One note or two at once?
+    hear: '[F3,C4]:2'
+    choices:
+    - One note
+    - Two at once
+    answer: Two at once

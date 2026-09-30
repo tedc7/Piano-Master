@@ -1,0 +1,49 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.c-b-a-g-f, in our own words: one concept, one Explain.
+# Type: Notes. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.c-b-a-g-f
+title: 'Left hand: C B A G F'
+cards:
+- kind: explain
+  text: 'Put your left thumb on a C. The fingers step down from it: 2 on B, 3 on A, 4 on G and 5 on F. A and B are
+    the last two white keys by the group of three black keys.'
+- kind: show
+  text: Left hand from Middle C, stepping down to F.
+  notes: C4 B3 A3 G3 F3
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  hand: L
+  clef: bass
+- kind: hear
+  text: The left hand from Middle C, down to F and back up.
+  play: C4 B3 A3 G3 F3:2 G3 A3 B3 C4:2
+  tempo: 100
+- kind: try
+  text: Play C, B, A with left-hand fingers 1, 2, 3.
+  notes: C4 B3 A3
+  fingers:
+  - 1
+  - 2
+  - 3
+  hand: L
+  clef: bass
+- kind: echo
+  text: Listen, then play it back with your left hand.
+  play: B3 A3 G3 A3 B3
+  tempo: 80
+- kind: check
+  questions:
+  - text: Play the B just below Middle C.
+    answer: B3
+  - text: Play the A just below Middle C.
+    answer: A3
+  - text: With the left thumb on C, which finger plays F?
+    choices:
+    - '3'
+    - '4'
+    - '5'
+    answer: '5'

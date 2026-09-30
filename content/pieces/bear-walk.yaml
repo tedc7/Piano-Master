@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.bass-g). Original music and words for this app.
+title: "Bear Walk"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: L
+phraseBars: 2
+abc: |
+  X:1
+  T:Bear Walk
+  M:4/4
+  L:1/4
+  Q:1/4=88
+  K:C clef=bass
+  !1!C B, A, G, | F,2 F,2 | G, A, B, C | C4 | C B, A, B, | C B, A,2 | G, A, G, F, | F,4 |]
+  w: Down the moun-tain, big bear climbs up to the cave. Bear is sleep-y, yawn-ing wide, snor-ing, snor-ing, shh.

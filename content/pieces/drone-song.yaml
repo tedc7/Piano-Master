@@ -1,0 +1,21 @@
+# Core piece (Prep A, prep-a.tie). Original music and words for this app.
+title: "Drone Song"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+phraseBars: 2
+abc: |
+  X:1
+  T:Drone Song
+  M:4/4
+  L:1/4
+  Q:1/4=100
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!C D E F | G F E D | E F G F | E D C2 | G F E D | C D E2 | F E D D | C4 |]
+  w: Bag-pipes play-ing, hum-ming, hum-ming, low notes hold-ing long and low. Drone goes on and on and on, while we sing a-long.
+  [V:LH] !1!C,4- | C,4- | C,4- | C,4 | !3!E,4- | E,4- | E,4 | C,4 |]

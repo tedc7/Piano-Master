@@ -1,0 +1,54 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.three-four, in our own words: one concept, one Explain.
+# Type: Rhythm. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.three-four
+title: The 3/4 time signature
+cards:
+- kind: explain
+  text: 'In 3/4 time there are three beats in each measure, with a strong first beat: ONE two three, ONE two three.
+    The quarter note still gets one beat.'
+- kind: show
+  text: 'Three quarter notes, then a dotted half note: two measures of 3/4.'
+  notes: C4 D4 E4 F4:3
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: Listen for the strong first beat in every measure.
+  play: C4 D4 E4 F4 E4 D4 C4:3
+  tempo: 110
+  contrast:
+    text: Now the same notes counted in four. Can you hear the difference?
+    play: C4 D4 E4 F4 E4 D4 C4:2 C4:4
+- kind: try
+  text: Play C D E, then hold F for three beats.
+  notes: C4 D4 E4 F4:3
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: check
+  questions:
+  - text: How many beats are in each measure of 3/4 time?
+    choices:
+    - '2'
+    - '3'
+    - '4'
+    answer: '3'
+  - text: Listen. Is this in three or in four?
+    hear: C4:2 G4 E4:2 G4 C4:3
+    choices:
+    - Three
+    - Four
+    answer: Three
+  - text: Which note fills a whole measure of 3/4?
+    choices:
+    - Half note
+    - Dotted half note
+    - Whole note
+    answer: Dotted half note

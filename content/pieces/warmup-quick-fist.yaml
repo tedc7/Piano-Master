@@ -1,0 +1,17 @@
+# Core piece (Prep A, prep-a.quarter-rest). Warm-up in our own music.
+# On each rest, make a quick, loose fist and keep counting.
+title: "Warm-up: Quick Fist"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Quick Fist
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  K:C
+  !1!C !3!E z C | D F z D | E2 G E | C4 |]

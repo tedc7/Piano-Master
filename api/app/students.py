@@ -15,7 +15,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 from . import content as content_mod
-from . import db, diagnostics, engine
+from . import db, diagnostics, engine, library
 from .parent import is_parent, require_parent
 
 router = APIRouter()
@@ -238,6 +238,7 @@ def student_state(student_id: str, device_id: str | None = Query(None, pattern=U
     c = need_content()
     con = db.connect()
     try:
+        c = library.content_for(con, student_id, c)       # only the songs this child is allowed (§10.1)
         with db.transaction(con):
             r = get_student(con, student_id)
             t = today()
@@ -257,6 +258,7 @@ def lesson_done(student_id: str, skill_id: str, body: LessonDoneIn):
     c = need_content()
     con = db.connect()
     try:
+        c = library.content_for(con, student_id, c)
         with db.transaction(con):
             get_student(con, student_id)
             try:

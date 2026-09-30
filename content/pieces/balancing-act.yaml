@@ -1,0 +1,20 @@
+# Core piece (Prep A, prep-a.three-black-keys). Original music and words for this app.
+title: "Balancing Act"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:Balancing Act
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  K:C
+  !2!^F !3!^G !4!^A ^G | ^F ^G ^A ^A | ^A ^G ^F ^G | ^A ^G ^F ^F |
+  w: One step, two steps, three steps, bal-ance! Wob-ble, wob-ble, don't fall down now!
+  !2!^f !3!^g !4!^a ^g | ^f ^g ^a ^a | ^a ^g ^f ^g | ^a ^g ^f ^f |]
+  w: High up in the cir-cus, high-er, high-er, look down, safe on the ground!

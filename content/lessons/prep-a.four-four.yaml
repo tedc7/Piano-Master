@@ -1,0 +1,43 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.four-four, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.four-four
+title: The 4/4 time signature
+cards:
+- kind: explain
+  text: The two numbers at the start of the music are the time signature. 4/4 means there are 4 beats in every measure,
+    and the quarter note gets one beat.
+- kind: show
+  text: 'One measure of 4/4: four quarter notes.'
+  notes: C4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: hear
+  text: 'Count along: 1, 2, 3, 4, in every measure.'
+  play: C4 D4 E4 F4 G4:2 E4:2 C4:4
+  tempo: 100
+- kind: try
+  text: Play one measure of 4/4 and count 1, 2, 3, 4.
+  notes: C4 D4 E4 F4
+  fingers:
+  - 1
+  - 2
+  - 3
+  - 4
+  hand: R
+- kind: check
+  questions:
+  - text: How many beats are in each measure of 4/4 time?
+    choices:
+    - '3'
+    - '4'
+    answer: '4'
+  - text: In 4/4 time, which note gets one beat?
+    choices:
+    - Quarter note
+    - Half note
+    answer: Quarter note

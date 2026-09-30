@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.hands-at-once). Original music and words for this app.
+title: "Chiming Clock"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+phraseBars: 2
+abc: |
+  X:1
+  T:Chiming Clock
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !5!G G G2 | z4 | !5!G2 !1!C2 | z4 | C G C G | z4 | G2 G2 | G4 |]
+  w: Tick, tock, tick, time for up and down and good night, sleep.
+  [V:LH] z4 | !1!C C C2 | z4 | !5!F,4 | z4 | C F, C F, | z4 | F,4 |]
+  w: tock, tock, tock, bed. Down and up and

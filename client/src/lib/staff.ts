@@ -28,6 +28,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const TOP = 70;
 const GAP = 175;
 export const LYRIC_FILL = "#2a2a2e";
+const LETTER_HEAD_SCALE = 58;        // note heads for letter names (VexFlow's default is 39)
 
 function durPieces(d: number): [number, string, number][] {
   const out: [number, string, number][] = [];
@@ -198,6 +199,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
               keys: keys.map(vexKey), duration: p[1], dots: p[2], clef,
             };
             if (dir) opts.stem_direction = dir; else opts.auto_stem = true;
+            if (h.letters) opts.glyph_font_scale = LETTER_HEAD_SCALE;      // room for the letter inside
             const n = new StaveNote(opts);
             if (p[2]) Dot.buildAndAttach([n], { all: true });
             if (pi === 0) {
@@ -379,11 +381,44 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
       }
     }
   }
+  // dynamic marks (f, mf, p...) under the upper staff at the note they start from, in the bold
+  // italic of printed music; between the lyrics and the bass staff on a grand staff
+  for (const d of nota.dynamics ?? []) {
+    for (const e of tl.entries) {
+      if (d.beat >= e.m.start - 1e-6 && d.beat < e.m.start + e.m.duration - 1e-6) {
+        const t = addText(d.mark, xAt(map, e.start + d.beat - e.m.start) - 8, grand ? TOP + 182 : TOP + 120, 22, "bold");
+        t.setAttribute("font-family", "'Times New Roman', Georgia, serif");
+        t.setAttribute("font-style", "italic");
+        t.classList.add("dynamic");
+      }
+    }
+  }
   const noteEls = tl.notes.map((n) => {
     const vf = vfFirst[n.id];
     if (!vf) return null;
     return vf.noteHeads[keyIdx[n.id]]?.getSVGElement() ?? null;
   });
+  // a pre-staff piece: the letter name inside each note head, white in a filled head and dark in an
+  // open one (half and whole notes), the way beginner books print them
+  // (black keys have no letter at this level: their names come with sharps and flats)
+  if (h.letters) {
+    tl.notes.forEach((n) => {
+      const vf = vfFirst[n.id];
+      if (!vf || n.tieContinuation || n.spelled.alter) return;
+      try {
+        const open = n.duration >= 2 - 1e-6;              // a half or whole note: a hollow head
+        const t = addText(n.spelled.step.toUpperCase(), centerX(vf), vf.getYs()[keyIdx[n.id]] + 4, 11, "bold",
+          open ? LYRIC_FILL : "#fff");
+        if (open) {                                        // a white halo keeps the letter clear of the ring
+          t.setAttribute("stroke", "#fff");
+          t.setAttribute("stroke-width", "2");
+          t.setAttribute("paint-order", "stroke");
+        }
+        t.setAttribute("pointer-events", "none");
+        t.classList.add("note-letter");
+      } catch { /* not laid out */ }
+    });
+  }
   return {
     svg, scale, map, noteEls, lyrics, problems, graces: graceCount,
     width: Math.round(total * scale), height: Math.round(H * scale),

@@ -1,0 +1,21 @@
+# Core piece (Prep A, prep-a.skips). Warm-up in our own music.
+# Fingers 1 and 3 skipping back and forth, the pattern moving to the next key.
+title: "Warm-up: Checkers"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+phraseBars: 2
+abc: |
+  X:1
+  T:Warm-up: Checkers
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!C !3!E C E | C4 | !1!D !3!F D F | D4 | z4 | z4 | z4 | z4 |]
+  [V:LH] z4 | z4 | z4 | z4 | !1!C !3!A, C A, | C4 | !1!B, !3!G, B, G, | B,4 |]

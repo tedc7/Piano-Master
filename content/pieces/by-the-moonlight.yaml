@@ -1,0 +1,18 @@
+# Core piece (Prep A, prep-a.c-d-e). Au clair de la lune, French traditional; public domain. Our own arrangement and English words.
+title: "By the Moonlight"
+composer: Traditional
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: R
+letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+phraseBars: 2
+abc: |
+  X:1
+  T:By the Moonlight
+  M:4/4
+  L:1/4
+  Q:1/4=92
+  K:C
+  !2!C C C D | E2 D2 | C E D D | C4 | C C C D | E2 D2 | C E D D | C4 |]
+  w: By the moon-light, my friend, lend me your pen, please. Let me write a lit-tle note to my dear friend.

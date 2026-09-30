@@ -1,0 +1,44 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.octave, in our own words: one concept, one Explain.
+# Type: Theory. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.octave
+title: The octave
+cards:
+- kind: explain
+  text: 'From one C to the next C is 8 white keys: an octave. Middle C down to Bass C is an octave. Leap there with
+    the whole hand, fingers 1 and 5, instead of stretching.'
+- kind: show
+  text: Middle C, then leap down an octave to Bass C.
+  notes: C4 C3
+  fingers:
+  - 1
+  - 5
+  hand: L
+  clef: bass
+- kind: hear
+  text: 'An octave: the same letter, higher and lower.'
+  play: C4:2 C3:2 C4:2 C3:2
+  tempo: 90
+- kind: try
+  text: 'Leap an octave: left thumb on Middle C, then finger 5 on Bass C.'
+  notes: C4 C3 C4 C3
+  fingers:
+  - 1
+  - 5
+  - 1
+  - 5
+  hand: L
+  clef: bass
+- kind: check
+  questions:
+  - text: How many white keys is an octave, counting both ends?
+    choices:
+    - '5'
+    - '8'
+    - '10'
+    answer: '8'
+  - text: An octave below Middle C is...
+    choices:
+    - Bass C
+    - Bass F
+    answer: Bass C

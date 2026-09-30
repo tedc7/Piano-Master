@@ -10,16 +10,18 @@
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
-  import { handsLabel, loadContent, type Content } from "../lib/content";
+  import { allowed, handsLabel, loadContent, rulesFor, type Content, type Rules } from "../lib/content";
   import { libraryState } from "../lib/progress";
   import type { PieceSummary } from "../lib/types";
 
   let content = $state<Content | null>(null);
+  let rules = $state<Rules | null>(null);        // the child's genre and song rules; the parent sees everything
   let error = $state("");
   let filter = $state<"all" | "favorites">("all");
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
+    if (app.student && !app.parentMode) rules = await rulesFor(app.student.id, true);
     void app.refresh();
   });
 
@@ -34,6 +36,7 @@
     // beyond the map: after everything on it, ordered by the piece's own level ("Level 2" < "Level 10")
     const seq = (p: PieceSummary) => (later(p) ? 1e6 + (Number(p.level?.match(/\d+/)?.[0]) || 99) : p.mapPoint ?? 0);
     const versions = c.pieces
+      .filter((p) => allowed(p, rules))
       .map((p) => ({ p, level: level(p), seq: seq(p), ...libraryState(p, c.map, progress) }))
       .sort((a, b) => a.seq - b.seq || a.p.title.localeCompare(b.p.title));
     const songs = new Map<string, typeof versions>();
@@ -75,7 +78,7 @@
             {@const b = r.best}
             <div class="song" class:locked={!playable}>
               <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(b.p.id, "library")}>
-                <span class="card-title">{r.title}</span>
+                <span class="card-title">{r.title}{#if r.vs.some((v) => v.p.new)} <span class="new">New</span>{/if}</span>
                 <span class="card-meta">{b.p.version ? `${b.p.version} · ` : ""}{handsLabel(b.p.hands)} · {b.p.timeSig}{b.p.hasMedia ? " · with singing" : ""}</span>
                 {#if !r.ready && r.easiest.beyond.length}
                   <span class="soon">Coming later{app.parentMode ? ` · beyond the map: ${r.easiest.beyond.join(", ")}` : ""}</span>
@@ -112,6 +115,7 @@
   .song .card { width: 100%; min-height: 96px; padding-right: 64px; }
   .card:disabled { opacity: 1; }
   .soon { font-size: 14px; font-weight: 650; color: #8a5a00; }
+  .new { font-size: 13px; font-weight: 700; color: #fff; background: #2f7d4f; border-radius: 999px; padding: 1px 8px; vertical-align: middle; }
   .versions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .version { font-size: 14px; padding: 4px 10px; min-height: 36px; }
   .heart {

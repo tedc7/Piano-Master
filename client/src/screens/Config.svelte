@@ -1,8 +1,8 @@
 <script lang="ts">
   // Config, the parent's Parental Controls hub (arch §3 "Parent mode", §10.1), and its pages.
-  // Built so far: students, progress reports, the PIN, the piano check, device settings, app
-  // status and the content preview; the rest are placeholders that say what they will do and in
-  // which milestone.
+  // Built so far: students, songs and genres, progress reports, the review list, the PIN, the
+  // piano check, device settings, app status and the content preview; the rest are placeholders
+  // that say what they will do and in which milestone.
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -10,11 +10,14 @@
   import AnalysisPage from "./parent/AnalysisPage.svelte";
   import AppStatus from "./parent/AppStatus.svelte";
   import CalibratePage from "./parent/CalibratePage.svelte";
+  import DevBoxPage from "./parent/DevBoxPage.svelte";
   import ContentPreview from "./parent/ContentPreview.svelte";
   import DevicePage from "./parent/DevicePage.svelte";
   import MidiTest from "./parent/MidiTest.svelte";
   import PinPage from "./parent/PinPage.svelte";
   import ReportsPage from "./parent/ReportsPage.svelte";
+  import ReviewPage from "./parent/ReviewPage.svelte";
+  import RulesPage from "./parent/RulesPage.svelte";
   import StudentsPage from "./parent/StudentsPage.svelte";
 
   let { page }: { page: string | null } = $props();
@@ -23,12 +26,12 @@
   const GROUPS: { name: string; tiles: Tile[] }[] = [
     { name: "Family", tiles: [
       { id: "students", icon: "👧", name: "Students", what: "Add, edit, archive or delete students; avatars; each student's auto-rewind, rewind distance and backing volume." },
-      { id: "rules", icon: "🛡️", name: "Songs and genres", what: "Allow or block genres and single songs for each child. Lesson pieces are always allowed; other genres start blocked.", milestone: "M7" },
+      { id: "rules", icon: "🛡️", name: "Songs and genres", what: "Allow or block genres and single songs for each child, delete songs, and the deleted-songs list. Lesson pieces are always allowed; other genres start blocked." },
       { id: "reports", icon: "📈", name: "Progress reports", what: "Each child's skills, star trends, practice days, stuck skills and the content runway." },
     ] },
     { name: "Songs and lessons", tiles: [
       { id: "content", icon: "📚", name: "Content preview", what: "Every skill and song in sequence order, open for review." },
-      { id: "review", icon: "📥", name: "Review list", what: "Songs and media staged by the Claude skills, waiting for approval. Nothing staged reaches a child.", milestone: "M7" },
+      { id: "review", icon: "📥", name: "Review list", what: "New songs waiting for you: listen, then approve each, send it back with what needs to change, or never allow it. Nothing here reaches a child." },
       { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "M7" },
       { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "M8" },
       { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (skills with fewer than 3 core pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
@@ -41,12 +44,13 @@
       { id: "status", icon: "🩺", name: "App status", what: "Versions, the piano server, plays waiting to send, and recent problems." },
     ] },
     { name: "Settings", tiles: [
+      { id: "devbox", icon: "🔌", name: "Dev box connection", what: "The tokens that let the Claude skills on the dev box submit new songs to the Review list and read your notes. Made once per dev box." },
       { id: "pin", icon: "🔑", name: "PIN and log out", what: "Change the parent PIN (checked by the server, with lockout after failed tries) and the auto-logout time." },
       { id: "ai", icon: "🤖", name: "AI settings", what: "Turn the optional AI advisor on or off.", milestone: "M9" },
     ] },
   ];
   const BUILT: Record<string, true> = {
-    content: true, analysis: true, midi: true, calibrate: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
+    content: true, analysis: true, rules: true, review: true, devbox: true, midi: true, calibrate: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
   };
   function openTile(id: string): void {
     if (id === "journey-test") go("journey/test"); else go(`config/${id}`);
@@ -81,6 +85,12 @@
       <StudentsPage />
     {:else if page === "reports"}
       <ReportsPage />
+    {:else if page === "review"}
+      <ReviewPage />
+    {:else if page === "rules"}
+      <RulesPage />
+    {:else if page === "devbox"}
+      <DevBoxPage />
     {:else if page === "pin"}
       <PinPage />
     {:else if page === "midi"}

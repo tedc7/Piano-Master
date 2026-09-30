@@ -1,0 +1,22 @@
+# Core piece (Prep A, prep-a.middle-c). Original music and words for this app.
+title: "Middle C Stomp"
+composer: Piano-Master
+kind: core
+genre: lesson-pieces
+level: Prep A
+hands: RL
+phraseBars: 2
+abc: |
+  X:1
+  T:Middle C Stomp
+  M:4/4
+  L:1/4
+  Q:1/4=96
+  %%score {RH LH}
+  K:C
+  V:RH clef=treble
+  V:LH clef=bass
+  [V:RH] !1!C C C C | C2 C2 | z4 | z4 | C C C2 | C4 | z4 | z4 |]
+  w: Mid-dle C, Mid-dle C, march with me, now!
+  [V:LH] z4 | z4 | !1!C C C C | C2 C2 | z4 | z4 | C C C2 | C4 |]
+  w: Left thumb on Mid-dle C, stomp, stomp, stomp, stop!
