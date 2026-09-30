@@ -1,6 +1,6 @@
 <script lang="ts">
-  // Parent > Content and analysis (arch §6.8, §6.10): the coverage report (skills with fewer than
-  // 3 core pieces featuring them) and every piece's song analysis: required and featured skills,
+  // Parent > Content and analysis (arch §6.8, §6.10): the coverage report (each skill's core
+  // pieces and library songs; the content build needs at least 2 core practice pieces per skill) and every piece's song analysis: required and featured skills,
   // map point, and anything beyond the map. The analysis runs in every content build, so each
   // deploy is analysed against the skill map it ships with.
   import { onMount } from "svelte";
@@ -32,7 +32,7 @@
 
   <section class="panel">
     <h2>Coverage</h2>
-    <p class="muted small">Every skill needs at least 3 core pieces featuring it, so each Current skill always has pieces to practise (§6.8).</p>
+    <p class="muted small">Every skill needs at least 2 core practice pieces, so each Current skill always has pieces to practise (§6.8).</p>
     <table>
       <thead><tr><th>Skill</th><th>Core pieces</th><th>Library songs</th></tr></thead>
       <tbody>

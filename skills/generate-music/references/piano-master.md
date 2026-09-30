@@ -1,6 +1,6 @@
 # Piano-Master profile
 
-For the Family Piano Tutor app (repo `~/repos/Piano-Master`, architecture v0.25 section 10.5): each arrangement gets a sung **vocal stem** and an **accompaniment stem**, so a child can play the piano part along with them. Use `"profile": "piano-master"`.
+For the Family Piano Tutor app (repo `~/repos/Piano-Master`, `docs/architecture.md` section 10.5): each arrangement gets a sung **vocal stem** and an **accompaniment stem**, so a child can play the piano part along with them. Use `"profile": "piano-master"`.
 
 **Which of YuE2's stems the app uses (v0.22):**
 - **The vocal: always.**
