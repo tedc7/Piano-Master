@@ -62,12 +62,14 @@ def test_skill_api_needs_a_token_and_cannot_approve(client, skill):
 def test_intake_rejects_bad_pieces_with_a_report(client, skill):
     bad_license = item("nc-song", pitches=[60, 67, 64, 72, 71, 62, 65, 69, 60, 67, 64, 72, 71, 62, 65, 69])
     bad_license["info"]["license"]["edition"] = "CC BY-NC-SA 4.0"
-    lesson = item("lesson-song", genre="lesson-pieces", pitches=[72, 71, 69, 67, 65, 64, 62, 60, 72, 71, 69, 67, 65, 64, 62, 60])
-    pkg, sub = stage(client, skill, item(), bad_license, lesson)
+    # a song written for the curriculum comes the same way (v0.27): our own music
+    ours = item("our-study", genre="studies", pitches=[72, 71, 69, 67, 65, 64, 62, 60, 72, 71, 69, 67, 65, 64, 62, 60])
+    ours["info"]["license"] = {"composition": "original", "edition": "original"}
+    pkg, sub = stage(client, skill, item(), bad_license, ours)
     by = {i["pieceId"]: i for i in pkg["items"]}
-    assert by["new-song"]["accepted"] and not by["nc-song"]["accepted"] and not by["lesson-song"]["accepted"]
+    assert by["new-song"]["accepted"] and not by["nc-song"]["accepted"] and by["our-study"]["accepted"]
     assert "not an accepted license" in by["nc-song"]["errors"][0]
-    assert sub["staged"] == 1
+    assert sub["staged"] == 2
 
 
 def test_missing_stems_keep_a_song_out_of_staging(client, skill):
@@ -86,7 +88,7 @@ def test_review_approve_and_the_library(client, parent, skill):
     pkg, sub = stage(client, skill, item(), item("other-song", "Other", pitches=[72, 69, 65, 62, 60, 64, 67, 71, 72, 69, 65, 62, 60, 64, 67, 71]))
     assert sub["staged"] == 2
     # staged songs are the parent's only: not in the library, not readable without the parent
-    assert client.get("/api/library").json()["pieces"] == []
+    assert added(client) == []
     flat = client.get("/api/review", headers=parent).json()["items"]
     assert [(i["pieceId"], i["package"]) for i in flat] == [("new-song", "batch"), ("other-song", "batch")]
     rv = client.get("/api/review", headers=parent).json()["packages"]
@@ -104,7 +106,7 @@ def test_review_approve_and_the_library(client, parent, skill):
     assert client.post(f"/api/review/items/{first['id']}/approve", headers=parent).status_code == 404     # decided already
     assert client.post(f"/api/review/items/{other['id']}/never", json={}, headers=parent).json() == {"never": "other-song"}
     idx = client.get("/api/library").json()
-    assert [e["id"] for e in idx["pieces"]] == ["new-song"] and idx["pieces"][0]["new"] and idx["version"]
+    assert added(client) == ["new-song"] and next(e for e in idx["pieces"] if e["id"] == "new-song")["new"] and idx["version"]
     lp = client.get("/api/library/pieces/new-song").json()
     url = lp["media"]["presets"]["50"]["accompaniment"]["url"]
     assert url == "/api/library/media/new-song/accompaniment_50.mp3"
@@ -118,6 +120,23 @@ def test_review_approve_and_the_library(client, parent, skill):
     again = client.post("/api/skill/packages", json={"name": "b2", "items": [item("other-song-2", "Other", pitches=[72, 69, 65, 62, 60, 64, 67, 71, 72, 69, 65, 62, 60, 64, 67, 71])]},
                         headers=skill).json()
     assert not again["items"][0]["accepted"] and "deleted by the parent" in again["items"][0]["errors"][0]
+
+
+def added(client):
+    """The library's songs beyond the test map's (the seed)."""
+    from conftest import PIECES
+    seed = {p["id"] for p in PIECES}
+    return [e["id"] for e in client.get("/api/library").json()["pieces"] if e["id"] not in seed]
+
+
+def test_the_seed_comes_in_once_as_approved_and_never_new(client, parent):
+    from conftest import PIECES
+    from app import library
+    idx = client.get("/api/library").json()["pieces"]
+    assert {e["id"] for e in idx} == {p["id"] for p in PIECES} and not any(e["new"] for e in idx)
+    assert library.adopt_seed() == []                       # a later start brings nothing
+    client.post("/api/library/songs/pa1/delete", json={}, headers=parent)
+    assert library.adopt_seed() == []                       # nor a song the parent deleted
 
 
 def approve_all(client, parent, skill, *items):
@@ -145,15 +164,22 @@ def test_rules_block_other_genres_until_allowed(client, parent, skill):
     con = db.connect()
     try:
         assert "new-song" not in library.content_for(con, kid, lib).pieces          # kids' songs start blocked
-        assert "pa1" in library.content_for(con, kid, lib).pieces                   # lesson pieces are always allowed
+        assert "pa1" in library.content_for(con, kid, lib).pieces                   # the map's practice songs are allowed
+        assert "free1" not in library.content_for(con, kid, lib).pieces             # its genre (studies) isn't
         assert client.put(f"/api/students/{kid}/rules/genres/kids", json={"allowed": True}, headers=parent).status_code == 200
         assert "new-song" in library.content_for(con, kid, lib).pieces
         client.put(f"/api/students/{kid}/rules/songs/new-song", json={"allowed": False}, headers=parent)   # a song rule overrides
         assert "new-song" not in library.content_for(con, kid, lib).pieces
     finally:
         con.close()
-    assert client.get(f"/api/students/{kid}/rules").json()["songs"] == {"new-song": False}
-    assert client.put(f"/api/students/{kid}/rules/genres/lesson-pieces", json={"allowed": False}, headers=parent).status_code == 422
+    r = client.get(f"/api/students/{kid}/rules").json()
+    assert r["songs"] == {"new-song": False} and "pa1" in r["curriculum"] and "free1" not in r["curriculum"]
+    client.put(f"/api/students/{kid}/rules/songs/pa1", json={"allowed": False}, headers=parent)    # even a practice song
+    con = db.connect()
+    try:
+        assert "pa1" not in library.content_for(con, kid, content.load()).pieces
+    finally:
+        con.close()
     rules = client.get("/api/rules", headers=parent).json()
     assert "kids" in rules["genres"] and rules["students"][0]["genres"] == {"kids": True}
     assert client.put(f"/api/students/{kid}/rules/genres/kids", json={"allowed": True}).status_code == 401
@@ -163,7 +189,7 @@ def test_deleting_a_song_moves_it_to_the_review_areas_deleted_songs(client, pare
     approve_all(client, parent, skill, item())
     assert client.post("/api/library/songs/new-song/delete", json={"reason": "too hard"}).status_code == 401
     d = client.post("/api/library/songs/new-song/delete", json={"reason": "too hard"}, headers=parent).json()
-    assert d["deleted"] == ["new-song"] and client.get("/api/library").json()["pieces"] == []
+    assert d["deleted"] == ["new-song"] and added(client) == []
     assert client.get("/api/library/pieces/new-song").status_code == 404
     gone = client.get("/api/review", headers=parent).json()["deleted"]
     assert [(g["pieceId"], g["deletedFrom"], g["deletedReason"], g["hasFiles"]) for g in gone] == [("new-song", "library", "too hard", True)]
@@ -223,7 +249,7 @@ def test_needs_improvement_feedback_goes_to_the_skill_and_the_fix_replaces_it(cl
     assert rv["packages"] == [] and rv["sentBack"][0]["feedback"] == "Too fast: the words run together."
     # the parent can still listen to what they sent back; nothing reaches the library
     assert client.get(f"/api/review/items/{iid}/piece", headers=parent).status_code == 200
-    assert client.get("/api/library").json()["pieces"] == []
+    assert added(client) == []
     fb = client.get("/api/skill/feedback", headers=skill).json()["feedback"]
     assert [(f["pieceId"], f["feedback"]) for f in fb] == [("new-song", "Too fast: the words run together.")]
     # the fixed song, resubmitted under the same id, replaces it and carries the feedback
@@ -240,3 +266,97 @@ def test_a_song_waiting_for_review_cant_be_submitted_twice(client, skill):
     stage(client, skill, item())
     again = client.post("/api/skill/packages", json={"name": "b", "items": [item()]}, headers=skill).json()["items"][0]
     assert not again["accepted"] and "already waiting" in again["errors"][0]
+
+
+def test_a_map_change_re_analyses_the_library(client, parent, skill, tmp_path):
+    """§6.10: a song beyond the map when it was approved unlocks once a deploy adds a skill that
+    allows it, and Content and analysis lists it."""
+    from conftest import SKILLS, PIECES, write_content
+    stage(client, skill, item())
+    iid = client.get("/api/review", headers=parent).json()["items"][0]["id"]
+    client.post(f"/api/review/items/{iid}/approve", headers=parent)
+    lib = {p["id"]: p for p in client.get("/api/library").json()["pieces"]}
+    assert lib["new-song"]["beyondMap"] and lib["new-song"]["skillId"] is None
+    first = client.get("/api/library/analysis", headers=parent).json()
+    assert first["changes"] == []                     # analysed at approval, against this map
+
+    reach = {"id": "t.f", "name": "Skill F", "sequence": 60, "track": "reading", "prerequisites": ["t.a"], "pieces": [],
+             "constraints": {"hands": ["R"], "range": {"R": ["C4", "C5"]}, "durations": [1], "timeSigs": ["4/4"],
+                             "keySigs": [0], "intervals": [1, 2, 3, 4, 5, 7, 8]}}
+    write_content(tmp_path / "content", skills=SKILLS + [reach], pieces=PIECES, version="test2")
+    after = client.get("/api/library/analysis", headers=parent).json()
+    assert after["mapHash"] != first["mapHash"] and after["songs"] == 1
+    assert [c["pieceId"] for c in after["changes"]] == ["new-song"]
+    assert after["changes"][0]["after"] == {"requiredSkills": ["t.f"], "beyondMap": []}
+    lib = {p["id"]: p for p in client.get("/api/library").json()["pieces"]}
+    assert lib["new-song"]["requiredSkills"] == ["t.f"] and lib["new-song"]["skillId"] == "t.f"
+    assert client.get("/api/library/pieces/new-song").json()["requiredSkills"] == ["t.f"]
+    # the same map again: nothing to do, and the record stays
+    assert client.get("/api/library/analysis", headers=parent).json()["analysedAt"] == after["analysedAt"]
+    assert client.get("/api/library/analysis").status_code == 401
+
+
+FIXED = [60, 62, 64, 65, 64, 64, 67, 65, 64, 62, 60, 64, 67, 72, 71, 69]          # bar 2 changed (67 69 -> 64 64)
+
+
+def test_updating_a_live_song(client, parent, skill):
+    """v0.27: Needs improvement on a library song; the fix comes back under the same id as an update,
+    with what changed; approving it replaces the live song in place, discarding keeps it."""
+    approve_all(client, parent, skill, item())
+    before = next(e for e in client.get("/api/library").json()["pieces"] if e["id"] == "new-song")
+    # without a request, the same id is refused
+    r = client.post("/api/skill/packages", json={"name": "b", "items": [item(pitches=FIXED)]}, headers=skill).json()["items"][0]
+    assert not r["accepted"] and "already in the library" in r["errors"][0]
+    # the parent asks; one request at a time
+    assert client.post("/api/library/pieces/new-song/improve", json={"feedback": "Bar 2: G A should be E E"}).status_code == 401
+    asked = client.post("/api/library/pieces/new-song/improve", json={"feedback": "Bar 2: G A should be E E"}, headers=parent)
+    assert asked.status_code == 201 and asked.json()["update"]["status"] == "needs-work"
+    assert client.post("/api/library/pieces/new-song/improve", json={"feedback": "again"}, headers=parent).status_code == 409
+    assert client.post("/api/library/pieces/nope/improve", json={"feedback": "what?"}, headers=parent).status_code == 404
+    fb = client.get("/api/skill/feedback", headers=skill).json()["feedback"]
+    assert [(f["pieceId"], f["live"], f["feedback"]) for f in fb] == [("new-song", True, "Bar 2: G A should be E E")]
+    # the fix: staged as an update, beside the note, with what changed; the children keep the live song
+    _, sub = stage(client, skill, item(pitches=FIXED))
+    assert sub["staged"] == 1
+    waiting_items = client.get("/api/review", headers=parent).json()["items"]
+    up = next(i for i in waiting_items if i["pieceId"] == "new-song")
+    assert up["live"] == "new-song" and up["previousFeedback"]["feedback"] == "Bar 2: G A should be E E"
+    assert up["changes"]["bars"] == [2] and up["changes"]["tempo"] == [100, 100] and not up["changes"]["media"]
+    assert client.get("/api/library/pieces/new-song").json()["notation"]["notes"][4]["pitch"] == 67      # still live
+    assert client.get("/api/library/pieces/new-song/improve", headers=parent).json()["update"]["status"] == "staged"
+    assert client.post(f"/api/review/items/{up['id']}/never", json={}, headers=parent).status_code == 409   # not for an update
+    # approved: replaced in place, the same song (first approval kept, so no New badge again)
+    assert client.post(f"/api/review/items/{up['id']}/approve", headers=parent).json() == {"approved": "new-song", "updated": True}
+    after = next(e for e in client.get("/api/library").json()["pieces"] if e["id"] == "new-song")
+    assert after["approvedAt"] == before["approvedAt"] and after["updatedAt"] and after["contentVersion"] != before["contentVersion"]
+    assert client.get("/api/library/pieces/new-song").json()["notation"]["notes"][4]["pitch"] == 64
+    assert client.get("/api/library/pieces/new-song/improve", headers=parent).json()["update"] is None
+    # discard: the live song stays as it is
+    client.post("/api/library/pieces/new-song/improve", json={"feedback": "Slower, please"}, headers=parent)
+    item_fast = item(pitches=FIXED)
+    item_fast["piece"]["notation"]["header"]["tempo"] = 80
+    stage(client, skill, item_fast)
+    up = next(i for i in client.get("/api/review", headers=parent).json()["items"] if i["pieceId"] == "new-song")
+    assert up["changes"]["tempo"] == [100, 80]
+    assert client.post(f"/api/review/items/{up['id']}/discard", headers=parent).json() == {"kept": "new-song"}
+    assert client.get("/api/library/pieces/new-song").json()["notation"]["header"]["tempo"] == 100
+    assert not any(i["pieceId"] == "new-song" for i in client.get("/api/review", headers=parent).json()["items"])
+    # deleting the song cancels a request still waiting for its fix
+    client.post("/api/library/pieces/new-song/improve", json={"feedback": "One more thing"}, headers=parent)
+    client.post("/api/library/songs/new-song/delete", json={}, headers=parent)
+    assert client.get("/api/skill/feedback", headers=skill).json()["feedback"] == []
+
+
+def test_diagnostics_reads_only_attempts_on_the_current_notes(client, parent):
+    from conftest import attempt
+    from datetime import date
+    from app import db, diagnostics
+    sid = client.post("/api/students", json={"name": "Ada", "avatar": "🦊"}, headers=parent).json()["id"]
+    for v in ("lib-old", "lib-new"):
+        client.post("/api/attempts", json=attempt(studentId=sid, pieceId="pa1", contentVersion=v, startedAt=f"{date.today()}T10:00:00.000Z"))
+    con = db.connect()
+    try:
+        assert len(diagnostics.load_obs(con, sid, date.today())) == 2
+        assert len(diagnostics.load_obs(con, sid, date.today(), versions={"pa1": "lib-new"})) == 1
+    finally:
+        con.close()

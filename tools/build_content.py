@@ -1,16 +1,19 @@
-"""Build the client's content from content/: skill map, pieces (notation) and test media.
+"""Build the content from content/: the skill map and concept lessons, and every song.
 
     tools/.venv/bin/python tools/build_content.py
 
-Writes client/public/content/ (skillmap.json, index.json, pieces/<id>.json) and copies test
-media into client/public/media/. Both are generated and gitignored.
+Writes client/public/content/ (skillmap.json, lessons/<skill>.json), which deploys with the app,
+and build/songs/ (<id>.json, index.json and media/), which doesn't: every song reaches the app
+through the piano server's library (v0.27, arch §6.10, §10.7). `import_song.py submit` sends songs
+to its review list, and `tools/deploy.sh --seed-songs` loads them straight into the library (once,
+for the songs that were built into the app before v0.27). Both folders are generated and gitignored.
 
 The skill-map checks are the content loader's validation (arch §6.10): unique ids and sequence
 numbers, prerequisites that exist and come earlier, constraints that parse, and each skill's
-practice pieces. Every piece goes through song analysis (api/app/analysis.py, §6.8), which decides
+practice pieces. Every song goes through song analysis (api/app/analysis.py, §6.8), which decides
 its required and featured skills, map point and skill measures. A skill's `pieces` list is its
-**practice pieces** (v0.25: one concept per Journey bubble, and the bubble's songs): the core
-pieces written for it, at least 2, each in one skill's list only. Each must feature the skill and
+**practice pieces** (v0.25: one concept per Journey bubble, and the bubble's songs): songs from
+content/pieces/, at least 2, each in one skill's list only. Each must feature the skill and
 need nothing beyond it and the skills before it on the map (its prerequisites, and theirs), so it
 is Guided-ready as soon as the skill is Current. On the placeholder map these are warnings.
 """
@@ -30,12 +33,14 @@ import notation as nt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "api"))
 from app import analysis, fingering  # noqa: E402  (shared with the App API)
+from app.content import song_version  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "content"
 OUT = ROOT / "client" / "public" / "content"
-MEDIA = ROOT / "client" / "public" / "media"
-MEDIA_SRC = CONTENT / "media"      # the media skill's stems for library pieces (gitignored, arch §10.5)
+SONGS = ROOT / "build" / "songs"   # every song, built, for the library (not deployed with the app)
+MEDIA = SONGS / "media"
+MEDIA_SRC = CONTENT / "media"      # the media skill's stems (gitignored, arch §10.5)
 SYNC_PROBE = ROOT / "feasibility" / "sync-probe" / "dist"
 TRACKS = {"reading", "rhythm", "technique", "theory", "repertoire", "musicianship"}
 PRESETS = ("100", "90", "75", "50")
@@ -144,9 +149,9 @@ def ancestors(skills):
     return out
 
 
-def coverage(skills, analyses, kinds):
-    """Each skill's practice pieces (its `pieces` list, see the module docstring): at least 2 core
-    pieces (§6.8, §6.10), each featuring the skill and needing only it and the skills before it.
+def coverage(skills, analyses):
+    """Each skill's practice pieces (its `pieces` list, see the module docstring): at least 2 songs
+    (§6.8, §6.10), each featuring the skill and needing only it and the skills before it.
     Errors on a real map, warnings on the placeholder map. Returns (errors, warnings, pieces
     featuring each skill, from the analysis)."""
     errors, warnings = [], []
@@ -156,9 +161,8 @@ def coverage(skills, analyses, kinds):
     for s in skills:
         out = warnings if s.get("placeholder") else errors
         practice = [p for p in s.get("pieces", []) if p in analyses]
-        core = [p for p in practice if kinds.get(p, "core") == "core"]
-        if len(core) < 2:
-            out.append(f"{s['id']}: {len(core)} core practice piece(s); the loader needs at least 2 (§6.10)")
+        if len(practice) < 2:
+            out.append(f"{s['id']}: {len(practice)} practice piece(s); the loader needs at least 2 (§6.10)")
         for p in practice:
             a = analyses[p]
             if a.get("beyondMap"):
@@ -381,10 +385,11 @@ def build_lesson(path, skill_ids):
 
 
 def content_version() -> str:
-    """A short hash of every content source file: stored with each attempt (arch §5 ContentVersion)."""
+    """A short hash of the deployed content's sources: the skill map and lessons (arch §5
+    ContentVersion). Songs have their own version, from their notes (app.content.song_version)."""
     h = hashlib.sha256()
-    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("pieces/*.yaml"),
-                     *CONTENT.glob("lessons/*.yaml"), *CONTENT.glob("private/*.yaml")]):   # not content/incoming/
+    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("lessons/*.yaml"),
+                     *CONTENT.glob("private/*.yaml")]):   # not content/incoming/
         h.update(str(p.relative_to(CONTENT)).encode() + b"\0" + p.read_bytes())
     return h.hexdigest()[:12]
 
@@ -392,9 +397,10 @@ def content_version() -> str:
 ANALYSIS_KEYS = ("barNotes", "requiredSkills", "featuredSkills", "mapPoint", "skillMeasures", "beyondMap")
 
 
-def make_piece(pid, meta, skills, parsed, version, written_for=None, media_root=None):
-    """One piece built, analysed and fingered, as the client and the API read it: (piece,
-    index entry, warnings). Also used by the song import skill's checks (tools/import_song.py)."""
+def make_piece(pid, meta, skills, parsed, version=None, written_for=None, media_root=None):
+    """One song built, analysed and fingered, as the library holds it: (piece, index entry,
+    warnings). Also used by the song import skill's checks (tools/import_song.py). Its version is
+    its notes' (song_version), which intake gives it too; `version` is unused (kept for callers)."""
     nota, media, warnings = build_piece(pid, meta, media_root)
     warnings = list(warnings)
     lo, hi = nota["header"]["range"]
@@ -409,21 +415,28 @@ def make_piece(pid, meta, skills, parsed, version, written_for=None, media_root=
     positions = [((by_id.get(k) or {}).get("constraints") or {}).get("position") for k in [written_for, *an["featuredSkills"][:1]]]
     fing = fingering.generate(nota, next((x for x in positions if x), None))
     warnings += fing["flagged"]
-    piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": meta.get("kind", "core"),
+    piece = {"id": pid, "title": meta["title"], "composer": meta.get("composer"), "kind": "song",
              # several arrangements of one song (arch §5 Song -> Arrangements): `song` ties them, `version` names each
              "song": meta.get("song", pid), "songTitle": meta.get("songTitle", meta["title"]), "version": meta.get("version"),
              "genre": meta.get("genre"), "level": meta.get("level"), "hands": meta.get("hands", "R"),
              # the skill it practises: the one it was written for, else the newest featured skill (§6.8)
              "skillId": None if an["beyondMap"] or not an["featuredSkills"] else
                         written_for if written_for in an["featuredSkills"] else an["featuredSkills"][0],
-             "contentVersion": version, "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
+             "contentVersion": song_version(nt.jsonable(nota)), "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
              "notation": nt.jsonable(nota), "media": media}
     entry = ({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
                                     "song", "songTitle", "version")}
              | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
                 "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
-                "hasMedia": media is not None} | an)
+                "hasMedia": media is not None, "contentVersion": piece["contentVersion"]} | an)
     return piece, entry, warnings
+
+
+def song_info(meta):
+    """What the parent sees about a song in the review list, from its header (as intake takes it)."""
+    out = {k: meta[k] for k in ("level", "hands", "version", "songTitle", "source", "license", "tempoSource", "notes", "flags")
+           if meta.get(k) is not None}
+    return out
 
 
 def main():
@@ -435,22 +448,23 @@ def main():
         print("Skill map errors:\n  " + "\n  ".join(errors), file=sys.stderr)
         return 1
 
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    (OUT / "pieces").mkdir(parents=True)
+    for d in (OUT, SONGS):
+        if d.exists():
+            shutil.rmtree(d)
+        d.mkdir(parents=True)
     written_for = {p: s["id"] for s in skills for p in s.get("pieces", [])}
     parsed = {s["id"]: analysis.Constraints(s) for s in skills}
-    index, analyses, kinds = [], {}, {}
+    index, analyses = [], {}
     for pid, meta in pieces_meta.items():
         try:
-            piece, entry, w = make_piece(pid, meta, skills, parsed, version, written_for.get(pid))
+            piece, entry, w = make_piece(pid, meta, skills, parsed, written_for=written_for.get(pid))
         except ContentError as e:
             print(f"error: {e}", file=sys.stderr)
             return 1
         warnings += [f"{pid}: {x}" for x in w]
         nota, media, an = piece["notation"], piece["media"], {k: piece[k] for k in ANALYSIS_KEYS}
-        analyses[pid], kinds[pid] = an, meta.get("kind", "core")
-        (OUT / "pieces" / f"{pid}.json").write_text(json.dumps(piece, indent=1))
+        analyses[pid] = an
+        (SONGS / f"{pid}.json").write_text(json.dumps({**piece, "info": song_info(meta)}, indent=1))
         index.append(entry)
         print(f"{pid}: {len(nota['notes'])} notes, {len(nota['playbackOrder'])} bars in playback order, "
               f"{len(nota['phrases'])} phrases" + (f", media {', '.join(media['presets'])}" if media else ""))
@@ -477,7 +491,7 @@ def main():
                 return 1
             warnings.append(msg)
 
-    cov_errors, cov_warnings, featuring = coverage(skills, analyses, kinds)
+    cov_errors, cov_warnings, featuring = coverage(skills, analyses)
     warnings += cov_warnings
     if cov_errors:
         print("Coverage errors:\n  " + "\n  ".join(cov_errors), file=sys.stderr)
@@ -489,11 +503,11 @@ def main():
                 "skills": [{**s, "pieces": s.get("pieces", []), "featuring": featuring[s["id"]], "lesson": s["id"] in lessons}
                            for s in skills]}
     (OUT / "skillmap.json").write_text(json.dumps(skillmap, indent=1))
-    (OUT / "index.json").write_text(json.dumps({"contentVersion": version, "pieces": index}, indent=1))
+    (SONGS / "index.json").write_text(json.dumps({"pieces": index}, indent=1))
     if warnings:
         print("Warnings:\n  " + "\n  ".join(warnings))
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(index)} pieces, {len(lessons)} lessons, "
-          f"content version {version}")
+    print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(lessons)} lessons, content version {version}; "
+          f"{SONGS.relative_to(ROOT)}: {len(index)} songs")
     return 0
 
 

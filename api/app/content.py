@@ -1,23 +1,30 @@
-"""The skill map and piece index the lesson engine plans from (arch §6, §6.8).
+"""The skill map and the songs the lesson engine plans from (arch §6, §6.8).
 
-tools/build_content.py writes skillmap.json, index.json and pieces/<id>.json; deploys copy them
-into app/content/ (PIANO_CONTENT overrides the folder), so the server plans from the same content
-version the client shows. Diagnostics and the drill generator read each piece's full notation.
-Each piece's required and featured skills, map point and skill measures come from song analysis
-(analysis.py, run by the content build, and by intake for library songs).
-
-Songs the parent approved from the review list (M7, arch §10.7) join the deployed pieces: the
-library module keeps their index in <data>/library/index.json and each piece in
-<data>/library/<id>/piece.json. The content version is then "<deployed>+<library>".
+The skill map deploys with the app: tools/build_content.py writes skillmap.json, and deploys copy
+it into app/content/ (PIANO_CONTENT overrides the folder), so the server plans from the map the
+client shows. Every song is in the library (v0.27): the songs the parent approved from the review
+list (arch §10.7), whatever made them. The library module keeps their index in
+<data>/library/index.json and each song in <data>/library/<id>/piece.json, and analyses each one
+against the deployed map (analysis.py): its required and featured skills, map point and skill
+measures. The content version is "<map>+<library>". Diagnostics and the drill generator read each
+song's full notation. A skill's `pieces` are its practice songs (its Journey bubble's songs): the
+curriculum, which every child may play.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
 DEFAULT_DIR = Path(__file__).resolve().parent / "content"
+
+
+def song_version(nota: dict) -> str:
+    """A song's version: a hash of its notes, which every attempt records. Attempts on other
+    versions of the notes can't be matched note by note (Diagnostics)."""
+    return "lib-" + hashlib.sha256(json.dumps(nota, sort_keys=True).encode()).hexdigest()[:10]
 
 
 @dataclass
@@ -49,7 +56,6 @@ class Piece:
     beats: float
     tempo: float
     hands: str = "R"
-    kind: str = "core"
     phrases: int = 1
     beyond: list[str] = field(default_factory=list)     # needs what no skill covers yet (§6.8)
     map_point: int | None = None
@@ -66,20 +72,33 @@ class Content:
     version: str
     skills: dict[str, Skill]
     pieces: dict[str, Piece]
-    folder: Path | None = None                 # where pieces/<id>.json are
+    folder: Path | None = None                 # the deployed content (skillmap.json)
     notations: dict[str, dict] = field(default_factory=dict)   # loaded (or given, in tests) full notation
-    paths: dict[str, Path] = field(default_factory=dict)       # piece files elsewhere: the approved library
+    paths: dict[str, Path] = field(default_factory=dict)       # each song's piece.json in the library
     genres: dict[str, str] = field(default_factory=dict)       # piece id -> genre (for each child's rules)
     songs: dict[str, str] = field(default_factory=dict)        # piece id -> song (arrangements share one)
+    versions: dict[str, str] = field(default_factory=dict)     # piece id -> its notes' version (song_version)
 
     def notation(self, piece_id: str) -> dict | None:
-        """A piece's §5 notation, from pieces/<id>.json; None when it isn't there."""
+        """A song's §5 notation, from the library; None when it isn't there."""
         if piece_id not in self.notations:
-            f = self.paths.get(piece_id) or (self.folder / "pieces" / f"{piece_id}.json" if self.folder else None)
+            f = self.paths.get(piece_id)
             if f is None or piece_id not in self.pieces or not f.exists():
                 return None
-            self.notations[piece_id] = json.loads(f.read_text())["notation"]
+            nota = json.loads(f.read_text()).get("notation")
+            if nota is None:
+                return None
+            self.notations[piece_id] = nota
         return self.notations[piece_id]
+
+    @property
+    def curriculum(self) -> set[str]:
+        """The songs the map uses: every skill's practice songs. Every child may play them."""
+        return {p for s in self.skills.values() for p in s.pieces}
+
+    def practice_of(self, piece_id: str) -> str | None:
+        """The skill a song is a practice song of (the one it was written for), if any."""
+        return next((s.id for s in self.order if piece_id in s.pieces), None)
 
     def skill_dicts(self, ids) -> list[dict]:
         """Skill-map entries (id, sequence, constraints) for analysis and the drill generator."""
@@ -92,12 +111,15 @@ class Content:
     def only(self, keep) -> "Content":
         """The same content with only the pieces keep(piece id) allows (a child's rules)."""
         return Content(version=self.version, skills=self.skills, pieces={k: p for k, p in self.pieces.items() if keep(k)},
-                       folder=self.folder, notations=self.notations, paths=self.paths, genres=self.genres, songs=self.songs)
+                       folder=self.folder, notations=self.notations, paths=self.paths, genres=self.genres, songs=self.songs,
+                       versions=self.versions)
 
     def pieces_of(self, skill_id: str) -> list[Piece]:
-        """The pieces that feature the skill (song analysis), core pieces first."""
+        """The songs that feature the skill (song analysis), its practice songs first."""
+        s = self.skills.get(skill_id)
+        practice = set(s.pieces) if s else set()
         found = [p for p in self.pieces.values() if skill_id in p.featured and not p.beyond]
-        return sorted(found, key=lambda p: (p.kind != "core", p.map_point or 0, p.id))
+        return sorted(found, key=lambda p: (p.id not in practice, p.map_point or 0, p.id))
 
     @classmethod
     def from_json(cls, skillmap: dict, index: dict, folder: Path | None = None) -> "Content":
@@ -118,13 +140,14 @@ class Content:
                 required=list(p.get("requiredSkills", [sid] if sid else [])),
                 featured=list(p.get("featuredSkills", [sid] if sid else [])),
                 beats=float(beats), tempo=float(p.get("tempo", 100)), hands=p.get("hands", "R"),
-                kind=p.get("kind", "core"), phrases=int(p.get("phrases", 1)),
+                phrases=int(p.get("phrases", 1)),
                 beyond=list(p.get("beyondMap", [])), map_point=p.get("mapPoint"),
                 skill_measures=dict(p.get("skillMeasures", {})),
                 bar_notes={int(k): v for k, v in (p.get("barNotes") or {}).items()}, level=p.get("level") or "")
         return cls(version=index.get("contentVersion", skillmap.get("contentVersion", "")), skills=skills, pieces=pieces,
-                   folder=folder, genres={p["id"]: p.get("genre") or "lesson-pieces" for p in index["pieces"]},
-                   songs={p["id"]: p.get("song") or p["id"] for p in index["pieces"]})
+                   folder=folder, genres={p["id"]: p.get("genre") or "" for p in index["pieces"]},
+                   songs={p["id"]: p.get("song") or p["id"] for p in index["pieces"]},
+                   versions={p["id"]: p["contentVersion"] for p in index["pieces"] if p.get("contentVersion")})
 
 
 _cache: tuple[tuple, Content] | None = None
@@ -140,35 +163,27 @@ def library_index() -> Path:
 
 
 def deployed_version() -> str | None:
-    d = content_dir()
+    """The deployed skill map's content version."""
     try:
-        return json.loads((d / "index.json").read_text()).get("contentVersion")
+        return json.loads((content_dir() / "skillmap.json").read_text()).get("contentVersion")
     except OSError:
         return None
 
 
 def load() -> Content | None:
-    """The deployed content and the approved library, reloaded when either changes; None if no
-    content is deployed."""
+    """The deployed skill map and the library's songs, reloaded when either changes; None if no
+    skill map is deployed."""
     global _cache
     d, lib = content_dir(), library_index()
     try:
-        key = (str(d), str(lib), (d / "skillmap.json").stat().st_mtime, (d / "index.json").stat().st_mtime,
-               lib.stat().st_mtime if lib.exists() else 0.0)
+        key = (str(d), str(lib), (d / "skillmap.json").stat().st_mtime, lib.stat().st_mtime if lib.exists() else 0.0)
     except OSError:
         return None
     if _cache is None or _cache[0] != key:
-        index = json.loads((d / "index.json").read_text())
-        paths = {}
-        if lib.exists():
-            extra = json.loads(lib.read_text())
-            if extra.get("pieces"):
-                have = {p["id"] for p in index["pieces"]}
-                added = [p for p in extra["pieces"] if p["id"] not in have]
-                index = {**index, "pieces": index["pieces"] + added,
-                         "contentVersion": f"{index.get('contentVersion', '')}+{extra['version']}"}
-                paths = {p["id"]: lib.parent / p["id"] / "piece.json" for p in added}
-        c = Content.from_json(json.loads((d / "skillmap.json").read_text()), index, d)
-        c.paths = paths
+        skillmap = json.loads((d / "skillmap.json").read_text())
+        extra = json.loads(lib.read_text()) if lib.exists() else {"version": "", "pieces": []}
+        index = {"contentVersion": f"{skillmap.get('contentVersion', '')}+{extra.get('version', '')}", "pieces": extra["pieces"]}
+        c = Content.from_json(skillmap, index, d)
+        c.paths = {p["id"]: lib.parent / p["id"] / "piece.json" for p in extra["pieces"]}
         _cache = (key, c)
     return _cache[1]

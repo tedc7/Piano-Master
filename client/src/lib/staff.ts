@@ -28,7 +28,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 const TOP = 70;
 const GAP = 175;
 export const LYRIC_FILL = "#2a2a2e";
-const LETTER_HEAD_SCALE = 58;        // note heads for letter names (VexFlow's default is 39)
+const LETTER_FILL = "#1d5fa8";       // letter names under pre-staff note heads (finger numbers are black)
 
 function durPieces(d: number): [number, string, number][] {
   const out: [number, string, number][] = [];
@@ -199,7 +199,6 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
               keys: keys.map(vexKey), duration: p[1], dots: p[2], clef,
             };
             if (dir) opts.stem_direction = dir; else opts.auto_stem = true;
-            if (h.letters) opts.glyph_font_scale = LETTER_HEAD_SCALE;      // room for the letter inside
             const n = new StaveNote(opts);
             if (p[2]) Dot.buildAndAttach([n], { all: true });
             if (pi === 0) {
@@ -398,26 +397,35 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     if (!vf) return null;
     return vf.noteHeads[keyIdx[n.id]]?.getSVGElement() ?? null;
   });
-  // a pre-staff piece: the letter name inside each note head, white in a filled head and dark in an
-  // open one (half and whole notes), the way beginner books print them
-  // (black keys have no letter at this level: their names come with sharps and flats)
+  // a pre-staff piece: each white key's letter name just under its note head, so the heads look the
+  // same with or without it and a half note still reads as a half note. The right hand's finger
+  // number is above the head; the left hand's is below it, so there the letter goes under the
+  // finger number. Two notes at once in one hand stack their letters under the lower head, high to
+  // low like the heads. (Black keys have no letter at this level: their names come with sharps and flats.)
   if (h.letters) {
-    tl.notes.forEach((n) => {
+    const under = new Map<StaveNote, Map<string, TimelineNote[]>>();
+    for (const n of tl.notes) {
       const vf = vfFirst[n.id];
-      if (!vf || n.tieContinuation || n.spelled.alter) return;
-      try {
-        const open = n.duration >= 2 - 1e-6;              // a half or whole note: a hollow head
-        const t = addText(n.spelled.step.toUpperCase(), centerX(vf), vf.getYs()[keyIdx[n.id]] + 4, 11, "bold",
-          open ? LYRIC_FILL : "#fff");
-        if (open) {                                        // a white halo keeps the letter clear of the ring
-          t.setAttribute("stroke", "#fff");
-          t.setAttribute("stroke-width", "2");
-          t.setAttribute("paint-order", "stroke");
-        }
-        t.setAttribute("pointer-events", "none");
-        t.classList.add("note-letter");
-      } catch { /* not laid out */ }
-    });
+      if (!vf || n.tieContinuation || n.spelled.alter) continue;
+      const byHand = under.get(vf) ?? new Map<string, TimelineNote[]>();
+      byHand.set(n.hand, [...(byHand.get(n.hand) ?? []), n]);
+      under.set(vf, byHand);
+    }
+    for (const [vf, byHand] of under) {
+      for (const [hand, ns] of byHand) {
+        try {
+          ns.sort((a, b) => b.pitch - a.pitch);
+          const lowest = Math.max(...ns.map((n) => vf.getYs()[keyIdx[n.id]]));
+          const base = lowest + (hand === "L" && ns.some((n) => n.finger) ? 29 : 18);
+          const dx = vf.getStemDirection() < 0 ? 4 : 0;      // a stem down the head's left side: clear of it
+          ns.forEach((n, i) => {
+            const el = addText(n.spelled.step.toUpperCase(), centerX(vf) + dx, base + i * 13, 13, "bold", LETTER_FILL);
+            el.setAttribute("pointer-events", "none");
+            el.classList.add("note-letter");
+          });
+        } catch { /* not laid out */ }
+      }
+    }
   }
   return {
     svg, scale, map, noteEls, lyrics, problems, graces: graceCount,

@@ -1,12 +1,17 @@
-# Core piece (Prep A, prep-a.round-hand). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music.
 # Let the arm drop its weight into each key, then float up while the other hand drops.
 title: "Warm-up: Heavy Arms"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: RL
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-heavy-arms.yaml
+license:
+  composition: original
+  edition: original
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
 abc: |
   X:1

@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.skips). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.skips). Warm-up in our own music.
 # Fingers 1 and 3 skipping back and forth, the pattern moving to the next key.
 title: "Warm-up: Checkers"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: RL
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-checkers.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

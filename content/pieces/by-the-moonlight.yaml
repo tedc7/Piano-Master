@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.c-d-e). Au clair de la lune, French traditional; public domain. Our own arrangement and English words.
+# Curriculum song (Prep A, prep-a.c-d-e). Au clair de la lune, French traditional; public domain. Our own arrangement and English words.
 title: "By the Moonlight"
 composer: Traditional
-kind: core
-genre: lesson-pieces
+genre: folk
 level: Prep A
 hands: R
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/by-the-moonlight.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
 abc: |
   X:1

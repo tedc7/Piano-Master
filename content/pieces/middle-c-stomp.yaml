@@ -1,10 +1,15 @@
-# Core piece (Prep A, prep-a.middle-c). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.middle-c). Original music and words for this app.
 title: "Middle C Stomp"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: RL
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/middle-c-stomp.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

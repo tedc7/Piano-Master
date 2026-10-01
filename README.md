@@ -15,11 +15,11 @@ Piano App with Parental Controls. Design: [docs/architecture.md](docs/architectu
 | `skills/` | Backup of the `generate-music` Claude skill (YuE2) |
 | `client/public/audio/piano/` | The app's piano samples (Salamander Grand Piano, CC BY 3.0) |
 
-The skill map in `content/skillmap/` is the **Prep A map** (arch v0.25 §6.2): 46 skills in 9 units,
+The skill map in `content/skillmap/` is the **Prep A map** (arch §6.2): 46 skills in 9 units,
 one concept each (one Journey bubble), each labelled Notes, Rhythm, Technique, Theory or Musicianship. Its
 concept lessons are in `content/lessons/` (one YAML file per skill, one Explain card,
-then show/hear/try/check/echo/watch) and its core pieces in `content/pieces/`: each skill's `pieces` list is
-its practice pieces, 2 to 4 (Units 1 to 3 are pre-staff pieces, `letters: true`; `dynamics:` marks f, mf, p;
+then show/hear/try/check/echo/watch). Every song's source is in `content/pieces/`: each skill's `pieces` list is
+its practice songs, 2 to 4 (Units 1 to 3 are pre-staff pieces, `letters: true`; `dynamics:` marks f, mf, p;
 `warmup-*` are the warm-ups). The family's own method-book photos (`Background/`) and page references
 (`content/private/book-refs.yaml`, merged into parent mode by the build) stay out of the repository.
 `content/incoming/` holds batches being prepared (never built or deployed, never committed): the
@@ -27,8 +27,9 @@ classical arrangements and their import notes (`incoming/classical/NOTES.md`), a
 
 **Importing songs** (arch §10.4): ask Claude Code to import or find songs; it follows the
 `import-song` skill and uses `tools/import_song.py` (`convert`, `check`, `compare`, `report`,
-`submit`, and `promote` for core pieces). A batch is made in `content/incoming/<batch>/` and
-submitted to the app's review list; nothing reaches a child before the parent approves it there.
+`submit`, `feedback`, and `promote` to keep an approved song's source in git). A batch is made in
+`content/incoming/<batch>/` and submitted to the app's review list; nothing reaches a child before
+the parent approves it there. Songs written here for the map are submitted from `content/pieces/`.
 
 **Vocals and backing** (arch §10.5, M8): the `make-media` skill and `tools/media/media.py` (`plan`,
 `make`, `report`). A song with words gets a YuE2 vocal (the `generate-music` skill), aligned to the
@@ -40,15 +41,20 @@ the piano server with the song. Setup: `tools/media/setup.sh`.
 batch, with its stems, through the Skill API (a token in `~/.config/piano-master/skill-token`). The
 server's intake checks every song again and stages the ones that pass; the parent listens and
 approves them in Config › Review list, and approved songs join the library on the server at once,
-with no deploy. Config › Songs and genres sets what each child sees (lesson pieces always; other
-genres once allowed) and deletes songs. The library holds only approved songs; every other song
+with no deploy. **Every song is in the library** (v0.27), whatever made it; the skill map deploys
+with the app and names its practice songs, which must be approved first (`tools/library_check.py`
+stops a deploy otherwise). Config › Songs and genres sets what each child sees (the map's practice
+songs always; other genres once allowed) and deletes songs. **Needs improvement** in the Play
+screen's gear pop-up (parent mode) asks for a fix to a song in use; the fix comes back to the
+Review list as an update, and approving it replaces the song in place. The library holds only approved songs; every other song
 (waiting, sent back, or deleted) is in the review area, and deleted songs are at the bottom of the
 Review list. The files live beside the database in `/opt/piano/data` (`library/`, `staging/`).
 
-**Content build** (`tools/build_content.py`, arch §6.8–6.10): converts every piece, runs **song
+**Content build** (`tools/build_content.py`, arch §6.8–6.10): converts every song (to `build/songs/`,
+for the library; only the map and lessons deploy with the app), runs **song
 analysis** (`api/app/analysis.py`: required and featured skills, map point, skill measures, and
 anything beyond the map), fills in finger numbers (`api/app/fingering.py`), builds the concept
-lessons, and checks the skill map (ids, sequences, prerequisites, constraints, 3 core pieces per
+lessons, and checks the skill map (ids, sequences, prerequisites, constraints, 2 practice songs per
 skill, a lesson per skill). In ABC, `"_L"` below a note gives it to the left hand on the upper
 staff; `song:` and `version:` in a piece's YAML make it one arrangement of a song.
 

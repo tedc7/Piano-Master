@@ -4,10 +4,15 @@
 # machine; its notation is the one the stems were aligned to, so the beat grid matches.
 title: Amazing Grace
 composer: Traditional (New Britain)
-kind: library
 genre: hymns
 level: test
 hands: R
+source:
+  site: The Open Hymnal Project
+  url: https://openhymnal.org/
+license:
+  composition: public-domain
+  edition: public-domain (The Open Hymnal)
 phraseBars: 4
 verses: 2
 syncProbe:

@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.steps). Merrily We Roll Along (the tune of Mary Had a Little Lamb), traditional; public domain. Our own arrangement.
+# Curriculum song (Prep A, prep-a.steps). Merrily We Roll Along (the tune of Mary Had a Little Lamb), traditional; public domain. Our own arrangement.
 title: "Merrily We Roll Along"
 composer: Traditional
-kind: core
-genre: lesson-pieces
+genre: kids
 level: Prep A
 hands: RL
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/merrily-we-roll-along.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
 abc: |
   X:1

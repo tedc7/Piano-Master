@@ -14,7 +14,9 @@ existing volume. Please check:
 
 1. **Backup:** the existing file backup of `/opt/piano/data` now includes these folders. Both should
    be backed up: the notation and stems can be rebuilt on the dev box, but only with its GPU and
-   some hours of work, and `staging/` also holds the parent's deleted songs.
+   some hours of work, and `staging/` also holds the parent's deleted songs. Since architecture
+   v0.27, `library/` holds **every** song the app plays, including the 108 lesson songs that used to
+   ship with the app, so without it the app has no songs until they're restored.
 2. **Disk:** there's room for a few GB more under `/opt/piano/data`.
 3. **Uploads through Caddy:** the dev box uploads each stem with `PUT /api/skill/packages/.../media/<file>`
    (up to 64 MB a file). If Caddy limits request bodies on the `/api` route, allow at least 64 MB there.

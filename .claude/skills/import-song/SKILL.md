@@ -112,11 +112,19 @@ problem and the fix in `docs/media-pipeline-notes.md`. Then submit only the fixe
 the review list with the parent's note beside it, and the parent decides again. Tell the parent
 what you changed.
 
-## 7. Core pieces
+## 7. Approved songs, songs for the skill map, and updates to live songs
 
-Pieces written for the skill map (`kind: core`, lesson pieces) deploy with the app instead:
-`import_song.py promote content/incoming/BATCH ID…` moves them into `content/pieces/`, then run the
-content build, the tests and `tools/deploy.sh`.
+Every song reaches the app through the review list (arch §10.7, v0.27), whatever made it.
+- **After the parent approves a batch's songs**, `import_song.py promote content/incoming/BATCH ID…`
+  moves their sources into `content/pieces/`, so every song's source is kept in git. Commit them.
+- **Songs written here for the skill map** (practice songs for a skill's `pieces` list) are written in
+  `content/pieces/` (`composer: Piano-Master`, `genre: studies`, `license: {composition: original,
+  edition: original}`), then `import_song.py submit content/pieces ID…`. The map that names them is
+  deployed only after the parent approves them (`tools/deploy.sh` runs `tools/library_check.py`).
+- **Updating a live song:** the parent's Needs improvement on a song in use shows in
+  `import_song.py feedback` as a live song, with its source and the submit command. Fix the source,
+  check it, and submit it under the same id: it waits in the review list as an update, and the
+  children keep the live song until the parent approves it.
 
 ## Media
 

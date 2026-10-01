@@ -1,14 +1,19 @@
-# Core piece (Prep A, prep-a.musical-alphabet). Traditional; public domain. Our own arrangement.
+# Curriculum song (Prep A, prep-a.musical-alphabet). Traditional; public domain. Our own arrangement.
 title: "Hot Cross Buns for the Left Hand"
 composer: Traditional
-kind: core
-genre: lesson-pieces
+genre: kids
 level: Prep A
 hands: L
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/hot-cross-buns-left.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
 song: hot-cross-buns
 songTitle: "Hot Cross Buns"
 version: Left hand
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
 abc: |
   X:1

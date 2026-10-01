@@ -26,7 +26,7 @@
   const GROUPS: { name: string; tiles: Tile[] }[] = [
     { name: "Family", tiles: [
       { id: "students", icon: "👧", name: "Students", what: "Add, edit, archive or delete students; avatars; each student's auto-rewind, rewind distance and backing volume." },
-      { id: "rules", icon: "🛡️", name: "Songs and genres", what: "Allow or block genres and single songs for each child, delete songs, and the deleted-songs list. Lesson pieces are always allowed; other genres start blocked." },
+      { id: "rules", icon: "🛡️", name: "Songs and genres", what: "Allow or block genres and single songs for each child, and delete songs. The Journey map's practice songs are always allowed; genres start blocked." },
       { id: "reports", icon: "📈", name: "Progress reports", what: "Each child's skills, star trends, practice days, stuck skills and the content runway." },
     ] },
     { name: "Songs and lessons", tiles: [

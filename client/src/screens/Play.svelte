@@ -36,6 +36,13 @@
   let phraseCount = $state(1);
   let pending = $state(api.pending);
   let sheet = $state(false);
+  // Needs improvement, for a song in the library (v0.27): the parent's note goes to the skills; the
+  // live song stays as it is until the fix is approved in the Review list
+  interface Update { itemId: string; status: "needs-work" | "staged"; feedback: string; asked: string | null }
+  const isSong = $derived(!id.startsWith("drill-") && !id.startsWith("staged--"));
+  let update = $state<Update | null>(null);
+  let note = $state("");
+  let noteMsg = $state("");
   let another = $state(false);          // the "Try it another way" choices (arch §8.1)
   let countIn = $state<{ total: number; current: number } | null>(null);
   let wrongText = $state("");
@@ -105,9 +112,8 @@
           // a song waiting in the review list: the parent's only (arch §10.7)
           piece = await api.request<Piece>(`/review/items/${id.slice("staged--".length)}/piece`);
         } else {
-          // an approved library song is served by the piano server; the rest were built into the app
-          const lib = (await loadContent().catch(() => null))?.pieces.find((p) => p.id === id)?.library;
-          const r = await fetch(lib ? `/api/library/pieces/${id}` : `content/pieces/${id}.json`);
+          // every song is in the piano server's library (v0.27)
+          const r = await fetch(`/api/library/pieces/${id}`);
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           piece = await r.json();
         }
@@ -259,6 +265,42 @@
   function markHands(): void {
     if (!layout) return;
     for (const n of tl.notes) layout.noteEls[n.id]?.classList.toggle("pm-other", hands !== "both" && n.hand !== hands);
+  }
+
+  /** The bar the staff is at (the one being played, or where it's paused), for the parent's note. */
+  function currentBar(): number {
+    if (!tl) return 1;
+    const beat = player ? player.position.display : 0;
+    const e = [...tl.entries].reverse().find((x) => x.start <= beat + 1e-6) ?? tl.entries[0];
+    return e?.m.number ?? 1;
+  }
+
+  async function toggleSheet(): Promise<void> {
+    sheet = !sheet;
+    if (!sheet || !isSong || !app.parentMode) return;
+    noteMsg = "";
+    note = `Bar ${currentBar()}: `;
+    try { update = (await api.request<{ update: Update | null }>(`/library/pieces/${id}/improve`)).update; } catch (e) { app.parentRefused(e); }
+  }
+
+  async function askForUpdate(): Promise<void> {
+    try {
+      update = (await api.request<{ update: Update }>(`/library/pieces/${id}/improve`, "POST", { feedback: note.trim() })).update;
+      noteMsg = "Sent. The children keep this version until you approve the fix in Config › Review list.";
+    } catch (e) {
+      if (!app.parentRefused(e)) noteMsg = (e as Error).message;
+    }
+  }
+
+  async function cancelUpdate(): Promise<void> {
+    if (!update) return;
+    try {
+      await api.request(`/review/items/${update.itemId}/discard`, "POST");
+      update = null;
+      noteMsg = "Request cancelled.";
+    } catch (e) {
+      if (!app.parentRefused(e)) noteMsg = (e as Error).message;
+    }
   }
 
   function barsOf(a: number, b: number): string {
@@ -534,7 +576,7 @@
     {/if}
     <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>
     {#if app.parentMode}
-      <button class="quiet" onclick={() => { sheet = !sheet; }} aria-label="Settings">⚙</button>
+      <button class="quiet" onclick={toggleSheet} aria-label="Song and settings">⚙</button>
     {/if}
   </div>
 
@@ -542,8 +584,24 @@
 
   {#if sheet}
     <div class="sheet">
-      <div class="sheet-head"><h2>Test settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
-      <p class="muted small">For the parent. Students' own settings are under Config › Students.</p>
+      <div class="sheet-head"><h2>Song and settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
+      {#if isSong}
+        <div class="improve">
+          {#if update}
+            <p><b>Needs improvement:</b> “{update.feedback}”</p>
+            <p class="muted small">{update.status === "staged" ? "A fix is waiting for you in Config › Review list." : "Waiting for the Claude skills to fix it."}
+              The children keep playing this version until you approve the fix.</p>
+            {#if update.status === "needs-work"}<button class="quiet" onclick={cancelUpdate}>Cancel request</button>{/if}
+          {:else}
+            <label for="improve-note"><b>Needs improvement?</b> Say what should change; the Claude skills fix it and you approve
+              the fix in the Review list. The children keep this version until then.</label>
+            <textarea id="improve-note" bind:value={note} rows="2" maxlength="4000"></textarea>
+            <button onclick={askForUpdate} disabled={note.trim().length < 3 || /^Bar \d+:$/.test(note.trim())}>Needs improvement</button>
+          {/if}
+          {#if noteMsg}<p class="small">{noteMsg}</p>{/if}
+        </div>
+      {/if}
+      <p class="muted small">Settings for the parent. Students' own settings are under Config › Students.</p>
       <div class="grid">
         <DeviceSettings />
         <PlayerSettings settings={app.prefs} backing={hasMedia} onchange={(p) => { app.setParentPrefs(p); applyMix(); }} />
@@ -615,6 +673,10 @@
   }
   .sheet-head { display: flex; justify-content: space-between; align-items: center; }
   .sheet-head h2 { margin: 0; font-size: 20px; }
+  .improve { margin: 10px 0; padding: 10px 12px; background: #f7f5f0; border-radius: 12px; }
+  .improve p { margin: 4px 0; }
+  .improve label { display: block; margin-bottom: 6px; }
+  .improve textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); margin-bottom: 8px; }
   .grid { display: grid; grid-template-columns: 190px 1fr; gap: 10px 16px; align-items: center; margin-top: 10px; }
   .sel { outline: 3px solid var(--accent); }
   .mono { font: 14px/1.4 ui-monospace, Menlo, monospace; }

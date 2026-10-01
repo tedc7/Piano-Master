@@ -20,3 +20,5 @@ content/incoming/*/media/
 Background/
 # the family's own method-book page references (content/private/book-refs.yaml): never committed
 content/private/
+# every song built for the library (tools/build_content.py): submitted or seeded, never deployed
+/build/

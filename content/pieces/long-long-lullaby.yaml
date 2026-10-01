@@ -1,10 +1,15 @@
-# Core piece (Prep A, prep-a.tie). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.tie). Original music and words for this app.
 title: "Long, Long Lullaby"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: R
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/long-long-lullaby.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

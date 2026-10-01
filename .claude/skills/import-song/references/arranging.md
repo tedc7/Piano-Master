@@ -9,8 +9,7 @@ One YAML file per arrangement, in the batch folder (and later `content/pieces/`)
 # (simplified bars, octave moves, cut sections, and why).
 title: Minuet in G
 composer: Christian Petzold
-kind: library              # core = written for a skill by us (content/pieces/); library = everything imported
-genre: classical           # folk, hymns, kids, classical, pop, lesson-pieces…
+genre: classical           # folk, hymns, kids, classical, pop; studies = our own music for the map
 level: Level 2             # your estimate, shown to people; the analysis decides unlocking
 hands: RL                  # R, L or RL, as the student plays it
 phraseBars: 4              # rewind phrases: 2 bars at Prep levels, 4 from Level 1

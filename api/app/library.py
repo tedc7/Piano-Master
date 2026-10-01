@@ -9,15 +9,28 @@
   to change (the skill reads that feedback and resubmits the song, which then replaces it), or never
   allows it (the deleted list). Staging is a separate area (files in <data>/staging/), so nothing
   pending can reach a child (§10.7).
-- **Library** (`/api/library/...`, anyone): the approved songs' index, pieces and stems, which
-  the app merges with the deployed content; the lesson engine does the same (content.py).
+- **Library** (`/api/library/...`, anyone): the approved songs' index, pieces and stems. Every
+  song the app plays is here (v0.27), whatever made it: the skill map deploys with the app and
+  names its practice songs by id, which must be in the library (content.py). The songs that were
+  built into the app before v0.27 came in once, as approved, through a seed (`adopt_seed`).
+- **Updating a live song** (v0.27): the parent's "Needs improvement" on a library song is a
+  request in the review area that names the live song (`live`). The skills read it with the other
+  feedback; intake takes the fixed song under the same id while the request is open, and it waits
+  in the review list as an update, with what changed beside the parent's note. Approving it
+  replaces the live song in place (same id, so every child's stars and progress carry on);
+  discarding it keeps the live one. The children play the live song throughout.
 - **Deleted songs** live in the review area too (v0.23): the library holds only approved songs, and
   every other song is a staged item (waiting, sent back for changes, or deleted). "Never allow" in
   the review list and "Delete" in Songs and genres both make a song deleted: intake refuses it
   (title, composer, source ids, melody fingerprint), and its files stay so the parent can send it
   back to review, send it for improvement, or forget it (then it may be imported again).
-- **Rules** (§10.1): each child's genre rules (lesson pieces always allowed, every other genre
-  blocked until the parent allows it) and song rules, which override the genre.
+- **Re-analysis** (§6.10): intake analyses a song against the deployed skill map, and approval
+  does again; when a deploy changes the map, every approved song is analysed again (at the API's
+  start, and when the parent opens Content and analysis), and the songs whose required skills
+  changed are listed there.
+- **Rules** (§10.1): each child's genre rules (every genre blocked until the parent allows it) and
+  song rules, which override the genre. The songs the map uses for practice (the curriculum) are
+  allowed for every child unless a song rule blocks one.
 """
 from __future__ import annotations
 
@@ -44,14 +57,16 @@ router = APIRouter()
 SLUG = r"^[a-z0-9][a-z0-9-]{0,79}$"
 FILE = r"^[A-Za-z0-9_.-]{1,80}\.mp3$"
 MAX_MEDIA = 64 * 1024 * 1024
-ALWAYS = "lesson-pieces"                    # allowed for every child (§10.1)
 NEW_DAYS = 14                               # the "New" badge
-# the composition must be public domain or supplied by the parent; the edition openly licensed,
-# or the notes retyped and the edition only used to check them (§10.2; the import skill checks the same)
-COMPOSITION = {"public-domain", "parent-supplied"}
-EDITION = re.compile(r"^(public-domain|CC0|CC BY-SA|CC BY|parent-supplied|retyped)(?![-\w])")
+# the composition must be public domain, supplied by the parent, or our own (written for the
+# curriculum); the edition openly licensed, our own, or the notes retyped and the edition only
+# used to check them (§10.2; the import skill checks the same)
+COMPOSITION = {"public-domain", "parent-supplied", "original"}
+EDITION = re.compile(r"^(public-domain|CC0|CC BY-SA|CC BY|parent-supplied|retyped|original)(?![-\w])")
 INFO_KEYS = ("level", "hands", "version", "songTitle", "source", "license", "tempoSource", "notes", "flags", "lyrics",
              "checks", "backing", "engine", "warnings")
+ENTRY_KEYS = ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize", "song", "songTitle",
+              "version", "contentVersion")
 
 
 def now() -> str:
@@ -139,26 +154,6 @@ def need_content() -> content_mod.Content:
     return c
 
 
-_deployed_prints: tuple[str, dict[str, dict]] | None = None
-
-
-def deployed_pieces() -> dict[str, dict]:
-    """The deployed pieces (built into the app): {id: {song, title, composer, genre, fingerprint}}."""
-    global _deployed_prints
-    d = content_mod.content_dir()
-    version = f"{d}:{content_mod.deployed_version() or ''}"
-    if _deployed_prints and _deployed_prints[0] == version:
-        return _deployed_prints[1]
-    out = {}
-    for f in sorted((d / "pieces").glob("*.json")):
-        p = json.loads(f.read_text())
-        out[p["id"]] = {"song": p.get("song") or p["id"], "title": p["title"], "composer": p.get("composer"),
-                        "genre": p.get("genre") or ALWAYS, "fingerprint": sorted(fingerprint.fingerprint(p["notation"])),
-                        "sourceIds": []}
-    _deployed_prints = (version, out)
-    return out
-
-
 def library_rows(con) -> list[dict]:
     return [{"id": r["piece_id"], "song": r["song"], "title": r["title"], "composer": r["composer"], "genre": r["genre"],
              "sourceIds": loads(r["source_ids"], []), "fingerprint": loads(r["fingerprint"], []),
@@ -168,10 +163,11 @@ def library_rows(con) -> list[dict]:
 
 def write_index(con) -> None:
     """<data>/library/index.json: the approved pieces' index entries, which the lesson engine and
-    the app merge with the deployed content. Its version changes with every approval or deletion."""
+    the app merge with the deployed content. Its version changes with every approval, deletion or
+    re-analysis."""
     rows = library_rows(con)
     entries = [{**r["entry"], "library": True, "approvedAt": r["approvedAt"]} for r in rows]
-    version = hashlib.sha256(json.dumps([(r["id"], r["approvedAt"]) for r in rows]).encode()).hexdigest()[:8]
+    version = hashlib.sha256(json.dumps(entries, sort_keys=True).encode()).hexdigest()[:8]
     lib = folder("library")
     lib.mkdir(parents=True, exist_ok=True)
     tmp = lib / "index.json.tmp"
@@ -181,6 +177,28 @@ def write_index(con) -> None:
 
 def norm(s: str | None) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+
+def analyse(c: content_mod.Content, pid: str, nota: dict) -> dict:
+    """Song analysis against the deployed map, for the skill the song is a practice song of (an
+    idea the notes can't show, such as finger numbers, is credited to its practice songs)."""
+    return analysis.analyze(nota, c.skill_dicts(set(c.skills)), None, c.practice_of(pid))
+
+
+def entry_of(p: dict) -> dict:
+    """A song's index entry: what the app and the lesson engine list it by."""
+    nota = p["notation"]
+    an = {k: p.get(k) for k in ("barNotes", "requiredSkills", "featuredSkills", "mapPoint", "skillMeasures", "beyondMap")}
+    return {**{k: p.get(k) for k in ENTRY_KEYS}, "song": p.get("song") or p["id"], "songTitle": p.get("songTitle") or p["title"],
+            "tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"], "measures": len(nota["playbackOrder"]),
+            "beats": float(nota["length"]), "phrases": len(nota["phrases"]), "hasMedia": bool(p.get("media")), **an}
+
+
+def apply_analysis(d: dict, an: dict) -> None:
+    """A piece or its index entry takes the song analysis, and the skill it practises (its newest
+    featured skill, none when it is beyond the map)."""
+    d.update(an)
+    d["skillId"] = an["featuredSkills"][0] if an["featuredSkills"] and not an["beyondMap"] else None
 
 
 # ------------------------------------------------------------------------------ intake (§10.3, §10.7)
@@ -237,8 +255,6 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
                 errors.append(f"the notation header has no {k}")
     except (KeyError, TypeError, ValueError) as e:
         errors.append(f"the notation isn't in the app's format ({e})")
-    if p.get("genre") == ALWAYS or p.get("kind") == "core":
-        errors.append("lesson pieces are written for the skill map and deployed with the app, not imported")
     lic = info.get("license") or {}
     if lic.get("composition") not in COMPOSITION:
         errors.append("license.composition must be public-domain or parent-supplied (§10.2)")
@@ -251,14 +267,14 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
         return {"pieceId": pid, "errors": errors, "warnings": warnings}
 
     # song analysis against the deployed map (the dev box's is only a proposal)
-    skills = c.skill_dicts(set(c.skills))
-    an = analysis.analyze(nota, skills)
+    an = analyse(c, pid, nota)
     song = str(p.get("song") or pid)
     prints = fingerprint.fingerprint(nota)
-    deployed = deployed_pieces()
     lib = {r["id"]: r for r in library_rows(con)}
-    if pid in deployed or pid in lib:
-        errors.append(f"a piece with the id {pid} is already in the library")
+    update = pid in lib and open_update(con, pid) is not None
+    if pid in lib and not update:
+        errors.append(f"a piece with the id {pid} is already in the library (the parent can ask for an update: "
+                      "Needs improvement on the Play screen)")
     if pid in taken:
         errors.append(f"the package has two pieces with the id {pid}")
     if con.execute("SELECT 1 FROM staged_items WHERE piece_id = ? AND status = 'staged'", (pid,)).fetchone():
@@ -270,9 +286,9 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
                 (norm(d["title"]) == norm(p["title"]) and norm(d["composer"]) == norm(p.get("composer"))):
             errors.append(f"deleted by the parent: {d['title']}" + (f" ({d['deleted_reason']})" if d["deleted_reason"] else "") +
                           "; don't offer it again (the parent can send it back for improvement from the review list)")
-    for oid, o in {**deployed, **lib}.items():
-        if o["song"] == song:
-            continue                         # another arrangement of the same song
+    for oid, o in lib.items():
+        if o["song"] == song or oid == pid:
+            continue                         # another arrangement of the same song, or the live one it updates
         score = fingerprint.similarity(prints, set(o.get("fingerprint") or []))
         verdict = fingerprint.verdict(score)
         if verdict == "same song" or set(src_ids) & set(o.get("sourceIds") or []):
@@ -289,17 +305,13 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
         errors.append("the media names no stem files")
     if p.get("media") and len((p["media"].get("presets") or {})) < 4:
         warnings.append("the media doesn't have all four tempo presets")
-    p.update(an)
-    p["skillId"] = an["featuredSkills"][0] if an["featuredSkills"] and not an["beyondMap"] else None
-    p["kind"] = "library"
-    p["contentVersion"] = "lib-" + hashlib.sha256(json.dumps(nota, sort_keys=True).encode()).hexdigest()[:10]
+    apply_analysis(p, an)
+    p["kind"] = "song"
+    p["song"] = song
+    p["contentVersion"] = content_mod.song_version(nota)
     lo, hi = nota["header"].get("range") or [min(n["pitch"] for n in nota["notes"]), max(n["pitch"] for n in nota["notes"])]
     p["keyboardSize"] = 61 if 36 <= lo and hi <= 96 else 88
-    entry = {k: p.get(k) for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
-                                   "song", "songTitle", "version")}
-    entry.update(song=song, songTitle=p.get("songTitle") or p["title"], tempo=nota["header"]["tempo"],
-                 timeSig=nota["header"]["timeSig"], measures=len(nota["playbackOrder"]), beats=float(nota["length"]),
-                 phrases=len(nota["phrases"]), hasMedia=bool(p.get("media")), **an)
+    entry = entry_of(p)
     return {"pieceId": pid, "errors": errors, "warnings": warnings, "piece": p, "entry": entry, "song": song,
             "fingerprint": sorted(prints), "files": files, "sourceIds": src_ids}
 
@@ -309,10 +321,9 @@ def skill_library(skill: str = Depends(require_skill)):
     """What's already in the library, to avoid duplicates before submitting (§10.9)."""
     con = db.connect()
     try:
-        dep = [{"id": k, **v, "deployed": True} for k, v in deployed_pieces().items()]
-        lib = [{k: r[k] for k in ("id", "song", "title", "composer", "genre", "sourceIds", "fingerprint", "approvedAt")}
-               for r in library_rows(con)]
-        return {"pieces": dep + lib}
+        return {"pieces": [{**{k: r[k] for k in ("id", "song", "title", "composer", "genre", "sourceIds", "fingerprint",
+                                                  "approvedAt")}, "contentVersion": r["entry"].get("contentVersion")}
+                           for r in library_rows(con)]}
     finally:
         con.close()
 
@@ -425,9 +436,10 @@ def stage_package(pkg: str, skill: str = Depends(require_skill)):
                     report.append({"itemId": r["id"], "pieceId": r["piece_id"], "staged": False, "errors": rep["errors"]})
                 else:
                     # a resubmission replaces the song the parent sent back, and carries its feedback
-                    old = con.execute("SELECT id, package_id FROM staged_items WHERE piece_id = ? AND status = 'needs-work' "
+                    old = con.execute("SELECT id, package_id, live FROM staged_items WHERE piece_id = ? AND status = 'needs-work' "
                                       "ORDER BY decided_at DESC", (r["piece_id"],)).fetchone()
-                    con.execute("UPDATE staged_items SET status = 'staged', replaces = ? WHERE id = ?", (old["id"] if old else None, r["id"]))
+                    con.execute("UPDATE staged_items SET status = 'staged', replaces = ?, live = ? WHERE id = ?",
+                                (old["id"] if old else None, old["live"] if old else None, r["id"]))
                     if old:
                         con.execute("UPDATE staged_items SET status = 'resubmitted' WHERE id = ?", (old["id"],))
                         shutil.rmtree(folder("staging", old["package_id"], old["id"]), ignore_errors=True)
@@ -490,7 +502,41 @@ def item_out(con, r) -> dict:
         old = con.execute("SELECT feedback, decided_at FROM staged_items WHERE id = ?", (r["replaces"],)).fetchone()
         if old:
             out["previousFeedback"] = {"feedback": old["feedback"], "decidedAt": old["decided_at"]}
+    if r["live"]:
+        out["live"] = r["live"]
+        if r["status"] == "staged":
+            out["changes"] = changes_from_live(r)
     return out
+
+
+def changes_from_live(r) -> dict:
+    """What an update changes in the live song, for the parent: the bars whose notes differ, the
+    tempo, whether the media was made again, and the skills it needs (so a fix that would lock the
+    song for a child is plain to see)."""
+    try:
+        new = json.loads(folder("staging", r["package_id"], r["id"], "piece.json").read_text())
+        live = json.loads(folder("library", r["live"], "piece.json").read_text())
+    except OSError:
+        return {}
+
+    def bars(nota: dict) -> dict[int, list]:
+        out: dict[int, list] = {}
+        for n in nota["notes"]:
+            m = next((x for x in nota["measures"] if x["start"] - 1e-6 <= n["start"] < x["start"] + x["duration"] - 1e-6), None)
+            if m:
+                out.setdefault(m["number"], []).append((round(n["start"] - m["start"], 4), n["pitch"], round(n["duration"], 4),
+                                                       n.get("hand"), n.get("finger")))
+        return {k: sorted(v, key=str) for k, v in out.items()}
+
+    a, b = bars(live["notation"]), bars(new["notation"])
+    lm, nm = live.get("media") or {}, new.get("media") or {}
+    return {"bars": sorted(k for k in set(a) | set(b) if a.get(k) != b.get(k)),
+            "tempo": [live["notation"]["header"]["tempo"], new["notation"]["header"]["tempo"]],
+            "lyrics": live["notation"].get("lyrics") != new["notation"].get("lyrics"),
+            "media": (lm.get("take"), lm.get("engine")) != (nm.get("take"), nm.get("engine")) or
+                     media_files(live) != media_files(new),
+            "requiredSkills": [live.get("requiredSkills") or [], new.get("requiredSkills") or []],
+            "beyondMap": [live.get("beyondMap") or [], new.get("beyondMap") or []]}
 
 
 @router.get("/api/review", dependencies=[Depends(require_parent)])
@@ -568,23 +614,31 @@ def approve_item(item: str):
     con = db.connect()
     try:
         r = waiting(con, item)
+        c = need_content()
         t = now()
         info = loads(r["info"], {})
         with db.transaction(con):
             src, dest = folder("staging", r["package_id"], item), folder("library", r["piece_id"])
             piece = with_media_urls(json.loads((src / "piece.json").read_text()), f"/api/library/media/{r['piece_id']}")
+            entry = {**(info.pop("entry", None) or {}), "hasMedia": bool(piece.get("media"))}
+            first = con.execute("SELECT approved_at, entry FROM library WHERE piece_id = ?", (r["piece_id"],)).fetchone()
+            if r["live"] and first:                                # an update: the same song, not a new one
+                entry.update(updatedAt=t, **({"seeded": True} if loads(first["entry"], {}).get("seeded") else {}))
+                t = first["approved_at"]
+            an = analyse(c, r["piece_id"], piece["notation"])      # the map may have changed since intake
+            apply_analysis(piece, an)
+            apply_analysis(entry, an)
             shutil.rmtree(dest, ignore_errors=True)
             shutil.move(str(src), dest)
             (dest / "piece.json").write_text(json.dumps(piece))
-            entry = {**(info.pop("entry", None) or {}), "hasMedia": bool(piece.get("media"))}
             con.execute("INSERT OR REPLACE INTO library (piece_id, song, title, composer, genre, source_ids, fingerprint, info, "
                         "entry, approved_at, package_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         (r["piece_id"], r["song"], r["title"], r["composer"], r["genre"], json.dumps(info.get("sourceIds", [])),
                          r["fingerprint"], json.dumps(info), json.dumps(entry), t, r["package_id"]))
-            con.execute("UPDATE staged_items SET status = 'approved', decided_at = ? WHERE id = ?", (t, item))
+            con.execute("UPDATE staged_items SET status = 'approved', decided_at = ? WHERE id = ?", (now(), item))
             close_if_done(con, r["package_id"])
             write_index(con)
-        return {"approved": r["piece_id"]}
+        return {"approved": r["piece_id"], **({"updated": True} if r["live"] else {})}
     finally:
         con.close()
 
@@ -624,6 +678,9 @@ def never_item(item: str, body: NeverIn):
     con = db.connect()
     try:
         r = waiting(con, item)
+        if r["live"]:
+            raise HTTPException(409, "this is an update to a live song: discard the update to keep the live one, or delete "
+                                     "the song in Songs and genres")
         with db.transaction(con):
             con.execute("UPDATE staged_items SET status = 'deleted', decided_at = ?, deleted_from = 'review', deleted_reason = ? "
                         "WHERE id = ?", (now(), body.reason, item))
@@ -674,7 +731,7 @@ def skill_feedback(skill: str = Depends(require_skill)):
         rows = con.execute("SELECT s.*, p.name AS package FROM staged_items s JOIN packages p ON p.id = s.package_id "
                            "WHERE s.status = 'needs-work' ORDER BY s.decided_at").fetchall()
         return {"feedback": [{"itemId": r["id"], "pieceId": r["piece_id"], "title": r["title"], "package": r["package"],
-                              "feedback": r["feedback"], "sentBack": r["decided_at"]} for r in rows]}
+                              "feedback": r["feedback"], "sentBack": r["decided_at"], "live": bool(r["live"])} for r in rows]}
     finally:
         con.close()
 
@@ -690,7 +747,7 @@ def library_index():
     idx = json.loads(f.read_text())
     cutoff = datetime.now(timezone.utc).timestamp() - NEW_DAYS * 86400
     for e in idx["pieces"]:
-        e["new"] = datetime.fromisoformat(e["approvedAt"]).timestamp() >= cutoff
+        e["new"] = not e.get("seeded") and datetime.fromisoformat(e["approvedAt"]).timestamp() >= cutoff
     return idx
 
 
@@ -745,8 +802,208 @@ def delete_song(song: str, body: DeleteIn):
                              r["fingerprint"], json.dumps(media), t, body.reason))
                 moved.append(r["piece_id"])
             con.execute("DELETE FROM library WHERE song = ?", (song,))
+            for pid in moved:                              # nothing left to update
+                discard_updates(con, pid)
             write_index(con)
         return {"deleted": moved}
+    finally:
+        con.close()
+
+
+# ------------------------------------------------------------------------------ updating a live song (v0.27)
+
+def open_update(con, pid: str):
+    """The live song's open update: a request waiting for a fix (needs-work) or a fix waiting for the
+    parent (staged); None when there's none."""
+    return con.execute("SELECT * FROM staged_items WHERE live = ? AND status IN ('needs-work', 'staged') "
+                       "ORDER BY rowid DESC", (pid,)).fetchone()
+
+
+def discard_updates(con, pid: str) -> None:
+    for r in con.execute("SELECT id, package_id FROM staged_items WHERE live = ? AND status IN ('needs-work', 'staged')",
+                         (pid,)).fetchall():
+        con.execute("UPDATE staged_items SET status = 'discarded', decided_at = ? WHERE id = ?", (now(), r["id"]))
+        shutil.rmtree(folder("staging", r["package_id"], r["id"]), ignore_errors=True)
+        close_if_done(con, r["package_id"])
+
+
+def update_out(r) -> dict | None:
+    return None if r is None else {"itemId": r["id"], "status": r["status"], "feedback": r["feedback"],
+                                   "asked": r["decided_at"] if r["status"] == "needs-work" else None}
+
+
+@router.get("/api/library/pieces/{pid}/improve", dependencies=[Depends(require_parent)])
+def song_update(pid: str):
+    """The song's open update, if any (the Play screen's Song and settings)."""
+    con = db.connect()
+    try:
+        return {"update": update_out(open_update(con, pid))}
+    finally:
+        con.close()
+
+
+@router.post("/api/library/pieces/{pid}/improve", status_code=201, dependencies=[Depends(require_parent)])
+def ask_for_update(pid: str, body: FeedbackIn):
+    """Needs improvement, for a song in the library: the request waits with the other feedback for
+    the skills; the live song stays as it is until the fix is approved."""
+    con = db.connect()
+    try:
+        row = con.execute("SELECT * FROM library WHERE piece_id = ?", (pid,)).fetchone()
+        if not row:
+            raise HTTPException(404, "no such song in the library")
+        if open_update(con, pid):
+            raise HTTPException(409, "this song already has an update waiting: see the Review list")
+        pkg, iid, t = uuid.uuid4().hex[:12], uuid.uuid4().hex[:12], now()
+        with db.transaction(con):
+            con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at, reviewed_at) "
+                        "VALUES (?, ?, 'parent', NULL, 'done', ?, ?, ?)", (pkg, f"Needs improvement: {row['title']}", t, t, t))
+            con.execute("INSERT INTO staged_items (id, package_id, piece_id, song, title, composer, genre, info, report, fingerprint, "
+                        "media, status, feedback, decided_at, live) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '{}', ?, '[]', 'needs-work', ?, ?, ?)",
+                        (iid, pkg, pid, row["song"], row["title"], row["composer"], row["genre"], row["info"], row["fingerprint"],
+                         body.feedback.strip(), t, pid))
+        return {"update": update_out(open_update(con, pid))}
+    finally:
+        con.close()
+
+
+@router.post("/api/review/items/{item}/discard", dependencies=[Depends(require_parent)])
+def discard_update(item: str):
+    """Keep the live song: drop its update (a fix waiting for review, or a request not yet answered)."""
+    con = db.connect()
+    try:
+        r = waiting(con, item, ("staged", "needs-work"))
+        if not r["live"]:
+            raise HTTPException(409, "not an update to a live song")
+        with db.transaction(con):
+            discard_updates(con, r["live"])
+        return {"kept": r["live"]}
+    finally:
+        con.close()
+
+
+# ------------------------------------------------------------------------------ the seed (v0.27)
+
+def adopt_seed() -> list[str]:
+    """Songs a deploy brings straight into the library as approved (tools/deploy.sh --seed-songs:
+    <content>/seed/, from build/songs/). Used once, for the songs that were built into the app
+    before v0.27, so they needn't each go through the review list; every other song comes through
+    intake and the parent's review. Only songs not in the library, not waiting for review and never
+    deleted come in, so a later start brings nothing. Returns their ids."""
+    d = content_mod.content_dir() / "seed"
+    if not (d / "index.json").exists():
+        return []
+    con = db.connect()
+    try:
+        have = {r["piece_id"] for r in con.execute("SELECT piece_id FROM library")}
+        have |= {r["piece_id"] for r in con.execute(
+            "SELECT piece_id FROM staged_items WHERE status IN ('staged', 'needs-work', 'deleted', 'open')")}
+        new = [e for e in json.loads((d / "index.json").read_text())["pieces"] if e["id"] not in have]
+        if not new:
+            return []
+        pkg, t = uuid.uuid4().hex[:12], now()
+        with db.transaction(con):
+            con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at, reviewed_at) "
+                        "VALUES (?, ?, 'deploy', ?, 'done', ?, ?, ?)",
+                        (pkg, "Songs built into the app before v0.27", "moved into the library by a deploy, as approved", t, t, t))
+            for e in new:
+                pid = e["id"]
+                src = d / f"{pid}.json"
+                piece = json.loads(src.read_text()) if src.exists() else dict(e)
+                info = piece.pop("info", None) or {}
+                dest = folder("library", pid)
+                (dest / "media").mkdir(parents=True, exist_ok=True)
+                for m in media_files(piece):
+                    shutil.copy2(d / "media" / pid / m["file"], dest / "media" / m["file"])
+                piece = {**with_media_urls(piece, f"/api/library/media/{pid}"), "kind": "song"}
+                (dest / "piece.json").write_text(json.dumps(piece))
+                nota = piece.get("notation")
+                entry = {**(entry_of(piece) if nota else {**e, "kind": "song"}), "seeded": True}
+                src_ids = [str(info["source"]["id"])] if (info.get("source") or {}).get("id") else []
+                con.execute("INSERT INTO library (piece_id, song, title, composer, genre, source_ids, fingerprint, info, entry, "
+                            "approved_at, package_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            (pid, entry.get("song") or pid, piece["title"], piece.get("composer"), piece.get("genre") or "",
+                             json.dumps(src_ids), json.dumps(sorted(fingerprint.fingerprint(nota)) if nota else []),
+                             json.dumps({**info, "seeded": True}), json.dumps(entry), t, pkg))
+            write_index(con)
+        return [e["id"] for e in new]
+    finally:
+        con.close()
+
+
+# ------------------------------------------------------------------------------ re-analysis after a map change (§6.10)
+
+WATCH = ("requiredSkills", "beyondMap")          # what decides when a song unlocks
+
+
+def map_hash(c: content_mod.Content) -> str:
+    """The deployed skill map as song analysis sees it: a new hash means the songs need analysing again."""
+    skills = sorted(({**d, "pieces": c.skills[d["id"]].pieces} for d in c.skill_dicts(set(c.skills))), key=lambda s: s["id"])
+    return hashlib.sha256(json.dumps(skills, sort_keys=True).encode()).hexdigest()[:12]
+
+
+def reanalyse(con, c: content_mod.Content, force: bool = False) -> dict | None:
+    """Analyse every approved library song again when the deployed skill map has changed since the
+    library was last analysed (§6.10), so each song unlocks by the map it is offered on. Records
+    the songs whose required skills or beyond-the-map parts changed. Returns that record, or None
+    when the map is the one the library was analysed against."""
+    h = map_hash(c)
+    last = con.execute("SELECT map_hash FROM library_analysis WHERE id = 1").fetchone()
+    if last and last["map_hash"] == h and not force:
+        return None
+    changes, songs = [], 0
+    with db.transaction(con):
+        for r in con.execute("SELECT piece_id, title, entry FROM library ORDER BY piece_id").fetchall():
+            f = folder("library", r["piece_id"], "piece.json")
+            if not f.exists():
+                continue
+            piece = json.loads(f.read_text())
+            if not piece.get("notation"):
+                continue
+            an = analyse(c, r["piece_id"], piece["notation"])
+            entry = loads(r["entry"], {})
+            before = {k: entry.get(k) or [] for k in WATCH}
+            apply_analysis(piece, an)
+            apply_analysis(entry, an)
+            # songs approved before v0.27 have no version in their entry: the version of their notes
+            piece["contentVersion"] = entry["contentVersion"] = content_mod.song_version(piece["notation"])
+            after = {k: entry.get(k) or [] for k in WATCH}
+            if before != after:
+                changes.append({"pieceId": r["piece_id"], "title": r["title"], "before": before, "after": after})
+            tmp = f.with_suffix(".tmp")
+            tmp.write_text(json.dumps(piece))
+            tmp.replace(f)
+            con.execute("UPDATE library SET entry = ? WHERE piece_id = ?", (json.dumps(entry), r["piece_id"]))
+            songs += 1
+        t = now()
+        con.execute("INSERT OR REPLACE INTO library_analysis (id, map_hash, content_version, analysed_at, songs, changes) "
+                    "VALUES (1, ?, ?, ?, ?, ?)", (h, content_mod.deployed_version(), t, songs, json.dumps(changes)))
+        write_index(con)
+    return {"mapHash": h, "analysedAt": t, "songs": songs, "changes": changes}
+
+
+def reanalyse_if_needed() -> dict | None:
+    """At the API's start: a deploy that changed the skill map re-analyses the library."""
+    c = content_mod.load()
+    if c is None:
+        return None
+    con = db.connect()
+    try:
+        return reanalyse(con, c)
+    finally:
+        con.close()
+
+
+@router.get("/api/library/analysis", dependencies=[Depends(require_parent)])
+def library_analysis():
+    """When the library was last analysed, against which map, and the songs whose analysis changed
+    then (Config > Content and analysis)."""
+    c = need_content()
+    con = db.connect()
+    try:
+        reanalyse(con, c)
+        r = con.execute("SELECT * FROM library_analysis WHERE id = 1").fetchone()
+        return {"mapHash": r["map_hash"], "contentVersion": r["content_version"], "analysedAt": r["analysed_at"],
+                "songs": r["songs"], "changes": loads(r["changes"], [])}
     finally:
         con.close()
 
@@ -759,13 +1016,18 @@ def rules_of(con, student_id: str) -> tuple[dict[str, bool], dict[str, bool]]:
     return genres, songs
 
 
-def allowed(genres: dict[str, bool], songs: dict[str, bool], genre: str | None, song: str) -> bool:
-    """A song rule overrides the genre rule; lesson pieces are always allowed; any other genre is
-    blocked until the parent allows it (§10.1)."""
+def allowed(genres: dict[str, bool], songs: dict[str, bool], genre: str | None, song: str, curriculum: bool = False) -> bool:
+    """A song rule overrides everything; the songs the map uses for practice are allowed; any genre
+    is blocked until the parent allows it (§10.1)."""
     if song in songs:
         return songs[song]
-    g = genre or ALWAYS
-    return True if g == ALWAYS else genres.get(g, False)
+    return curriculum or genres.get(genre or "", False)
+
+
+def curriculum_songs(c: content_mod.Content) -> set[str]:
+    """The songs (arrangements share one) the map uses: a song is in the curriculum when any of
+    its arrangements is a skill's practice song."""
+    return {c.songs.get(pid, pid) for pid in c.curriculum}
 
 
 def content_for(con, student_id: str | None, c: content_mod.Content) -> content_mod.Content:
@@ -773,7 +1035,8 @@ def content_for(con, student_id: str | None, c: content_mod.Content) -> content_
     if not student_id:
         return c
     genres, songs = rules_of(con, student_id)
-    return c.only(lambda pid: allowed(genres, songs, c.genres.get(pid), c.songs.get(pid, pid)))
+    cur = curriculum_songs(c)
+    return c.only(lambda pid: allowed(genres, songs, c.genres.get(pid), c.songs.get(pid, pid), c.songs.get(pid, pid) in cur))
 
 
 @router.get("/api/students/{student_id}/rules")
@@ -782,7 +1045,8 @@ def student_rules(student_id: str):
     con = db.connect()
     try:
         genres, songs = rules_of(con, student_id)
-        return {"always": ALWAYS, "genres": genres, "songs": songs}
+        c = content_mod.load()
+        return {"curriculum": sorted(curriculum_songs(c)) if c else [], "genres": genres, "songs": songs}
     finally:
         con.close()
 
@@ -794,18 +1058,16 @@ def all_rules():
     con = db.connect()
     try:
         songs: dict[str, dict] = {}
+        cur = curriculum_songs(c)
         for pid, p in c.pieces.items():
             s = c.songs.get(pid, pid)
-            g = c.genres.get(pid) or ALWAYS
-            songs.setdefault(s, {"song": s, "title": p.title, "genre": g, "pieces": []})["pieces"].append(pid)
-        lib = {r["song"] for r in con.execute("SELECT song FROM library")}
-        for s in songs.values():
-            s["library"] = s["song"] in lib
+            songs.setdefault(s, {"song": s, "title": p.title, "genre": c.genres.get(pid) or "", "pieces": [],
+                                 "curriculum": s in cur})["pieces"].append(pid)
         students = []
         for st in con.execute("SELECT id, name, avatar FROM students WHERE status = 'active' ORDER BY sort, created_at"):
             genres, srules = rules_of(con, st["id"])
             students.append({"id": st["id"], "name": st["name"], "avatar": st["avatar"], "genres": genres, "songs": srules})
-        return {"always": ALWAYS, "genres": sorted({s["genre"] for s in songs.values()}), "songs": sorted(songs.values(), key=lambda s: s["title"]),
+        return {"genres": sorted({s["genre"] for s in songs.values() if s["genre"]}), "songs": sorted(songs.values(), key=lambda s: s["title"]),
                 "students": students}
     finally:
         con.close()
@@ -817,8 +1079,6 @@ class RuleIn(BaseModel):
 
 @router.put("/api/students/{student_id}/rules/genres/{genre}", dependencies=[Depends(require_parent)])
 def set_genre_rule(student_id: str, genre: str, body: RuleIn):
-    if genre == ALWAYS:
-        raise HTTPException(422, "lesson pieces are always allowed")
     con = db.connect()
     try:
         if not con.execute("SELECT 1 FROM students WHERE id = ?", (student_id,)).fetchone():
