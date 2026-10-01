@@ -27,6 +27,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "client" / "dist"
+SONGS = ROOT / "build" / "songs"           # every song, built (tools/build_content.py); the library's seed here
 OUT = ROOT / "tests-output"
 
 FAKE_MIDI = """
@@ -102,7 +103,7 @@ def test_piece(pid, abc, hands):
     sys.path.insert(0, str(ROOT / "tools"))
     import notation as nt
     nota, _ = nt.build_notation(nt.parse_abc(abc), phrase_bars=2)
-    return {"id": pid, "title": pid, "kind": "core", "hands": hands, "notation": nt.jsonable(nota), "media": None}
+    return {"id": pid, "title": pid, "kind": "song", "hands": hands, "notation": nt.jsonable(nota), "media": None}
 
 
 def wait_api(page, js: str, timeout: float = 15000) -> None:
@@ -121,7 +122,7 @@ def plant_rushed_quarters() -> str:
     no eighth notes, so the quarter notes are the rushed figure."""
     import sqlite3
     from datetime import date, datetime, timedelta
-    notes = json.loads((DIST / "content" / "pieces" / "hot-cross-buns.json").read_text())["notation"]["notes"]
+    notes = json.loads((SONGS / "hot-cross-buns.json").read_text())["notation"]["notes"]
     res = [[i, -140 if n["duration"] == 1 else 0] for i, n in enumerate(notes)]
     con = sqlite3.connect(os.environ["PIANO_DB"])
     sid, now = str(uuid.uuid4()), datetime.now().astimezone()
@@ -142,9 +143,16 @@ def plant_rushed_quarters() -> str:
 
 
 def serve():
-    """The App API plus the built client at /, on a free local port, with a throwaway database."""
-    os.environ["PIANO_DB"] = str(Path(tempfile.mkdtemp()) / "piano.db")
-    os.environ["PIANO_CONTENT"] = str(DIST / "content")        # the lesson engine plans from the built content
+    """The App API plus the built client at /, on a free local port, with a throwaway database. The
+    API plans from the built skill map, and its library starts with every built song, as a deploy's
+    seed brings them in (v0.27)."""
+    tmp = Path(tempfile.mkdtemp())
+    os.environ["PIANO_DB"] = str(tmp / "piano.db")
+    content = tmp / "content"
+    content.mkdir()
+    (content / "skillmap.json").write_text((DIST / "content" / "skillmap.json").read_text())
+    (content / "seed").symlink_to(SONGS)
+    os.environ["PIANO_CONTENT"] = str(content)
     sys.path.insert(0, str(ROOT / "api"))
     from starlette.staticfiles import StaticFiles
     from app.main import app
@@ -240,6 +248,74 @@ def main():
         page.wait_for_selector(".song")
         card = page.locator(".song", has_text="Scale Song")
         check(card.count() == 1 and card.locator(".new").count() == 1, "review list: the approved song is in Songs, marked New")
+        # updating a live song (v0.27): Needs improvement in the Play screen's gear pop-up; the fix comes back
+        # as an update with what changed; approving it replaces the song in place
+        page.goto(url + "#/play/check-scale-song")
+        page.wait_for_function("window.__pm && window.__pm.layout && window.__pm.player.piece.id === 'check-scale-song'")
+        page.get_by_role("button", name="Song and settings").click()
+        page.wait_for_selector("#improve-note")
+        check(page.locator("#improve-note").input_value() == "", "update: no bar in the note before the song has moved")
+        page.locator("#improve-note").fill("Bar 2: end on G, not C.")
+        page.locator(".sheet").get_by_role("button", name="Needs improvement").click()
+        page.wait_for_selector("text=The children keep this version until you approve the fix")
+        page.screenshot(path=str(OUT / "update-asked.png"))
+        # finger numbers and letter names, switched for this song for every child (v0.29)
+        sheet = page.locator(".sheet")
+        check(not sheet.get_by_label("Finger numbers").is_checked() and not sheet.get_by_label("Letter names").is_checked(),
+              "helpers: a Level 1 song starts with finger numbers and letter names off")
+        sheet.get_by_label("Letter names").check()
+        page.wait_for_selector(".helpers >> text=Saved.")
+        sheet.get_by_label("Finger numbers").check()
+        page.wait_for_timeout(400)
+        letters_now = page.locator(".note-letter").count()
+        with urllib.request.urlopen(url + "api/library/pieces/check-scale-song") as r:
+            shown = json.loads(r.read())["display"]
+        check(letters_now > 0 and shown == {"fingers": True, "letters": True},
+              f"helpers: the switches redraw the staff and are saved for the song ({letters_now} letters, {shown})")
+        # a tap outside the gear pop-up closes it and does nothing else
+        page.mouse.click(6, page.viewport_size["height"] // 2)
+        page.wait_for_timeout(200)
+        check(page.locator(".sheet").count() == 0 and page.evaluate("__pm.player.position.display") <= 0,
+              "gear pop-up: a tap outside closes it, and the song doesn't start")
+        page.goto(url + "#/library")
+        page.wait_for_selector(".song")
+        page.goto(url + "#/play/check-scale-song")
+        page.wait_for_function("window.__pm && window.__pm.layout && window.__pm.player.piece.id === 'check-scale-song'")
+        check(page.locator(".note-letter").count() == letters_now, "helpers: the song keeps them when it opens again")
+        # a song played only on black keys: letter names start off; switched on, the black keys are named
+        page.goto(url + "#/play/canyon-echo")
+        page.wait_for_function("window.__pm && window.__pm.layout && window.__pm.player.piece.id === 'canyon-echo'")
+        page.get_by_role("button", name="Song and settings").click()
+        sheet = page.locator(".sheet")
+        off = not sheet.get_by_label("Letter names").is_checked() and page.locator(".note-letter").count() == 0
+        sheet.get_by_label("Letter names").check()
+        page.wait_for_selector(".helpers >> text=Saved.")
+        names = sorted(set(page.evaluate("[...document.querySelectorAll('.note-letter')].map((e) => e.textContent)")))
+        check(off and names == ["C♯", "D♯"], f"helpers: a black-key song starts without letters; switched on, it shows {names}")
+        page.screenshot(path=str(OUT / "black-key-letters.png"))
+        page.mouse.click(6, page.viewport_size["height"] // 2)
+        fb = {f["pieceId"]: f for f in call("GET", "api/skill/feedback")["feedback"]}
+        check(fb.get("check-scale-song", {}).get("live") is True, f"update: the request reaches the skills as a live song ({list(fb)})")
+        fixed = json.loads(json.dumps(nota))
+        for n, q in zip(fixed["notes"][4:8], [67, 69, 71, 67]):
+            n["pitch"] = q
+            n["spelled"] = {"step": "CDEFGAB"[[0, 2, 4, 5, 7, 9, 11].index(q % 12)], "alter": 0, "octave": q // 12 - 1}
+        pkg = call("POST", "api/skill/packages", {"name": "fix", "items": [song("check-scale-song", "Scale Song", fixed)]})
+        staged = call("POST", f"api/skill/packages/{pkg['id']}/submit")
+        check(pkg["items"][0]["accepted"] and staged["staged"] == 1, f"update: intake takes the fix under the same id ({pkg['items'][0]['errors']})")
+        page.goto(url + "#/config/review")
+        page.wait_for_selector("text=Update to a live song")
+        up = page.locator(".item", has_text="Update to a live song")
+        check(up.get_by_text("Changes from the live song: notes in bar 2").count() == 1 and up.get_by_text("end on G").count() == 1,
+              "update: the review list shows what changed beside the note")
+        check(up.get_by_role("button", name="Never allow").count() == 0 and up.get_by_role("button", name="Discard update").count() == 1,
+              "update: an update can be discarded, never deleted from here")
+        page.screenshot(path=str(OUT / "update-review.png"))
+        up.get_by_role("button", name="Approve update").click()
+        page.wait_for_selector("text=is updated")
+        with urllib.request.urlopen(url + "api/library/pieces/check-scale-song") as r:
+            now_pitches = [n["pitch"] for n in json.loads(r.read())["notation"]["notes"][4:8]]
+        check(now_pitches == [67, 69, 71, 67], f"update: approving it replaces the live song ({now_pitches})")
         # deleting it from the library moves it to the review list's Deleted songs, from where it can come back
         tab("Config").click()
         tile("Songs and genres").click()
@@ -382,8 +458,10 @@ def main():
         check(sorted(pts.values()) == [1] * 5 and any(k.endswith("/echo") for k in pts),
               f"lesson: the echo card and the Check questions each earn a point, right first time ({pts})")
         page.wait_for_selector(".path .bubble.done")
-        index = json.loads((DIST / "content" / "index.json").read_text())["pieces"]
-        firsts = {p["id"]: p["title"] for p in index if p.get("skillId") == "prep-a.sitting" and p["kind"] == "core"}
+        index = json.loads((SONGS / "index.json").read_text())["pieces"]
+        skillmap = json.loads((DIST / "content" / "skillmap.json").read_text())["skills"]
+        sitting = next(s for s in skillmap if s["id"] == "prep-a.sitting")["pieces"]
+        firsts = {p["id"]: p["title"] for p in index if p["id"] in sitting}
         up = page.locator(".upnext").inner_text()
         check(any(t in up for t in firsts.values()), f"practice: after the lesson (played on the piano), one of its songs is up next ({up[:60]!r})")
 
@@ -417,17 +495,20 @@ def main():
               f"journey: the first skill passed, its two branches ready to learn, the rest locked ({states})")
         check(page.locator(".map .unit", has_text="Unit 9").count() == 2, "journey: each bubble shows its unit")
         page.screenshot(path=str(OUT / "nav-journey.png"))
+        check(page.locator(".bulb").count() == 0, "journey: one bubble per skill, no separate lightbulb (v0.29)")
         page.locator(".bubble.locked").first.click()
         check(page.get_by_text("Unlocks after:").count() == 1, "journey: a locked bubble says what it needs")
-        page.get_by_role("button", name="Close").click()
+        page.locator(".map .name").first.click()
+        check(page.locator(".sheet").count() == 0, "journey: a tap outside the pop-up closes it")
 
         tab("Songs").click()
         page.wait_for_selector(".song")
         opened = page.locator(".song .card:not([disabled])").count()
-        # a child sees lesson pieces, and other genres only once the parent allows them (M7, arch §10.1);
-        # songs with no skill yet need nothing, so they're open too
-        pieces = json.loads((DIST / "content" / "index.json").read_text())["pieces"]
-        mine = [p for p in pieces if (p.get("genre") or "lesson-pieces") == "lesson-pieces"]
+        # a child sees the map's practice songs, and other genres only once the parent allows them
+        # (M7, arch §10.1; v0.27); songs with no skill yet need nothing, so they're open too
+        pieces = json.loads((SONGS / "index.json").read_text())["pieces"]
+        practice = {x for s in json.loads((DIST / "content" / "skillmap.json").read_text())["skills"] for x in s["pieces"]}
+        mine = [p for p in pieces if p["id"] in practice]
         free = sum(1 for p in mine if not p.get("skillId"))
         songs = len({p.get("song") or p["id"] for p in mine})      # arrangements of one song share a row
         check(page.locator(".song").count() == songs and opened == len(firsts) + free,
@@ -436,12 +517,31 @@ def main():
         page.get_by_role("button", name="♥ Favorites").click()
         check(page.locator(".song").count() == 1, "songs: a favorite shows under Favorites")
         page.get_by_role("button", name="All songs").click()
+        soon = page.locator(".soon", has_text="Coming soon").all_inner_texts()
+        check(soon and all(t.startswith("Coming soon · unlocks with ") and ", then " not in t for t in soon),
+              f"songs: a locked song names the one skill that unlocks it ({soon[:2]})")
         page.screenshot(path=str(OUT / "nav-songs.png"))
         page.locator(".song .card:not([disabled])").first.click()
         page.wait_for_function("window.__pm && window.__pm.layout")
         page.get_by_role("button", name="‹ Back").click()
         page.wait_for_selector(".song")
         check(page.url.endswith("#/library"), "play: ‹ Back returns to the song library")
+        # back in the same state: the library scrolled where it was
+        page.evaluate("document.querySelector('main.body').scrollTop = 600")
+        page.wait_for_timeout(200)
+        page.evaluate("[...document.querySelectorAll('.song .card:not([disabled])')].pop().click()")   # without scrolling to it
+        page.wait_for_function("window.__pm && window.__pm.layout")
+        page.get_by_role("button", name="‹ Back").click()
+        page.wait_for_selector(".song")
+        page.wait_for_timeout(500)
+        top = page.evaluate("document.querySelector('main.body').scrollTop")
+        check(abs(top - 600) <= 2, f"play: ‹ Back returns to the song library scrolled where it was ({top})")
+        tab("Journey").click()
+        page.wait_for_selector(".map .bubble")
+        tab("Songs").click()
+        page.wait_for_selector(".song")
+        page.wait_for_timeout(300)
+        check(page.evaluate("document.querySelector('main.body').scrollTop") == 0, "the tab bar opens a screen fresh")
 
         tab("My Progress").click()
         page.wait_for_selector(".counts")
@@ -543,7 +643,7 @@ def main():
         page.get_by_role("button", name="‹ Config").click()
         tile("Work requests").click()
         page.wait_for_selector(".placeholder")
-        check(page.get_by_text("coming in M7").count() == 1, "config: placeholder pages say when they come")
+        check(page.get_by_text("coming in a later version").count() == 1, "config: placeholder pages say when they come (a potential feature)")
         page.get_by_role("button", name="‹ Config").click()
         tile("Review list").click()
         page.wait_for_selector("text=Waiting for you")
@@ -574,6 +674,18 @@ def main():
         want = next(s for s in built if s["id"] == "prep-a.quarter-rest").get("bookRefs") or []
         check((f"{want[0]['book']} p.{want[0]['pages']}" in refs) if want else refs == "",
               f"journey: parent mode shows the skill's own book pages, if any ({refs!r})")
+        # back from a song: the map scrolled where it was, with the same pop-up open
+        page.evaluate("document.querySelector('.map-body').scrollLeft = 500")
+        page.wait_for_timeout(200)
+        left = page.evaluate("document.querySelector('.map-body').scrollLeft")
+        page.evaluate("document.querySelectorAll('.sheet .card')[1].click()")
+        page.wait_for_function("window.__pm && window.__pm.layout")
+        page.get_by_role("button", name="‹ Back").click()
+        page.wait_for_selector(".sheet")
+        page.wait_for_timeout(500)
+        back = (page.locator(".sheet h2").inner_text(), page.evaluate("document.querySelector('.map-body').scrollLeft"))
+        check(back[0] == "The quarter rest" and left > 0 and abs(back[1] - left) <= 2,
+              f"play: ‹ Back returns to the Journey as it was left ({back}, scrolled {left})")
         page.get_by_role("button", name="Close").click()
         # the 3/4 lesson's identify questions: tap an answer, after listening to a phrase
         page.goto(url + "#/lesson/prep-a.three-four")
@@ -627,7 +739,7 @@ def main():
         check(page.get_by_text("Test Piano").count() > 0, "picker: the real piano is chosen, virtual ports skipped")
         navigation(page)
 
-        index = json.loads((DIST / "content" / "index.json").read_text())
+        index = json.loads((SONGS / "index.json").read_text())
         for piece in index["pieces"]:
             open_piece(page, piece["id"])
             lay = page.evaluate("({p: __pm.layout.problems, w: __pm.layout.width, h: __pm.layout.height, ms: __pm.layout.renderMs, "
@@ -640,7 +752,7 @@ def main():
         # 2b. notation features on a test-only piece, and the idle view of a dense first bar
         for pid, abc, hands in (("test-notation", NOTATION_ABC, "RL"), ("test-wide", WIDE_ABC, "R")):
             body = test_piece(pid, abc, hands)
-            page.route(f"**/content/pieces/{pid}.json", lambda route, _request=None, b=body: route.fulfill(json=b))
+            page.route(f"**/api/library/pieces/{pid}", lambda route, _request=None, b=body: route.fulfill(json=b))
         open_piece(page, "test-notation")
         lay = page.evaluate("""() => ({ p: __pm.layout.problems, els: __pm.layout.noteEls.filter(Boolean).length, n: __pm.tl.notes.length,
             beats: __pm.tl.notes.filter(n => n.staff === 0).slice(0, 3).map(n => +n.beat.toFixed(3)),
@@ -655,6 +767,32 @@ def main():
         open_piece(page, "test-wide")
         first = page.evaluate("() => { const r = __pm.layout.noteEls[0].getBoundingClientRect(), s = document.querySelector('.stage').getBoundingClientRect(); return [r.left, s.right]; }")
         check(first[0] < first[1] - 100, f"dense first bar: bar 1 is on screen before Play (first note at {first[0]:.0f}, stage ends {first[1]:.0f})")
+
+        # letter names (pre-staff pieces): under the note heads, never on them, and the heads the usual size
+        head_px = "() => Math.max(...__pm.layout.noteEls.filter(Boolean).map((e) => e.getBoundingClientRect().height))"
+        open_piece(page, "twinkle-twinkle")
+        plain = page.evaluate(head_px)
+        open_piece(page, "musical-alphabet")
+        lt = page.evaluate("""() => {
+            const heads = __pm.layout.noteEls.filter(Boolean).map((e) => e.getBoundingClientRect());
+            const ls = [...document.querySelectorAll('.note-letter')].map((e) => e.getBoundingClientRect());
+            const hit = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+            return { n: ls.length, on: ls.filter((l) => heads.some((h) => hit(l, h))).length,
+                     h: Math.max(...heads.map((h) => h.height)) }; }""")
+        page.screenshot(path=str(OUT / "letters.png"))
+        check(lt["n"] >= 20 and lt["on"] == 0 and abs(lt["h"] - plain) < 1,
+              f"letter names: under the note heads, none on a head, heads the usual size ({lt['n']} letters, {lt['on']} on a head, "
+              f"head {lt['h']:.1f}px, {plain:.1f}px without letters)")
+
+        # the metronome: one choice for every song (v0.29)
+        metro = lambda: "off" not in (page.get_by_role("button", name="Metro").get_attribute("class") or "")
+        on = metro()
+        page.get_by_role("button", name="Metro").click()
+        open_piece(page, "musical-alphabet")
+        check(metro() is not on, "metronome: turned off on one song, it stays off on the next")
+        page.get_by_role("button", name="Metro").click()
+        open_piece(page, "twinkle-twinkle")
+        check(metro() is on, "metronome: turned back on, it's on for every song")
 
         # 3. Twinkle played cleanly at 100%: no rewinds, every note matched
         open_piece(page, "twinkle-twinkle")

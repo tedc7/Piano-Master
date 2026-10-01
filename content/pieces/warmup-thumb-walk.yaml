@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.middle-c-position). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.middle-c-position). Warm-up in our own music.
 # A 1-2-3-2-1 pattern, the left thumb walking down one key each time.
 title: "Warm-up: Thumb Walk"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: L
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-thumb-walk.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

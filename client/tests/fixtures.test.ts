@@ -8,7 +8,7 @@ import { buildTimeline, type Timeline } from "../src/lib/timeline";
 import type { Notation, Note, Piece, Preset } from "../src/lib/types";
 
 const HERE = import.meta.dirname;
-const CONTENT = join(HERE, "..", "public", "content", "pieces");
+const CONTENT = join(HERE, "..", "..", "build", "songs");      // every song, built (tools/build_content.py)
 
 interface Generated {
   offsetMs?: number;
@@ -58,7 +58,7 @@ function chordPiece(c: NonNullable<Fixture["chords"]>): Piece {
     measures, notes, lyrics: [], chordSymbols: [],
     playbackOrder: measures.map((_, i) => ({ measure: i, verse: 1 })), phrases: [0], length,
   };
-  return { id: "chords", title: "chords", kind: "core", level: c.level, hands: "R", notation, media: null };
+  return { id: "chords", title: "chords", kind: "song", level: c.level, hands: "R", notation, media: null };
 }
 
 function loadPiece(f: Fixture): Piece {

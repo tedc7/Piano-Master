@@ -18,7 +18,7 @@ SKILLS = [
 
 
 def piece(pid, skill, title=None):
-    return {"id": pid, "title": title or pid, "kind": "core", "hands": "R", "skillId": skill, "tempo": 100, "timeSig": "4/4",
+    return {"id": pid, "title": title or pid, "kind": "song", "genre": "studies", "hands": "R", "skillId": skill, "tempo": 100, "timeSig": "4/4",
             "measures": 8, "beats": 32, "phrases": 4, "requiredSkills": [skill] if skill else [],
             "featuredSkills": [skill] if skill else [], "hasMedia": False}
 
@@ -28,9 +28,11 @@ PIECES = [piece("pa1", "t.a"), piece("pa2", "t.a"), piece("pb1", "t.b"), piece("
 
 
 def write_content(d, skills=SKILLS, pieces=PIECES, version="test1"):
-    d.mkdir(parents=True, exist_ok=True)
+    """The deployed skill map, and the songs as a seed the API adopts into the library when it starts
+    (v0.27: every song is in the library)."""
+    (d / "seed").mkdir(parents=True, exist_ok=True)
     (d / "skillmap.json").write_text(json.dumps({"contentVersion": version, "skills": skills}))
-    (d / "index.json").write_text(json.dumps({"contentVersion": version, "pieces": pieces}))
+    (d / "seed" / "index.json").write_text(json.dumps({"pieces": pieces}))
 
 
 @pytest.fixture()

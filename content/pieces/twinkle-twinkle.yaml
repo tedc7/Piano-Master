@@ -1,10 +1,15 @@
-# Core piece (Prep A, prep-a.skips). Words Jane Taylor (1806), traditional tune; public domain. Our own arrangement in Middle C position, the tune shared between the hands (in G, with no F sharp). The M1 test song (arch §12).
+# Curriculum song (Prep A, prep-a.skips). Words Jane Taylor (1806), traditional tune; public domain. Our own arrangement in Middle C position, the tune shared between the hands (in G, with no F sharp). The M1 test song (arch §12).
 title: "Twinkle Twinkle Little Star"
 composer: Traditional
-kind: core
-genre: lesson-pieces
+genre: kids
 level: Prep A
 hands: RL
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/twinkle-twinkle.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
 phraseBars: 2
 abc: |
   X:1

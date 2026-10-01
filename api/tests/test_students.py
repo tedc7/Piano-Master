@@ -98,11 +98,14 @@ def test_song_choices_are_remembered_per_student(client, parent):
     b = client.post("/api/students", json={"name": "Ben", "avatar": "🐢"}, headers=parent).json()["id"]
     client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pa1", "vocalsOff": True, "preset": "75"})
     s = client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pa1", "click": False}).json()["settings"]
-    assert s["vocalsOff"] == ["pa1"] and s["presets"] == {"pa1": "75"} and s["click"] == {"pa1": False}
+    assert s["vocalsOff"] == ["pa1"] and s["presets"] == {"pa1": "75"} and s["metronome"] is False
+    # the metronome is one choice for every song (v0.29)
+    s = client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pb2", "click": True}).json()["settings"]
+    assert s["metronome"] is True and "click" not in s
     other = next(x for x in client.get("/api/students").json()["students"] if x["id"] == b)
-    assert other["settings"]["vocalsOff"] == [] and other["settings"]["presets"] == {}
+    assert other["settings"]["vocalsOff"] == [] and other["settings"]["presets"] == {} and other["settings"]["metronome"] is None
     s = client.patch(f"/api/students/{a}", json={"settings": {"resetSongChoices": True}}, headers=parent).json()["settings"]
-    assert s["vocalsOff"] == [] and s["presets"] == {} and s["click"] == {}
+    assert s["vocalsOff"] == [] and s["presets"] == {} and s["metronome"] is None
     assert client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pa1", "preset": "60"}).status_code == 422
 
 

@@ -1,10 +1,15 @@
-# Core piece (Prep A, prep-a.skips). Words Sarah Josepha Hale (1830), traditional tune; public domain.
+# Curriculum song (Prep A, prep-a.skips). Words Sarah Josepha Hale (1830), traditional tune; public domain.
 title: Mary Had a Little Lamb
 composer: Traditional
-kind: core
-genre: lesson-pieces
+genre: kids
 level: Prep A
 hands: R
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/mary-had-a-little-lamb.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
 phraseBars: 2
 abc: |
   X:1

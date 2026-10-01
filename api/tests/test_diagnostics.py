@@ -4,7 +4,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from app import db, diagnostics, drills, engine
+from app import db, diagnostics, drills, engine, library
 from app.content import Content
 
 D0 = date(2026, 10, 5)
@@ -27,11 +27,12 @@ TUNE_NOTA = drills.notation({"R": TUNE})
 DUET = drills.notation({"R": melody([("C4", 1, 1), ("D4", 1, 2), ("E4", 2, 3)] * 2),
                         "L": melody([("C3", 2, 5), ("G3", 2, 1)] * 2, "L")})
 
-SKILLS = [{"id": "s.r", "name": "R", "sequence": 10, "track": "reading", "prerequisites": [],
+# the tune and the duet are practice songs, so every child may play them (v0.27: the curriculum)
+SKILLS = [{"id": "s.r", "name": "R", "sequence": 10, "track": "reading", "prerequisites": [], "pieces": ["tune"],
            "constraints": {"hands": ["R"], "range": {"R": ["C4", "B4"]}, "durations": [0.5, 1, 2, 4], "timeSigs": ["4/4"], "keySigs": [0]}},
           {"id": "s.l", "name": "L", "sequence": 20, "track": "reading", "prerequisites": ["s.r"],
            "constraints": {"hands": ["L"], "range": {"L": ["C3", "G3"]}, "durations": [1, 2, 4], "timeSigs": ["4/4"], "keySigs": [0]}},
-          {"id": "s.t", "name": "T", "sequence": 30, "track": "reading", "prerequisites": ["s.l"],
+          {"id": "s.t", "name": "T", "sequence": 30, "track": "reading", "prerequisites": ["s.l"], "pieces": ["duet"],
            "constraints": {"hands": ["R", "L"], "handsTogether": True, "range": {"R": ["C4", "B4"], "L": ["C3", "G3"]},
                            "durations": [1, 2, 4], "timeSigs": ["4/4"], "keySigs": [0]}}]
 PIECES = [{"id": "tune", "title": "Tune", "skillId": "s.r", "hands": "R", "tempo": 90, "timeSig": "4/4", "beats": TUNE_NOTA["length"],
@@ -214,8 +215,8 @@ def test_the_api_stores_note_results_and_serves_the_remedy_drill(client, parent,
     folder = Path(os.environ["PIANO_CONTENT"])
     theory = {"id": "s.th", "name": "Th", "sequence": 40, "track": "theory", "prerequisites": []}
     write_content(folder, SKILLS + [theory], PIECES, version="t2")
-    (folder / "pieces").mkdir(exist_ok=True)
-    (folder / "pieces" / "tune.json").write_text(json.dumps({"id": "tune", "notation": TUNE_NOTA}))
+    library.adopt_seed()                                   # these songs into the library, as a deploy's seed
+    (tmp_path / "library" / "tune" / "piece.json").write_text(json.dumps({"id": "tune", "title": "tune", "notation": TUNE_NOTA}))
     sid = client.post("/api/students", json={"name": "Ada", "avatar": "🦊"}, headers=parent).json()["id"]
     # yesterday and the day before: F4 played as G4
     f4 = [i for i, n in enumerate(TUNE_NOTA["notes"]) if n["pitch"] == 65]

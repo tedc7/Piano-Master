@@ -4,11 +4,13 @@
   import { onMount } from "svelte";
   import { app } from "../../lib/app.svelte.js";
   import { handsLabel, loadContent, type Content } from "../../lib/content";
+  import { keepView } from "../../lib/keep";
   import { go } from "../../lib/route";
   import type { PieceSummary, Skill } from "../../lib/types";
 
   let content = $state<Content | null>(null);
   let error = $state("");
+  keepView("config/content", () => document.querySelector<HTMLElement>("main.body"));   // back from a song: where it was
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the content (${(e as Error).message}).`; }

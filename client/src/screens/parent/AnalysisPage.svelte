@@ -1,9 +1,12 @@
 <script lang="ts">
-  // Parent > Content and analysis (arch §6.8, §6.10): the coverage report (each skill's core
-  // pieces and library songs; the content build needs at least 2 core practice pieces per skill) and every piece's song analysis: required and featured skills,
+  // Parent > Content and analysis (arch §6.8, §6.10): the coverage report (each skill's practice
+  // songs, at least 2, and the other songs featuring it) and every song's analysis: required and featured skills,
   // map point, and anything beyond the map. The analysis runs in every content build, so each
-  // deploy is analysed against the skill map it ships with.
+  // deploy is analysed against the skill map it ships with; library songs are analysed on the
+  // piano server, and again when a deploy changes the map (the list of songs that changed).
   import { onMount } from "svelte";
+  import { api } from "../../lib/api";
+  import { app } from "../../lib/app.svelte.js";
   import { loadContent, type Content } from "../../lib/content";
   import type { PieceSummary } from "../../lib/types";
 
@@ -11,14 +14,22 @@
   let error = $state("");
   let show = $state<"all" | "beyond">("all");
 
+  interface Unlock { requiredSkills: string[]; beyondMap: string[] }
+  interface ReAnalysis { analysedAt: string; songs: number; changes: { pieceId: string; title: string; before: Unlock; after: Unlock }[] }
+  let re = $state<ReAnalysis | null>(null);
+
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the content (${(e as Error).message}).`; }
+    try { re = await api.request<ReAnalysis>("/library/analysis"); } catch (e) { app.parentRefused(e); }
   });
+  const unlock = (u: Unlock) => (u.beyondMap.length ? `Beyond the map: ${u.beyondMap.join(", ")}` : u.requiredSkills.map(skillName).join(", ") || "–");
 
   const skills = $derived(content ? [...content.map.skills].sort((a, b) => a.sequence - b.sequence) : []);
   const skillName = (id: string) => content?.map.skills.find((s) => s.id === id)?.name ?? id;
   const atPoint = (p: PieceSummary) => content?.map.skills.find((s) => s.sequence === p.mapPoint)?.name ?? "–";
-  const featuring = (id: string, kind: string) => (content?.pieces ?? []).filter((p) => p.featuredSkills?.includes(id) && (p.kind ?? "core") === kind);
+  // the other songs that feature a skill: what the engine also uses for its review and practice
+  const others = (s: { id: string; pieces?: string[] }) =>
+    (content?.pieces ?? []).filter((p) => p.featuredSkills?.includes(s.id) && !(s.pieces ?? []).includes(p.id));
   const pieces = $derived((content?.pieces ?? [])
     .filter((p) => show === "all" || p.beyondMap?.length)
     .sort((a, b) => (a.mapPoint ?? 1e9) - (b.mapPoint ?? 1e9) || a.title.localeCompare(b.title)));
@@ -32,21 +43,43 @@
 
   <section class="panel">
     <h2>Coverage</h2>
-    <p class="muted small">Every skill needs at least 2 core practice pieces, so each Current skill always has pieces to practise (§6.8).</p>
+    <p class="muted small">Every skill needs at least 2 practice songs in the library, so each Current skill always has songs to practise (§6.8).</p>
     <table>
-      <thead><tr><th>Skill</th><th>Core pieces</th><th>Library songs</th></tr></thead>
+      <thead><tr><th>Skill</th><th>Practice songs</th><th>Other songs featuring it</th></tr></thead>
       <tbody>
         {#each skills as s (s.id)}
-          {@const core = featuring(s.id, "core")}
-          {@const lib = featuring(s.id, "library")}
-          <tr class:short={core.length < 3}>
+          {@const core = (s.pieces ?? []).map((id) => content?.pieces.find((p) => p.id === id)).filter((p) => !!p)}
+          {@const lib = others(s)}
+          <tr class:short={core.length < 2}>
             <td><b>{s.sequence}</b> · {s.name}</td>
-            <td>{core.length}{core.length < 3 ? " — needs 3" : ""} <span class="muted">{core.map((p) => p.title).join(", ")}</span></td>
+            <td>{core.length}{core.length < 2 ? " — needs 2" : ""} <span class="muted">{core.map((p) => p!.title).join(", ")}</span></td>
             <td>{lib.length} <span class="muted">{lib.map((p) => p.title).join(", ")}</span></td>
           </tr>
         {/each}
       </tbody>
     </table>
+  </section>
+
+  <section class="panel">
+    <h2>Library songs after a map change</h2>
+    {#if re}
+      <p class="muted small">Library songs are analysed when they're approved, and again when a deploy changes the skill map
+        (last on {new Date(re.analysedAt).toLocaleDateString()}, {re.songs} song{re.songs === 1 ? "" : "s"}).</p>
+      {#if re.changes.length}
+        <table>
+          <thead><tr><th>Song</th><th>Before</th><th>Now</th></tr></thead>
+          <tbody>
+            {#each re.changes as ch (ch.pieceId)}
+              <tr><td><b>{ch.title}</b></td><td class="muted">{unlock(ch.before)}</td><td>{unlock(ch.after)}</td></tr>
+            {/each}
+          </tbody>
+        </table>
+      {:else}
+        <p>No library song's required skills changed.</p>
+      {/if}
+    {:else}
+      <p class="muted">Can't reach the piano server for the library's analysis.</p>
+    {/if}
   </section>
 
   <section class="panel">
@@ -61,7 +94,7 @@
       <tbody>
         {#each pieces as p (p.id)}
           <tr>
-            <td><b>{p.title}</b><br /><span class="muted small">{p.kind}{p.level ? ` · ${p.level}` : ""}{p.keyboardSize === 88 ? " · 88 keys" : ""}</span></td>
+            <td><b>{p.title}</b><br /><span class="muted small">{p.genre ?? ""}{p.level ? ` · ${p.level}` : ""}{p.keyboardSize === 88 ? " · 88 keys" : ""}</span></td>
             {#if p.beyondMap?.length}
               <td colspan="3" class="beyond">Beyond the map: {p.beyondMap.join(", ")}</td>
             {:else}

@@ -7,6 +7,7 @@ student functions need no login (§11.1); parent functions need a parent session
 from __future__ import annotations
 
 import html
+import logging
 import json
 import re
 from contextlib import asynccontextmanager
@@ -20,6 +21,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from . import content, db, library, parent, students
 
 VERSION = "0.5.0"
+log = logging.getLogger("piano.api")
 MAX_BODY = 4 * 1024 * 1024          # an attempt with every key press is well under this
 MAX_PACKAGE = 32 * 1024 * 1024      # a Skill API package: every piece's notation (its stems come one file at a time)
 LOG_DAYS = 90                       # client logs are kept for 90 days (§11.3)
@@ -33,6 +35,11 @@ schema_version = 0
 async def lifespan(_app: FastAPI):
     global schema_version
     schema_version = db.migrate()
+    try:
+        library.adopt_seed()                # songs a deploy brings in as approved (v0.27, once)
+        library.reanalyse_if_needed()       # a deploy that changed the skill map (§6.10)
+    except Exception:                       # never keep the API from starting; Content and analysis tries again
+        log.exception("adopting or re-analysing the library's songs failed")
     yield
 
 

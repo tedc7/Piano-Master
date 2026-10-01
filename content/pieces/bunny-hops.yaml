@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.hand-shift). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.hand-shift). Original music and words for this app.
 # The hand hops to a new place: the finger number on the first note there says which finger lands.
 title: "Bunny Hops"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: R
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bunny-hops.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

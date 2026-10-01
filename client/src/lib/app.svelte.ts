@@ -63,6 +63,8 @@ class AppState {
   stateError = $state("");
   /** Where the Play screen's Back button goes: the screen that opened the song. */
   returnTo = "session";
+  /** Set by Back: the screen it returns to puts back how it was left (lib/keep.ts). */
+  private returning: string | null = null;
   private lastTouch = 0;
   private lastPing = 0;
   private refreshTimer = 0;
@@ -206,6 +208,19 @@ class AppState {
     go(`play/${id}`);
   }
 
+  /** The Play screen's Back: to the screen that opened the song, as it was left. */
+  back(): void {
+    this.returning = this.returnTo;
+    go(this.returnTo);
+  }
+
+  /** Whether the screen at `key` is being returned to by Back (asked once, as it opens). */
+  takeReturn(key: string): boolean {
+    const yes = this.returning === key;
+    if (yes) this.returning = null;
+    return yes;
+  }
+
   // ------------------------------------------------------------------ the student's state
 
   private clearState(): void {
@@ -333,10 +348,11 @@ class AppState {
 
   // ------------------------------------------------------------------ settings
 
-  /** A per-song choice on the Play screen, remembered for this player (arch §3). */
+  /** A choice on the Play screen, remembered for this player (arch §3): vocals and the tempo preset
+   *  for this song; the metronome (`click`) for every song (v0.29). */
   setSongPref(pieceId: string, p: { vocalsOff?: boolean; click?: boolean; preset?: Preset }): void {
     if (p.vocalsOff !== undefined) this.prefs.vocalsOff = toggleIn(this.prefs.vocalsOff, pieceId, p.vocalsOff);
-    if (p.click !== undefined) this.prefs.click = { ...this.prefs.click, [pieceId]: p.click };
+    if (p.click !== undefined) this.prefs.metronome = p.click;
     if (p.preset !== undefined) this.prefs.presets = { ...this.prefs.presets, [pieceId]: p.preset };
     if (this.student) {
       this.student.settings = $state.snapshot(this.prefs) as StudentSettings;

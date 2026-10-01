@@ -1,6 +1,7 @@
 <script lang="ts">
   // Song library, for Free Play (arch §3 screen 7, §6.8, §10.1): library-ready songs can be
-  // played; songs further along the map show "Coming soon" with the skills still to reach, and
+  // played; songs further along the map show "Coming soon" with the skill that unlocks them (the
+  // last one still to reach, v0.29: the map leads there), and
   // songs that need more than the map covers yet show "Coming later". Grouped by the level of
   // their map point (song analysis), or their own level when beyond the map, with a favorites
   // heart (kept per student on the piano server). A song with several arrangements is one card,
@@ -11,6 +12,7 @@
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { allowed, handsLabel, loadContent, rulesFor, type Content, type Rules } from "../lib/content";
+  import { keepView } from "../lib/keep";
   import { libraryState } from "../lib/progress";
   import type { PieceSummary } from "../lib/types";
 
@@ -18,6 +20,8 @@
   let rules = $state<Rules | null>(null);        // the child's genre and song rules; the parent sees everything
   let error = $state("");
   let filter = $state<"all" | "favorites">("all");
+  let bodyEl = $state<HTMLElement>();
+  keepView<"all" | "favorites">("library", () => bodyEl, { get: () => filter, set: (v) => { filter = v; } });
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
@@ -62,7 +66,7 @@
     {#if content}<span class="muted">{openCount} of {rows.length} open</span>{/if}
   </Status>
 
-  <main class="body">
+  <main class="body" bind:this={bodyEl}>
     {#if error}<p class="notice error">{error}</p>{/if}
     <div class="filters">
       <button class="quiet" class:sel={filter === "all"} onclick={() => { filter = "all"; }}>All songs</button>
@@ -83,7 +87,7 @@
                 {#if !r.ready && r.easiest.beyond.length}
                   <span class="soon">Coming later{app.parentMode ? ` · beyond the map: ${r.easiest.beyond.join(", ")}` : ""}</span>
                 {:else if !r.ready}
-                  <span class="soon">Coming soon · learn {r.easiest.toReach.map((s) => s.name).join(", then ")}</span>
+                  <span class="soon">Coming soon · unlocks with {r.easiest.toReach[r.easiest.toReach.length - 1]?.name}</span>
                 {/if}
               </button>
               {#if r.vs.length > 1}

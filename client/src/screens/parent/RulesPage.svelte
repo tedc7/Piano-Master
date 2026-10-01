@@ -1,17 +1,17 @@
 <script lang="ts">
-  // Config > Songs and genres (arch §10.1): each child's genre rules (lesson pieces are always
-  // allowed; every other genre starts blocked, including genres and children added later), song
-  // rules that override the genre for one song, and deleting a library song, which moves it to the
-  // Review list's Deleted songs (the library holds only approved songs).
+  // Config > Songs and genres (arch §10.1): each child's genre rules (every genre starts blocked,
+  // including genres and children added later), song rules that override everything for one song,
+  // and deleting a song, which moves it to the Review list's Deleted songs (the library holds only
+  // approved songs). The songs the Journey map uses for practice are allowed unless a song rule
+  // blocks one (v0.27).
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
   import { reloadContent } from "../../lib/content";
 
-  interface Song { song: string; title: string; genre: string; pieces: string[]; library: boolean }
+  interface Song { song: string; title: string; genre: string; pieces: string[]; curriculum: boolean }
   interface Kid { id: string; name: string; avatar: string; genres: Record<string, boolean>; songs: Record<string, boolean> }
 
-  let always = $state("lesson-pieces");
   let genres = $state<string[]>([]);
   let songs = $state<Song[]>([]);
   let kids = $state<Kid[]>([]);
@@ -25,9 +25,8 @@
 
   async function load(): Promise<void> {
     try {
-      const r = await api.request<{ always: string; genres: string[]; songs: Song[]; students: Kid[] }>("/rules");
-      always = r.always;
-      genres = r.genres.filter((g) => g !== r.always);
+      const r = await api.request<{ genres: string[]; songs: Song[]; students: Kid[] }>("/rules");
+      genres = r.genres;
       songs = r.songs;
       kids = r.students;
       error = "";
@@ -58,7 +57,7 @@
     done = `${s.title} is out of the library. It's under Deleted songs in the Review list, where it can be sent back to review, improved or forgotten.`;
   }
   const label = (g: string) => g.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
-  const shown = $derived(songs.filter((s) => s.genre !== always && (!filter || s.title.toLowerCase().includes(filter.toLowerCase()))));
+  const shown = $derived(songs.filter((s) => !filter || s.title.toLowerCase().includes(filter.toLowerCase())));
 </script>
 
 {#if error}<p class="notice error">{error}</p>{/if}
@@ -66,13 +65,12 @@
 
 <section class="panel">
   <h2>Genres</h2>
-  <p class="muted">Lesson pieces are always allowed. Every other genre starts blocked for each child until you allow it,
-    including new genres and new children. A song rule below overrides its genre.</p>
+  <p class="muted">Every genre starts blocked for each child until you allow it, including new genres and new children.
+    The songs the Journey map uses for practice are always allowed. A song rule below overrides both.</p>
   {#if kids.length}
     <table>
       <thead><tr><th>Genre</th>{#each kids as k (k.id)}<th>{k.avatar} {k.name}</th>{/each}</tr></thead>
       <tbody>
-        <tr><td>{label(always)}</td>{#each kids as k (k.id)}<td class="muted">always</td>{/each}</tr>
         {#each genres as g (g)}
           <tr>
             <td>{label(g)}</td>
@@ -97,28 +95,27 @@
   </div>
   {#each shown as s (s.song)}
     <div class="song">
-      <div class="name"><b>{s.title}</b> <span class="muted">{label(s.genre)}{s.pieces.length > 1 ? ` · ${s.pieces.length} arrangements` : ""}</span></div>
+      <div class="name"><b>{s.title}</b> <span class="muted">{label(s.genre)}{s.pieces.length > 1 ? ` · ${s.pieces.length} arrangements` : ""}{s.curriculum ? " · practice song" : ""}</span></div>
       {#each kids as k (k.id)}
         <label class="rule">{k.avatar}
           <select value={songRule(k, s)} onchange={(e) => setSong(k, s, (e.currentTarget as HTMLSelectElement).value)}>
-            <option value="genre">By genre ({genreOn(k, s.genre) ? "allowed" : "blocked"})</option>
+            <option value="genre">{s.curriculum ? "Practice song (allowed)" : `By genre (${genreOn(k, s.genre) ? "allowed" : "blocked"})`}</option>
             <option value="allow">Allow</option>
             <option value="block">Block</option>
           </select>
         </label>
       {/each}
-      {#if s.library}
-        {#if confirm === s.song}
-          <input bind:value={reason} maxlength="200" placeholder="Why (optional)" aria-label="Reason" />
-          <button class="danger" onclick={() => remove(s)}>Delete (to the Review list's Deleted songs)</button>
-          <button class="quiet" onclick={() => { confirm = null; }}>Keep</button>
-        {:else}
-          <button class="quiet" onclick={() => { confirm = s.song; }}>Delete…</button>
-        {/if}
+      {#if confirm === s.song}
+        {#if s.curriculum}<span class="warn">A practice song on the Journey map: its skill keeps only its other practice songs.</span>{/if}
+        <input bind:value={reason} maxlength="200" placeholder="Why (optional)" aria-label="Reason" />
+        <button class="danger" onclick={() => remove(s)}>Delete (to the Review list's Deleted songs)</button>
+        <button class="quiet" onclick={() => { confirm = null; }}>Keep</button>
+      {:else}
+        <button class="quiet" onclick={() => { confirm = s.song; }}>Delete…</button>
       {/if}
     </div>
   {:else}
-    <p class="muted">No songs beyond the lesson pieces yet.</p>
+    <p class="muted">No songs in the library yet.</p>
   {/each}
 </section>
 
@@ -135,4 +132,5 @@
   .rule { display: flex; gap: 6px; align-items: center; }
   .rule select { font: inherit; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--line); background: #fff; }
   .danger { background: var(--wrong); color: #fff; }
+  .warn { flex-basis: 100%; color: #8a5a00; }
 </style>

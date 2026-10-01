@@ -1,0 +1,42 @@
+# Library song. "The Itsy Bitsy Spider", traditional (first printed in 1910, A. W. North, "Camp and
+# Camino in Lower California"); public domain. Retyped by us in the source's key, G major (the
+# melody uses no F sharp, so it stays in the G position with the low D pickup), 6/8, with chord
+# symbols; checked note for note against MakingMusicFun.net's lead sheet
+# (sources/itsy-bitsy-spider.pdf: free for instruction, not openly licensed, so checked only).
+# Changed: the last note is 5 eighths instead of the lead sheet's 5 plus a rest, so the pickup and
+# the last bar make one whole bar.
+# Media (M8): YuE2 vocal; FluidSynth backing from the chord symbols in the kids' style.
+title: The Itsy Bitsy Spider
+composer: Traditional
+kind: library
+genre: kids
+level: Level 2
+hands: R
+phraseBars: 4
+source:
+  site: MakingMusicFun.net (checked only)
+  url: https://www.makingmusicfun.net/htm/f_printit_free_printable_sheet_music/itsy_bitsy_spider_leadsheet
+  id: makingmusicfun-itsy-bitsy-spider-leadsheet
+  file: sources/itsy-bitsy-spider.pdf
+tempoSource: "Super Simple Songs' recording: 86 BPM, a dotted quarter a beat (tunebat.com); dotted quarter = 84"
+license:
+  composition: public-domain
+  edition: retyped from MakingMusicFun.net (free for instruction, not openly licensed), checked only
+  evidence: traditional; first printed 1910 (Wikipedia, "Itsy Bitsy Spider"); words public domain
+media:
+  vocal: yue2
+abc: |
+  X:1
+  T:The Itsy Bitsy Spider
+  M:6/8
+  L:1/8
+  Q:3/8=84
+  K:G
+  D | "G"G2 G G2 A | B3 B2 B | "D7"A2 G A2 B | "G"G6 |
+  w: The it-sy bit-sy spi-der went up the wa-ter spout.
+  B3 B2 c | d3 d3 | "D7"c2 B c2 d | "G"B6 |
+  w: Down came the rain and washed the spi-der out.
+  "G"G3 G2 A | B3 B3 | "D"A2 G A2 B | "G"G3 D2 D |
+  w: Out came the sun and dried up all the rain. And the
+  G2 G G2 A | B3 B2 B | "D7"A2 G A2 B | "G"G5 |]
+  w: it-sy bit-sy spi-der went up the spout a-gain.

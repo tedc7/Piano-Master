@@ -11,12 +11,15 @@
   import { app } from "../lib/app.svelte.js";
   import { loadContent, type Content } from "../lib/content";
   import type { SessionItem, SessionReason } from "../lib/progress";
+  import { keepView } from "../lib/keep";
   import { go } from "../lib/route";
 
   const STEP = 200, BUBBLE = 84, X0 = 30, Y0 = 30, WAVE = 56;
 
   let content = $state<Content | null>(null);
   let error = $state("");
+  let bodyEl = $state<HTMLElement>();
+  keepView("session", () => bodyEl);
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
@@ -70,7 +73,7 @@
     {#if app.day}<span>🔥 {app.day.streak} day{app.day.streak === 1 ? "" : "s"}</span>{/if}
   </Status>
 
-  <main class="body">
+  <main class="body" bind:this={bodyEl}>
     {#if app.needsFullScreen}
       <p class="notice">Turn on full screen in MIDIWeb Browser to hide the address bar.</p>
     {/if}

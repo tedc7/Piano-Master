@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.octave). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.octave). Warm-up in our own music.
 # Middle C to Bass C, 8 notes apart, with fingers 1 and 5: leap, don't stretch. Then skips in C position.
 title: "Warm-up: Octave Leap"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: L
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-octave-leap.yaml
+license:
+  composition: original
+  edition: original
 phraseBars: 2
 abc: |
   X:1

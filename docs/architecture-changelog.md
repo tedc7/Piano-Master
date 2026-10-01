@@ -6,6 +6,9 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.29 | Oct 1, 2026 | Daily-use fixes: Back returns to the screen as it was left; one bubble per Journey skill (no lightbulb); pop-ups close on a tap outside; a locked song names the one skill that unlocks it; the metronome one choice per student; finger numbers and letter names switched per song by the parent |
+| v0.28 | Oct 1, 2026 | Two of our own studies are never duplicates of each other (the melody check is for imports); words for ten wordless warm-ups through the live-song update flow |
+| v0.27 | Sep 30, 2026 | One song library: every song in the server's library through the review list, the map naming only approved songs, the 108 built-in songs seeded once; updating a live song (Needs improvement, the fix as an update, approved in place; Diagnostics on current notes only); library re-analysis after a map change built; letter names under the note heads |
 | v0.26 | Sep 30, 2026 | From a review of the code against this document: the file moved to `docs/architecture.md` with this change log; the keyboard decided (88 velocity-sensitive keys, sustain pedal); work requests, vocal-style changes, wait mode, the dark theme, the AI advisor (M9), concept videos and the Level 1 and 2 maps moved to potential features; content loading, library re-analysis, the coverage report and Home's stars described as built |
 | v0.25 | Sep 30, 2026 | No method-book links in the repository (book pages in a private file); one concept per Journey bubble: 46 Prep A skills with one Explain each and their own practice songs (2 to 4, 108 core pieces); concept type labels; skills for ideas the notes can't show; dynamic marks drawn and played |
 | v0.24 | Sep 30, 2026 | From the family's four first-level method books: the real Prep A map (16 skills, lessons, 68 core pieces with 14 warm-ups); chords counted by size; pre-staff letter-named pieces; the method spine's staff order; intervals, chords, held notes, ties, rests and black-key groups in the song analysis; the tune passing between the hands; Journey units and book pages |
@@ -21,6 +24,31 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.29 (Oct 1, 2026)
+
+From the family's first weeks of use (the Next steps list):
+- **Back from a song (3):** Back on the Play screen returns to the screen that opened the song as it was left: the same scroll position, the same Journey pop-up open, the library's filter. The tab bar still opens every screen fresh.
+- **Journey map (3):** one bubble per skill. The lightbulb bubble before each skill is gone; the concept lesson opens from the bubble's sheet, as it already could. A tap anywhere outside the sheet closes it.
+- **Song library (3, 10.1):** a locked song shows "Coming soon" with the one skill that unlocks it (the last still to reach), not the whole list.
+- **Metronome (3, 5):** one choice per student for every song (`Student.settings.metronome`, replacing the per-song `click`). Until the student first chooses, songs with singing play without it.
+- **Song helpers (3):** finger numbers and letter names on or off for each song, in Song and settings (parent mode), for every child (`song_display`, migration 010; `PUT /api/library/pieces/{id}/display`). By default finger numbers show in Prep A songs and not in later levels; letter names show on the pre-staff songs, as before, on white keys only. Letter names switched on by the parent name the black keys too (C♯), so the switch works on the 23 early songs played only on black keys, which start with it off. The song analysis still reads `letters` from the song's file, not this switch.
+- **Song and settings (3):** a tap outside closes it without starting anything. The Needs improvement note starts with a bar only once the song has moved past its start.
+
+## v0.28 (Oct 1, 2026)
+
+From the first use of Needs improvement on live songs:
+- **Melody fingerprint (10.8):** two of our own songs (`license.composition: original`) are never checked against each other, at intake or in `import_song.py check`. With words on both hands, Bubble Hands' melody became the same two-black-key alternation as Sit Tall's, and intake would have refused its update as "the same song". The check stays for every import.
+- **Words for ten songs:** the parent asked for words on ten wordless warm-ups and studies; they went through the update flow (Needs improvement, fixed and resubmitted under the same ids, waiting as updates in the review list).
+
+## v0.27 (Sep 30, 2026)
+
+From building the review's first items, and the family's experience that songs in use keep showing things to fix:
+- **One song library (5, 6.8, 6.9, 6.10, 10.1, 10.7):** every song is in the server's library and reaches it through the review list, whatever made it. The skill map and lessons still deploy with the app; the map names each skill's practice songs by id and may name only approved songs (`tools/library_check.py` stops a deploy otherwise), so a new level is added by approving its songs first, then deploying its map. "Core pieces" and the "Lesson pieces" genre are gone: a skill's practice songs are allowed for every child whatever their genre, and each song has its real genre (our own music is `studies`, with the `original` license). Every song's source is kept in git in `content/pieces/` (`promote` moves an approved import's source there). The 108 songs built into the app before came into the library once, as approved, through `deploy.sh --seed-songs`. Each song's version is now a hash of its notes.
+- **Updating a live song (10.7):** Needs improvement in the Play screen's gear pop-up (renamed Song and settings) asks for a fix, with the bar the staff is at. The skills read it as a live song; intake takes the fix under the same id; the review list shows it as an update with what changed and the live version to compare; approving replaces the song in place (same id and approval date, so progress carries on), and Discard update keeps the live one. Diagnostics reads only attempts on a song's current notes.
+- **Re-analysis after a map change (6.10):** built. When the API starts with a changed map, every library song is analysed again, for the skill it's a practice song of, and Content and analysis lists the songs whose required skills changed.
+- **Letter names (6.7):** printed just under the note heads, which stay the usual size (they were inside enlarged heads).
+- **Melody fingerprint (10.8):** a run of one repeated note no longer counts, and too short a melody gets no verdict: beginner studies on Middle C matched each other as "the same song".
 
 ## v0.26 (Sep 30, 2026)
 

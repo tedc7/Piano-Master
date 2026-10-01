@@ -84,14 +84,21 @@ class Obs:
     wrongs: list[dict] = field(default_factory=list)       # wrong keys paired with the written note
 
 
-def load_obs(con: sqlite3.Connection, student_id: str, today: date, days: int = WINDOW_DAYS) -> list[Obs]:
+def load_obs(con: sqlite3.Connection, student_id: str, today: date, days: int = WINDOW_DAYS,
+             versions: dict[str, str] | None = None) -> list[Obs]:
+    """The student's completed attempts in the window. With `versions` (each song's current notes,
+    content.song_version), an attempt played on other notes is left out: its note results point at
+    notes by their place in the song, which a fixed song has moved (v0.27, updating a live song)."""
     since = datetime.combine(today - timedelta(days=days), datetime.min.time()).astimezone()
     rows = con.execute(
         "SELECT started_at, piece_id, mode, tempo_preset, conditions, raw_accuracy, accuracy_stars, skill_id, note_results, "
-        "note_errors FROM attempts WHERE student_id = ? AND completed = 1 AND started_at >= ? ORDER BY started_at",
+        "note_errors, content_version FROM attempts WHERE student_id = ? AND completed = 1 AND started_at >= ? ORDER BY started_at",
         (student_id, since.isoformat())).fetchall()
     out = []
     for r in rows:
+        now_v = (versions or {}).get(r["piece_id"])
+        if now_v and r["content_version"] and r["content_version"] != now_v:
+            continue
         d = datetime.fromisoformat(r["started_at"].replace("Z", "+00:00")).astimezone().date()
         if d > today:
             continue
@@ -473,7 +480,7 @@ def patterns(con: sqlite3.Connection, student_id: str, open_only: bool = False) 
 
 def run(con: sqlite3.Connection, content: Content, student_id: str, today: date) -> list[dict[str, Any]]:
     """Find the patterns in the last 14 days, update each one's status, and return them all."""
-    obs = load_obs(con, student_id, today)
+    obs = load_obs(con, student_id, today, versions=content.versions)
     P = Pieces(con, content)
     existing = {r["key"]: r for r in con.execute("SELECT * FROM error_patterns WHERE student_id = ?", (student_id,))}
     for det in DETECTORS:

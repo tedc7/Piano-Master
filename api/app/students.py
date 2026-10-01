@@ -24,9 +24,11 @@ UUID = r"^[0-9a-fA-F-]{8,64}$"
 SLUG = r"^[A-Za-z0-9_.-]{1,100}$"
 PRESET = r"^(50|75|90|100)$"
 
-# Student.settings (arch §5); the parent sets the first four, the Play screen remembers the rest per song
+# Student.settings (arch §5); the parent sets the first four, the Play screen remembers the rest: vocals
+# and the tempo preset per song, and the metronome for every song (v0.29; None until the child first
+# turns it on or off: then each song starts with it on unless the song has singing)
 DEFAULTS: dict[str, Any] = {"autoRewind": True, "rewindBars": 2, "backingVolume": 2.0, "otherHand": True, "vocalsOff": [],
-                            "click": {}, "presets": {}}
+                            "metronome": None, "presets": {}}
 
 
 def today() -> date:
@@ -40,7 +42,8 @@ def local_day(ts: datetime) -> date:
 
 def settings_of(raw: str | None) -> dict[str, Any]:
     s = {**DEFAULTS, **json.loads(raw or "{}")}
-    s["vocalsOff"], s["click"], s["presets"] = list(s["vocalsOff"]), dict(s["click"]), dict(s["presets"])
+    s.pop("click", None)          # the metronome per song, before v0.29
+    s["vocalsOff"], s["presets"] = list(s["vocalsOff"]), dict(s["presets"])
     return s
 
 
@@ -94,7 +97,8 @@ class StudentPatch(BaseModel):
 
 
 class SongPrefIn(BaseModel):
-    """What the Play screen remembers per song (arch §3): vocals, metronome and tempo preset."""
+    """What the Play screen remembers (arch §3): vocals and tempo preset for the song, and the
+    metronome (`click`) for every song (v0.29)."""
     pieceId: str = Field(pattern=SLUG)
     vocalsOff: bool | None = None
     click: bool | None = None
@@ -159,7 +163,7 @@ def edit_student(student_id: str, body: StudentPatch):
                     if v is not None:
                         s[k] = v
                 if body.settings.resetSongChoices:
-                    s["vocalsOff"], s["click"], s["presets"] = [], {}, {}
+                    s["vocalsOff"], s["metronome"], s["presets"] = [], None, {}
             con.execute("UPDATE students SET name = ?, avatar = ?, status = ?, sort = ?, settings = ? WHERE id = ?",
                         ((body.name or r["name"]).strip(), body.avatar or r["avatar"], body.status or r["status"],
                          r["sort"] if body.sort is None else body.sort, json.dumps(s), student_id))
@@ -193,7 +197,7 @@ def song_pref(student_id: str, body: SongPrefIn):
             if body.vocalsOff is not None:
                 s["vocalsOff"] = [x for x in s["vocalsOff"] if x != p] + ([p] if body.vocalsOff else [])
             if body.click is not None:
-                s["click"][p] = body.click
+                s["metronome"] = body.click
             if body.preset is not None:
                 s["presets"][p] = body.preset
             con.execute("UPDATE students SET settings = ? WHERE id = ?", (json.dumps(s), student_id))

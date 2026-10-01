@@ -51,13 +51,13 @@ def test_each_skill_needs_two_practice_pieces_that_feature_it_and_need_only_earl
               {"id": "b", "pieces": ["p3"], "prerequisites": ["a"]},          # one piece
               {"id": "c", "pieces": ["p1"], "prerequisites": ["a"]},          # doesn't feature c
               {"id": "d", "pieces": ["p4"], "prerequisites": ["a"]}]          # features d? no; needs c, a sibling
-    errors, _, featuring = bc.coverage(skills, an, {})
+    errors, _, featuring = bc.coverage(skills, an)
     assert not any(e.startswith("a:") for e in errors) and featuring["a"] == ["p1", "p2", "p4"]
     assert any(e.startswith("b:") and "at least 2" in e for e in errors)
     assert any(e.startswith("c:") and "not this skill" in e for e in errors)
     assert any(e.startswith("d:") and "needs c, which isn't before it" in e for e in errors)
     # the placeholder map only warns
-    errors, warnings, _ = bc.coverage([{**skills[1], "placeholder": True}], an, {})
+    errors, warnings, _ = bc.coverage([{**skills[1], "placeholder": True}], an)
     assert not errors and any("at least 2" in w for w in warnings)
 
 

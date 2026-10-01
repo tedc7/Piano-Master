@@ -1,0 +1,43 @@
+# Library song. "London Bridge Is Falling Down", traditional English nursery rhyme (tune printed
+# by the 1740s); public domain. Retyped by us: the melody in C for the right hand with chord
+# symbols, checked note for note against MakingMusicFun.net's beginner piano arrangement
+# (sources/london-bridge-piano-solo.pdf: free for instruction, not openly licensed, so checked only).
+# Four traditional verses; the fourth ("stone so strong") ends the song on the bridge built again.
+# Media (M8): YuE2 vocal; FluidSynth backing from the chord symbols in the kids' style.
+# Tempo: written in cut time (2/2), as it is sung: two beats a bar.
+title: London Bridge
+composer: Traditional
+kind: library
+genre: kids
+level: Level 1
+hands: R
+phraseBars: 4
+source:
+  site: MakingMusicFun.net (checked only)
+  url: https://www.makingmusicfun.net/htm/f_printit_free_printable_sheet_music/london-bridge-piano-solo
+  id: makingmusicfun-london-bridge-piano-solo
+  file: sources/london-bridge-piano-solo.pdf
+tempoSource: "recordings at 106-118 BPM counted in half notes (Little Baby Bum 106, Kidzone 115, Nursery Rhymes All Stars 118; songbpm.com, getsongbpm.com); cut time; half = 97 (90% of 108) after the parent's review (Sep 29, 2026): at 108 some words ran together"
+license:
+  composition: public-domain
+  edition: retyped from MakingMusicFun.net (free for instruction, not openly licensed), checked only
+  evidence: traditional English nursery rhyme, printed in the 18th century; words public domain
+media:
+  vocal: yue2
+abc: |
+  X:1
+  T:London Bridge
+  M:2/2
+  L:1/4
+  Q:1/2=97
+  K:C
+  "C"G3/2 A/ G F | E F G2 | "G7"D E F2 | "C"E F G2 |
+  w: Lon-don Bridge is fall-ing down, fall-ing down, fall-ing down.
+  w: Build it up with i-ron bars, i-ron bars, i-ron bars.
+  w: I-ron bars will bend and break, bend and break, bend and break.
+  w: Build it up with stone so strong, stone so strong, stone so strong.
+  "C"G3/2 A/ G F | E F G2 | "G7"D2 G2 | "C"E C3 |]
+  w: Lon-don Bridge is fall-ing down, my fair la-dy.
+  w: Build it up with i-ron bars, my fair la-dy.
+  w: I-ron bars will bend and break, my fair la-dy.
+  w: Build it up with stone so strong, my fair la-dy.

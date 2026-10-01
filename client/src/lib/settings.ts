@@ -3,8 +3,8 @@
 //    and the keyboard size. Kept in this browser, which is where they are measured, and copied to
 //    the piano server's DeviceProfile when the parent changes them.
 //  - Each student (Student.settings on the piano server; Config > Students): auto-rewind, rewind
-//    bars, backing volume and the app playing the other hand, set by the parent, and the Play screen's per-song choices (vocals,
-//    metronome, tempo preset), remembered as the student makes them.
+//    bars, backing volume and the app playing the other hand, set by the parent, and the Play screen's choices, remembered as
+//    the student makes them: vocals and the tempo preset per song, the metronome for every song (v0.29).
 //  - The parent playing: the same student-style settings, kept in this browser.
 // Storage can be missing or cleared on iPadOS, so defaults always work.
 import type { Preset } from "./types";
@@ -26,7 +26,7 @@ export interface StudentSettings {
   backingVolume: number;     // 2 = the 200% found right on the iPad
   otherHand: boolean;        // practising one hand, the app plays the other on its piano
   vocalsOff: string[];       // piece ids with vocals off (remembered per song, arch §3)
-  click: Record<string, boolean>;  // metronome during play, per piece (default: on unless the song has singing)
+  metronome: boolean | null;  // metronome during play, for every song; null until first turned on or off (then: on unless the song has singing)
   presets: Record<string, Preset>;
 }
 
@@ -56,7 +56,7 @@ export const STUDENT_DEFAULTS: StudentSettings = {
   backingVolume: 2,
   otherHand: true,
   vocalsOff: [],
-  click: {},
+  metronome: null,
   presets: {},
 };
 

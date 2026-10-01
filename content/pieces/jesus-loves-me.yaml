@@ -1,0 +1,56 @@
+# Library song (a children's hymn). "Jesus Loves Me", words Anna Bartlett Warner (1860), music
+# William Batchelder Bradbury (1862, "The Golden Shower"); public domain. Typed from the Cyber
+# Hymnal's four-part setting in C (sources/jesus-loves-me-cyberhymnal.pdf, marked "Public Domain").
+# The child plays the melody (`play: melody`); the alto, tenor and bass are kept for the backing,
+# which plays them on strings and cello (the hymn style chosen for Amazing Grace, arch §10.5).
+# Chord symbols added from the four parts, for YuE2 and the chord pad.
+# Verses: the Cyber Hymnal's 1, 2 and 4; verse 3 ("Though I'm very weak and ill") is left out for
+# young children. Tempo 112 (the source marks 115).
+# Media (M8): YuE2 vocal; FluidSynth backing from the alto, tenor and bass.
+title: Jesus Loves Me
+composer: William B. Bradbury
+kind: library
+genre: hymns
+level: Level 1
+hands: R
+phraseBars: 4
+play: melody
+source:
+  site: The Cyber Hymnal (via Hymnary.org)
+  url: https://hymnary.org/media/fetch/197217
+  id: hymnary-197217
+  file: sources/jesus-loves-me-cyberhymnal.pdf
+tempoSource: "the Cyber Hymnal marks quarter = 115; Cedarmont Kids' recording 108 (songbpm.com); quarter = 112"
+license:
+  composition: public-domain
+  edition: public-domain
+  evidence: words 1860, music 1862 (Hymnary.org tune JESUS LOVES ME (Bradbury)); the Cyber Hymnal score is
+    marked "Public Domain"
+media:
+  vocal: yue2
+abc: |
+  X:1
+  T:Jesus Loves Me
+  M:4/4
+  L:1/4
+  Q:1/4=112
+  %%score (S A) (T B)
+  V:S clef=treble
+  V:A clef=treble
+  V:T clef=bass
+  V:B clef=bass
+  K:C
+  [V:S] "C"G E E "G"D | "C"E G G2 | "F"A A c A | "F"A "C"G G2 | "C"G E E "G"D | "C"E G G2 | "F"A A "C"G C | "C"E "G7"D "C"C2 |
+  w: Je-sus loves me! This I know, for the Bi-ble tells me so. Lit-tle ones to Him be-long; they are weak, but He is strong.
+  w: Je-sus loves me! He who died Hea-ven's gate to o-pen wide; He will wash a-way my sin, let His lit-tle child come in.
+  w: Je-sus loves me! He will stay close be-side me all the way; then His lit-tle child will take up to Heaven for His dear sake.
+  [V:A] E C C B, | C E E2 | F F A F | F E E2 | E C C B, | C E E2 | F F E C | C B, C2 |
+  [V:T] G, G, G, G, | G, C C2 | C C C C | C C C2 | C G, G, G, | G, C C2 | C C C G, | G, F, E,2 |
+  [V:B] C, C, C, G,, | C, C, C,2 | F, F, F, F, | C, C, C,2 | C, C, C, G,, | C, C, C,2 | F, F, C, E, | G, G,, C,2 |
+  [V:S] "C"G2 E G | "F"A c3 | "C"G2 E C | "C"E "G"D3 | "C"G2 E G | "F"A c2 A | "C"G "Am"C "C"E "G7"D | "C"C4 |]
+  w: Yes, Je-sus loves me! Yes, Je-sus loves me! Yes, Je-sus loves me! The Bi-ble tells me so.
+  w: Yes, Je-sus loves me! Yes, Je-sus loves me! Yes, Je-sus loves me! The Bi-ble tells me so.
+  w: Yes, Je-sus loves me! Yes, Je-sus loves me! Yes, Je-sus loves me! The Bi-ble tells me so.
+  [V:A] E2 C E | F F3 | E2 C C | C B,3 | C2 C E | F F2 C | C C C B, | C4 |]
+  [V:T] G,2 G, C | C A,3 | C2 G, G, | G, G,3 | E,2 G, C | C A,2 F, | E, E, G, F, | E,4 |]
+  [V:B] C,2 C, C, | F, F,3 | C,2 C, E, | G, G,3 | C,2 C, C, | F, F,2 F,, | G,, A,, G,, G,, | C,4 |]

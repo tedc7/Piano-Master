@@ -1,11 +1,16 @@
-# Core piece (Prep A, prep-a.forte-piano). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app.
 title: "Mouse and Snail"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: RL
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/mouse-and-snail.yaml
+license:
+  composition: original
+  edition: original
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 dynamics: {1: f, 3: p, 5: f, 7: p}   # bar: mark
 phraseBars: 2
 abc: |

@@ -1,0 +1,41 @@
+# Library song. "Row, Row, Row Your Boat", traditional round (words 1852; tune usually credited to
+# Eliphalet Oram Lyte, 1881); public domain. Retyped by us in C, 6/8, with chord symbols; checked
+# against MakingMusicFun.net's beginner guitar sheet (sources/row-row-row-your-boat-guitar.pdf, in
+# G major and 3/4: the same melody; free for instruction, not openly licensed, so checked only).
+# Sung three times. It's a round, so the backing is the round itself: two more voices enter two and
+# four bars behind (FluidSynth, `round` style), with a bass on the chords.
+title: Row, Row, Row Your Boat
+composer: Traditional
+kind: library
+genre: kids
+level: Level 2
+hands: R
+phraseBars: 4
+source:
+  site: MakingMusicFun.net (checked only)
+  url: https://www.makingmusicfun.net/htm/f_printit_free_printable_sheet_music/row-row-row-your-boat-guitar
+  id: makingmusicfun-row-row-row-your-boat-guitar
+  file: sources/row-row-row-your-boat-guitar.pdf
+tempoSource: "recordings at 106-112 BPM, a dotted quarter a beat (Kidsongs 106, Dora 110, Classical Lullabies 112; songbpm.com); dotted quarter = 94 (90% of 104) after the parent's review (Sep 29, 2026): at 104 some words ran together; dotted quarter = 85 (another 10% slower) after the second review (Oct 1, 2026): still some garbled words"
+license:
+  composition: public-domain
+  edition: retyped from MakingMusicFun.net (free for instruction, not openly licensed), checked only
+  evidence: words published 1852, tune 1881 (Wikipedia, "Row, Row, Row Your Boat")
+media:
+  vocal: yue2
+  backing: {style: round, entryBars: [2, 4]}
+abc: |
+  X:1
+  T:Row, Row, Row Your Boat
+  M:6/8
+  L:1/8
+  Q:3/8=85
+  K:C
+  "C"C3 C3 | C2 D E3 | E2 D E2 F | G6 |
+  w: Row, row, row your boat, gent-ly down the stream.
+  w: Row, row, row your boat, gent-ly down the stream.
+  w: Row, row, row your boat, gent-ly down the stream.
+  c c c G G G | E E E C C C | "G7"G2 F E2 D | "C"C6 |]
+  w: Mer-ri-ly, mer-ri-ly, mer-ri-ly, mer-ri-ly, life is but a dream.
+  w: Mer-ri-ly, mer-ri-ly, mer-ri-ly, mer-ri-ly, life is but a dream.
+  w: Mer-ri-ly, mer-ri-ly, mer-ri-ly, mer-ri-ly, life is but a dream.

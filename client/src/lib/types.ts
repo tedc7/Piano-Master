@@ -48,7 +48,7 @@ export interface Notation {
     pickupBeats: number;
     range: [number, number];
     staves: ("treble" | "bass")[];
-    letters?: boolean;   // a pre-staff piece (Prep A Units 1 to 3): each note head shows its letter name
+    letters?: boolean;   // a pre-staff piece (Prep A Units 1 to 3): each note shows its letter name under the head
   };
   measures: Measure[];
   notes: Note[];
@@ -90,7 +90,7 @@ export interface Piece {
   id: string;
   title: string;
   composer?: string;
-  kind: "core" | "library" | "drill";
+  kind: "song" | "drill";
   drill?: DrillInfo;
   genre?: string;
   level?: string;
@@ -100,6 +100,8 @@ export interface Piece {
   keyboardSize?: 61 | 88;
   notation: Notation;
   media: Media | null;
+  /** The parent's choice of helpers on this song's staff, for every child (v0.29); null = the default */
+  display?: { fingers: boolean | null; letters: boolean | null };
 }
 
 export interface PieceSummary {
@@ -126,7 +128,6 @@ export interface PieceSummary {
   songTitle?: string;
   version?: string | null;            // e.g. "Beginner", when a song has several arrangements
   hasMedia: boolean;
-  library?: boolean;                  // approved from the review list: served by the piano server (M7)
   new?: boolean;                      // approved in the last 14 days (the "New" badge)
   approvedAt?: string;
 }
@@ -151,6 +152,7 @@ export interface Skill {
 }
 
 export interface SkillMap {
+  contentVersion?: string;
   placeholder: boolean;
   maps: { map: string; level: string; file: string; source?: string }[];
   skills: Skill[];

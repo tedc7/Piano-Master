@@ -1,12 +1,17 @@
-# Core piece (Prep A, prep-a.low-and-high). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.low-and-high). Warm-up in our own music.
 # Firm fingertips: fingers 2 and 3 on the two black keys, then the same keys an octave away.
 title: "Warm-up: Two-Key Hops"
 composer: Piano-Master
-kind: core
-genre: lesson-pieces
+genre: studies
 level: Prep A
 hands: RL
-letters: true             # pre-staff: letter names in the note heads (Units 1 to 3 read by letter names)
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-two-key-hops.yaml
+license:
+  composition: original
+  edition: original
+letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
 abc: |
   X:1

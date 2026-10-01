@@ -6,6 +6,9 @@
   //   Needs improvement  - back to the skills with what to change (typed here, kept on the server);
   //                        the fixed song comes back to this list with that note beside it;
   //   Never allow        - deleted: the skills can't offer it again.
+  // An update to a live song (v0.27: the parent's Needs improvement on a library song, fixed and
+  // resubmitted under the same id) shows what changed and plays the live version beside it; it's
+  // approved (replacing the live song in place), sent back again, or discarded (the live one stays).
   // A song stays here until the parent decides. Nothing on this list reaches a child. Below the
   // waiting list: songs sent back for changes, and the deleted songs (never allowed here, or deleted
   // from the library in Songs and genres), which can go back to review, be sent for improvement
@@ -13,7 +16,8 @@
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
-  import { handsLabel, reloadContent } from "../../lib/content";
+  import { handsLabel, loadContent, reloadContent } from "../../lib/content";
+  import { keepView } from "../../lib/keep";
 
   interface Checks {
     notesOnPitch?: number; wordsOff?: number; pass?: boolean; reasons?: string[]; flags?: string[];
@@ -24,6 +28,9 @@
     package?: string; submitted?: string; feedback?: string | null; decidedAt?: string | null;
     deletedFrom?: "review" | "library" | null; deletedReason?: string | null; hasFiles?: boolean;
     previousFeedback?: { feedback: string; decidedAt: string };
+    live?: string;                    // the library song this updates
+    changes?: { bars: number[]; tempo: [number, number]; lyrics: boolean; media: boolean;
+                requiredSkills: [string[], string[]]; beyondMap: [string[], string[]] };
     info: {
       level?: string; hands?: string; source?: { site?: string; url?: string }; license?: { composition?: string; edition?: string; evidence?: string };
       tempoSource?: string; notes?: string[]; flags?: string[]; lyrics?: string; checks?: Checks | null;
@@ -42,8 +49,13 @@
   let open = $state<{ id: string; kind: "improve" | "never" } | null>(null);   // the decision being written
   let feedback = $state("");
   let busy = $state(false);
+  let skillNames = $state<Record<string, string>>({});
+  keepView("config/review", () => document.querySelector<HTMLElement>("main.body"));   // back from a song: where it was
 
-  onMount(load);
+  onMount(() => {
+    void load();
+    loadContent().then((c) => { skillNames = Object.fromEntries(c.map.skills.map((s) => [s.id, s.name])); }).catch(() => {});
+  });
 
   async function load(): Promise<void> {
     try {
@@ -58,12 +70,15 @@
     loaded = true;
   }
 
-  async function decide(it: Item, action: "approve" | "improve" | "never" | "restore" | "forget"): Promise<void> {
+  async function decide(it: Item, action: "approve" | "improve" | "never" | "restore" | "forget" | "discard"): Promise<void> {
     busy = true;
     try {
       const body = action === "improve" ? { feedback: feedback.trim() } : action === "never" ? {} : undefined;
       await api.request(`/review/items/${it.id}/${action}`, "POST", body);
-      done = action === "approve"
+      done = action === "approve" && it.live
+        ? `${it.title} is updated: the children play the new version from now on, with their stars and progress kept.`
+        : action === "discard" ? `${it.title} stays as it was: the update is gone.`
+        : action === "approve"
         ? `${it.title} is in the library. Each child sees it once its genre is allowed (Config › Songs and genres).`
         : action === "improve" ? `${it.title} went back with your note; it will come back to this list once it's changed.`
         : action === "restore" ? `${it.title} is waiting for you again.`
@@ -90,6 +105,16 @@
   const when = (iso?: string | null) => (iso ? new Date(iso).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "");
   const seconds = (it: Item) => (it.summary.beats && it.summary.tempo ? Math.round((it.summary.beats * 60) / it.summary.tempo) : null);
   const listen = (it: Item) => app.openPiece(`staged--${it.id}`, "config/review");
+  const names = (ids: string[]) => ids.map((id) => skillNames[id] ?? id).join(", ") || "nothing";
+  function changeText(ch: NonNullable<Item["changes"]>): string {
+    const out = [ch.bars.length ? `notes in bar${ch.bars.length > 1 ? "s" : ""} ${ch.bars.join(", ")}` : "the same notes"];
+    if (ch.tempo[0] !== ch.tempo[1]) out.push(`tempo ${ch.tempo[0]} → ${ch.tempo[1]}`);
+    if (ch.lyrics) out.push("the words");
+    if (ch.media) out.push("a new vocal or backing");
+    return out.join(" · ");
+  }
+  const skillsChanged = (ch: NonNullable<Item["changes"]>) =>
+    names(ch.requiredSkills[0]) !== names(ch.requiredSkills[1]) || ch.beyondMap[0].join() !== ch.beyondMap[1].join();
 </script>
 
 {#if error}<p class="notice error">{error}</p>{/if}
@@ -106,11 +131,20 @@
       <div class="what">
         <div class="title-row">
           <span class="title">{it.title}</span>
+          {#if it.live}<span class="badge">Update to a live song</span>{/if}
           <span class="muted">{it.composer ?? ""} · {it.genre} · {it.info.level ?? ""} · {handsLabel(it.info.hands ?? "R")}
             · {it.summary.timeSig}{#if seconds(it)} · about {seconds(it)} s{/if}</span>
         </div>
         {#if it.previousFeedback}
           <p class="changed">Changed after your note ({when(it.previousFeedback.decidedAt)}): “{it.previousFeedback.feedback}”</p>
+        {/if}
+        {#if it.changes}
+          <p class="line">Changes from the live song: {changeText(it.changes)}</p>
+          {#if skillsChanged(it.changes)}
+            <p class="line warn">It now needs {it.changes.beyondMap[1].length ? `more than the map teaches (${it.changes.beyondMap[1].join(", ")})`
+              : names(it.changes.requiredSkills[1])}, where the live song needs {names(it.changes.requiredSkills[0])}:
+              a child who hasn't reached those skills won't see it after the update.</p>
+          {/if}
         {/if}
         {#if c}
           <p class="line">Vocal: {pct(c.notesOnPitch)} of notes on pitch · {pct(c.wordsOff)} of words off the notes
@@ -120,7 +154,7 @@
         {#if it.info.backing?.parts}
           <p class="line">Backing: {it.info.backing.parts.map((x) => x.name).join(", ")}</p>
         {:else if !it.hasMedia}
-          <p class="line muted">No vocal or backing: the app's piano and chord pad play along.</p>
+          <p class="line muted">No vocal or backing: the app's piano plays the other hand.</p>
         {/if}
         {#if (c?.flags ?? []).length || (it.report.warnings ?? []).length}
           <ul class="flags">
@@ -159,9 +193,16 @@
       </div>
       <div class="actions">
         <button class="quiet" onclick={() => listen(it)}>▶ Listen and play</button>
-        <button class="approve" onclick={() => decide(it, "approve")} disabled={busy}>Approve</button>
-        <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>
-        <button class="quiet never" onclick={() => start(it, "never")} disabled={busy}>Never allow</button>
+        {#if it.live}
+          <button class="quiet" onclick={() => app.openPiece(it.live!, "config/review")}>▶ Live version</button>
+          <button class="approve" onclick={() => decide(it, "approve")} disabled={busy}>Approve update</button>
+          <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs more work</button>
+          <button class="quiet never" onclick={() => decide(it, "discard")} disabled={busy}>Discard update</button>
+        {:else}
+          <button class="approve" onclick={() => decide(it, "approve")} disabled={busy}>Approve</button>
+          <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>
+          <button class="quiet never" onclick={() => start(it, "never")} disabled={busy}>Never allow</button>
+        {/if}
       </div>
     </div>
   {:else}
@@ -178,10 +219,19 @@
     {#each sentBack as it (it.id)}
       <div class="item">
         <div class="what">
-          <span class="title">{it.title}</span> <span class="muted">· sent back {when(it.decidedAt)}</span>
+          <span class="title">{it.title}</span>
+          {#if it.live}<span class="badge">Live song: the children keep playing it</span>{/if}
+          <span class="muted">· {it.live ? "asked" : "sent back"} {when(it.decidedAt)}</span>
           <p class="changed">“{it.feedback}”</p>
         </div>
-        <div class="actions"><button class="quiet" onclick={() => listen(it)}>▶ Listen again</button></div>
+        <div class="actions">
+          {#if it.live}
+            <button class="quiet" onclick={() => app.openPiece(it.live!, "config/review")}>▶ Play it</button>
+            <button class="quiet never" onclick={() => decide(it, "discard")} disabled={busy}>Cancel request</button>
+          {:else}
+            <button class="quiet" onclick={() => listen(it)}>▶ Listen again</button>
+          {/if}
+        </div>
       </div>
     {/each}
   </section>
@@ -243,6 +293,7 @@
   .line { margin: 4px 0; }
   .ok { color: #2f7d4f; }
   .warn { color: #8a5a00; }
+  .badge { font-size: 14px; font-weight: 700; color: #fff; background: var(--accent); border-radius: 8px; padding: 2px 8px; }
   .changed { margin: 6px 0; padding: 6px 10px; background: #eef3fd; border-radius: 10px; }
   .flags { margin: 4px 0; padding-left: 20px; color: #8a5a00; }
   .lyrics { white-space: pre-wrap; font: inherit; background: #f7f5f0; border-radius: 10px; padding: 8px 12px; }

@@ -107,6 +107,13 @@ sheets used only to check them (arch §10.2).
     library holds only approved songs). Under Deleted songs in the Review list it can go back to
     review, be sent for improvement (to be corrected), or be forgotten.
 
+21. **Row, Row still garbled at 90% (the second parent note, Oct 1).** At dotted quarter = 94 the
+    kept take passed (6% of words off), but the parent still heard garbled words and asked for
+    another 10%: dotted quarter = 85, about 82% of the recordings' pace, the bottom of the range in
+    19. Four takes this time (`--takes 4`): one failed on bleed (-15 dB), one on pitch, and the kept
+    one (take 2) sang every note on pitch with no words off the staff and 3 ms from the beat. The
+    take-to-take spread is wide, so for a song sent back for its words, render four takes, not two.
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

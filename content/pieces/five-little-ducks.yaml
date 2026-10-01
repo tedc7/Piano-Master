@@ -1,0 +1,54 @@
+# Library song. "Five Little Ducks", traditional American counting song. Its origin is unknown and
+# no printing before 1930 was found, so its public-domain status rests on it being traditional
+# (credited "traditional" by Raffi's 1982 recording and SecondHandSongs): FOR THE PARENT TO DECIDE.
+# Retyped by us, moved from the source's G major down to C (C4-C5, no sharps), with chord symbols;
+# checked against NancyMusic.com's lead sheet (sources/five-little-ducks-nancymusic.pdf, free song
+# of the month, not openly licensed, so checked only).
+# Changed: bar 6 ("quack, quack, quack") is B A G2 for the four quacks of the words; the lead sheet
+# has an extra "quack" on a dotted rhythm. The lead sheet's optional Am chord is kept (as Dm in C).
+# Verses: 5, 4, 3, 2, 1 ducks, then "Sad mother duck", as in the lead sheet; "duckies" where the
+# line needs ten syllables.
+# Media (M8): YuE2 vocal; FluidSynth backing from the chord symbols in the kids' style.
+# Tempo: written in cut time (2/2), as it is sung: two beats a bar. Half = 80, 80% of the recordings' pace:
+# the parent heard the words run together at 100 (review note, Sep 29, 2026).
+title: Five Little Ducks
+composer: Traditional
+kind: library
+genre: kids
+level: Level 1
+hands: R
+phraseBars: 4
+source:
+  site: NancyMusic.com (checked only)
+  url: https://nancymusic.com/SOM/2014/five-little-ducks-music.pdf
+  id: nancymusic-five-little-ducks
+  file: sources/five-little-ducks-nancymusic.pdf
+tempoSource: "Raffi's recording (1982): 103 BPM counted in half notes (songbpm.com, tunebat.com); sung in two, so cut time. Set to half = 80 after the parent's review (Sep 29, 2026): at 100 the words ran together"
+license:
+  composition: public-domain
+  edition: retyped from NancyMusic.com (free song of the month, not openly licensed), checked only
+  evidence: traditional, author and date unknown (Wikipedia, "Five Little Ducks"; SecondHandSongs credits
+    "[Traditional]"); no printing before 1930 found, so the parent decides
+media:
+  vocal: yue2
+abc: |
+  X:1
+  T:Five Little Ducks
+  M:2/2
+  L:1/4
+  Q:1/2=80
+  K:C
+  "C"G E/E/ C c | "F"B A "C"G2 | "C"G C/C/ "F"F E | "Dm"E D "G"D2 |
+  w: Five lit-tle ducks went out one day, o-ver the hills and far a-way.
+  w: Four lit-tle ducks went out one day, o-ver the hills and far a-way.
+  w: Three lit-tle ducks went out one day, o-ver the hills and far a-way.
+  w: Two lit-tle ducks went out one day, o-ver the hills and far a-way.
+  w: One lit-tle duck went out one day, o-ver the hills and far a-way.
+  w: Sad mo-ther duck went out one day, o-ver the hills and far a-way.
+  "C"G/G/ E C c | "F"B A "C"G2 | "C"G C/C/ "F"F E/E/ | "G"D/C/ D "C"C2 |]
+  w: Mo-ther duck said, "Quack, quack, quack, quack," but on-ly four lit-tle duck-ies came back.
+  w: Mo-ther duck said, "Quack, quack, quack, quack," but on-ly three lit-tle duck-ies came back.
+  w: Mo-ther duck said, "Quack, quack, quack, quack," but on-ly two lit-tle duck-ies came back.
+  w: Mo-ther duck said, "Quack, quack, quack, quack," but on-ly one lit-tle duck-y came back.
+  w: Mo-ther duck said, "Quack, quack, quack, quack," but none of the five lit-tle ducks came back.
+  w: Mo-ther duck said, "Quack, quack, quack, quack," and all of the five lit-tle ducks came back.
