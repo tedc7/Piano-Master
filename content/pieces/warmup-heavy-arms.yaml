@@ -1,4 +1,4 @@
-# Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music and words (words added at the parent's request).
 # Let the arm drop its weight into each key, then float up while the other hand drops.
 title: "Warm-up: Heavy Arms"
 composer: Piano-Master
@@ -24,4 +24,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !3!^D ^D ^D ^D | z4 | ^D ^C ^D ^C | z4 |]
+  w: Hea-vy arm, drop! Float up and land.
   [V:LH] z4 | !3!^C, ^C, ^C, ^C, | z4 | ^C, ^D, ^C, ^D, |]
+  w: Hea-vy arm, drop! Float up and rest.

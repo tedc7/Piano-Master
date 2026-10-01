@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.28 | Oct 1, 2026 | Two of our own studies are never duplicates of each other (the melody check is for imports); words for ten wordless warm-ups through the live-song update flow |
 | v0.27 | Sep 30, 2026 | One song library: every song in the server's library through the review list, the map naming only approved songs, the 108 built-in songs seeded once; updating a live song (Needs improvement, the fix as an update, approved in place; Diagnostics on current notes only); library re-analysis after a map change built; letter names under the note heads |
 | v0.26 | Sep 30, 2026 | From a review of the code against this document: the file moved to `docs/architecture.md` with this change log; the keyboard decided (88 velocity-sensitive keys, sustain pedal); work requests, vocal-style changes, wait mode, the dark theme, the AI advisor (M9), concept videos and the Level 1 and 2 maps moved to potential features; content loading, library re-analysis, the coverage report and Home's stars described as built |
 | v0.25 | Sep 30, 2026 | No method-book links in the repository (book pages in a private file); one concept per Journey bubble: 46 Prep A skills with one Explain each and their own practice songs (2 to 4, 108 core pieces); concept type labels; skills for ideas the notes can't show; dynamic marks drawn and played |
@@ -22,6 +23,12 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.28 (Oct 1, 2026)
+
+From the first use of Needs improvement on live songs:
+- **Melody fingerprint (10.8):** two of our own songs (`license.composition: original`) are never checked against each other, at intake or in `import_song.py check`. With words on both hands, Bubble Hands' melody became the same two-black-key alternation as Sit Tall's, and intake would have refused its update as "the same song". The check stays for every import.
+- **Words for ten songs:** the parent asked for words on ten wordless warm-ups and studies; they went through the update flow (Needs improvement, fixed and resubmitted under the same ids, waiting as updates in the review list).
 
 ## v0.27 (Sep 30, 2026)
 

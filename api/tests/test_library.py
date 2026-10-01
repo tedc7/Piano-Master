@@ -360,3 +360,13 @@ def test_diagnostics_reads_only_attempts_on_the_current_notes(client, parent):
         assert len(diagnostics.load_obs(con, sid, date.today(), versions={"pa1": "lib-new"})) == 1
     finally:
         con.close()
+
+
+def test_two_of_our_own_studies_are_never_duplicates(client, parent, skill):
+    """v0.27: studies on a few keys share their melody's shape by design; the duplicate check is for imports."""
+    mine = lambda pid: {**item(pid, pid.title()), "info": {**item(pid)["info"], "license": {"composition": "original", "edition": "original"}}}
+    approve_all(client, parent, skill, mine("study-one"))
+    twin = client.post("/api/skill/packages", json={"name": "b", "items": [mine("study-two")]}, headers=skill).json()["items"][0]
+    assert twin["accepted"], twin
+    copy = client.post("/api/skill/packages", json={"name": "b", "items": [item("copied-song", "Copied")]}, headers=skill).json()["items"][0]
+    assert not copy["accepted"] and "the same song as" in copy["errors"][0]          # an import still is

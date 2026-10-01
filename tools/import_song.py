@@ -145,6 +145,13 @@ def norm(s: str | None) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
 
 
+def original(meta: dict) -> bool:
+    """Our own music, written for the map: two of these are never duplicates of each other (v0.27).
+    Studies on two or three keys can't help sharing their melody's shape, and the duplicate check
+    is there for imported songs (the same tune twice)."""
+    return (meta.get("license") or {}).get("composition") == "original"
+
+
 def library_prints() -> dict[str, tuple[str, set[str]]]:
     """Fingerprints of every piece in the library: {id: (song key, fingerprint)}."""
     out = {}
@@ -170,6 +177,7 @@ def check_files(files: list[Path]) -> list[dict]:
     skills, parsed = skill_map()
     deleted = yaml.safe_load(DELETED.read_text()) if DELETED.exists() else []
     lib = library_prints()
+    own_ids = {f.stem for f in (CONTENT / "pieces").glob("*.yaml") if original(yaml.safe_load(f.read_text()) or {})}
     results, prints = [], {}
     for f in files:
         pid = f.stem
@@ -211,8 +219,10 @@ def check_files(files: list[Path]) -> list[dict]:
         r["errors"] += bar_problems(nota)
         fp = fingerprint.fingerprint(nota)
         prints[pid] = (meta.get("song", pid), fp)
+        if original(meta):
+            own_ids.add(pid)
         for other, (song, ofp) in list(lib.items()) + [(k, v) for k, v in prints.items() if k != pid]:
-            if other == pid or song == meta.get("song", pid):
+            if other == pid or song == meta.get("song", pid) or (pid in own_ids and other in own_ids):
                 continue
             v = fingerprint.verdict(fingerprint.similarity(fp, ofp))
             if v:

@@ -1,4 +1,4 @@
-# Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music and words (words added at the parent's request).
 # A round hand, as if it holds a bubble: firm fingertips, two taps on each key.
 title: "Warm-up: Bubble Hands"
 composer: Piano-Master
@@ -24,4 +24,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !2!^C ^C !3!^D ^D | ^C ^C ^D ^D | z4 | z4 | ^C ^D ^C ^D | ^C ^D ^C ^C | z4 | z4 |]
+  w: Hold a bub-ble in my right hand, round and gen-tle, don't let it pop!
   [V:LH] z4 | z4 | !3!^C, ^C, !2!^D, ^D, | ^C, ^C, ^D, ^D, | z4 | z4 | ^C, ^D, ^C, ^D, | ^C, ^D, ^C, ^C, |]
+  w: Hold a bub-ble in my left hand, round and gen-tle, don't let it pop!

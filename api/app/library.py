@@ -286,9 +286,12 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
                 (norm(d["title"]) == norm(p["title"]) and norm(d["composer"]) == norm(p.get("composer"))):
             errors.append(f"deleted by the parent: {d['title']}" + (f" ({d['deleted_reason']})" if d["deleted_reason"] else "") +
                           "; don't offer it again (the parent can send it back for improvement from the review list)")
+    ours = lic.get("composition") == "original"
     for oid, o in lib.items():
         if o["song"] == song or oid == pid:
             continue                         # another arrangement of the same song, or the live one it updates
+        if ours and (o["info"].get("license") or {}).get("composition") == "original":
+            continue                         # two of our own studies: alike by design on a few keys, never a copy
         score = fingerprint.similarity(prints, set(o.get("fingerprint") or []))
         verdict = fingerprint.verdict(score)
         if verdict == "same song" or set(src_ids) & set(o.get("sourceIds") or []):

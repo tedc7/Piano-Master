@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.27** · Sep 30, 2026
+**Version 0.28** · Oct 1, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -1217,7 +1217,7 @@ Used to catch duplicates and deleted songs, even in a different key, tempo, or a
 2. **Intervals:** the sequence of pitch steps between consecutive melody notes, in semitones. This ignores key and tempo.
 3. **Fingerprint:** the set of all runs of 6 consecutive intervals, stored as hashes. A song's fingerprint is the union over its arrangements.
 4. **Similarity:** shared runs ÷ runs in the smaller fingerprint. This handles a short excerpt against a full song.
-5. **Rules (first version, tuned in M7 against known duplicates; v0.27: a run of one repeated note doesn't count, and a melody of fewer than 3 runs gets no verdict, after beginner studies on Middle C matched each other):** 0.8 or higher → treated as the same song (a deleted song is rejected; a duplicate is rejected with a note); 0.6 to 0.8 → flagged "possible duplicate" for the parent. A match on source id, or on normalized title plus composer, also counts.
+5. **Rules (first version, tuned in M7 against known duplicates; v0.27: a run of one repeated note doesn't count, and a melody of fewer than 3 runs gets no verdict, after beginner studies on Middle C matched each other; v0.28: two of our own songs, both with the `original` composition license, are never checked against each other, since studies on two or three keys share their shape by design):** 0.8 or higher → treated as the same song (a deleted song is rejected; a duplicate is rejected with a note); 0.6 to 0.8 → flagged "possible duplicate" for the parent. A match on source id, or on normalized title plus composer, also counts.
 
 ### 10.9 Skill API (dev box to server)
 
@@ -1344,11 +1344,18 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill, with FluidSynth backings for its ensemble pieces
 - [ ] Make the Staff draggable/movable by the student, so the student could drag the Staff backwards or forwards to the position that they want, and the app would start practice/listen (whichever mode it was already in) from that point.
 - [x] Some of the songs have the note Letter written in the middle of the note head.  This makes the notes look strange and makes it difficult to distinguish a Whole Note from a Half Note, etc.  Can these Letter helpers be added just below the note heads, similar to how the finger numbers are added above the note heads?  If so, lets make that change, then the note heads will look the same whether or not those helpers are present.
-- [ ] What is the mechanism that decides whether we add Finger Number or Note Letter next to the note head in a Staff display?  Is this based on a certain skill level, where these automatically disappear after a threshold is reached?  Or is it just based on the reference method-book material? Are these (Finger Numbers, Note Letters) embedded in a pre-generated staff image, or are these dynamically generated as the staff is displayed?  Decide what mechanism we will use to take off Finger Numbers and Note Letters from the Staff.
+- [ ] No mechanism decides whether we add Finger Number or Note Letter next to the note head in a Staff display. We should have the early Prep A songs default to having them on as aids, but later levels should default to having them off.  Currently we don't know which is more helpful for kids learning.  In the Gear pop-up 'Songs Settings', add a checkbox to turn each individual song's Finger Number and Note Letter On/Off.
 - [ ] When Back button is pressed from the Song page, can the previous page that the user was on (from which they had trigger to go to that Song page) be displayed in the same state as it was left (i.e. same scroll position, same pop-ups visible, etc)?  This makes it much easier for the user to go back and move to the next song, etc, as needed rather than trying to find where they were previously.
 - [ ] Update all curriculum core songs which currently have lyrics but no vocals, so that these go through YuE2 to generate vocals to go with them
 - [ ] Add Backing instruments for curriculum core songs which have no backing.  This is an optional item that we could do, but we need to decide between the options: a) write simple backings and render them with the media skill; b) for well-known songs there might be chords already written and available for free.
 - [ ] How is metronome handled - is that automatically On for all songs, or auto-On up until a certain skill level, or configurable in Settings?  We should probably make this sticky per student, so if a student turns it On, then it will stay On for that student for all songs, until they turn it Off at which point it would stay Off for all songs.
+- [ ] Add skill or define workflow to copy the current curriculum songs from the server database, and file them in the repo so they could be installed with the app during a fresh install.
+- [ ] In the Journey Map, there are double Bubbles at every Skill node, the first bubble is the lesson concept and the second bubble is the practice songs for that lesson.  But since there is always a lesson concept with every practice session, and we can already access the lesson from the main practice bubble anyway, why do we need that first 'light-bulb' concept bubble shown on the map?  It seems like this 'light-bulb' bubble should be removed to simplify the look of the map.
+- [ ] On the Journey Map, can you add the ability so the user can tap anywhere on the non-popup area of the app to close the currently display Skill pop-up?
+- [ ] Add a set of standard traditional Christmas songs to the library.
+- [ ] When browsing the Song Library, each song shows "Coming soon - learn" and then a list of the skills the student needs to learn to unlock that song.  But for the later songs, this list is very long which makes this song library look awkward.  Instead, have each song list the last remaining single skill that unlocks that song.  Obviously the student will have to work through the whole Journey Map to get to that skill to unlock it.  This means that each Song in the library should list a single skill for the unlock condition.
+- [ ] Add feature so a tap outside the Gear icon 'Song Settings' pop-up will close that pop-up and go back to the Song play page.
+- [ ] 
 
 
 ## 13. Later-phase design (placeholders)
