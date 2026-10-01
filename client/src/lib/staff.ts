@@ -4,7 +4,7 @@ import {
   Accidental, Articulation, Beam, Dot, Formatter, FretHandFinger, GraceNote, GraceNoteGroup, Modifier, Renderer, Stave,
   StaveConnector, StaveNote, StaveTie, Tuplet, Voice, type RenderContext, type Tickable,
 } from "vexflow/bravura";
-import type { Grace, Notation, Spelled } from "./types";
+import type { Grace, Notation, Piece, Spelled } from "./types";
 import type { Timeline, TimelineNote } from "./timeline";
 
 export interface StaffLayout {
@@ -95,7 +95,30 @@ interface MeasureDraw {
   change: boolean;
 }
 
-export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, boxHeight: number): StaffLayout {
+/** The helpers drawn on the staff: finger numbers above (right hand) or below (left hand) the heads,
+ *  and letter names under them; `blackKeys` names the black keys too (C♯, B♭). */
+export interface Helpers { fingers: boolean; letters: boolean; blackKeys?: boolean }
+
+/** A song's helpers (v0.29): the parent's choice for the song (Song and settings, for every child),
+ *  or by default finger numbers in Prep A songs and drills, and letter names where the song's file
+ *  asks for them (the pre-staff songs, Prep A Units 1 to 3). By default black keys have no letter
+ *  (the early units teach them by their groups, and their names come with sharps and flats); when
+ *  the parent switches letter names on for a song, its black keys are named too, so the switch
+ *  always shows something, even on a song played only on black keys. Such a song starts with letter
+ *  names off, since by default it would have none to show. */
+export function helpersFor(p: Piece): Helpers {
+  const whiteKeys = p.notation.notes.some((n) => !n.spelled.alter);
+  return {
+    fingers: p.display?.fingers ?? (!p.level || p.level === "Prep A"),
+    letters: p.display?.letters ?? (!!p.notation.header.letters && whiteKeys),
+    blackKeys: p.display?.letters === true,
+  };
+}
+
+const ACC_TEXT: Record<string, string> = { "-2": "𝄫", "-1": "♭", "1": "♯", "2": "𝄪" };
+
+export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, boxHeight: number,
+                            show: Helpers = { fingers: true, letters: !!nota.header.letters }): StaffLayout {
   const h = nota.header;
   const staves = h.staves;
   const grand = staves.length > 1;
@@ -216,7 +239,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
               }
               if (keys.some((x) => x.fermata)) n.addModifier(new Articulation("a@a").setPosition(dir < 0 ? 4 : 3), 0);
               keys.forEach((x, ki) => {
-                if (x.finger) {
+                if (x.finger && show.fingers) {
                   const f = new FretHandFinger(String(x.finger));
                   f.setPosition(x.hand === "L" ? Modifier.Position.BELOW : Modifier.Position.ABOVE);
                   n.addModifier(f, ki);
@@ -397,16 +420,16 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     if (!vf) return null;
     return vf.noteHeads[keyIdx[n.id]]?.getSVGElement() ?? null;
   });
-  // a pre-staff piece: each white key's letter name just under its note head, so the heads look the
+  // letter names (a pre-staff piece, or the parent's choice): each white key's letter name just under its note head, so the heads look the
   // same with or without it and a half note still reads as a half note. The right hand's finger
   // number is above the head; the left hand's is below it, so there the letter goes under the
   // finger number. Two notes at once in one hand stack their letters under the lower head, high to
-  // low like the heads. (Black keys have no letter at this level: their names come with sharps and flats.)
-  if (h.letters) {
+  // low like the heads. Black keys are named (C♯) only when the parent switched letter names on for the song.
+  if (show.letters) {
     const under = new Map<StaveNote, Map<string, TimelineNote[]>>();
     for (const n of tl.notes) {
       const vf = vfFirst[n.id];
-      if (!vf || n.tieContinuation || n.spelled.alter) continue;
+      if (!vf || n.tieContinuation || (n.spelled.alter && !show.blackKeys)) continue;
       const byHand = under.get(vf) ?? new Map<string, TimelineNote[]>();
       byHand.set(n.hand, [...(byHand.get(n.hand) ?? []), n]);
       under.set(vf, byHand);
@@ -416,10 +439,11 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
         try {
           ns.sort((a, b) => b.pitch - a.pitch);
           const lowest = Math.max(...ns.map((n) => vf.getYs()[keyIdx[n.id]]));
-          const base = lowest + (hand === "L" && ns.some((n) => n.finger) ? 29 : 18);
-          const dx = vf.getStemDirection() < 0 ? 4 : 0;      // a stem down the head's left side: clear of it
+          const base = lowest + (hand === "L" && show.fingers && ns.some((n) => n.finger) ? 29 : 18);
+          // a stem down the head's left side: clear of it (a named black key is wider)
+          const dx = vf.getStemDirection() < 0 ? (ns.some((n) => n.spelled.alter) ? 8 : 4) : 0;
           ns.forEach((n, i) => {
-            const el = addText(n.spelled.step.toUpperCase(), centerX(vf) + dx, base + i * 13, 13, "bold", LETTER_FILL);
+            const el = addText(n.spelled.step.toUpperCase() + (ACC_TEXT[String(n.spelled.alter)] ?? ""), centerX(vf) + dx, base + i * 13, 13, "bold", LETTER_FILL);
             el.setAttribute("pointer-events", "none");
             el.classList.add("note-letter");
           });

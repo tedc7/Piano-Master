@@ -8,7 +8,7 @@ export type SkillStatus = "locked" | "current" | "passed" | "mastered";
 export interface SkillProgress {
   skillId: string;
   status: SkillStatus;
-  lessonOpen: boolean;            // the lightbulb opens when the prerequisites are passed
+  lessonOpen: boolean;            // the concept lesson opens when the prerequisites are passed
   conceptDone: boolean;
   hold: boolean;                  // needs a capability this setup lacks, e.g. a pedal
   mastery: number | null;

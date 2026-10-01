@@ -100,6 +100,8 @@ export interface Piece {
   keyboardSize?: 61 | 88;
   notation: Notation;
   media: Media | null;
+  /** The parent's choice of helpers on this song's staff, for every child (v0.29); null = the default */
+  display?: { fingers: boolean | null; letters: boolean | null };
 }
 
 export interface PieceSummary {

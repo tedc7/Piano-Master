@@ -73,7 +73,7 @@ export class Player {
   /** The section being played (phrase indices, inclusive), or null for the whole piece. */
   section: [number, number] | null = null;
   state: State = "idle";
-  /** The metronome for this visit, overriding the song's remembered choice (a remedy item's). */
+  /** The metronome for this visit, overriding the student's remembered choice (a remedy item's). */
   forceClick: boolean | null = null;
   private attempt: Attempt;
   private clock: Clock | null = null;
@@ -475,7 +475,7 @@ export class Player {
     const u = this.tl.beatUnit;
     const bar = this.tl.barLength;
     const pick = this.piece.notation.header.pickupBeats;
-    const clickOn = this.forceClick ?? this.settings().click[this.piece.id] ?? !this.piece.media;
+    const clickOn = this.forceClick ?? this.settings().metronome ?? !this.piece.media;
     for (;;) {
       const t = this.timeOf(this.nextClick);
       if (t > horizon) break;

@@ -370,3 +370,15 @@ def test_two_of_our_own_studies_are_never_duplicates(client, parent, skill):
     assert twin["accepted"], twin
     copy = client.post("/api/skill/packages", json={"name": "b", "items": [item("copied-song", "Copied")]}, headers=skill).json()["items"][0]
     assert not copy["accepted"] and "the same song as" in copy["errors"][0]          # an import still is
+
+
+def test_a_songs_finger_numbers_and_letters_are_switched_for_every_child(client, parent):
+    assert client.get("/api/library/pieces/pa1").json()["display"] == {"fingers": None, "letters": None}
+    assert client.put("/api/library/pieces/pa1/display", json={"letters": True}).status_code == 401
+    r = client.put("/api/library/pieces/pa1/display", json={"letters": True}, headers=parent)
+    assert r.json()["display"] == {"fingers": None, "letters": True}
+    client.put("/api/library/pieces/pa1/display", json={"fingers": False}, headers=parent)
+    assert client.get("/api/library/pieces/pa1").json()["display"] == {"fingers": False, "letters": True}
+    client.put("/api/library/pieces/pa1/display", json={"letters": None}, headers=parent)      # back to the default
+    assert client.get("/api/library/pieces/pa1").json()["display"] == {"fingers": False, "letters": None}
+    assert client.put("/api/library/pieces/nope/display", json={"fingers": True}, headers=parent).status_code == 404

@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.28** · Oct 1, 2026
+**Version 0.29** · Oct 1, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -176,11 +176,11 @@ The app offers **Guided** practice (the daily session from the skill map) and **
 
 1. **Student picker:** large avatar cards, one per child, plus a small "Parent" button that asks for the PIN. Shows the full-screen reminder when needed (2.2).
 2. **Home:** two big buttons, "Today's Practice" (Guided) and "Free Play". Shows today's session as 3 to 5 cards, a progress ring toward today's target minutes, the streak, and the stars earned today.
-3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its lessons.
+3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its concept lesson and practice songs; a tap anywhere else closes them (v0.29).
 4. **Lesson intro:** a short interactive concept lesson, with an optional parent-approved video (see "Teaching concepts" below).
 5. **Play screen:** the core screen (below).
 6. **Result screen:** accuracy stars and timing stars (0.5 to 5), the trickiest measure, a small "practice mode" chip when practice aids were used (section 7.5), and "Practice tricky part", "Play again", "Next". After 3 tries at an item without passing, the main button becomes **"Try it another way"**, which opens gentle practice choices (8.1).
-7. **Song library (Free Play):** approved, library-ready songs (6.8), grouped by level. Songs further along the map show "Coming soon" with the skills still to reach. Favorites heart.
+7. **Song library (Free Play):** approved, library-ready songs (6.8), grouped by level. Songs further along the map show "Coming soon" with the one skill that unlocks them: the last one still to reach, since the map leads there (v0.29; the whole list of skills was too long for later songs). Favorites heart.
 8. **My Progress:** the student's own report: skills mastered, star trends, practice days, strengths and "working on" areas, written in kid-friendly words. Same data the parent sees.
 9. **Parent mode (PIN):** see below.
 
@@ -222,7 +222,7 @@ Every new concept (for example the I chord) is taught inside the app by a **conc
 | Check | 1 to 2 quick questions (tap the right keys on screen or on the piano); wrong answers loop back to Show |
 | Watch (optional) | A parent-approved video on the topic, if one has been added. The card is built; the videos are a potential feature (section 14) |
 
-On the Journey map, a concept lesson is a small **lightbulb bubble** directly before the skill that practices it. **One concept per bubble (v0.25):** each skill teaches one idea, with one Explain card, and its bubble holds only its own practice songs (6.8); the bubble, its sheet and the Explain card show the kind of idea (Notes, Rhythm, Technique, Theory, Musicianship). The lightbulb opens when the skill's prerequisites are passed; finishing the concept lesson makes that skill Current. The student can reopen any lightbulb later as a refresher.
+On the Journey map, a skill's concept lesson opens from its bubble: the bubble's sheet starts with the concept lesson, then its practice songs. (Until v0.29 each bubble also had a small lightbulb bubble before it for the lesson; every skill has one lesson, reached from the sheet anyway, so the second bubble only crowded the map.) **One concept per bubble (v0.25):** each skill teaches one idea, with one Explain card, and its bubble holds only its own practice songs (6.8); the bubble, its sheet and the Explain card show the kind of idea (Notes, Rhythm, Technique, Theory, Musicianship). The concept lesson opens when the skill's prerequisites are passed (the bubble shows Ready to learn); finishing it makes that skill Current. The student can reopen any concept lesson later as a refresher.
 
 **Concept videos (optional, never blocking; a potential feature since v0.26, section 14):** videos are found, downloaded, trimmed and converted by the **Claude concept-video skill** and submitted for the parent's approval like songs (section 10.6). If no video is added, the concept lesson works on its own, so a busy week never stalls the child.
 
@@ -235,13 +235,14 @@ On the Journey map, a concept lesson is a small **lightbulb bubble** directly be
 - **Lyrics line:** words shown under the staff, each syllable lighting up with its note (karaoke style). Songs with several verses show the current verse.
 - **Note feedback:** green for correct, amber for right note but off-time, red flash plus the note name for wrong keys. No harsh sounds. (A color-blind option is a potential feature, section 14.)
 - **On-screen keyboard** (bottom 30%): 2 to 4 octaves around the song's range. Target key highlighted; pressed keys light up live from MIDI. Hints fade out as levels rise.
-- **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9).
+- **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9). Finger numbers and letter names (under the heads) are switched on or off for each song by the parent, for every child, in Song and settings (v0.29). By default Prep A songs show finger numbers and later levels don't, and letter names show on the pre-staff songs (Prep A Units 1 to 3), on white keys only: the early units teach black keys by their groups. When the parent switches letter names on for a song, its black keys are named too (C♯, B♭), so the switch also works on a song played only on black keys; such a song starts with letter names off. Which helps children more is still being learned, so each song can be changed.
 - **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
-- **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song), the two mode buttons (each starts and pauses its mode), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, metronome on/off (v0.18).
+- **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song, as it was left: the same scroll position and the same pop-up open, v0.29; the tab bar still opens every screen fresh), the two mode buttons (each starts and pauses its mode), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, metronome on/off (v0.18).
+- **Song and settings (the gear, parent mode only):** Needs improvement (10.7), the song's finger numbers and letter names, and the device and parent settings. A tap outside closes it and does nothing else (v0.29).
 - **Modes:** Play (the default: play-along with smooth automatic rewind, below) and Listen (the app plays it, with accompaniment and vocals). Either runs over all bars or a chosen section, which then repeats (the section loop; v0.18). The screen opens paused in Play mode.
 - **Rewind button:** while playing, glides back a set number of bars (2 by default, from the start of the current bar; never before the section start) and plays on after the count-in; while paused, moves the resume point back; after the end, returns to the start. In Play mode it counts as a rewind for the practice-aid factor (7.5). Wait mode is a potential feature (section 14).
 - **Smooth rewind:** see "Play and smooth rewind" below; section loops use the same glide.
-- **Count-in and metronome:** visual beat dots plus an optional click.
+- **Count-in and metronome:** visual beat dots plus an optional click. The metronome is one choice per student for every song (v0.29): once the student turns it on, it stays on for every song until they turn it off. Until they first choose, songs with singing play without it. A Diagnostics remedy can turn it on for its item (8.8). The count-in always clicks.
 
 ### Play and smooth rewind
 
@@ -422,7 +423,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 
 | Entity | Key fields |
 | --- | --- |
-| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, the app playing the other hand in one-hand practice, vocals off for songs\[\]) |
+| Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, the app playing the other hand in one-hand practice, vocals off for songs\[\], tempo preset per song, metronome on/off for every song (v0.29)) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
 | DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
@@ -751,7 +752,7 @@ Each skill has one of four states, in order:
 | Passed | Good enough to move on | Any completed attempt of the whole item earns 3 or more accuracy stars (after the practice-aid factor, 7.5). **Rhythm-track skills** also need 3 or more timing stars in the same attempt (rhythm-tapping items, which have timing stars only, need 3 timing stars) |
 | Mastered | Learned securely | The mastery rule in 8.2 |
 
-When all of a skill's prerequisites are passed, its concept lesson (lightbulb) opens and the next Guided session schedules it in the New slot. Finishing the concept lesson makes the skill Current.
+When all of a skill's prerequisites are passed, its concept lesson opens (the bubble shows Ready to learn) and the next Guided session schedules it in the New slot. Finishing the concept lesson makes the skill Current.
 
 **No minimum practice to pass, and no cap on new skills per day.** Some skills are easy and some are hard; a student who passes a skill quickly moves on straight away, and when a Current skill passes mid-session, the New slot continues with the next available skill. Spaced review and polish practice (8.3) then bring each passed skill up to mastery over time, tracked by its stars.
 
@@ -977,7 +978,7 @@ One Parental Controls area (in parent mode) handles everything a parent approves
 - **Content:** the coverage report and each piece's song analysis (6.8), and the list of songs whose analysis changed after a map change (6.10); content runway (8.10). Content itself is loaded by deploying it (6.10).
 - **Requests (potential feature, section 14):** queue work for the Claude skills on the dev box: find songs for a genre or for coverage gaps, import a file the parent uploads, change a song's vocal style, or find a concept video. Each request shows its status and links to the staged batch it produced.
 
-**Student choice:** within allowed songs, students pick freely. Library-ready songs can be played; songs further along the map show "Coming soon" with the skills still to reach.
+**Student choice:** within allowed songs, students pick freely. Library-ready songs can be played; songs further along the map show "Coming soon" with the one skill that unlocks them (v0.29).
 
 ### 10.2 Sources
 
@@ -1200,7 +1201,7 @@ Below the waiting list, **Deleted songs** holds the songs never allowed here and
 A song stays on the list until the parent decides on it. (The first version approved the selected songs of a batch and discarded the rest in one step; reviewing one song at a time, the parent lost four songs they hadn't listened to yet.)
 
 **Updating a live song (v0.27).** Songs in use keep turning up things to improve, so any library song can be updated without leaving the children:
-1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …"). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song.
+1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …") once the song has moved past its start (v0.29). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song.
 2. **Fix:** the skills read it with the other feedback (`GET /api/skill/feedback` marks it live; `import_song.py feedback` names the song's source and the submit command). Fixing it is manual for now, in a Claude Code session on the dev box.
 3. **Resubmit:** intake takes the fix under the same id while the request is open (otherwise an id in the library is refused). It replaces the request in the review list and keeps the link to the live song.
 4. **Review:** it waits as **Update to a live song**, with the note and what changed from the live song: the bars whose notes differ, the tempo, the words, new media, and a warning when the skills it needs changed (a child who hasn't reached them would lose the song). **▶ Live version** plays the live one to compare. The decisions are **Approve update**, **Needs more work** (another note; the live song still plays) and **Discard update** (the live song stays as it is). **Never allow** isn't offered: it would delete the live song.
@@ -1344,18 +1345,18 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill, with FluidSynth backings for its ensemble pieces
 - [ ] Make the Staff draggable/movable by the student, so the student could drag the Staff backwards or forwards to the position that they want, and the app would start practice/listen (whichever mode it was already in) from that point.
 - [x] Some of the songs have the note Letter written in the middle of the note head.  This makes the notes look strange and makes it difficult to distinguish a Whole Note from a Half Note, etc.  Can these Letter helpers be added just below the note heads, similar to how the finger numbers are added above the note heads?  If so, lets make that change, then the note heads will look the same whether or not those helpers are present.
-- [ ] No mechanism decides whether we add Finger Number or Note Letter next to the note head in a Staff display. We should have the early Prep A songs default to having them on as aids, but later levels should default to having them off.  Currently we don't know which is more helpful for kids learning.  In the Gear pop-up 'Songs Settings', add a checkbox to turn each individual song's Finger Number and Note Letter On/Off.
-- [ ] When Back button is pressed from the Song page, can the previous page that the user was on (from which they had trigger to go to that Song page) be displayed in the same state as it was left (i.e. same scroll position, same pop-ups visible, etc)?  This makes it much easier for the user to go back and move to the next song, etc, as needed rather than trying to find where they were previously.
+- [x] No mechanism decides whether we add Finger Number or Note Letter next to the note head in a Staff display. We should have the early Prep A songs default to having them on as aids, but later levels should default to having them off.  Currently we don't know which is more helpful for kids learning.  In the Gear pop-up 'Songs Settings', add a checkbox to turn each individual song's Finger Number and Note Letter On/Off.
+- [x] When Back button is pressed from the Song page, can the previous page that the user was on (from which they had trigger to go to that Song page) be displayed in the same state as it was left (i.e. same scroll position, same pop-ups visible, etc)?  This makes it much easier for the user to go back and move to the next song, etc, as needed rather than trying to find where they were previously.
 - [ ] Update all curriculum core songs which currently have lyrics but no vocals, so that these go through YuE2 to generate vocals to go with them
 - [ ] Add Backing instruments for curriculum core songs which have no backing.  This is an optional item that we could do, but we need to decide between the options: a) write simple backings and render them with the media skill; b) for well-known songs there might be chords already written and available for free.
-- [ ] How is metronome handled - is that automatically On for all songs, or auto-On up until a certain skill level, or configurable in Settings?  We should probably make this sticky per student, so if a student turns it On, then it will stay On for that student for all songs, until they turn it Off at which point it would stay Off for all songs.
+- [x] How is metronome handled - is that automatically On for all songs, or auto-On up until a certain skill level, or configurable in Settings?  We should probably make this sticky per student, so if a student turns it On, then it will stay On for that student for all songs, until they turn it Off at which point it would stay Off for all songs.
 - [ ] Add skill or define workflow to copy the current curriculum songs from the server database, and file them in the repo so they could be installed with the app during a fresh install.
-- [ ] In the Journey Map, there are double Bubbles at every Skill node, the first bubble is the lesson concept and the second bubble is the practice songs for that lesson.  But since there is always a lesson concept with every practice session, and we can already access the lesson from the main practice bubble anyway, why do we need that first 'light-bulb' concept bubble shown on the map?  It seems like this 'light-bulb' bubble should be removed to simplify the look of the map.
-- [ ] On the Journey Map, can you add the ability so the user can tap anywhere on the non-popup area of the app to close the currently display Skill pop-up?
+- [x] In the Journey Map, there are double Bubbles at every Skill node, the first bubble is the lesson concept and the second bubble is the practice songs for that lesson.  But since there is always a lesson concept with every practice session, and we can already access the lesson from the main practice bubble anyway, why do we need that first 'light-bulb' concept bubble shown on the map?  It seems like this 'light-bulb' bubble should be removed to simplify the look of the map.
+- [x] On the Journey Map, can you add the ability so the user can tap anywhere on the non-popup area of the app to close the currently display Skill pop-up?
 - [ ] Add a set of standard traditional Christmas songs to the library.
-- [ ] When browsing the Song Library, each song shows "Coming soon - learn" and then a list of the skills the student needs to learn to unlock that song.  But for the later songs, this list is very long which makes this song library look awkward.  Instead, have each song list the last remaining single skill that unlocks that song.  Obviously the student will have to work through the whole Journey Map to get to that skill to unlock it.  This means that each Song in the library should list a single skill for the unlock condition.
-- [ ] Add feature so a tap outside the Gear icon 'Song Settings' pop-up will close that pop-up and go back to the Song play page.
-- [ ] 
+- [x] When browsing the Song Library, each song shows "Coming soon - learn" and then a list of the skills the student needs to learn to unlock that song.  But for the later songs, this list is very long which makes this song library look awkward.  Instead, have each song list the last remaining single skill that unlocks that song.  Obviously the student will have to work through the whole Journey Map to get to that skill to unlock it.  This means that each Song in the library should list a single skill for the unlock condition.
+- [x] Add feature so a tap outside the Gear icon 'Song Settings' pop-up will close that pop-up and go back to the Song play page.
+- [ ] For the Play page, the vertical white space between the header bar and the Treble Staff seems to be more than it needs to be.  Can this vertical white space be cut in roughly half?  But if there is a good reason (e.g. sometimes an important musical symbol is shown there), then we don't need to do this.
 
 
 ## 13. Later-phase design (placeholders)
@@ -1445,6 +1446,9 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Hymn backing (v0.23) | Hymns are typed in four parts with `play: melody`; the child plays the melody and the backing plays the rest | The real harmony, as in the Amazing Grace test, without a second file |
 | Import batches (v0.21, updated v0.27) | Batches wait in `content/incoming/` and go to the review list (`submit`); approved songs' sources are promoted into `content/pieces/` | Every song's source in git; the parent approves in the app |
 | One song library (v0.27) | Every song is in the server's library and reaches it through the review list, whatever made it; the map names its practice songs by id, and may name only approved songs; the 108 songs built into the app before were seeded into the library once, as approved | Songs written for the curriculum and imported songs are the same to the family and the app; any song can become a practice song at a later level; one way to fix a song in use |
+| Song helpers (v0.29) | Finger numbers and letter names on or off for each song, set by the parent for every child (Song and settings; `song_display`, migration 010); by default finger numbers in Prep A, letter names on the pre-staff songs | Which helps children more isn't known yet; it's a property of the song, so one choice covers every child |
+| Metronome (v0.29) | One choice per student for every song, not per song | A child who wants the click shouldn't have to turn it on song by song |
+| Back from a song (v0.29) | The screen that opened the song comes back as it was left (scroll, open pop-up); one bubble per Journey skill (no lightbulb); pop-ups close on a tap outside | Moving on to the next song is easier when the child doesn't have to find their place again |
 | Updating a live song (v0.27) | Needs improvement on any song (gear pop-up, parent mode); the fix comes back under the same id as an update, with what changed; approving replaces the song in place; Diagnostics reads only attempts on the current notes | The children keep the live song until the fix is approved, and keep their progress after |
 | Song analysis (v0.20) | Each thing used is credited to the earliest skill allowing it; anything no skill allows is beyond the map and never unlocks | Replaces hand-assigned songs; a library song can't open before the map teaches what it needs |
 | Re-run analysis (v0.20, updated v0.26) | The map is checked against every song source in every content build; library songs at intake and approval, and again automatically when a deploy changes the map (6.10, v0.27) | Content ships with the deploy, so there is no Load content or Re-run button; the library on the server (v0.23) is what needs re-analysis |

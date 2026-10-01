@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.29 | Oct 1, 2026 | Daily-use fixes: Back returns to the screen as it was left; one bubble per Journey skill (no lightbulb); pop-ups close on a tap outside; a locked song names the one skill that unlocks it; the metronome one choice per student; finger numbers and letter names switched per song by the parent |
 | v0.28 | Oct 1, 2026 | Two of our own studies are never duplicates of each other (the melody check is for imports); words for ten wordless warm-ups through the live-song update flow |
 | v0.27 | Sep 30, 2026 | One song library: every song in the server's library through the review list, the map naming only approved songs, the 108 built-in songs seeded once; updating a live song (Needs improvement, the fix as an update, approved in place; Diagnostics on current notes only); library re-analysis after a map change built; letter names under the note heads |
 | v0.26 | Sep 30, 2026 | From a review of the code against this document: the file moved to `docs/architecture.md` with this change log; the keyboard decided (88 velocity-sensitive keys, sustain pedal); work requests, vocal-style changes, wait mode, the dark theme, the AI advisor (M9), concept videos and the Level 1 and 2 maps moved to potential features; content loading, library re-analysis, the coverage report and Home's stars described as built |
@@ -23,6 +24,16 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.29 (Oct 1, 2026)
+
+From the family's first weeks of use (the Next steps list):
+- **Back from a song (3):** Back on the Play screen returns to the screen that opened the song as it was left: the same scroll position, the same Journey pop-up open, the library's filter. The tab bar still opens every screen fresh.
+- **Journey map (3):** one bubble per skill. The lightbulb bubble before each skill is gone; the concept lesson opens from the bubble's sheet, as it already could. A tap anywhere outside the sheet closes it.
+- **Song library (3, 10.1):** a locked song shows "Coming soon" with the one skill that unlocks it (the last still to reach), not the whole list.
+- **Metronome (3, 5):** one choice per student for every song (`Student.settings.metronome`, replacing the per-song `click`). Until the student first chooses, songs with singing play without it.
+- **Song helpers (3):** finger numbers and letter names on or off for each song, in Song and settings (parent mode), for every child (`song_display`, migration 010; `PUT /api/library/pieces/{id}/display`). By default finger numbers show in Prep A songs and not in later levels; letter names show on the pre-staff songs, as before, on white keys only. Letter names switched on by the parent name the black keys too (C♯), so the switch works on the 23 early songs played only on black keys, which start with it off. The song analysis still reads `letters` from the song's file, not this switch.
+- **Song and settings (3):** a tap outside closes it without starting anything. The Needs improvement note starts with a bar only once the song has moved past its start.
 
 ## v0.28 (Oct 1, 2026)
 

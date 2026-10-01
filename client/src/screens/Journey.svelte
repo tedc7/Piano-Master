@@ -1,19 +1,20 @@
 <script lang="ts">
   // Journey map (arch §3 screen 3, "Journey maps"): the branching skill map as a path of bubbles,
-  // left to right like the music, with a lightbulb (concept lesson) before each skill: one concept
-  // per bubble (v0.25), labelled with its type (Notes, Rhythm, Technique, Theory), and the bubble's
-  // own practice songs. Each
-  // bubble shows locked, ready to learn (its lightbulb open), current, passed or mastered, and
-  // two star rows; a refresh badge when it is due for review, and "Today" when it is in today's
-  // session. Tapping one shows its lesson and songs. In parent mode every bubble opens (the
-  // content preview). `test` draws a generated 200-bubble map, the M5 render test.
-  import { onMount } from "svelte";
+  // left to right like the music: one concept per bubble (v0.25), labelled with its type (Notes,
+  // Rhythm, Technique, Theory). Each bubble shows locked, ready to learn (its concept lesson open),
+  // current, passed or mastered, and two star rows; a refresh badge when it is due for review, and
+  // "Today" when it is in today's session. Tapping one shows its concept lesson and practice songs
+  // (v0.29: the lesson opens from there; the map has no separate lightbulb); a tap anywhere else
+  // closes it. In parent mode every bubble opens (the content preview). `test` draws a generated
+  // 200-bubble map, the M5 render test.
+  import { onMount, untrack } from "svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
   import { allowed, conceptType, handsLabel, loadContent, rulesFor, type Content, type Rules } from "../lib/content";
   import { isPassed, type Progress, type SkillProgress } from "../lib/progress";
+  import { keepView } from "../lib/keep";
   import { go } from "../lib/route";
   import type { PieceSummary, Skill, SkillMap } from "../lib/types";
 
@@ -23,7 +24,16 @@
 
   let content = $state<Content | null>(null);
   let error = $state("");
-  let open = $state<Skill | null>(null);
+  let openId = $state<string | null>(null);       // the bubble whose pop-up is showing
+  const open = $derived(openId ? content?.map.skills.find((s) => s.id === openId) ?? null : null);
+  let bodyEl = $state<HTMLElement>();
+  // back from a song: the map scrolled where it was, with the same pop-up open
+  keepView<string | null>(untrack(() => (test ? "journey/test" : "journey")), () => bodyEl, { get: () => openId, set: (v) => { openId = v; } });
+
+  /** A tap outside the pop-up and the bubbles closes the pop-up (a bubble opens its own). */
+  function tapOutside(e: MouseEvent): void {
+    if (openId && !(e.target as Element).closest?.(".sheet, .bubble")) openId = null;
+  }
 
   let frame = $state("");
 
@@ -92,7 +102,7 @@
     }));
   }
   type Shown = "locked" | "open" | "current" | "passed" | "mastered";
-  /** Locked, but with its lightbulb open: ready to learn. */
+  /** Locked, but with its concept lesson open: ready to learn. */
   const shown = (p: SkillProgress | undefined): Shown => (p?.status === "locked" && p.lessonOpen ? "open" : p?.status ?? "locked");
 
   // columns by depth (the longest prerequisite chain); within a column, rows follow the average row
@@ -130,7 +140,7 @@
   });
 
   function curve(a: { x: number; y: number }, b: { x: number; y: number }): string {
-    const x1 = a.x + BUBBLE / 2, y1 = a.y + BUBBLE / 2, x2 = b.x - 22, y2 = b.y + BUBBLE / 2, xm = (x1 + x2) / 2;
+    const x1 = a.x + BUBBLE / 2, y1 = a.y + BUBBLE / 2, x2 = b.x + 10, y2 = b.y + BUBBLE / 2, xm = (x1 + x2) / 2;
     return `M${x1},${y1} C${xm},${y1} ${xm},${y2} ${x2},${y2}`;
   }
 
@@ -150,13 +160,15 @@
   }
 </script>
 
+<svelte:document onclick={tapOutside} />
+
 <div class="screen">
   <Status title={test ? "Journey render test" : "Journey"}>
     {#if content}<span class="muted">{content.map.maps.map((m) => m.level).join(", ")}</span>{/if}
     {#if test}<span>{placed.length} bubbles{frame ? ` · ${frame}` : " · scrolling…"}</span>{/if}
   </Status>
 
-  <main class="body map-body">
+  <main class="body map-body" bind:this={bodyEl}>
     {#if error}<p class="notice error">{error}</p>{/if}
     {#if content?.map.placeholder && !test}
       <p class="muted note">Placeholder skill map, for testing.{app.parentMode ? " Parent mode: every bubble opens." : ""}</p>
@@ -174,9 +186,7 @@
         {@const pr = progress.get(p.skill.id)}
         {@const st = shown(pr)}
         <div class="node" style:left="{p.x}px" style:top="{p.y}px">
-          <button class="bulb" class:dim={st === "locked"} class:glow={st === "open"} disabled={!canOpen(p.skill)}
-                  onclick={() => go(`lesson/${encodeURIComponent(p.skill.id)}`)} aria-label="Concept lesson: {p.skill.name}">💡</button>
-          <button class="bubble {st}" onclick={() => { open = p.skill; }} aria-label="{p.skill.name}: {statusText[st]}">
+          <button class="bubble {st}" onclick={() => { openId = p.skill.id; }} aria-label="{p.skill.name}: {statusText[st]}">
             <span>{icon[st]}</span>
           </button>
           {#if pr?.due}<span class="badge" title="Time to review">🔁</span>
@@ -198,7 +208,7 @@
     <div class="sheet">
       <div class="sheet-head">
         <h2>{open.name}</h2>
-        <button class="quiet" onclick={() => { open = null; }}>Close</button>
+        <button class="quiet" onclick={() => { openId = null; }}>Close</button>
       </div>
       <p class="muted"><span class="type" style:background={conceptType(open.track).color}>{conceptType(open.track).label}</span>
         {statusText[st]}{open.unit ? ` · ${open.unit}` : ""}</p>
@@ -211,7 +221,7 @@
       {#if st === "locked" && !app.parentMode}
         <p class="notice">Unlocks after: {needs(open)}</p>
       {:else if st === "open" && !app.parentMode}
-        <p class="notice">Start with the lightbulb: it shows the new idea, then the songs open.</p>
+        <p class="notice">Start with the concept lesson: it shows the new idea, then the songs open.</p>
       {/if}
       <div class="cards">
         <button class="card" disabled={!canOpen(open)} onclick={() => go(`lesson/${encodeURIComponent(open!.id)}`)}>
@@ -254,15 +264,9 @@
   .bubble.passed { background: var(--ok); color: #fff; }
   .bubble.mastered { background: #f2b01e; color: #fff; }
   .bubble.open { background: #fff7d1; color: #b07a00; border-color: #efd58a; }
-  .bulb.glow { box-shadow: 0 0 0 5px rgba(242, 176, 30, 0.35); }
   .badge { position: absolute; top: -10px; right: -10px; background: #fff; border-radius: 50%; width: 34px; height: 34px;
            display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); font-size: 18px; }
   .hold { font-size: 12px; font-weight: 700; color: #8a5a00; }
-  .bulb {
-    position: absolute; left: -48px; top: 24px; width: 44px; height: 44px; min-width: 44px; min-height: 44px;
-    padding: 0; border-radius: 50%; background: #fff7d1; border: 2px solid #efd58a; font-size: 20px;
-  }
-  .bulb.dim { filter: grayscale(1); opacity: 0.6; }
   .today { position: absolute; top: -12px; right: -26px; background: #ffe7a3; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; }
   .name { width: 190px; text-align: center; font-weight: 700; font-size: 15px; margin-top: 6px; line-height: 1.2; }
   .unit { width: 190px; text-align: center; white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--muted); }

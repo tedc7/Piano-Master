@@ -1,7 +1,7 @@
 <script lang="ts">
   // Parent > Students (arch §3 "Parent mode", §5 Student): add, edit, archive and delete
-  // students, and each student's settings. The per-song choices (vocals, metronome, tempo) are
-  // remembered as the student plays; the parent can clear them.
+  // students, and each student's settings. The Play screen's choices (vocals and tempo for each song,
+  // the metronome for every song) are remembered as the student plays; the parent can clear them.
   import { onMount } from "svelte";
   import PlayerSettings from "../../components/PlayerSettings.svelte";
   import { api } from "../../lib/api";
@@ -51,7 +51,7 @@
   }
 
   const setSettings = (s: Student, p: Partial<StudentSettings>) => call(`/students/${s.id}`, "PATCH", { settings: p });
-  const songChoices = (s: Student) => s.settings.vocalsOff.length + Object.keys(s.settings.click).length + Object.keys(s.settings.presets).length;
+  const songChoices = (s: Student) => s.settings.vocalsOff.length + (s.settings.metronome === null ? 0 : 1) + Object.keys(s.settings.presets).length;
 </script>
 
 {#if error}<p class="notice error">{error}</p>{/if}
@@ -99,7 +99,7 @@
     <div class="grid">
       <PlayerSettings settings={s.settings} onchange={(p) => setSettings(s, p)} />
       <span>Song choices</span>
-      <span>{songChoices(s)} remembered (vocals, metronome, tempo)
+      <span>{songChoices(s)} remembered (vocals and tempo for each song{s.settings.metronome === null ? "" : `; metronome ${s.settings.metronome ? "on" : "off"} for every song`})
         {#if songChoices(s)}<button class="quiet" onclick={() => setSettings(s, { resetSongChoices: true } as never)}>Clear</button>{/if}</span>
     </div>
   </section>

@@ -759,7 +759,44 @@ def library_piece(pid: str):
     f = folder("library", pid, "piece.json")
     if not re.match(SLUG, pid) or not f.exists():
         raise HTTPException(404, "no such song")
-    return json.loads(f.read_text())
+    piece = json.loads(f.read_text())
+    con = db.connect()
+    try:
+        piece["display"] = display_of(con, pid)
+    finally:
+        con.close()
+    return piece
+
+
+def display_of(con, pid: str) -> dict[str, bool | None]:
+    """The parent's choice of helpers on the song's staff; None keeps the default (v0.29)."""
+    r = con.execute("SELECT fingers, letters FROM song_display WHERE piece_id = ?", (pid,)).fetchone()
+    as_bool = lambda v: None if v is None else bool(v)
+    return {"fingers": as_bool(r["fingers"]), "letters": as_bool(r["letters"])} if r else {"fingers": None, "letters": None}
+
+
+class DisplayIn(BaseModel):
+    fingers: bool | None = None
+    letters: bool | None = None
+
+
+@router.put("/api/library/pieces/{pid}/display", dependencies=[Depends(require_parent)])
+def set_display(pid: str, body: DisplayIn):
+    """Finger numbers and letter names on or off for this song, for every child (the Play screen's
+    Song and settings). Only the fields sent change; null goes back to the default."""
+    if not re.match(SLUG, pid) or not folder("library", pid, "piece.json").exists():
+        raise HTTPException(404, "no such song")
+    con = db.connect()
+    try:
+        d = display_of(con, pid)
+        d.update({k: v for k, v in body.model_dump(exclude_unset=True).items()})
+        with db.transaction(con):
+            con.execute("INSERT INTO song_display (piece_id, fingers, letters, updated_at) VALUES (?, ?, ?, ?) "
+                        "ON CONFLICT(piece_id) DO UPDATE SET fingers = excluded.fingers, letters = excluded.letters, "
+                        "updated_at = excluded.updated_at", (pid, d["fingers"], d["letters"], now()))
+        return {"display": d}
+    finally:
+        con.close()
 
 
 @router.get("/api/library/media/{pid}/{file}")

@@ -17,6 +17,7 @@
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
   import { handsLabel, loadContent, reloadContent } from "../../lib/content";
+  import { keepView } from "../../lib/keep";
 
   interface Checks {
     notesOnPitch?: number; wordsOff?: number; pass?: boolean; reasons?: string[]; flags?: string[];
@@ -49,6 +50,7 @@
   let feedback = $state("");
   let busy = $state(false);
   let skillNames = $state<Record<string, string>>({});
+  keepView("config/review", () => document.querySelector<HTMLElement>("main.body"));   // back from a song: where it was
 
   onMount(() => {
     void load();

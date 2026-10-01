@@ -13,7 +13,7 @@
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
   import { TRY_ANOTHER_WAY } from "../lib/progress";
-  import { LYRIC_FILL, renderStaff, xAt, type StaffLayout } from "../lib/staff";
+  import { helpersFor, LYRIC_FILL, renderStaff, xAt, type Helpers, type StaffLayout } from "../lib/staff";
   import { go } from "../lib/route";
   import { buildTimeline, phraseIndexAt, type Timeline } from "../lib/timeline";
   import { PRESETS, type Piece, type Preset } from "../lib/types";
@@ -43,6 +43,8 @@
   let update = $state<Update | null>(null);
   let note = $state("");
   let noteMsg = $state("");
+  let show = $state<Helpers>({ fingers: true, letters: false });   // finger numbers and letter names on the staff
+  let showMsg = $state("");
   let another = $state(false);          // the "Try it another way" choices (arch §8.1)
   let countIn = $state<{ total: number; current: number } | null>(null);
   let wrongText = $state("");
@@ -68,9 +70,10 @@
   const hasMedia = $derived(!!piece?.media);
   const hasVocals = $derived(!!piece?.media && Object.values(piece.media.presets).some((p) => p?.vocals));
   const vocalsOn = $derived(piece ? !app.prefs.vocalsOff.includes(piece.id) : true);
-  // songs with singing default to no click during play; the count-in always clicks
+  // the metronome is the student's one choice for every song (v0.29); until they first make it, songs
+  // with singing have no click during play. The count-in always clicks.
   let clickOverride = $state<boolean | null>(null);      // a remedy item's metronome, until the student changes it
-  const clickOn = $derived(clickOverride ?? (piece ? app.prefs.click[piece.id] ?? !piece.media : true));
+  const clickOn = $derived(clickOverride ?? app.prefs.metronome ?? (piece ? !piece.media : true));
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
   const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
@@ -124,6 +127,7 @@
       const p = piece!;
       tl = buildTimeline(p.notation);
       phraseCount = tl.phrases.length;
+      show = helpersFor(p);
       const saved = (opened?.preset as Preset | null) ?? app.prefs.presets[p.id];
       preset = saved && (!p.media || p.media.presets[saved]) ? saved : "100";
       applyMix();
@@ -250,7 +254,7 @@
   function drawStaff(): void {
     if (!piece) return;
     lastStageH = stageEl.clientHeight;
-    layout = renderStaff(stripEl, tl, piece.notation, stageEl.clientHeight);
+    layout = renderStaff(stripEl, tl, piece.notation, stageEl.clientHeight, show);
     stripEl.style.top = `${Math.max(0, (stageEl.clientHeight - layout.height) / 2)}px`;
     stats.renderMs = Math.round(layout.renderMs);
     stats.problems = layout.problems.length;
@@ -267,19 +271,22 @@
     for (const n of tl.notes) layout.noteEls[n.id]?.classList.toggle("pm-other", hands !== "both" && n.hand !== hands);
   }
 
-  /** The bar the staff is at (the one being played, or where it's paused), for the parent's note. */
-  function currentBar(): number {
-    if (!tl) return 1;
-    const beat = player ? player.position.display : 0;
+  /** The bar the staff is at (the one being played, or where it's paused), for the parent's note;
+   *  null before the song has moved past its start. */
+  function currentBar(): number | null {
+    if (!tl || !player || player.position.display <= 0) return null;
+    const beat = player.position.display;
     const e = [...tl.entries].reverse().find((x) => x.start <= beat + 1e-6) ?? tl.entries[0];
-    return e?.m.number ?? 1;
+    return e?.m.number ?? null;
   }
 
   async function toggleSheet(): Promise<void> {
     sheet = !sheet;
     if (!sheet || !isSong || !app.parentMode) return;
     noteMsg = "";
-    note = `Bar ${currentBar()}: `;
+    showMsg = "";
+    const bar = currentBar();
+    note = bar ? `Bar ${bar}: ` : "";
     try { update = (await api.request<{ update: Update | null }>(`/library/pieces/${id}/improve`)).update; } catch (e) { app.parentRefused(e); }
   }
 
@@ -300,6 +307,24 @@
       noteMsg = "Request cancelled.";
     } catch (e) {
       if (!app.parentRefused(e)) noteMsg = (e as Error).message;
+    }
+  }
+
+  /** Finger numbers or letter names on or off for this song, for every child (v0.29). Letter names
+   *  switched on by the parent name the black keys too (helpersFor). */
+  async function setHelper(k: "fingers" | "letters", on: boolean): Promise<void> {
+    if (!piece) return;
+    const was = show;
+    show = { ...show, [k]: on, ...(k === "letters" ? { blackKeys: on } : {}) };
+    drawStaff();
+    try {
+      const r = await api.request<{ display: NonNullable<Piece["display"]> }>(`/library/pieces/${id}/display`, "PUT", { [k]: on });
+      piece.display = r.display;
+      showMsg = "Saved.";
+    } catch (e) {
+      show = was;
+      drawStaff();
+      if (!app.parentRefused(e)) showMsg = (e as Error).message;
     }
   }
 
@@ -453,10 +478,10 @@
     if (mode !== "play") tapMode("play"); else void player?.play();
   }
   function oneHand(): void { result = null; another = false; hands = "both"; setHands(); }
-  /** Back to the screen that opened the song: the session, the song library, the map... */
+  /** Back to the screen that opened the song (the session, the song library, the map...), as it was left. */
   function back(): void {
     player?.stop();
-    go(app.returnTo);
+    app.back();
   }
   function next(): void {
     player?.stop();
@@ -576,13 +601,15 @@
     {/if}
     <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>
     {#if app.parentMode}
-      <button class="quiet" onclick={toggleSheet} aria-label="Song and settings">⚙</button>
+      <button class="quiet gear" onclick={toggleSheet} aria-label="Song and settings">⚙</button>
     {/if}
   </div>
 
   <div class="keys" bind:this={kbHost}></div>
 
   {#if sheet}
+    <!-- a tap anywhere outside the pop-up closes it, and does nothing else -->
+    <div class="backdrop" role="presentation" onclick={() => { sheet = false; }}></div>
     <div class="sheet">
       <div class="sheet-head"><h2>Song and settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
       {#if isSong}
@@ -599,6 +626,12 @@
             <button onclick={askForUpdate} disabled={note.trim().length < 3 || /^Bar \d+:$/.test(note.trim())}>Needs improvement</button>
           {/if}
           {#if noteMsg}<p class="small">{noteMsg}</p>{/if}
+        </div>
+        <div class="helpers">
+          <b>On the staff</b>
+          <label><input type="checkbox" checked={show.fingers} onchange={(e) => setHelper("fingers", e.currentTarget.checked)} /> Finger numbers</label>
+          <label><input type="checkbox" checked={show.letters} onchange={(e) => setHelper("letters", e.currentTarget.checked)} /> Letter names</label>
+          <span class="muted small">For this song, for every child.{showMsg ? ` ${showMsg}` : ""}</span>
         </div>
       {/if}
       <p class="muted small">Settings for the parent. Students' own settings are under Config › Students.</p>
@@ -673,6 +706,11 @@
   }
   .sheet-head { display: flex; justify-content: space-between; align-items: center; }
   .sheet-head h2 { margin: 0; font-size: 20px; }
+  .backdrop { position: fixed; inset: 0; z-index: 9; }
+  .helpers { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: 10px 0; padding: 10px 12px; background: #f7f5f0; border-radius: 12px; }
+  .helpers label { display: flex; align-items: center; gap: 6px; }
+  .helpers input { width: 22px; height: 22px; }
+  .helpers .small { margin: 0; }
   .improve { margin: 10px 0; padding: 10px 12px; background: #f7f5f0; border-radius: 12px; }
   .improve p { margin: 4px 0; }
   .improve label { display: block; margin-bottom: 6px; }
