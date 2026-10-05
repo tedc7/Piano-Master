@@ -1,4 +1,4 @@
-# Curriculum song (Prep A, prep-a.low-and-high). Warm-up in our own music.
+# Curriculum song (Prep A, prep-a.low-and-high). Warm-up in our own music and words (words added at the parent's request).
 # Firm fingertips: fingers 2 and 3 on the two black keys, then the same keys an octave away.
 title: "Warm-up: Two-Key Hops"
 composer: Piano-Master
@@ -24,4 +24,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !2!^C !3!^D ^C ^D | ^c ^d ^c ^d | z4 | z4 |]
+  w: Hop on two keys, hop up high now!
   [V:LH] z4 | z4 | !3!^C, !2!^D, ^C, ^D, | ^C,, ^D,, ^C,, ^D,, |]
+  w: Hop on two keys, hop down low now!

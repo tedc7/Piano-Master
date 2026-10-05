@@ -14,6 +14,8 @@ PIECES are piece files, batch folders (content/incoming/<batch>/) or library ids
   - backing notes (other voices, chord symbols or a left hand): a FluidSynth backing with MuseScore
     General in the genre's style, or the style in the piece's `media: {backing: …}`.
   - words but no backing notes (or the style `yue2`): YuE2's own backing, aligned with the vocal.
+  - the style `none` (the default for `genre: studies`, the curriculum songs): the vocal alone; the app's
+    own piano plays the music.
 Stems go to content/media/<id>/ for library pieces, and to <batch>/media/<id>/ for a batch (moved
 with the piece by `import_song.py promote`). Work files (renders, alignments) are in
 tools/.media/work/<id>/. The content build copies the stems into the client.
@@ -53,12 +55,15 @@ def rel(p: Path) -> str:
 
 def plan_of(piece: Piece) -> dict:
     style = bk.style_of(piece)
+    vocal = piece.has_words and (piece.spec.get("vocal", "yue2") != "none")
+    if style == "none":     # a vocal alone: the app's own piano plays the music (the curriculum songs, v0.30)
+        return {"vocal": vocal, "backing": None, "style": "none", "parts": [],
+                "why": None if vocal else "no words, and the backing style is none"}
     try:
         name, parts = bk.parts_for(piece)
         why = None
     except bk.StyleError as e:
         name, parts, why = "yue2", [], str(e)
-    vocal = piece.has_words and (piece.spec.get("vocal", "yue2") != "none")
     if not vocal and name == "yue2":
         return {"vocal": False, "backing": None, "why": why or "no words and no backing notes: the app's own piano only"}
     return {"vocal": vocal, "backing": "yue2" if name == "yue2" else "fluidsynth", "style": style if name != "yue2" else "yue2",
@@ -67,7 +72,7 @@ def plan_of(piece: Piece) -> dict:
 
 # ------------------------------------------------------------------------------ vocal
 
-def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES) -> dict | None:
+def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: frozenset[int] = frozenset()) -> dict | None:
     """Render, align and check YuE2 takes; the best (take, mode) goes to work/<id>/choice.json."""
     if not plan_of(piece)["vocal"]:
         return None
@@ -77,6 +82,9 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES) -> dict 
     results = []
 
     def run(take: int):
+        if take in skip:          # a take the parent heard and sent back (--skip-take)
+            print(f"  take {take}: skipped", flush=True)
+            return
         r = yue2.render(piece, take)
         if r.get("exit", 0) not in (0, None) or r.get("status") not in ("ok", "complete", None):
             print(f"  take {take}: render failed: {r.get('error') or r.get('reason') or r}", flush=True)
@@ -264,12 +272,14 @@ def main(argv=None) -> int:
     ap.add_argument("cmd", choices=("plan", "make", "vocal", "backing", "package", "report"))
     ap.add_argument("targets", nargs="+")
     ap.add_argument("--takes", type=int, default=TAKES, help="YuE2 takes to render first (default 2)")
-    ap.add_argument("--max-takes", type=int, default=MAX_TAKES, help="takes to try before keeping the best failing one (default 3, at most 6)")
+    ap.add_argument("--max-takes", type=int, default=MAX_TAKES, help="takes to try before keeping the best failing one (default 3, at most 24)")
+    ap.add_argument("--skip-take", type=int, action="append", default=[], help="a take the parent sent back: never chosen (repeatable)")
     args = ap.parse_args(argv)
     if args.cmd == "report":
         for t in args.targets:
             print(f"wrote {rel(report(Path(t)))}")
         return 0
+    failed: list[str] = []
     for piece in pieces(args.targets):
         print(f"{piece.pid} ({piece.title})", flush=True)
         if args.cmd == "plan":
@@ -279,11 +289,19 @@ def main(argv=None) -> int:
                   + (f"; {p['why']}" if p.get("why") else ""))
             continue
         if args.cmd in ("vocal", "make"):
-            vocal(piece, args.takes, args.max_takes)
+            try:
+                vocal(piece, args.takes, args.max_takes, frozenset(args.skip_take))
+            except RuntimeError as e:          # one song without a usable take doesn't stop the batch
+                print(f"  {e}: nothing packaged", flush=True)
+                failed.append(piece.pid)
+                continue
         if args.cmd in ("backing", "make"):
             backing(piece)
         if args.cmd in ("package", "make"):
             package(piece)
+    if failed:
+        print(f"no usable vocal take: {', '.join(failed)}", file=sys.stderr)
+        return 1
     return 0
 
 

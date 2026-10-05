@@ -1,0 +1,815 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 3,
+  "3": 4,
+  "4": 1,
+  "5": 4,
+  "6": 3,
+  "7": 4,
+  "8": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-344aa952a6",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.the-measure",
+  "prep-a.f-g-a-b"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "RL",
+ "id": "marching-band",
+ "info": {
+  "checks": {
+   "bleedDb": -23.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 12.3,
+    "p95_ms": 251.3,
+    "share_over_50ms": 0.233,
+    "windows": 30
+   },
+   "grid50": {
+    "median_ms": 54.3,
+    "p95_ms": 477.6,
+    "share_over_50ms": 0.552,
+    "windows": 29
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "backing left in the vocal at -23.5 dB"
+   ],
+   "tuningCents": -6.5,
+   "wordStretches": [],
+   "wordsOff": 0.095,
+   "worstPhraseMs": 34.8
+  },
+  "engine": "YuE2 vocal",
+  "hands": "RL",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "lyrics": "1. March, march, left, right, drums go boom! March, march, left, right, stop! Tubas play and horns go toot, tubas play again.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.the-measure). Original music and words for this app."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/marching-band.yaml"
+  },
+  "sourceIds": []
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 160,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -23.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 12.3,
+    "p95_ms": 251.3,
+    "share_over_50ms": 0.233,
+    "windows": 30
+   },
+   "grid50": {
+    "median_ms": 54.3,
+    "p95_ms": 477.6,
+    "share_over_50ms": 0.552,
+    "windows": 29
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "backing left in the vocal at -23.5 dB"
+   ],
+   "tuningCents": -6.5,
+   "wordStretches": [],
+   "wordsOff": 0.095,
+   "worstPhraseMs": 34.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 614400,
+     "url": "/api/library/media/marching-band/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1227360,
+     "url": "/api/library/media/marching-band/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 818400,
+     "url": "/api/library/media/marching-band/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 682080,
+     "url": "/api/library/media/marching-band/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "marching-band-s3 (dtw)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    52,
+    64
+   ],
+   "staves": [
+    "treble",
+    "bass"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 32.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "March,",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "march,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "left,",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "right,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "drums",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "go",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "boom!",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "March,",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "march,",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "left,",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "right,",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "stop!",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "begin",
+    "text": "Tu",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "end",
+    "text": "bas",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "play",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "horns",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "go",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "toot,",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "begin",
+    "text": "tu",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "end",
+    "text": "bas",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "play",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "begin",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "end",
+    "text": "gain.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   },
+   {
+    "duration": 4.0,
+    "number": 7,
+    "start": 24.0
+   },
+   {
+    "duration": 4.0,
+    "number": 8,
+    "start": 28.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 17.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 19.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 52,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 52,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 1,
+    "start": 21.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 25.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 27.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 52,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0,
+   24.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.whole-note",
+  "prep-a.c-d-e",
+  "prep-a.f-g-a-b",
+  "prep-a.the-measure"
+ ],
+ "skillId": "prep-a.the-measure",
+ "skillMeasures": {
+  "prep-a.c-d-e": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   8
+  ],
+  "prep-a.f-g-a-b": [
+   5,
+   6,
+   7
+  ],
+  "prep-a.half-note": [
+   2,
+   6
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.the-measure": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.whole-note": [
+   4,
+   8
+  ]
+ },
+ "song": "marching-band",
+ "songTitle": "Marching Band",
+ "title": "Marching Band",
+ "version": null
+}

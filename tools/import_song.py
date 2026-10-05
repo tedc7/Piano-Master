@@ -25,10 +25,8 @@ from __future__ import annotations
 import argparse
 import difflib
 import json
-import os
 import re
 import shutil
-import ssl
 import subprocess
 import sys
 import tempfile
@@ -40,6 +38,7 @@ import yaml
 
 import build_content as bc
 import notation as nt
+import server_config as sc
 from app import analysis, fingerprint  # noqa: E402  (build_content put api/ on the path)
 
 ROOT = bc.ROOT
@@ -407,30 +406,19 @@ def promote(args) -> int:
 
 # ------------------------------------------------------------------------------ submit (M7)
 
-SERVER = os.environ.get("PIANO_SERVER", "https://192.168.2.128")
-TOKEN_FILE = Path.home() / ".config" / "piano-master" / "skill-token"
-CA = Path(os.environ.get("CADDY_ROOT_CA", Path.home() / "repos" / "Server" / "caddy-root-ca.crt"))
-
-
-def skill_token() -> str:
-    t = os.environ.get("PIANO_SKILL_TOKEN") or (TOKEN_FILE.read_text().strip() if TOKEN_FILE.exists() else "")
-    if not t:
-        raise SystemExit(f"no skill token: make one in the app (Config > Dev box connection) and save it in {TOKEN_FILE}")
-    return t
-
-
 def call(method: str, path: str, body=None, data: bytes | None = None, ctype: str = "application/json"):
     """The Skill API on the piano server; returns the JSON reply, or raises with the server's reason."""
-    ctx = ssl.create_default_context(cafile=str(CA)) if CA.exists() else None
     payload = data if data is not None else (json.dumps(body).encode() if body is not None else None)
-    req = urllib.request.Request(SERVER + path, data=payload, method=method,
-                                 headers={"Authorization": f"Bearer {skill_token()}", "Content-Type": ctype})
+    req = urllib.request.Request(sc.server() + path, data=payload, method=method,
+                                 headers={"Authorization": f"Bearer {sc.skill_token()}", "Content-Type": ctype})
     try:
-        with urllib.request.urlopen(req, context=ctx, timeout=300) as r:
+        with urllib.request.urlopen(req, context=sc.ssl_context(), timeout=300) as r:
             return json.loads(r.read() or b"null")
     except urllib.error.HTTPError as e:
         detail = e.read().decode(errors="replace")
         raise SystemExit(f"{method} {path}: HTTP {e.code} {detail[:500]}")
+    except urllib.error.URLError as e:
+        raise SystemExit(sc.cert_failure(e) or f"{method} {path}: {e.reason}")
 
 
 def header_notes(f: Path) -> list[str]:
@@ -519,7 +507,7 @@ def submit(args) -> int:
     print(f"package {pkg['id']}: {done['staged']} song(s) waiting in the app's review list (Config > Review list)")
     record = batch / "submitted.json" if INCOMING in batch.resolve().parents else bc.SONGS.parent / "submitted.json"
     record.parent.mkdir(parents=True, exist_ok=True)
-    record.write_text(json.dumps({"package": pkg["id"], "server": SERVER, "staged": done["staged"], "items": done["items"]}, indent=1) + "\n")
+    record.write_text(json.dumps({"package": pkg["id"], "server": sc.server(), "staged": done["staged"], "items": done["items"]}, indent=1) + "\n")
     return 0 if done["staged"] else 1
 
 

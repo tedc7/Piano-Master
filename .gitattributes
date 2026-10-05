@@ -1,0 +1,3 @@
+# The approved curriculum songs' stems (tools/library_export.py, docs/fresh-install.md) are kept with
+# Git LFS: about 2.5 MB a song, replaced whenever a vocal is re-rendered and approved.
+content/library/media/** filter=lfs diff=lfs merge=lfs -text

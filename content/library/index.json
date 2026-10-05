@@ -1,0 +1,9395 @@
+{
+ "pieces": [
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-a002e2e2dd",
+   "featuredSkills": [
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "sit-tall",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 10,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.sitting",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "song": "sit-tall",
+   "songTitle": "Sit Tall",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Sit Tall",
+   "updatedAt": "2026-10-04T05:45:24+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-8295b3c368",
+   "featuredSkills": [
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "ready-to-play",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 10,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.sitting",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "ready-to-play",
+   "songTitle": "Ready to Play",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Ready to Play",
+   "updatedAt": "2026-10-04T05:45:01+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-2da1f71a03",
+   "featuredSkills": [
+    "prep-a.round-hand",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "warmup-bubble-hands",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 20,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.round-hand"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.round-hand",
+   "skillMeasures": {
+    "prep-a.round-hand": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "warmup-bubble-hands",
+   "songTitle": "Warm-up: Bubble Hands",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Warm-up: Bubble Hands",
+   "updatedAt": "2026-10-04T05:45:55+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9aea8a3de4",
+   "featuredSkills": [
+    "prep-a.round-hand",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "warmup-heavy-arms",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 20,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.round-hand"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.round-hand",
+   "skillMeasures": {
+    "prep-a.round-hand": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "song": "warmup-heavy-arms",
+   "songTitle": "Warm-up: Heavy Arms",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "Warm-up: Heavy Arms",
+   "updatedAt": "2026-10-01T06:43:22+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-359ed71bdd",
+   "featuredSkills": [
+    "prep-a.finger-numbers",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "finger-numbers-song",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 30,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.finger-numbers"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.finger-numbers",
+   "skillMeasures": {
+    "prep-a.finger-numbers": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "song": "finger-numbers-song",
+   "songTitle": "The Finger Number Song",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "The Finger Number Song",
+   "updatedAt": "2026-10-04T05:46:29+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-4b707dea3a",
+   "featuredSkills": [
+    "prep-a.finger-numbers",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "pointer-and-middle",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 30,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.finger-numbers"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.finger-numbers",
+   "skillMeasures": {
+    "prep-a.finger-numbers": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "pointer-and-middle",
+   "songTitle": "Pointer and Middle",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Pointer and Middle",
+   "updatedAt": "2026-10-04T21:02:00+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-8bcbfd67be",
+   "featuredSkills": [
+    "prep-a.low-and-high",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "two-black-keys",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 40,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.low-and-high",
+   "skillMeasures": {
+    "prep-a.low-and-high": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "two-black-keys",
+   "songTitle": "Two Black Keys",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Two Black Keys",
+   "updatedAt": "2026-10-04T05:46:59+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9447f807af",
+   "featuredSkills": [
+    "prep-a.low-and-high",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "warmup-two-key-hops",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 40,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.low-and-high",
+   "skillMeasures": {
+    "prep-a.low-and-high": [
+     2,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "song": "warmup-two-key-hops",
+   "songTitle": "Warm-up: Two-Key Hops",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Two-Key Hops",
+   "updatedAt": "2026-10-04T15:34:12+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-8bdd4fc607",
+   "featuredSkills": [
+    "prep-a.two-black-keys",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "knock-knock",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 50,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.two-black-keys"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.two-black-keys",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.two-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "song": "knock-knock",
+   "songTitle": "Knock, Knock",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Knock, Knock",
+   "updatedAt": "2026-10-04T05:48:02+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6aa42189d8",
+   "featuredSkills": [
+    "prep-a.two-black-keys",
+    "prep-a.low-and-high"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "canyon-echo",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 50,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high",
+    "prep-a.two-black-keys"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.two-black-keys",
+   "skillMeasures": {
+    "prep-a.low-and-high": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.two-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "canyon-echo",
+   "songTitle": "Canyon Echo",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Canyon Echo",
+   "updatedAt": "2026-10-04T05:47:35+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-df42323ad9",
+   "featuredSkills": [
+    "prep-a.three-black-keys"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "balancing-act",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 60,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.three-black-keys",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "balancing-act",
+   "songTitle": "Balancing Act",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Balancing Act",
+   "updatedAt": "2026-10-04T05:49:02+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-e85ed3c50e",
+   "featuredSkills": [
+    "prep-a.three-black-keys",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "three-black-keys",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 60,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.three-black-keys",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "three-black-keys",
+   "songTitle": "Three Black Keys",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Three Black Keys",
+   "updatedAt": "2026-10-04T05:49:31+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ed8679515a",
+   "featuredSkills": [
+    "prep-a.three-black-keys",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "mixed-up-black-keys",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 60,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.three-black-keys",
+   "skillMeasures": {
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "mixed-up-black-keys",
+   "songTitle": "Mixed-Up Black Keys",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Mixed-Up Black Keys",
+   "updatedAt": "2026-10-04T05:48:33+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-da322b8ded",
+   "featuredSkills": [
+    "prep-a.quarter-note",
+    "prep-a.low-and-high"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "tick-tock",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 70,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high",
+    "prep-a.quarter-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-note",
+   "skillMeasures": {
+    "prep-a.low-and-high": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.quarter-note": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "tick-tock",
+   "songTitle": "Tick-Tock",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Tick-Tock",
+   "updatedAt": "2026-10-04T05:51:00+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-4379083664",
+   "featuredSkills": [
+    "prep-a.quarter-note",
+    "prep-a.low-and-high"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "steady-steps",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 70,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high",
+    "prep-a.quarter-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-note",
+   "skillMeasures": {
+    "prep-a.low-and-high": [
+     3,
+     4
+    ],
+    "prep-a.quarter-note": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ]
+   },
+   "song": "steady-steps",
+   "songTitle": "Steady Steps",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Steady Steps",
+   "updatedAt": "2026-10-04T21:00:56+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 3,
+    "3": 2,
+    "4": 3,
+    "5": 2,
+    "6": 3,
+    "7": 2,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-fd24456f77",
+   "featuredSkills": [
+    "prep-a.half-note",
+    "prep-a.low-and-high"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "ding-dong-bells",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 80,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high",
+    "prep-a.half-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.half-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.low-and-high": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "ding-dong-bells",
+   "songTitle": "Ding-Dong Bells",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Ding-Dong Bells",
+   "updatedAt": "2026-10-04T05:51:31+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-11c0073507",
+   "featuredSkills": [
+    "prep-a.half-note",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "tap-and-stretch",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 80,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.half-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "tap-and-stretch",
+   "songTitle": "Tap and Stretch",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Tap and Stretch",
+   "updatedAt": "2026-10-04T15:53:48+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-bc34b2433a",
+   "featuredSkills": [
+    "prep-a.half-note",
+    "prep-a.three-black-keys"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "warmup-firm-fingertips",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 80,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys",
+    "prep-a.half-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.half-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "warmup-firm-fingertips",
+   "songTitle": "Warm-up: Firm Fingertips",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Firm Fingertips",
+   "updatedAt": "2026-10-04T05:53:30+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 2,
+    "4": 2,
+    "5": 4,
+    "6": 3,
+    "7": 2,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ebbe31bbd2",
+   "featuredSkills": [
+    "prep-a.forte-piano",
+    "prep-a.half-note"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "mouse-and-snail",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 90,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys",
+    "prep-a.half-note",
+    "prep-a.forte-piano"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.forte-piano",
+   "skillMeasures": {
+    "prep-a.forte-piano": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "mouse-and-snail",
+   "songTitle": "Mouse and Snail",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Mouse and Snail",
+   "updatedAt": "2026-10-04T05:53:59+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-8dc950c474",
+   "featuredSkills": [
+    "prep-a.forte-piano",
+    "prep-a.half-note"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "shout-and-whisper",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 90,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys",
+    "prep-a.half-note",
+    "prep-a.forte-piano"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.forte-piano",
+   "skillMeasures": {
+    "prep-a.forte-piano": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "shout-and-whisper",
+   "songTitle": "Shout and Whisper",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Shout and Whisper",
+   "updatedAt": "2026-10-04T15:31:55+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 2,
+    "6": 1,
+    "7": 2,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-e1500e06cc",
+   "featuredSkills": [
+    "prep-a.whole-note"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "four-slow-beats",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 100,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.low-and-high",
+    "prep-a.three-black-keys",
+    "prep-a.half-note",
+    "prep-a.whole-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.whole-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     5,
+     7
+    ],
+    "prep-a.low-and-high": [
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "four-slow-beats",
+   "songTitle": "Four Slow Beats",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Four Slow Beats",
+   "updatedAt": "2026-10-04T05:56:12+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 1,
+    "4": 4,
+    "5": 2,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-8b3d262d03",
+   "featuredSkills": [
+    "prep-a.whole-note"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "sleepy-owl",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 100,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.whole-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     3,
+     6
+    ]
+   },
+   "song": "sleepy-owl",
+   "songTitle": "Sleepy Owl",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "Sleepy Owl",
+   "updatedAt": "2026-10-04T15:34:36+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 2,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-3a5a713b09",
+   "featuredSkills": [
+    "prep-a.whole-note"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "church-bells",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 100,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys",
+    "prep-a.half-note",
+    "prep-a.whole-note"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.whole-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     1,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "church-bells",
+   "songTitle": "Church Bells",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Church Bells",
+   "updatedAt": "2026-10-04T05:55:42+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 2,
+    "5": 3,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-f3737159fa",
+   "featuredSkills": [
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "d-in-the-middle",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 110,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-d-e",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "d-in-the-middle",
+   "songTitle": "D Is in the Middle",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "D Is in the Middle",
+   "updatedAt": "2026-10-04T05:59:18+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-c72d8e9674",
+   "featuredSkills": [
+    "prep-a.c-d-e"
+   ],
+   "genre": "folk",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "by-the-moonlight",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 110,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-d-e",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "by-the-moonlight",
+   "songTitle": "By the Moonlight",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "By the Moonlight",
+   "updatedAt": "2026-10-04T05:58:50+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-1b7968cd61",
+   "featuredSkills": [
+    "prep-a.musical-alphabet",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "warmup-pattern-up-and-down",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 120,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.musical-alphabet"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.musical-alphabet",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.musical-alphabet": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "warmup-pattern-up-and-down",
+   "songTitle": "Warm-up: Pattern Up, Pattern Down",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Pattern Up, Pattern Down",
+   "updatedAt": "2026-10-05T07:12:34+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 4,
+    "5": 3
+   },
+   "beats": 20.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-d3f0182453",
+   "featuredSkills": [
+    "prep-a.musical-alphabet",
+    "prep-a.c-d-e"
+   ],
+   "genre": "kids",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "hot-cross-buns-left",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 120,
+   "measures": 5,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.musical-alphabet"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.musical-alphabet",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     5
+    ],
+    "prep-a.musical-alphabet": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "song": "hot-cross-buns",
+   "songTitle": "Hot Cross Buns",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Hot Cross Buns for the Left Hand",
+   "updatedAt": "2026-10-04T15:15:54+00:00",
+   "version": "Left hand"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 4,
+    "5": 3
+   },
+   "beats": 20.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-4fcf7905bd",
+   "featuredSkills": [
+    "prep-a.steps",
+    "prep-a.c-d-e"
+   ],
+   "genre": "kids",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "hot-cross-buns",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 130,
+   "measures": 5,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.steps"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.steps",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.steps": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "song": "hot-cross-buns",
+   "songTitle": "Hot Cross Buns",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Hot Cross Buns",
+   "version": "Right hand"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-2b1544e9dc",
+   "featuredSkills": [
+    "prep-a.steps",
+    "prep-a.c-d-e"
+   ],
+   "genre": "kids",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "merrily-we-roll-along",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 130,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.steps"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.steps",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     3,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.steps": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "merrily-we-roll-along",
+   "songTitle": "Merrily We Roll Along",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Merrily We Roll Along",
+   "updatedAt": "2026-10-04T15:16:55+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-bb2918087c",
+   "featuredSkills": [
+    "prep-a.f-g-a-b",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "busy-bees",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 140,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.f-g-a-b",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "busy-bees",
+   "songTitle": "Busy Bees",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Busy Bees",
+   "updatedAt": "2026-10-04T15:17:26+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-1969cbe843",
+   "featuredSkills": [
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "four-white-keys",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 140,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.f-g-a-b"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.f-g-a-b",
+   "skillMeasures": {
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "four-white-keys",
+   "songTitle": "Four White Keys",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Four White Keys",
+   "updatedAt": "2026-10-04T15:18:12+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-5cf2c0997e",
+   "featuredSkills": [
+    "prep-a.c-five-finger",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "up-the-stairs",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 150,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.c-five-finger"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-five-finger",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     3,
+     4,
+     5,
+     7,
+     8
+    ],
+    "prep-a.c-five-finger": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "up-the-stairs",
+   "songTitle": "Up the Stairs",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Up the Stairs",
+   "updatedAt": "2026-10-04T15:18:43+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "10": 1,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 1,
+    "6": 4,
+    "7": 4,
+    "8": 4,
+    "9": 4
+   },
+   "beats": 40.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-10ba46ec20",
+   "featuredSkills": [
+    "prep-a.c-five-finger",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "warmup-bouncing-ball",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 150,
+   "measures": 10,
+   "phrases": 5,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.c-five-finger"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-five-finger",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     7,
+     9,
+     10
+    ],
+    "prep-a.c-five-finger": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "prep-a.f-g-a-b": [
+     2,
+     3,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "prep-a.whole-note": [
+     5,
+     10
+    ]
+   },
+   "song": "warmup-bouncing-ball",
+   "songTitle": "Warm-up: Bouncing Ball",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Bouncing Ball",
+   "updatedAt": "2026-10-04T21:01:32+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-99d1086693",
+   "featuredSkills": [
+    "prep-a.the-measure",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "count-the-measures",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 160,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.the-measure"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-measure",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     3,
+     4,
+     5,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-measure": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "count-the-measures",
+   "songTitle": "Count the Measures",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Count the Measures",
+   "updatedAt": "2026-10-04T15:19:51+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-344aa952a6",
+   "featuredSkills": [
+    "prep-a.the-measure",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "marching-band",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 160,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.the-measure"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-measure",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     6,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     5,
+     6,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-measure": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "marching-band",
+   "songTitle": "Marching Band",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Marching Band",
+   "updatedAt": "2026-10-04T15:20:23+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Ludwig van Beethoven",
+   "contentVersion": "lib-1a1c40e15b",
+   "featuredSkills": [
+    "prep-a.mezzo-forte",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "classical",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "joyful-joyful-letters",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 170,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.mezzo-forte"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.mezzo-forte",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     4,
+     8
+    ],
+    "prep-a.mezzo-forte": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "joyful-joyful",
+   "songTitle": "Joyful, Joyful",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Joyful, Joyful (letter names)",
+   "updatedAt": "2026-10-04T15:21:08+00:00",
+   "version": "Letter names"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 4,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-67f775cfb5",
+   "featuredSkills": [
+    "prep-a.mezzo-forte",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "three-ways-to-play",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 170,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.mezzo-forte"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.mezzo-forte",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     2,
+     4
+    ],
+    "prep-a.mezzo-forte": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     6
+    ]
+   },
+   "song": "three-ways-to-play",
+   "songTitle": "Three Ways to Play",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Three Ways to Play",
+   "updatedAt": "2026-10-04T15:22:19+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-42716d55fd",
+   "featuredSkills": [
+    "prep-a.c-b-a-g-f"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "neighbour-thumbs",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 180,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.c-b-a-g-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-b-a-g-f",
+   "skillMeasures": {
+    "prep-a.c-b-a-g-f": [
+     3,
+     7
+    ],
+    "prep-a.c-d-e": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "neighbour-thumbs",
+   "songTitle": "Neighbour Thumbs",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Neighbour Thumbs",
+   "updatedAt": "2026-10-04T15:22:52+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-c97f59eb50",
+   "featuredSkills": [
+    "prep-a.c-b-a-g-f"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "musical-alphabet",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 180,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.c-b-a-g-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-b-a-g-f",
+   "skillMeasures": {
+    "prep-a.c-b-a-g-f": [
+     1,
+     4,
+     5,
+     8
+    ],
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     2,
+     3,
+     6,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "musical-alphabet",
+   "songTitle": "The Musical Alphabet",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "The Musical Alphabet",
+   "updatedAt": "2026-10-04T15:28:49+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-1eabc148da",
+   "featuredSkills": [
+    "prep-a.c-b-a-g-f",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "rocking-horse",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 180,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.c-b-a-g-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-b-a-g-f",
+   "skillMeasures": {
+    "prep-a.c-b-a-g-f": [
+     1,
+     3,
+     7
+    ],
+    "prep-a.c-d-e": [
+     2,
+     5,
+     6,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     3,
+     4,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "rocking-horse",
+   "songTitle": "Rocking Horse",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Rocking Horse",
+   "updatedAt": "2026-10-04T15:23:24+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6ff978d45f",
+   "featuredSkills": [
+    "prep-a.c-b-a-g-f",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "warmup-thumb-on-middle-c",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 180,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.f-g-a-b",
+    "prep-a.c-b-a-g-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-b-a-g-f",
+   "skillMeasures": {
+    "prep-a.c-b-a-g-f": [
+     1,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6
+    ]
+   },
+   "song": "warmup-thumb-on-middle-c",
+   "songTitle": "Warm-up: Thumb on Middle C",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Thumb on Middle C",
+   "updatedAt": "2026-10-04T15:29:23+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 1,
+    "5": 2,
+    "6": 2,
+    "7": 2,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-568617340a",
+   "featuredSkills": [
+    "prep-a.dotted-half"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "swing-and-stop",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.dotted-half"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.dotted-half",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.f-g-a-b": [
+     2,
+     3,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "swing-and-stop",
+   "songTitle": "Swing and Stop",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Swing and Stop",
+   "updatedAt": "2026-10-04T15:30:50+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 2,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-33c8bf8fec",
+   "featuredSkills": [
+    "prep-a.dotted-half",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "clock-tower",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.dotted-half"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.dotted-half",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     3,
+     4,
+     6,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "clock-tower",
+   "songTitle": "Clock Tower",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Clock Tower",
+   "updatedAt": "2026-10-04T15:29:50+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 2,
+    "3": 2,
+    "4": 1,
+    "5": 2,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-32b7f1e3c3",
+   "featuredSkills": [
+    "prep-a.dotted-half"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "sea-waves",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.dotted-half"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.dotted-half",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     1,
+     2,
+     3,
+     5,
+     6
+    ],
+    "prep-a.f-g-a-b": [
+     3,
+     4,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "sea-waves",
+   "songTitle": "Sea Waves",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Sea Waves",
+   "updatedAt": "2026-10-04T15:30:21+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-f96e5b87ab",
+   "featuredSkills": [
+    "prep-a.dotted-half",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "warmup-softer-and-softer",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.dotted-half"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.dotted-half",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "warmup-softer-and-softer",
+   "songTitle": "Warm-up: Softer and Softer",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Softer and Softer",
+   "updatedAt": "2026-10-04T15:31:27+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-d7f46d8114",
+   "featuredSkills": [
+    "prep-a.the-staff",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "lines-and-spaces",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 200,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.the-staff"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-staff",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     3,
+     4,
+     5,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-staff": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     8
+    ]
+   },
+   "song": "lines-and-spaces",
+   "songTitle": "Lines and Spaces",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Lines and Spaces",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-2e8fca1cc1",
+   "featuredSkills": [
+    "prep-a.the-staff",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "up-and-down-the-staff",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 200,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.the-staff"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-staff",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3,
+     5,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-staff": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "up-and-down-the-staff",
+   "songTitle": "Up and Down the Staff",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Up and Down the Staff",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-487865a869",
+   "featuredSkills": [
+    "prep-a.the-clefs",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "two-clefs",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 210,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.f-g-a-b",
+    "prep-a.the-clefs"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-clefs",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     5
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-clefs": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "two-clefs",
+   "songTitle": "Two Clefs",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Two Clefs",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-200e3e5bd2",
+   "featuredSkills": [
+    "prep-a.the-clefs",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "high-and-low-staff",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 210,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.c-d-e",
+    "prep-a.the-clefs"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.the-clefs",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.the-clefs": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "high-and-low-staff",
+   "songTitle": "High and Low on the Staff",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "High and Low on the Staff",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 3,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-826b200981",
+   "featuredSkills": [
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "middle-c-stomp",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 220,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.middle-c",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     4,
+     5,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     6,
+     8
+    ]
+   },
+   "song": "middle-c-stomp",
+   "songTitle": "Middle C Stomp",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Middle C Stomp",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 2,
+    "3": 4,
+    "4": 4,
+    "5": 2,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-c77f777a86",
+   "featuredSkills": [
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "thumbs-take-turns",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 220,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.dotted-half",
+    "prep-a.middle-c"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.middle-c",
+   "skillMeasures": {
+    "prep-a.dotted-half": [
+     5
+    ],
+    "prep-a.half-note": [
+     1,
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     6
+    ]
+   },
+   "song": "thumbs-take-turns",
+   "songTitle": "Thumbs Take Turns",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Thumbs Take Turns",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-050c76125b",
+   "featuredSkills": [
+    "prep-a.treble-g",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "hello-treble-g",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 230,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.treble-g",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     6,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "hello-treble-g",
+   "songTitle": "Hello, Treble G",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Hello, Treble G",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-a97b5bc19b",
+   "featuredSkills": [
+    "prep-a.treble-g",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "c-g-seesaw",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 230,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.treble-g",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "c-g-seesaw",
+   "songTitle": "C and G Seesaw",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "C and G Seesaw",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 3,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-175be565aa",
+   "featuredSkills": [
+    "prep-a.bass-f",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "down-to-bass-f",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 240,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-f",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     2,
+     3
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "down-to-bass-f",
+   "songTitle": "Down to Bass F",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Down to Bass F",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-12b8f359a7",
+   "featuredSkills": [
+    "prep-a.bass-f",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "f-c-seesaw",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 240,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-f",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "f-c-seesaw",
+   "songTitle": "F and C Seesaw",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "F and C Seesaw",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 8,
+    "4": 2,
+    "5": 4,
+    "6": 4,
+    "7": 8,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-daba4e1f5a",
+   "featuredSkills": [
+    "prep-a.two-notes-together",
+    "prep-a.bass-f"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "warmup-drop-and-lift",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 250,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.two-notes-together"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.two-notes-together",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.two-notes-together": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "warmup-drop-and-lift",
+   "songTitle": "Warm-up: Drop and Lift",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Drop and Lift",
+   "updatedAt": "2026-10-01T06:46:16+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 6,
+    "6": 2,
+    "7": 6,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-84808487a0",
+   "featuredSkills": [
+    "prep-a.two-notes-together",
+    "prep-a.bass-f"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "doorbell",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 250,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.two-notes-together"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.two-notes-together",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.two-notes-together": [
+     1,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     6,
+     8
+    ]
+   },
+   "song": "doorbell",
+   "songTitle": "Doorbell",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Doorbell",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 2,
+    "4": 1,
+    "5": 4,
+    "6": 4,
+    "7": 2,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-d5b3ffe09d",
+   "featuredSkills": [
+    "prep-a.hands-at-once"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "chiming-clock",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 260,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.hands-at-once"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.hands-at-once",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     4,
+     6,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     7
+    ],
+    "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     3,
+     5,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "chiming-clock",
+   "songTitle": "Chiming Clock",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Chiming Clock",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 2,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-c3f4c4ed89",
+   "featuredSkills": [
+    "prep-a.hands-at-once"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "three-friends",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 260,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.hands-at-once"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.hands-at-once",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     5,
+     6,
+     8
+    ],
+    "prep-a.half-note": [
+     7
+    ],
+    "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "three-friends",
+   "songTitle": "Three Friends",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Three Friends",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 2,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-3e710fa4e9",
+   "featuredSkills": [
+    "prep-a.hands-at-once",
+    "prep-a.bass-f"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "drum-beats",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 260,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.hands-at-once"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.hands-at-once",
+   "skillMeasures": {
+    "prep-a.bass-f": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     7
+    ],
+    "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     3,
+     5,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "drum-beats",
+   "songTitle": "Drum Beats",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Drum Beats",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Ludwig van Beethoven",
+   "contentVersion": "lib-6759ba911a",
+   "featuredSkills": [
+    "prep-a.d-e-f",
+    "prep-a.treble-g"
+   ],
+   "genre": "classical",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "joyful-joyful",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 270,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.d-e-f",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     4,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     5,
+     6
+    ]
+   },
+   "song": "joyful-joyful",
+   "songTitle": "Joyful, Joyful",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Joyful, Joyful",
+   "version": "On the staff"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-93d387bd86",
+   "featuredSkills": [
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "d-e-f-parade",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 270,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.d-e-f",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "d-e-f-parade",
+   "songTitle": "The D-E-F Parade",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "The D-E-F Parade",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-3f3095d2e3",
+   "featuredSkills": [
+    "prep-a.steps-on-the-staff",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "stepping-up-stepping-down",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 280,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.steps-on-the-staff"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.steps-on-the-staff",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.steps-on-the-staff": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     2,
+     3,
+     6
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "stepping-up-stepping-down",
+   "songTitle": "Stepping Up, Stepping Down",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Stepping Up, Stepping Down",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-b4a81d7e6e",
+   "featuredSkills": [
+    "prep-a.steps-on-the-staff",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "little-bird-steps",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 280,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.steps-on-the-staff"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.steps-on-the-staff",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.steps-on-the-staff": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     3,
+     4,
+     5
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "little-bird-steps",
+   "songTitle": "Little Bird Steps",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Little Bird Steps",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-d8f2faa699",
+   "featuredSkills": [
+    "prep-a.four-four",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "tin-soldiers",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 290,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.four-four"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.four-four",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.four-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "tin-soldiers",
+   "songTitle": "Tin Soldiers",
+   "tempo": 104,
+   "timeSig": "4/4",
+   "title": "Tin Soldiers",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-74df95e4b5",
+   "featuredSkills": [
+    "prep-a.four-four",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "four-beat-band",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 290,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.four-four"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.four-four",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.four-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "four-beat-band",
+   "songTitle": "Four-Beat Band",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Four-Beat Band",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-0f868ed6d6",
+   "featuredSkills": [
+    "prep-a.hand-shift",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "warmup-hop-to-the-next-key",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 300,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.hand-shift"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.hand-shift",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.hand-shift": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     5,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     7
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "warmup-hop-to-the-next-key",
+   "songTitle": "Warm-up: Hop to the Next Key",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Hop to the Next Key",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ef4765f008",
+   "featuredSkills": [
+    "prep-a.hand-shift",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "bunny-hops",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 300,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.hand-shift"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.hand-shift",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.hand-shift": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "bunny-hops",
+   "songTitle": "Bunny Hops",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bunny Hops",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-e82edc1476",
+   "featuredSkills": [
+    "prep-a.bass-b"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "b-and-c",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 310,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-b"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-b",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     5
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.treble-g": [
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4,
+     6
+    ]
+   },
+   "song": "b-and-c",
+   "songTitle": "B and C",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "B and C",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-229938bb3f",
+   "featuredSkills": [
+    "prep-a.bass-b",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "bouncing-b",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 310,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-b"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-b",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "bouncing-b",
+   "songTitle": "Bouncing B",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bouncing B",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 1,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-dabbd1c948",
+   "featuredSkills": [
+    "prep-a.three-four",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "waltzing-bear",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 320,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.three-four"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.three-four",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     4,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     4,
+     5,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     3,
+     4,
+     5
+    ]
+   },
+   "song": "waltzing-bear",
+   "songTitle": "Waltzing Bear",
+   "tempo": 120,
+   "timeSig": "3/4",
+   "title": "Waltzing Bear",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 1,
+    "3": 3,
+    "4": 1,
+    "5": 3,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6af48cf4ed",
+   "featuredSkills": [
+    "prep-a.three-four",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "warmup-flowing-wheels",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 320,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.three-four"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.three-four",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ]
+   },
+   "song": "warmup-flowing-wheels",
+   "songTitle": "Warm-up: Flowing Wheels",
+   "tempo": 104,
+   "timeSig": "3/4",
+   "title": "Warm-up: Flowing Wheels",
+   "updatedAt": "2026-10-01T06:46:57+00:00",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 1,
+    "3": 3,
+    "4": 1,
+    "5": 3,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-32dd9f9b14",
+   "featuredSkills": [
+    "prep-a.bass-a"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "rock-a-bye",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 330,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.three-four",
+    "prep-a.bass-a"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-a",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     3,
+     7
+    ],
+    "prep-a.bass-b": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.dotted-half": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     4,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ]
+   },
+   "song": "rock-a-bye",
+   "songTitle": "Rock-a-Bye",
+   "tempo": 104,
+   "timeSig": "3/4",
+   "title": "Rock-a-Bye",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 1,
+    "3": 3,
+    "4": 1,
+    "5": 3,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6140a005ae",
+   "featuredSkills": [
+    "prep-a.bass-a"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "pony-trot",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 330,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.three-four",
+    "prep-a.bass-a"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-a",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     5,
+     7
+    ],
+    "prep-a.bass-b": [
+     5,
+     6,
+     7
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.dotted-half": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     5,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "pony-trot",
+   "songTitle": "Pony Trot",
+   "tempo": 108,
+   "timeSig": "3/4",
+   "title": "Pony Trot",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-2a34bce083",
+   "featuredSkills": [
+    "prep-a.bass-g",
+    "prep-a.bass-a"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "bear-walk",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 340,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-g",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-f": [
+     2,
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     1,
+     3,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "bear-walk",
+   "songTitle": "Bear Walk",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Bear Walk",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ddac2a887a",
+   "featuredSkills": [
+    "prep-a.bass-g",
+    "prep-a.bass-a"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "turtle-walk",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 340,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-g",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     1,
+     3,
+     6,
+     7
+    ],
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.bass-f": [
+     2,
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     1,
+     2,
+     3,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     4,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "turtle-walk",
+   "songTitle": "Turtle Walk",
+   "tempo": 80,
+   "timeSig": "4/4",
+   "title": "Turtle Walk",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-5afe3406c0",
+   "featuredSkills": [
+    "prep-a.bass-g"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "left-hand-waltz",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 340,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.three-four",
+    "prep-a.bass-a",
+    "prep-a.bass-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-g",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     1,
+     2,
+     7
+    ],
+    "prep-a.bass-b": [
+     1,
+     2,
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     2
+    ],
+    "prep-a.d-e-f": [
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.dotted-half": [
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     5,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "left-hand-waltz",
+   "songTitle": "Left-Hand Waltz",
+   "tempo": 120,
+   "timeSig": "3/4",
+   "title": "Left-Hand Waltz",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-539a845922",
+   "featuredSkills": [
+    "prep-a.middle-c-position",
+    "prep-a.bass-g"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "i-call-you-call",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 350,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.middle-c-position"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.middle-c-position",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     3,
+     7
+    ],
+    "prep-a.bass-b": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     7
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     6,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     8
+    ],
+    "prep-a.middle-c-position": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     5
+    ],
+    "prep-a.whole-note": [
+     2,
+     4
+    ]
+   },
+   "song": "i-call-you-call",
+   "songTitle": "I Call, You Call",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "I Call, You Call",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-4b4f77ef28",
+   "featuredSkills": [
+    "prep-a.middle-c-position",
+    "prep-a.bass-g"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "warmup-thumb-walk",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 350,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.middle-c-position"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.middle-c-position",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-f": [
+     5
+    ],
+    "prep-a.bass-g": [
+     3,
+     5,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     7,
+     8
+    ],
+    "prep-a.middle-c-position": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "warmup-thumb-walk",
+   "songTitle": "Warm-up: Thumb Walk",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Thumb Walk",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9f2ec52a2f",
+   "featuredSkills": [
+    "prep-a.skips"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "warmup-checkers",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 360,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.skips",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     5
+    ],
+    "prep-a.bass-b": [
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     7
+    ],
+    "prep-a.d-e-f": [
+     1,
+     3,
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "warmup-checkers",
+   "songTitle": "Warm-up: Checkers",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Checkers",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "10": 3,
+    "11": 4,
+    "12": 3,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3,
+    "9": 4
+   },
+   "beats": 48.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-bc3663715b",
+   "featuredSkills": [
+    "prep-a.skips"
+   ],
+   "genre": "kids",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "twinkle-twinkle",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 360,
+   "measures": 12,
+   "phrases": 6,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.skips",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     4,
+     6,
+     8,
+     12
+    ],
+    "prep-a.bass-b": [
+     3,
+     4,
+     6,
+     8,
+     9,
+     11,
+     12
+    ],
+    "prep-a.bass-g": [
+     1,
+     4,
+     9,
+     12
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     5,
+     7,
+     9,
+     10,
+     11
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8,
+     10,
+     12
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "prep-a.skips": [
+     3,
+     6,
+     11
+    ]
+   },
+   "song": "twinkle-twinkle",
+   "songTitle": "Twinkle Twinkle Little Star",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Twinkle Twinkle Little Star",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-cf5b0baedb",
+   "featuredSkills": [
+    "prep-a.skips",
+    "prep-a.d-e-f"
+   ],
+   "genre": "kids",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "mary-had-a-little-lamb",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 360,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.skips",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     3,
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     4,
+     5
+    ],
+    "prep-a.treble-g": [
+     4
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "mary-had-a-little-lamb",
+   "songTitle": "Mary Had a Little Lamb",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Mary Had a Little Lamb",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "10": 2,
+    "11": 4,
+    "12": 1,
+    "13": 4,
+    "14": 2,
+    "15": 1,
+    "2": 1,
+    "3": 3,
+    "4": 1,
+    "5": 3,
+    "6": 2,
+    "7": 2,
+    "8": 1,
+    "9": 3
+   },
+   "beats": 60.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-ce8449235f",
+   "featuredSkills": [
+    "prep-a.allegro",
+    "prep-a.skips"
+   ],
+   "genre": "folk",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "when-the-saints",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 370,
+   "measures": 15,
+   "phrases": 8,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.allegro"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.allegro",
+   "skillMeasures": {
+    "prep-a.allegro": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "prep-a.dotted-half": [
+     10
+    ],
+    "prep-a.half-note": [
+     1,
+     3,
+     5,
+     6,
+     7,
+     9,
+     14
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     5,
+     7,
+     9,
+     10,
+     11,
+     12,
+     14,
+     15
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "prep-a.skips": [
+     1,
+     3,
+     5,
+     6,
+     7,
+     11,
+     13,
+     14
+    ],
+    "prep-a.treble-g": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     11,
+     13
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     8,
+     12,
+     15
+    ]
+   },
+   "song": "when-the-saints",
+   "songTitle": "When the Saints Go Marching In",
+   "tempo": 112,
+   "timeSig": "4/4",
+   "title": "When the Saints Go Marching In",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 3,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-9bd7df2a2f",
+   "featuredSkills": [
+    "prep-a.allegro",
+    "prep-a.skips"
+   ],
+   "genre": "kids",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "are-you-sleeping",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 370,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.allegro"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.allegro",
+   "skillMeasures": {
+    "prep-a.allegro": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.bass-g": [
+     7,
+     8
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.treble-g": [
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "song": "are-you-sleeping",
+   "songTitle": "Are You Sleeping?",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Are You Sleeping?",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 4,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-5b4d882cc9",
+   "featuredSkills": [
+    "prep-a.more-skips",
+    "prep-a.skips"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "kangaroo-skips",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 380,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.more-skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.more-skips",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     4
+    ],
+    "prep-a.bass-b": [
+     3,
+     4
+    ],
+    "prep-a.bass-g": [
+     3,
+     4
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     2,
+     4
+    ],
+    "prep-a.middle-c": [
+     5,
+     6
+    ],
+    "prep-a.more-skips": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.skips": [
+     1,
+     3,
+     5
+    ],
+    "prep-a.whole-note": [
+     6
+    ]
+   },
+   "song": "kangaroo-skips",
+   "songTitle": "Kangaroo Skips",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Kangaroo Skips",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9c0c161201",
+   "featuredSkills": [
+    "prep-a.more-skips",
+    "prep-a.skips"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "space-hops",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 380,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.more-skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.more-skips",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.middle-c": [
+     2,
+     4
+    ],
+    "prep-a.more-skips": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.treble-g": [
+     2
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "space-hops",
+   "songTitle": "Space Hops",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Space Hops",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-79f4133f2f",
+   "featuredSkills": [
+    "prep-a.skips-together"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "skipping-stones",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 390,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.bass-a",
+    "prep-a.skips",
+    "prep-a.skips-together"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.skips-together",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     3,
+     7
+    ],
+    "prep-a.bass-f": [
+     3,
+     7
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     5,
+     6,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     5,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4,
+     7
+    ],
+    "prep-a.skips-together": [
+     5,
+     6,
+     8
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     6
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "skipping-stones",
+   "songTitle": "Skipping Stones",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Skipping Stones",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 2,
+    "4": 4,
+    "5": 2
+   },
+   "beats": 20.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-07c1488688",
+   "featuredSkills": [
+    "prep-a.skips-together"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "snowflakes",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 390,
+   "measures": 5,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.skips-together"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.skips-together",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     4,
+     5
+    ],
+    "prep-a.bass-b": [
+     4
+    ],
+    "prep-a.bass-g": [
+     4
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     4,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.skips-together": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.treble-g": [
+     2
+    ],
+    "prep-a.whole-note": [
+     3,
+     5
+    ]
+   },
+   "song": "snowflakes",
+   "songTitle": "Snowflakes",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "Snowflakes",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-47b04d935c",
+   "featuredSkills": [
+    "prep-a.bass-d"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "middle-line-d",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 400,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-d"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-d",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     2,
+     3
+    ],
+    "prep-a.bass-d": [
+     1,
+     3,
+     4
+    ],
+    "prep-a.bass-f": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.bass-g": [
+     2,
+     3
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "middle-line-d",
+   "songTitle": "Middle Line D",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Middle Line D",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-f8c928234e",
+   "featuredSkills": [
+    "prep-a.bass-d"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "d-and-f-drums",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 400,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.bass-d"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-d",
+   "skillMeasures": {
+    "prep-a.bass-d": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.bass-f": [
+     1,
+     2,
+     5,
+     6
+    ],
+    "prep-a.d-e-f": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     5,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "d-and-f-drums",
+   "songTitle": "D and F Drums",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "D and F Drums",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 3
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-51443fc891",
+   "featuredSkills": [
+    "prep-a.bass-c",
+    "prep-a.bass-d"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "down-to-bass-c",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 410,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-d",
+    "prep-a.bass-c"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.bass-c": [
+     1,
+     2,
+     4
+    ],
+    "prep-a.bass-d": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.bass-f": [
+     1,
+     3
+    ],
+    "prep-a.bass-g": [
+     1,
+     3
+    ],
+    "prep-a.half-note": [
+     2,
+     4
+    ],
+    "prep-a.middle-c": [
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     3,
+     4
+    ]
+   },
+   "song": "down-to-bass-c",
+   "songTitle": "Down to Bass C",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Down to Bass C",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9bd6b663be",
+   "featuredSkills": [
+    "prep-a.bass-c",
+    "prep-a.bass-d"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "c-d-f-dance",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 410,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.skips",
+    "prep-a.bass-d",
+    "prep-a.bass-c"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2
+    ],
+    "prep-a.bass-c": [
+     1,
+     2
+    ],
+    "prep-a.bass-d": [
+     1,
+     2
+    ],
+    "prep-a.bass-f": [
+     2
+    ],
+    "prep-a.d-e-f": [
+     3,
+     4
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     3
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     2
+    ],
+    "prep-a.treble-g": [
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "c-d-f-dance",
+   "songTitle": "C, D, F Dance",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "C, D, F Dance",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ac4d496260",
+   "featuredSkills": [
+    "prep-a.bass-c-scale"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "bass-parade",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 420,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c-scale",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.bass-c": [
+     1,
+     4
+    ],
+    "prep-a.bass-c-scale": [
+     1,
+     3
+    ],
+    "prep-a.bass-d": [
+     1,
+     3
+    ],
+    "prep-a.bass-f": [
+     1,
+     3
+    ],
+    "prep-a.bass-g": [
+     2,
+     3
+    ],
+    "prep-a.d-e-f": [
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     6,
+     7
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "bass-parade",
+   "songTitle": "Bass Parade",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bass Parade",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-f8727aa41e",
+   "featuredSkills": [
+    "prep-a.bass-c-scale",
+    "prep-a.bass-c"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "bass-walk",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 420,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c-scale",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.bass-c": [
+     1,
+     4,
+     6,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-d": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-f": [
+     1,
+     3,
+     7
+    ],
+    "prep-a.bass-g": [
+     2,
+     3,
+     7
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     2,
+     3,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     5,
+     7
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "bass-walk",
+   "songTitle": "Bass Walk",
+   "tempo": 90,
+   "timeSig": "4/4",
+   "title": "Bass Walk",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-e12af12945",
+   "featuredSkills": [
+    "prep-a.bass-c-scale",
+    "prep-a.bass-c"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "galloping",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 420,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c-scale",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.bass-c": [
+     1,
+     3,
+     6,
+     7,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     7
+    ],
+    "prep-a.bass-d": [
+     2,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-f": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.bass-g": [
+     1,
+     4
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     1
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "galloping",
+   "songTitle": "Galloping",
+   "tempo": 108,
+   "timeSig": "4/4",
+   "title": "Galloping",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-28e83c569e",
+   "featuredSkills": [
+    "prep-a.octave"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "warmup-octave-leap",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 430,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale",
+    "prep-a.octave"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.octave",
+   "skillMeasures": {
+    "prep-a.bass-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     7,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     3,
+     5
+    ],
+    "prep-a.bass-f": [
+     5,
+     7
+    ],
+    "prep-a.bass-g": [
+     3,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     2,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     7,
+     8
+    ],
+    "prep-a.octave": [
+     1,
+     2,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "warmup-octave-leap",
+   "songTitle": "Warm-up: Octave Leap",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "Warm-up: Octave Leap",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 2,
+    "5": 1
+   },
+   "beats": 20.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-a640123dda",
+   "featuredSkills": [
+    "prep-a.octave"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": false,
+   "id": "octave-bells",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 430,
+   "measures": 5,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale",
+    "prep-a.octave"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.octave",
+   "skillMeasures": {
+    "prep-a.bass-c": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.bass-c-scale": [
+     3
+    ],
+    "prep-a.bass-g": [
+     3
+    ],
+    "prep-a.half-note": [
+     2,
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.octave": [
+     1,
+     2,
+     4,
+     5
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "prep-a.skips": [
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     5
+    ]
+   },
+   "song": "octave-bells",
+   "songTitle": "Octave Bells",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Octave Bells",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 4,
+    "6": 4,
+    "7": 3,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-906878e4ee",
+   "featuredSkills": [
+    "prep-a.question-answer",
+    "prep-a.bass-c-scale"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "echo-song",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 440,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale",
+    "prep-a.question-answer"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.question-answer",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.bass-c": [
+     2,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.bass-d": [
+     2,
+     6,
+     8
+    ],
+    "prep-a.bass-f": [
+     4,
+     6
+    ],
+    "prep-a.bass-g": [
+     4,
+     6
+    ],
+    "prep-a.d-e-f": [
+     1,
+     3,
+     5,
+     7
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.question-answer": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     3,
+     5
+    ]
+   },
+   "song": "echo-song",
+   "songTitle": "Echo Song",
+   "tempo": 90,
+   "timeSig": "4/4",
+   "title": "Echo Song",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-9308d3eddc",
+   "featuredSkills": [
+    "prep-a.question-answer",
+    "prep-a.bass-c-scale"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "bee-and-ladybug",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 440,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.hands-at-once",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.skips",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale",
+    "prep-a.question-answer"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.question-answer",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     6,
+     8
+    ],
+    "prep-a.bass-c": [
+     2,
+     5,
+     6,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     1,
+     2,
+     5
+    ],
+    "prep-a.bass-d": [
+     1,
+     2,
+     6
+    ],
+    "prep-a.bass-f": [
+     1
+    ],
+    "prep-a.bass-g": [
+     1,
+     5
+    ],
+    "prep-a.d-e-f": [
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     4,
+     6
+    ],
+    "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.middle-c": [
+     4,
+     7,
+     8
+    ],
+    "prep-a.question-answer": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     5
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "bee-and-ladybug",
+   "songTitle": "Bumblebee and Ladybug",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bumblebee and Ladybug",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 1,
+    "4": 4,
+    "5": 1,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-68cd674456",
+   "featuredSkills": [
+    "prep-a.tie",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "trumpet-call",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 450,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.tie"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.tie",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.tie": [
+     2,
+     5
+    ],
+    "prep-a.treble-g": [
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     2,
+     3,
+     5,
+     6,
+     8
+    ]
+   },
+   "song": "trumpet-call",
+   "songTitle": "Trumpet Call",
+   "tempo": 108,
+   "timeSig": "4/4",
+   "title": "Trumpet Call",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 1,
+    "3": 1,
+    "4": 3,
+    "5": 1,
+    "6": 1,
+    "7": 3,
+    "8": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ae7d7221d4",
+   "featuredSkills": [
+    "prep-a.tie"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "long-long-lullaby",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 450,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.d-e-f",
+    "prep-a.three-four",
+    "prep-a.tie"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.tie",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     2,
+     3,
+     5,
+     6,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     3,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.tie": [
+     2,
+     5
+    ]
+   },
+   "song": "long-long-lullaby",
+   "songTitle": "Long, Long Lullaby",
+   "tempo": 100,
+   "timeSig": "3/4",
+   "title": "Long, Long Lullaby",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-4d826df94b",
+   "featuredSkills": [
+    "prep-a.tie",
+    "prep-a.d-e-f"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "warmup-tied-pattern",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 450,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.tie"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.tie",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.tie": [
+     1,
+     3,
+     5
+    ],
+    "prep-a.treble-g": [
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "warmup-tied-pattern",
+   "songTitle": "Warm-up: Tied Pattern",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Tied Pattern",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 5,
+    "2": 5,
+    "3": 5,
+    "4": 4,
+    "5": 5,
+    "6": 4,
+    "7": 5,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ad2757c629",
+   "featuredSkills": [
+    "prep-a.tie"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "drone-song",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 450,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.hands-at-once",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale",
+    "prep-a.tie"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.tie",
+   "skillMeasures": {
+    "prep-a.bass-c": [
+     1,
+     2,
+     3,
+     4,
+     8
+    ],
+    "prep-a.bass-c-scale": [
+     5,
+     6,
+     7
+    ],
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     4,
+     6
+    ],
+    "prep-a.hands-at-once": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     5,
+     8
+    ],
+    "prep-a.tie": [
+     1,
+     2,
+     3,
+     5,
+     6
+    ],
+    "prep-a.treble-g": [
+     2,
+     3,
+     5
+    ],
+    "prep-a.whole-note": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "drone-song",
+   "songTitle": "Drone Song",
+   "tempo": 100,
+   "timeSig": "4/4",
+   "title": "Drone Song",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-d0ee36dc29",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "kids",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "rain-rain",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.half-note": [
+     1
+    ],
+    "prep-a.middle-c": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2,
+     4,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "song": "rain-rain",
+   "songTitle": "Rain, Rain, Go Away",
+   "tempo": 108,
+   "timeSig": "4/4",
+   "title": "Rain, Rain, Go Away",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 2,
+    "4": 2,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 2
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-81d5921799",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": false,
+   "id": "stop-and-go",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.hands-at-once",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     2,
+     6
+    ],
+    "prep-a.bass-b": [
+     2,
+     6
+    ],
+    "prep-a.bass-f": [
+     4,
+     8
+    ],
+    "prep-a.d-e-f": [
+     1,
+     5,
+     7
+    ],
+    "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.treble-g": [
+     3,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "stop-and-go",
+   "songTitle": "Stop and Go",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Stop and Go",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 3,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-7eee5820a0",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "clap-and-rest",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     2,
+     3
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "clap-and-rest",
+   "songTitle": "Clap and Rest",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Clap and Rest",
+   "version": null
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-758574bbe9",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "warmup-quick-fist",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.half-note": [
+     3
+    ],
+    "prep-a.middle-c": [
+     1,
+     4
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "warmup-quick-fist",
+   "songTitle": "Warm-up: Quick Fist",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Quick Fist",
+   "version": null
+  }
+ ]
+}

@@ -10,20 +10,18 @@ so change them if the parent judged the playing differently (that is the tuning,
 from __future__ import annotations
 
 import json
-import ssl
 import sys
 import urllib.request
 from pathlib import Path
 
+import server_config as sc
+
 ROOT = Path(__file__).resolve().parent.parent
-API = "https://192.168.2.128/api"
-CA = Path.home() / "repos" / "Server" / "caddy-root-ca.crt"
 OUT = ROOT / "client" / "tests" / "fixtures"
 
 
 def get(path: str):
-    ctx = ssl.create_default_context(cafile=str(CA)) if CA.exists() else ssl._create_unverified_context()
-    with urllib.request.urlopen(API + path, context=ctx, timeout=10) as r:
+    with urllib.request.urlopen(sc.server() + "/api" + path, context=sc.ssl_context(), timeout=10) as r:
         return json.load(r)
 
 

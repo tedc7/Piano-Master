@@ -67,8 +67,8 @@
   let recentKey = 0;
   let loopTimer = 0;
 
-  const hasMedia = $derived(!!piece?.media);
   const hasVocals = $derived(!!piece?.media && Object.values(piece.media.presets).some((p) => p?.vocals));
+  const hasBacking = $derived(!!piece?.media && Object.values(piece.media.presets).some((p) => p?.accompaniment));
   const vocalsOn = $derived(piece ? !app.prefs.vocalsOff.includes(piece.id) : true);
   // the metronome is the student's one choice for every song (v0.29); until they first make it, songs
   // with singing have no click during play. The count-in always clicks.
@@ -637,7 +637,7 @@
       <p class="muted small">Settings for the parent. Students' own settings are under Config › Students.</p>
       <div class="grid">
         <DeviceSettings />
-        <PlayerSettings settings={app.prefs} backing={hasMedia} onchange={(p) => { app.setParentPrefs(p); applyMix(); }} />
+        <PlayerSettings settings={app.prefs} backing={hasBacking} onchange={(p) => { app.setParentPrefs(p); applyMix(); }} />
         <span>MIDI delivery delay</span>
         <span>{delayStats()}</span>
         <span>Last MIDI events</span>

@@ -71,7 +71,7 @@ their settings, skill states, today's session and practice days. The engine buil
 session on the first request and updates the skill states from every attempt; the client keeps a
 copy of the last state so a Wi-Fi drop never stops practice. On a new piano server, tap Parent
 and choose a PIN (4 to 8 digits), then add the students under Config > Students. A forgotten PIN
-is cleared on the server: `docker exec docmost-piano-api-1 python -m app.admin reset-pin`.
+is cleared on the server: `docker exec <piano-api container> python -m app.admin reset-pin`.
 
 **Diagnostics and drills** (arch §8.8, §8.9; M6): every attempt stores each written note's timing
 (or that it was missed). When a day's session is built, `api/app/diagnostics.py` looks for five
@@ -122,8 +122,13 @@ one with `tools/.venv/bin/python tools/fixture_from_attempt.py` (lists recent at
 
 ## Deploy
 
+The scripts find your piano server in `~/.config/piano-master/server.env`: copy
+[tools/server.env.example](tools/server.env.example) there and fill in the site's address, the ssh
+host for deploys and the server's root certificate. It's kept outside the repo, which is public.
+A new server from scratch: [docs/fresh-install.md](docs/fresh-install.md).
+
 ```sh
-tools/deploy.sh             # tests, then the API (/opt/piano/api) and the client (https://192.168.2.128/app/)
+tools/deploy.sh             # tests, then the API (/opt/piano/api) and the client (https://<piano-server>/app/)
 tools/deploy.sh client      # or just one of them
 tools/deploy.sh api
 ```

@@ -1,0 +1,952 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 4,
+  "3": 4,
+  "4": 4,
+  "5": 4,
+  "6": 4,
+  "7": 4,
+  "8": 4
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-ed8679515a",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.three-black-keys",
+  "prep-a.sitting"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "RL",
+ "id": "mixed-up-black-keys",
+ "info": {
+  "checks": {
+   "bleedDb": -29.0,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.7,
+    "p95_ms": 41.2,
+    "share_over_50ms": 0.026,
+    "windows": 39
+   },
+   "grid50": {
+    "median_ms": 31.6,
+    "p95_ms": 105.9,
+    "share_over_50ms": 0.385,
+    "windows": 39
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.906,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsOff": 0.0,
+   "worstPhraseMs": 16.2
+  },
+  "engine": "YuE2 vocal",
+  "hands": "RL",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "lyrics": "1. Two keys, two keys, three keys, three keys, two keys, three keys, all black keys play! Two keys, two keys, three keys, three keys, two keys, three keys, all black keys play!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.three-black-keys). Original music and words for this app."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/mixed-up-black-keys.yaml"
+  },
+  "sourceIds": []
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 60,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -29.0,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.7,
+    "p95_ms": 41.2,
+    "share_over_50ms": 0.026,
+    "windows": 39
+   },
+   "grid50": {
+    "median_ms": 31.6,
+    "p95_ms": 105.9,
+    "share_over_50ms": 0.385,
+    "windows": 39
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.906,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsOff": 0.0,
+   "worstPhraseMs": 16.2
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 499200,
+     "url": "/api/library/media/mixed-up-black-keys/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 996960,
+     "url": "/api/library/media/mixed-up-black-keys/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 665280,
+     "url": "/api/library/media/mixed-up-black-keys/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 554400,
+     "url": "/api/library/media/mixed-up-black-keys/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "mixed-up-black-keys-s3 (dtw)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    49,
+    70
+   ],
+   "staves": [
+    "treble",
+    "bass"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 32.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Two",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "all",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "black",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "keys",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "play!",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "Two",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 25,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 27,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 28,
+    "syllabic": "single",
+    "text": "all",
+    "verse": 1
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "black",
+    "verse": 1
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "keys",
+    "verse": 1
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "play!",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   },
+   {
+    "duration": 4.0,
+    "number": 7,
+    "start": 24.0
+   },
+   {
+    "duration": 4.0,
+    "number": 8,
+    "start": 28.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 61,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 63,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 61,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 63,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 70,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 7.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 61,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 63,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 70,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 15.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 17.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 19.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 54,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 21.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 58,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 23.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 25.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 54,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 27.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 58,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 29.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 54,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 30.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 54,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 31.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0,
+   24.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.three-black-keys"
+ ],
+ "skillId": "prep-a.three-black-keys",
+ "skillMeasures": {
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.three-black-keys": [
+   2,
+   3,
+   4,
+   6,
+   7,
+   8
+  ]
+ },
+ "song": "mixed-up-black-keys",
+ "songTitle": "Mixed-Up Black Keys",
+ "title": "Mixed-Up Black Keys",
+ "version": null
+}

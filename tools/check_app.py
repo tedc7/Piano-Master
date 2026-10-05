@@ -913,6 +913,18 @@ def main():
         check(pos["logic"] > 2, f"amazing grace: stems load and the song moves at 50% (beat {pos['logic']:.2f})")
         page.get_by_role("button", name="Pause").click()
 
+        # 6b. a curriculum song with a vocal and no backing (v0.30): its stems load and it plays
+        if (SONGS / "media" / "steady-steps" / "vocals_100.mp3").exists():
+            open_piece(page, "steady-steps")
+            page.get_by_role("button", name="Listen").click()
+            page.wait_for_function("__pm.player.state === 'playing'", timeout=30000)
+            page.wait_for_timeout(4000)
+            r = page.evaluate("({ beat: __pm.player.position.logic, vocals: !!__pm.player.stems?.vocals, backing: !!__pm.player.stems?.accompaniment })")
+            check(r["beat"] > 2 and r["vocals"] and not r["backing"], f"steady steps: a vocal without a backing loads and plays ({r})")
+            page.get_by_role("button", name="Pause").click()
+        else:
+            print("skip: steady-steps has no media here (tools/media/media.py make steady-steps)")
+
         # 7. Diagnostics (M6): two days of rushed eighth notes, planted for a new student, give
         # today's session a rhythm tap drill; any key counts, and playing it checks the item off
         sid = plant_rushed_quarters()

@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Deploy dist/ to the piano server as https://192.168.2.128/fluid/ (the listening page) and
+# Deploy dist/ to the piano server as $PIANO_SERVER/fluid/ (the listening page) and
 # /fluid/app/ (the test app). Touches only /opt/piano/www/fluid (swapped in whole).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SRC="$HERE/dist"
-HOST="${PIANO_HOST:-kb}"
-URL="https://192.168.2.128/fluid/"
-CA="${CADDY_ROOT_CA:-$HOME/repos/Server/caddy-root-ca.crt}"
+. "$HERE/../../tools/server_env.sh"
+HOST="$PIANO_HOST"
+URL="$PIANO_SERVER/fluid/"
+CA="$CADDY_ROOT_CA"
 
 [ -f "$SRC/index.html" ] && [ -f "$SRC/app/index.html" ] || { echo "build first: render.py, then build_site.py" >&2; exit 1; }
 
@@ -25,7 +26,7 @@ ssh "$HOST" 'set -e
 
 # Checks: page and manifest load, and audio supports range requests (iOS needs 206).
 curl_opts=(-s -o /dev/null -w "%{http_code}")
-if [ -f "$CA" ]; then curl_opts+=(--cacert "$CA"); else curl_opts+=(-k); fi
+curl_opts+=(--cacert "$CA")
 page=$(curl "${curl_opts[@]}" "$URL")
 app=$(curl "${curl_opts[@]}" "${URL}app/")
 range=$(curl "${curl_opts[@]}" -r 0-1023 "${URL}app/media/canon-in-d--musescore/accompaniment_100.mp3")

@@ -1,0 +1,562 @@
+{
+ "barNotes": {
+  "1": 3,
+  "2": 1,
+  "3": 3,
+  "4": 1,
+  "5": 3,
+  "6": 1,
+  "7": 3,
+  "8": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-32dd9f9b14",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.bass-a"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "RL",
+ "id": "rock-a-bye",
+ "info": {
+  "hands": "RL",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "seeded": true,
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/rock-a-bye.yaml"
+  }
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 330,
+ "media": null,
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 3.0,
+   "keySig": 0,
+   "pickupBeats": 0.0,
+   "range": [
+    57,
+    67
+   ],
+   "staves": [
+    "treble",
+    "bass"
+   ],
+   "tempo": 104,
+   "timeSig": "3/4"
+  },
+  "length": 24.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "Rock",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "middle",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "end",
+    "text": "bye,",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "dear.",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "Stars",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "begin",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "end",
+    "text": "bove",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "shine.",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "Rest",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "your",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "head",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "here.",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "Sweet",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "dreams",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "now,",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "sleep.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 3.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 3.0,
+    "number": 2,
+    "start": 3.0
+   },
+   {
+    "duration": 3.0,
+    "number": 3,
+    "start": 6.0
+   },
+   {
+    "duration": 3.0,
+    "number": 4,
+    "start": 9.0
+   },
+   {
+    "duration": 3.0,
+    "number": 5,
+    "start": 12.0
+   },
+   {
+    "duration": 3.0,
+    "number": 6,
+    "start": 15.0
+   },
+   {
+    "duration": 3.0,
+    "number": 7,
+    "start": 18.0
+   },
+   {
+    "duration": 3.0,
+    "number": 8,
+    "start": 21.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 59,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 57,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 7.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 59,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 15.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 59,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 57,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 19.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 59,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 21.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   6.0,
+   12.0,
+   18.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.dotted-half",
+  "prep-a.middle-c",
+  "prep-a.treble-g",
+  "prep-a.d-e-f",
+  "prep-a.bass-b",
+  "prep-a.three-four",
+  "prep-a.bass-a"
+ ],
+ "skillId": "prep-a.bass-a",
+ "skillMeasures": {
+  "prep-a.bass-a": [
+   3,
+   7
+  ],
+  "prep-a.bass-b": [
+   3,
+   4,
+   7,
+   8
+  ],
+  "prep-a.d-e-f": [
+   1,
+   2,
+   5,
+   6
+  ],
+  "prep-a.dotted-half": [
+   2,
+   4,
+   6,
+   8
+  ],
+  "prep-a.middle-c": [
+   1,
+   4,
+   8
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.three-four": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.treble-g": [
+   5
+  ]
+ },
+ "song": "rock-a-bye",
+ "songTitle": "Rock-a-Bye",
+ "title": "Rock-a-Bye",
+ "version": null
+}

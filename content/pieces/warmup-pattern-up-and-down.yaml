@@ -1,4 +1,5 @@
-# Curriculum song (Prep A, prep-a.musical-alphabet). Warm-up in our own music and words (words added at the parent's request).
+# Curriculum song (Prep A, prep-a.musical-alphabet). Warm-up in our own music and words: an eagle up, a gopher down (the parent's idea, Oct 4;
+# the earlier letter-name words didn't line up with the sung letters). The letter names stay under the note heads.
 # A pattern moved to the next C D E: up for the right hand, down for the left.
 title: "Warm-up: Pattern Up, Pattern Down"
 composer: Piano-Master
@@ -13,6 +14,8 @@ license:
   edition: original
 letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
+media:
+  vocal_octave: -1         # sung E3-E4: every take dropped an octave on the held E5s ("sky high", "deep hole")
 abc: |
   X:1
   T:Warm-up: Pattern Up, Pattern Down
@@ -24,6 +27,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !4!E !3!D !2!C D | E2 E2 | e d c d | e2 e2 | z4 | z4 | z4 | z4 |]
-  w: E, D, C, D, E, E, up an oc-tave, E, E!
+  w: Ea-gle spreads its wings wide, soar-ing to the sky high!
   [V:LH] z4 | z4 | z4 | z4 | !2!E, !3!D, !4!C, D, | E,2 E,2 | E,, D,, C,, D,, | E,,2 E,,2 |]
-  w: E, D, C, D, E, E, down an oc-tave, E, E!
+  w: Go-pher digs a deep hole, dig-ging down be-low ground!

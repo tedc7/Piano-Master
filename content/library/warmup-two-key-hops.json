@@ -1,0 +1,570 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 4,
+  "3": 4,
+  "4": 4
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-9447f807af",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.low-and-high",
+  "prep-a.sitting"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "RL",
+ "id": "warmup-two-key-hops",
+ "info": {
+  "checks": {
+   "bleedDb": -19.9,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 5.5 s; 6.1 s; 6.8 s; 7.5 s; 8.2 s; 8.9 s; 9.6 s; 10.2 s"
+   ],
+   "grid100": {
+    "median_ms": 4.1,
+    "p95_ms": 8.9,
+    "share_over_50ms": 0.0,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 31.7,
+    "p95_ms": 45.6,
+    "share_over_50ms": 0.0,
+    "windows": 22
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "backing left in the vocal at -19.9 dB"
+   ],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsOff": 0.062,
+   "worstPhraseMs": 4.4
+  },
+  "engine": "YuE2 vocal",
+  "hands": "RL",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "lyrics": "1. Hop on two keys, hop up high now! Hop on two keys, hop down low now!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.low-and-high). Warm-up in our own music and words (words added at the parent's request). Firm fingertips: fingers 2 and 3 on the two black keys, then the same keys an octave away."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-two-key-hops.yaml"
+  },
+  "sourceIds": []
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 40,
+ "media": {
+  "bpm": 88.0,
+  "check": {
+   "bleedDb": -19.9,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 5.5 s; 6.1 s; 6.8 s; 7.5 s; 8.2 s; 8.9 s; 9.6 s; 10.2 s"
+   ],
+   "grid100": {
+    "median_ms": 4.1,
+    "p95_ms": 8.9,
+    "share_over_50ms": 0.0,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 31.7,
+    "p95_ms": 45.6,
+    "share_over_50ms": 0.0,
+    "windows": 22
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "backing left in the vocal at -19.9 dB"
+   ],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsOff": 0.062,
+   "worstPhraseMs": 4.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 298560,
+     "url": "/api/library/media/warmup-two-key-hops/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 596160,
+     "url": "/api/library/media/warmup-two-key-hops/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 397920,
+     "url": "/api/library/media/warmup-two-key-hops/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 331680,
+     "url": "/api/library/media/warmup-two-key-hops/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-two-key-hops-s11 (dtw)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    37,
+    75
+   ],
+   "staves": [
+    "treble",
+    "bass"
+   ],
+   "tempo": 88,
+   "timeSig": "4/4"
+  },
+  "length": 16.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Hop",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "hop",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "high",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "now!",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "Hop",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "keys,",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "hop",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "down",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "low",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "now!",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 61,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 63,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 61,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 63,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 73,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 75,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 73,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 75,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 7.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 37,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 39,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 37,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 39,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 15.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.low-and-high"
+ ],
+ "skillId": "prep-a.low-and-high",
+ "skillMeasures": {
+  "prep-a.low-and-high": [
+   2,
+   4
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "song": "warmup-two-key-hops",
+ "songTitle": "Warm-up: Two-Key Hops",
+ "title": "Warm-up: Two-Key Hops",
+ "version": null
+}

@@ -15,7 +15,7 @@ sounded best. Recorded in the architecture, v0.22 §10.5.
 rendering accompaniment parts from their own notation with FluidSynth and a free SoundFont? YuE2
 can't: it always sings.
 
-**Live:** https://192.168.2.128/fluid/ is the listening page. https://192.168.2.128/fluid/app/ is a
+**Live:** https://<piano-server>/fluid/ is the listening page. https://<piano-server>/fluid/app/ is a
 test copy of the app with the three pieces, one version per SoundFont. Tap Parent, open a song, and
 use Listen at each speed.
 

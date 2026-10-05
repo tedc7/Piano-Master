@@ -1,7 +1,7 @@
 """Before a deploy: the skill map may name only songs the parent has approved (arch §6.10, v0.27).
 
     tools/.venv/bin/python tools/library_check.py              # the piano server's library
-    tools/.venv/bin/python tools/library_check.py --seeding    # the deploy brings build/songs/ in as approved
+    tools/.venv/bin/python tools/library_check.py --seeding    # the deploy brings content/library/ in as approved
 
 Every song lives in the piano server's library, and the map deploys with the app, naming each
 skill's practice songs by id. This compares the built map (client/public/content/skillmap.json)
@@ -13,22 +13,20 @@ through the review list too.
 from __future__ import annotations
 
 import json
-import os
-import ssl
 import sys
 import urllib.request
 from pathlib import Path
 
+import server_config as sc
+
 ROOT = Path(__file__).resolve().parent.parent
 MAP = ROOT / "client" / "public" / "content" / "skillmap.json"
 SONGS = ROOT / "build" / "songs" / "index.json"
-SERVER = os.environ.get("PIANO_SERVER", "https://192.168.2.128")
-CA = Path(os.environ.get("CADDY_ROOT_CA", Path.home() / "repos" / "Server" / "caddy-root-ca.crt"))
+SEED = ROOT / "content" / "library" / "index.json"     # the approved curriculum songs a new install starts with
 
 
 def library() -> dict[str, dict]:
-    ctx = ssl.create_default_context(cafile=str(CA)) if CA.exists() else None
-    with urllib.request.urlopen(SERVER + "/api/library", context=ctx, timeout=30) as r:
+    with urllib.request.urlopen(sc.server() + "/api/library", context=sc.ssl_context(), timeout=30) as r:
         return {e["id"]: e for e in json.loads(r.read())["pieces"]}
 
 
@@ -36,16 +34,17 @@ def main(argv: list[str]) -> int:
     seeding = "--seeding" in argv
     skills = json.loads(MAP.read_text())["skills"]
     built = {e["id"]: e for e in json.loads(SONGS.read_text())["pieces"]}
+    seed = {e["id"] for e in json.loads(SEED.read_text())["pieces"]} if seeding and SEED.exists() else set()
     try:
         lib = library()
     except OSError as e:
-        print(f"can't read the library on {SERVER} ({e})", file=sys.stderr)
+        print(sc.cert_failure(e) or f"can't read the library on {sc.server()} ({e})", file=sys.stderr)
         return 1
     missing, changed = [], []
     for s in skills:
         for pid in s.get("pieces", []):
             if pid not in lib:
-                if not (seeding and pid in built):
+                if pid not in seed:
                     missing.append(f"{pid} ({s['id']})")
             elif pid in built and lib[pid].get("contentVersion") and built[pid].get("contentVersion") != lib[pid]["contentVersion"]:
                 changed.append(pid)
@@ -57,7 +56,7 @@ def main(argv: list[str]) -> int:
               file=sys.stderr)
         return 1
     print(f"library check: every practice song on the map is in the library ({len(lib)} songs"
-          + (", with build/songs/ as the seed" if seeding else "") + ")")
+          + (", with content/library/ as the seed" if seeding else "") + ")")
     return 0
 
 

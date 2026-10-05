@@ -24,4 +24,4 @@ existing volume. Please check:
    range support (206), which iOS needs. Check that Caddy passes `Range` through (it does by default).
 
 The dev box's token for the Skill API is made in the app (Config › Dev box connection) or in
-the container: `docker exec docmost-piano-api-1 python -m app.admin skill-token "dev box"`.
+the container: `docker exec <piano-api container> python -m app.admin skill-token "dev box"`.

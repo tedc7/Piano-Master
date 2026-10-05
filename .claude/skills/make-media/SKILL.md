@@ -65,17 +65,20 @@ alignments are reused.
 flagged):
 - timing: no phrase more than 50 ms off the beat;
 - pitch: 90% of notes on the right pitch;
-- words: the first word sung; words more than 0.3 s off their notes under 10%, and no stretch of
-  them lasting 1.5 s or more in the first 15 s (anything shorter, or later, is a *flag*: point the
-  parent to it);
+- words: the first word sung; words more than 0.3 s off their notes, or that the aligner can't
+  place (a garbled word), under 10%, and no stretch of them lasting 1.5 s or more in the first 15 s
+  (anything shorter, or later, is a *flag*: point the parent to it);
 - melody: no run of 4+ notes sung on other pitches lasting 1.5 s or more (a shorter slip is a flag);
+- octave: no held note (0.8 s or more) sung in another octave from the rest of the take;
 - tuning: within 10 cents of A440 (the FluidSynth backing is exact);
 - bleed: YuE2's backing left in the vocal under -25 dB (it would clash with a FluidSynth backing);
 - backing: every part within 20 ms of the beat after starting slow instruments early.
 
 A song whose takes all fail: package the best, say so, and let the parent decide (the Vocals
-button turns a poor vocal off). Fast songs fail more often; `--max-takes 6` renders up to three more
-seeds, stopping at the first take that passes.
+button turns a poor vocal off). Fast songs fail more often; `--max-takes 6` (up to 12) renders more
+seeds, stopping at the first take that passes. Don't submit a take with a quarter or more of its
+words off: the parent hears that every time (v0.30). A curriculum song (`genre: studies`) gets the
+vocal alone, with no backing (style `none`).
 
 ## 4. Hand the parent one review, in the app
 
@@ -94,7 +97,7 @@ and anything that failed. Then stop: for each song they choose **Approve**, **Ne
 **Songs sent back:** `tools/.venv/bin/python tools/import_song.py feedback` lists the parent's notes.
 A note about the vocal or backing ("too fast, the words run together"; "the backing is too loud")
 is yours: change the piece (a tempo) or the media (`--max-takes`, a style), run `make` again, and
-resubmit that song with `import_song.py submit content/incoming/BATCH ID`. It returns to the review
+resubmit that song with `import_song.py submit content/incoming/BATCH ID`. A note about the take itself ("try another rendering", a garbled word the checks passed): render again with `--skip-take N` (the take in its media.json) so that take is never chosen again. It returns to the review
 list with the note beside it.
 
 ## Log problems as you go

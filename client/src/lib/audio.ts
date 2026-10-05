@@ -4,7 +4,7 @@
 import { api } from "./api";
 import type { Media, Preset } from "./types";
 
-export interface StemBuffers { vocals: AudioBuffer | null; accompaniment: AudioBuffer }
+export interface StemBuffers { vocals: AudioBuffer | null; accompaniment: AudioBuffer | null }
 
 interface Playing { src: AudioBufferSourceNode; gain: GainNode }
 interface Voice extends Playing { end: number }
@@ -108,7 +108,7 @@ export class AudioEngine {
     if (busy) return busy;
     const st = media.presets[preset];
     if (!st) return Promise.reject(new Error(`no ${preset}% stems`));
-    const total = (st.vocals?.bytes ?? 0) + st.accompaniment.bytes;
+    const total = (st.vocals?.bytes ?? 0) + (st.accompaniment?.bytes ?? 0);
     let got = 0;
     const fetchOne = async (url: string) => {
       // a staged song's stems are the parent's only (arch §10.7)
@@ -133,8 +133,8 @@ export class AudioEngine {
     };
     const p = (async () => {
       const ctx = this.create();
-      const [v, a] = await Promise.all([st.vocals ? fetchOne(st.vocals.url) : null, fetchOne(st.accompaniment.url)]);
-      const [vocals, accompaniment] = await Promise.all([v ? ctx.decodeAudioData(v) : null, ctx.decodeAudioData(a)]);
+      const [v, a] = await Promise.all([st.vocals ? fetchOne(st.vocals.url) : null, st.accompaniment ? fetchOne(st.accompaniment.url) : null]);
+      const [vocals, accompaniment] = await Promise.all([v ? ctx.decodeAudioData(v) : null, a ? ctx.decodeAudioData(a) : null]);
       const bufs = { vocals, accompaniment };
       this.stems.set(key, bufs);
       onProgress?.(1);

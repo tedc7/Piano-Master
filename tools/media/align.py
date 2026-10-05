@@ -51,7 +51,8 @@ OUT_SR = 48000
 WIN = 3.0             # seconds of score per alignment window
 MAX_SHIFT = 0.35      # the windows search +-0.35 s around the rough map
 MODES = ("dtw", "words")
-PASS = {"phraseOffsetMs": 50, "pitch": 0.9, "wordsOff": 0.1, "tuningCents": 10, "bleedDb": -25, "stretchS": 1.5}
+PASS = {"phraseOffsetMs": 50, "pitch": 0.9, "wordsOff": 0.1, "tuningCents": 10, "bleedDb": -25, "stretchS": 1.5,
+        "octaveHeldS": 0.8}
 
 
 # ---------------------------------------------------------------- score and pitch
@@ -393,13 +394,49 @@ def check_words(aligned: Path, words, song_start, phrase_s=None):
     res = np.array([w["start"] - w["score_s"] for w in lw])
     fz = np.array([forced(w) for w in lw])
     typical = float(np.median(res[~fz])) if (~fz).any() else 0.0
-    off = np.abs(res - typical) > 0.3
+    # a word the aligner can't place with confidence counts as off too: it's usually a garbled
+    # word (v0.30: Steady Steps' last "stomp"s, which the check had left out). Letter names ("E,
+    # D, C") are the exception: the aligner can't place a one-letter word however it's sung (Pattern
+    # Up, Pattern Down: 16 of 22 words), so they're left for the listen.
+    letter = np.array([re.fullmatch(r"[A-G][#b♯♭]?[,.!?;:]*", w["word"].strip()) is not None for w in lw], dtype=bool)
+    off = ((np.abs(res - typical) > 0.3) & ~fz) | (fz & ~letter)
+    judged = ~(fz & letter)
     labels = [f"{w['word']} ({w['score_s']:.1f} s)" for w in lw]
     ok_res = np.abs(res[~fz] - typical) if (~fz).any() else np.array([0.0])
-    return {"checked": int((~fz).sum()), "forced": int(fz.sum()), "typicalOffsetMs": round(typical * 1000),
-            "p95Ms": round(float(np.percentile(ok_res, 95)) * 1000), "shareOver300ms": round(float((off & ~fz).mean()), 3),
-            "stretches": [f"{a} .. {b}" for a, b in regions(off & ~fz, labels)],
-            "firstStretchS": next((w["score_s"] for w, o, f in zip(lw, off, fz) if o and not f), None)}
+    return {"checked": int((~fz).sum()), "forced": int(fz.sum()), "lettersUnjudged": int((fz & letter).sum()),
+            "typicalOffsetMs": round(typical * 1000),
+            "p95Ms": round(float(np.percentile(ok_res, 95)) * 1000), "shareOver300ms": round(float(off[judged].mean()) if judged.any() else 0.0, 3),
+            "stretches": [f"{a} .. {b}" for a, b in regions(off, labels)],
+            "firstStretchS": next((w["score_s"] for w, o in zip(lw, off) if o), None)}
+
+
+def sung_octave(y, start: float, end: float, midi: int) -> int | None:
+    """The octave a note was sung in, against the one asked for (-1, 0, +1), from the voice's
+    spectrum: the lowest of the note an octave down, as asked, and an octave up that carries real
+    energy is the sung fundamental (a voice has nothing below its fundamental). The pitch tracker
+    can't tell octaves on these voices: it read most of Pattern Up, Pattern Down at C2-E2 (v0.30)."""
+    seg = y[int((start + 0.05) * SR):int((end - 0.05) * SR)]
+    if len(seg) < int(0.15 * SR):
+        return None
+    spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg))))
+    freqs = np.fft.rfftfreq(len(seg), 1 / SR)
+    f = 440.0 * 2 ** ((midi - 69) / 12)
+    energy = [float(spec[(freqs > f * 2 ** k * 0.97) & (freqs < f * 2 ** k * 1.03)].max(initial=0.0)) for k in (-1, 0, 1)]
+    top = max(energy)
+    if top <= 0:
+        return None
+    return next(k for k, e in zip((-1, 0, 1), energy) if e >= 0.25 * top)
+
+
+def octave_jumps(y, notes) -> list[dict]:
+    """Notes sung in another octave from the rest of the take, against the notes asked for: a voice
+    that sings the whole song an octave away is fine, but one that doesn't follow the song's own
+    leaps isn't (Sleepy Owl's "whoo"; Pattern Up, Pattern Down's climb sung going down)."""
+    got = [(s, e, k) for s, e, m in notes if (k := sung_octave(y, s, e, m)) is not None]
+    if not got:
+        return []
+    usual = int(np.median([g[2] for g in got]))
+    return [{"start": round(s, 2), "seconds": round(e - s, 2), "octaves": k - usual} for s, e, k in got if k != usual]
 
 
 def melody_stretches(sung, notes, song_start):
@@ -441,7 +478,11 @@ def align(folder: Path, abcmap: dict, phrases: list, mode: str) -> dict:
     windows = local_offsets(sung, notes, centers, predict)
     pitch_pts = anchors_from(windows, audio_len)
     if len(pitch_pts) < 2:
-        return {**r, "error": "too few reliable windows to align"}
+        # a melody of repeated notes ("walk, walk, walk, walk" on one key) has too few pitch changes
+        # for any window: in the word mode, its words place it (each one a clear attack)
+        if mode != "words" or len(lyric_pts) < 3:
+            return {**r, "error": "too few reliable windows to align"}
+        pitch_pts, r["wordsOnly"] = lyric_pts, True
     pf = map_fn(pitch_pts)
     bias = float(np.median([float(pf(sc)) - a for a, sc in lyric_pts])) if lyric_pts else 0.0
     pts = merge_anchors(pitch_pts, [] if mode == "dtw" else lyric_pts, bias)
@@ -477,6 +518,7 @@ def align(folder: Path, abcmap: dict, phrases: list, mode: str) -> dict:
     phrase_s = [song_start + float(p) * 60 / bpm for p in phrases]
     r["phrases"] = phrase_offsets(after, phrase_s, notes[-1][1])
     r["pitch"] = pitch_ok(sung_a, real)
+    r["octaveJumps"] = octave_jumps(ya, real)
     missing = sung_check(sung_a, real)
     r["firstWordSung"] = 0 not in missing
     r["unsungNotes"] = len(missing)
@@ -511,6 +553,7 @@ def verdict(r) -> dict:
         "melody": not long_mel,
         "tuning": bool(abs(r["tuningCents"]) <= PASS["tuningCents"]),
         "bleed": bool(r["bleed"]["db"] <= PASS["bleedDb"]),
+        "octave": not [j for j in r.get("octaveJumps", []) if j["seconds"] >= PASS["octaveHeldS"]],
     }
     reasons, flags = [], []
     if not checks["timing"]:
@@ -531,6 +574,16 @@ def verdict(r) -> dict:
         reasons.append(f"tuned {r['tuningCents']:+} cents from A440")
     if not checks["bleed"]:
         reasons.append(f"backing left in the vocal at {r['bleed']['db']} dB")
+    jumps = r.get("octaveJumps", [])
+    if not checks["octave"]:
+        reasons.append("a held note sung in another octave from the rest at " + "; ".join(
+            f"{j['start']:.1f} s ({j['octaves']:+d})" for j in jumps if j["seconds"] >= PASS["octaveHeldS"]))
+    elif jumps:
+        flags.append("a short note sung in another octave at " + "; ".join(f"{j['start']:.1f} s" for j in jumps))
+    if w.get("lettersUnjudged"):
+        flags.append(f"{w['lettersUnjudged']} letter names the word check can't place: listen to them")
+    if r.get("wordsOnly"):
+        flags.append("timed by its words only (its notes repeat too much for the beat check): listen for the beat")
     return {**checks, "pass": all(checks.values()), "worstPhraseMs": worst, "reasons": reasons, "flags": flags}
 
 

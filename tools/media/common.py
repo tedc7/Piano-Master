@@ -33,7 +33,7 @@ SR = 48000
 PAD_BEATS = 1.0             # an instrumental piece's lead-in: a note on beat 0 can start early
 
 # the piece's `genre` -> the generate-music piano-master profile's genre (its style table) and the
-# default FluidSynth backing style (arch §10.5 genre table). "yue2": keep YuE2's own backing.
+# default FluidSynth backing style (arch §10.5 genre table). "yue2": keep YuE2's own backing; "none": no backing.
 GENRES = {
     "hymns": ("Hymns", "hymn-strings"),
     "holiday": ("Holiday", "pad"),
@@ -42,6 +42,7 @@ GENRES = {
     "classical": ("Classical", "pad"),
     "pop": ("Movie/TV, Pop", "pad"),
     "lesson-pieces": ("Lesson pieces", "kids"),
+    "studies": ("Lesson pieces", "none"),     # the curriculum songs: a vocal only, until their backings are decided
 }
 
 

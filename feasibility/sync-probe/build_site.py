@@ -1,4 +1,4 @@
-"""Build the sync test page (tests 2, 3 and 4) into dist/, ready to deploy as https://192.168.2.128/sync/.
+"""Build the sync test page (tests 2, 3 and 4) into dist/, ready to deploy as https://<piano-server>/sync/.
 
     .venv/bin/python build_site.py
 
