@@ -114,6 +114,89 @@ sheets used only to check them (arch §10.2).
     one (take 2) sang every note on pitch with no words off the staff and 3 ms from the beat. The
     take-to-take spread is wide, so for a song sent back for its words, render four takes, not two.
 
+22. **Vocals for the curriculum songs (the parent's notes, Oct 1).** The parent sent back 43 live
+    Prep A songs, asking for vocals (and for Two-Key Hops, words too). The media tool would have
+    given 22 of them a strings pad and cello built from the song's own hands (the `pad` default for
+    any genre it doesn't know), and By the Moonlight YuE2's own backing (folk). Whether curriculum
+    songs get backings is still undecided (Next steps), so they get the vocal alone: a new backing
+    style `none`, the default for `genre: studies`, and set on By the Moonlight in its file. The app
+    already plays its own piano with stems, so a vocal-only song still has its music; the client
+    needed one change to load stems without a backing (v0.30), deployed before the songs went back
+    to the review list.
+
+23. **The curriculum songs sang badly at first: 1 of 13 passed.** Three causes, fixed in the tools:
+    - *Key:* `tonal_key` chose only between the written signature's major and minor. The black-key
+      songs are written in C with sharps, so YuE2 got K:C and a C-major "Oh" a semitone from a song on
+      C♯ and D♯. Now, when the signature names neither, the key comes from the notes: the key on the
+      last note that holds most of them, sharps for a song spelled in sharps (C♯ major, D♯ minor).
+    - *Range:* the vocal sang the left hand where it's written, down to C♯2 (Steady Steps). Each
+      phrase now moves by whole octaves into A3–F5 (`yue2.singable`); the checks compare pitch
+      classes, so the vocal still matches the staff.
+    - *Repeated notes:* Steady Steps ("walk, walk, walk, walk" on one key) has too few pitch changes
+      for any 3 s alignment window, so no take could be aligned at all. In the word mode its words
+      now place it, and the take is flagged "timed by its words only" for the listen.
+    Also: one song with no usable take no longer stops the batch. After the fixes, Ready to Play went
+    from 75% to 94% of notes on pitch and The Finger Number Song from 69% to 100%; the two-note songs
+    of four bars (Two-Key Hops) are still poor, which suggests YuE2 needs more song to settle into.
+
+24. **The parent's listen to the first 22 (Oct 3): 18 approved, 4 sent back.** What the checks missed:
+    - *Tap and Stretch, Shout and Whisper:* the word check had failed them (33–35% of words off) and
+      they went to the review list anyway, as "words drift, the check is least reliable on slow
+      songs". The parent heard the drift. Above about 25%, the check is right: don't submit them.
+    - *Steady Steps, "garbled the last few words":* the last three "stomp"s were 0.3–0.7 s early and
+      two of them were placed with low confidence. The word check left out low-confidence ("forced")
+      words, so a garbled word counted for nothing; it reported 6%. Now a word the aligner can't place
+      counts as off.
+    - *Sleepy Owl, the first "whoo" way too high:* the singer sang the song an octave below what it
+      was asked, except that one held note, sung where asked: two octaves above the rest. The pitch
+      check compares pitch classes, so it passed. The cause was ours: the range fix of item 23 moved
+      whole phrases, and that phrase held the right hand's "whoo" and the left hand's next bar, so
+      lifting the left hand lifted the "whoo" to C♯5. Now each run of one hand's notes moves on its
+      own, and a new check fails a take with a held note (0.8 s or more) sung in another octave from
+      the rest (shorter ones are flagged). The second "whoo" sung as "woaaaa" is YuE2's own vowel on a
+      long held word: new takes, and the word check now counts such a word.
+    Also: twelve seeds instead of six, so a song can be given up to 12 takes (`--max-takes 12`).
+    Re-rendered with up to 12 takes: Shout and Whisper passes; Steady Steps (94% on pitch, 6% of words
+    off) and Two-Key Hops (62% → 100% on pitch, with the hand-run fix) fail only on bleed, which the
+    parent accepted on four songs; Sleepy Owl has every note on pitch and its two held "whoo"s are the
+    20% of words off. Those four went back to the review list. Still held: Tap and Stretch (81% on
+    pitch at best) and Pointer and Middle (47% of words off). Both are short songs of identical words
+    on the same two keys, repeated, which YuE2 keeps blurring; they likely need different words.
+
+25. **The second listen (Oct 4): octaves, and words that stutter.**
+    - *Pattern Up, Pattern Down, "down an octave" sung going up:* our range fix again. Moving
+      phrase by phrase put the left hand's two phrases (E3, then E2 "down an octave") onto the same
+      pitch, so the leap the words describe vanished. Now each hand's whole passage moves together
+      when it fits the range (A3–F5), so a song's own leaps stay leaps; only a passage wider than the
+      range is moved phrase by phrase. Two-Key Hops' "hop up high" and "hop down low" now go where
+      they say too.
+    - *Bouncing Ball, an octave switch on the first "home":* the input was right; YuE2 jumped on the
+      held note by itself. That take predates the octave check (item 24), which now fails it.
+    - *Steady Steps, "a long stuttering 3/4 through":* the left hand's four "stomp"s in a row, the
+      same place as the earlier "garbled". Four identical words on repeated notes are where YuE2
+      stumbles (Tap and Stretch and Pointer and Middle too), so the words changed: "Big bear
+      march-es, stomp-ing feet, boom!".
+    - *Tap and Stretch, Pointer and Middle:* new words at the parent's request, a rainy day and a
+      rabbit, with no word repeated four times.
+    - *A false failure from item 24's word rule:* counting unplaced words as off failed every take of
+      Pattern Up, Pattern Down (73%+), because its words are letter names ("E, D, C"), which the
+      aligner can't place however they're sung (16 of 22). Letter names are now left out of the share
+      and flagged for the listen; take 1 then passed (every note on pitch, 7 ms from the beat).
+    - *A take the parent rejected that the checks passed* (Pointer and Middle, "first word gets mixed
+      up"): `--skip-take N` keeps it from being chosen again.
+
+26. **Pattern Up, Pattern Down: YuE2 doesn't follow octave leaps, and our tracker couldn't tell.**
+    With the eagle and gopher words (the parent's idea), every take sang the words well, but the
+    octave check flagged the same held notes in all 24 takes, in both registers (with
+    `media: {vocal_octave: -1}`, a new per-song setting, too). A look at the voice's spectrum
+    showed why: the pitch tracker read most notes at C2-E2, an octave or two below any real voice,
+    so its octaves meant nothing; the spectrum (energy an octave below, at, and above each note)
+    showed the singer taking the right hand's climb *down* ("soaring to the sky" an octave below
+    "eagle spreads") while getting the left hand's drop right. The octave check now uses the
+    spectrum (`align.sung_octave`): on the takes the parent approved (Bouncing Ball, Sleepy Owl,
+    Canyon Echo, Row, Row) it finds no octave errors, and on this one 11. The pitch check itself
+    compares pitch classes, so the tracker's octave errors never affected it. Up to 24 seeds now.
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

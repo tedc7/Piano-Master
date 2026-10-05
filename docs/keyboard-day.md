@@ -11,7 +11,7 @@ Everything runs as the parent (Switch player › Parent › PIN), except where a
 ## 1. Before the iPad: the keyboard on a computer
 
 - [ ] Plug the keyboard into the Linux dev box or a Chromebook with USB and open
-      `https://192.168.2.128/app/#/config/midi` in Chrome. It should list the keyboard by name.
+      `https://<piano-server>/app/#/config/midi` in Chrome. It should list the keyboard by name.
       If it doesn't, the keyboard is not class-compliant USB MIDI (arch §2.3). Stop and exchange it.
 
 ## 2. Device qualification on the iPad (arch §2.6), in MIDIWeb Browser

@@ -7,7 +7,7 @@
 ## Q2 — HTTPS from the server into MIDIWeb Browser
 
 - **Test page:** [https-probe/index.html](https-probe/index.html), deployed to `/opt/piano/www/index.html` on the server.
-- **URL:** `https://192.168.2.128/`
+- **URL:** `https://<piano-server>/`
 - **Device:** iPad A16, iOS ____, MIDIWeb Browser version ____
 
 | # | Step | Expected | Result | Notes / screenshot |
@@ -37,9 +37,9 @@ Keep the threshold in the DeviceProfile (arch §5) rather than hard-coding 87 px
 
 ## Client capabilities in MIDIWeb Browser (tests 1, 2, 3, 4, 6)
 
-Pages on the server (links at the top of `https://192.168.2.128/`):
-- **Client probe** `https://192.168.2.128/client/`: [client-probe/index.html](client-probe/index.html), tests 1, 2, 3 and 6. Test media from [client-probe/make-media.py](client-probe/make-media.py), deployed to `/opt/piano/www/media/` (not committed).
-- **Render test** `https://192.168.2.128/render/`: [render-probe/index.html](render-probe/index.html), test 4, with VexFlow 4.2.5 served alongside. Version 5 loads its music font from a CDN by default, so 4.2.5 is used because it works offline.
+Pages on the server (links at the top of `https://<piano-server>/`):
+- **Client probe** `https://<piano-server>/client/`: [client-probe/index.html](client-probe/index.html), tests 1, 2, 3 and 6. Test media from [client-probe/make-media.py](client-probe/make-media.py), deployed to `/opt/piano/www/media/` (not committed).
+- **Render test** `https://<piano-server>/render/`: [render-probe/index.html](render-probe/index.html), test 4, with VexFlow 4.2.5 served alongside. Version 5 loads its music font from a CDN by default, so 4.2.5 is used because it works offline.
 
 Both pages ran with no errors in headless Chromium on the workstation before deployment, and the render test held 60 fps there in both modes. The iPad is the real test.
 

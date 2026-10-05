@@ -20,7 +20,7 @@ Written for the Server repo session. Context: Piano-Master milestone M4 (archite
    - keep the current `piano.db`, `piano.db-wal` and `piano.db-shm` aside;
    - put the restored `piano.db` in place, owned by the container user, with no stale `-wal` or `-shm` files beside it;
    - start `piano-api` and check `/api/health`.
-4. **Parent PIN reset:** document the exact command for when the parent forgets the PIN (the container is `docmost-piano-api-1` today): `docker exec docmost-piano-api-1 python -m app.admin reset-pin`. The app then asks for a new PIN. This needs no secrets in the environment file.
+4. **Parent PIN reset:** document the exact command for when the parent forgets the PIN `docker exec <piano-api container> python -m app.admin reset-pin`. The app then asks for a new PIN. This needs no secrets in the environment file.
 5. **Keep all existing guarantees:**
    - Caddy stays on `${SERVER_IP}:443` only;
    - `verify-lan.sh` P01 still reports ports 22, 443 and 445;

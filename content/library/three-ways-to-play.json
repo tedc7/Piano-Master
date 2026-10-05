@@ -1,0 +1,668 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 2,
+  "3": 4,
+  "4": 2,
+  "5": 4,
+  "6": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-67f775cfb5",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.mezzo-forte",
+  "prep-a.c-d-e"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "R",
+ "id": "three-ways-to-play",
+ "info": {
+  "checks": {
+   "bleedDb": -18.7,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 19.1,
+    "p95_ms": 87.4,
+    "share_over_50ms": 0.211,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 40.6,
+    "p95_ms": 228.3,
+    "share_over_50ms": 0.35,
+    "windows": 20
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.882,
+   "pass": false,
+   "reasons": [
+    "notes on pitch 88% (needs 90%)",
+    "words off the staff: 15%",
+    "backing left in the vocal at -18.7 dB"
+   ],
+   "tuningCents": -2.0,
+   "wordStretches": [],
+   "wordsOff": 0.154,
+   "worstPhraseMs": 22.0
+  },
+  "engine": "YuE2 vocal",
+  "hands": "R",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "lyrics": "1. Softly, softly, shh, shh, now a little louder, now we play it loud!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.mezzo-forte). Original music and words for this app."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/three-ways-to-play.yaml"
+  },
+  "sourceIds": []
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 170,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -18.7,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 19.1,
+    "p95_ms": 87.4,
+    "share_over_50ms": 0.211,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 40.6,
+    "p95_ms": 228.3,
+    "share_over_50ms": 0.35,
+    "windows": 20
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.882,
+   "pass": false,
+   "reasons": [
+    "notes on pitch 88% (needs 90%)",
+    "words off the staff: 15%",
+    "backing left in the vocal at -18.7 dB"
+   ],
+   "tuningCents": -2.0,
+   "wordStretches": [],
+   "wordsOff": 0.154,
+   "worstPhraseMs": 22.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 384000,
+     "url": "/api/library/media/three-ways-to-play/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 766560,
+     "url": "/api/library/media/three-ways-to-play/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 511200,
+     "url": "/api/library/media/three-ways-to-play/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 426240,
+     "url": "/api/library/media/three-ways-to-play/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "three-ways-to-play-s3 (dtw)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "dynamics": [
+   {
+    "beat": 0.0,
+    "mark": "p"
+   },
+   {
+    "beat": 8.0,
+    "mark": "mf"
+   },
+   {
+    "beat": 16.0,
+    "mark": "f"
+   }
+  ],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    60,
+    64
+   ],
+   "staves": [
+    "treble"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 24.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "Soft",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "ly,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "begin",
+    "text": "soft",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "end",
+    "text": "ly,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "shh,",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "shh,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "now",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "begin",
+    "text": "lit",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "end",
+    "text": "tle",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "begin",
+    "text": "loud",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "end",
+    "text": "er,",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "now",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "we",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "play",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "it",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "loud!",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "velocity": 45,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "velocity": 100,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 17.0,
+    "velocity": 100,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "velocity": 100,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 19.0,
+    "velocity": 100,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "velocity": 100,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.whole-note",
+  "prep-a.c-d-e",
+  "prep-a.mezzo-forte"
+ ],
+ "skillId": "prep-a.mezzo-forte",
+ "skillMeasures": {
+  "prep-a.c-d-e": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "prep-a.half-note": [
+   2,
+   4
+  ],
+  "prep-a.mezzo-forte": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "prep-a.whole-note": [
+   6
+  ]
+ },
+ "song": "three-ways-to-play",
+ "songTitle": "Three Ways to Play",
+ "title": "Three Ways to Play",
+ "version": null
+}

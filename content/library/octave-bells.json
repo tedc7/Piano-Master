@@ -1,0 +1,458 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 2,
+  "3": 4,
+  "4": 2,
+  "5": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-a640123dda",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.octave"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "L",
+ "id": "octave-bells",
+ "info": {
+  "hands": "L",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "seeded": true,
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/octave-bells.yaml"
+  }
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 430,
+ "media": null,
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "pickupBeats": 0.0,
+   "range": [
+    48,
+    60
+   ],
+   "staves": [
+    "bass"
+   ],
+   "tempo": 92,
+   "timeSig": "4/4"
+  },
+  "length": 20.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Ding,",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "dong,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "ding,",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "dong,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "high,",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "low,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "C,",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "E,",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "G,",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "E,",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "low,",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "high,",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "low.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 52,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 52,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.whole-note",
+  "prep-a.middle-c",
+  "prep-a.bass-g",
+  "prep-a.skips",
+  "prep-a.bass-c",
+  "prep-a.bass-c-scale",
+  "prep-a.octave"
+ ],
+ "skillId": "prep-a.octave",
+ "skillMeasures": {
+  "prep-a.bass-c": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "prep-a.bass-c-scale": [
+   3
+  ],
+  "prep-a.bass-g": [
+   3
+  ],
+  "prep-a.half-note": [
+   2,
+   4
+  ],
+  "prep-a.middle-c": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.octave": [
+   1,
+   2,
+   4,
+   5
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "prep-a.skips": [
+   3,
+   4
+  ],
+  "prep-a.whole-note": [
+   5
+  ]
+ },
+ "song": "octave-bells",
+ "songTitle": "Octave Bells",
+ "title": "Octave Bells",
+ "version": null
+}

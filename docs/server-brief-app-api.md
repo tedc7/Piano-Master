@@ -1,8 +1,8 @@
 # Server brief: piano App API container and data directory
 
-Written for the Server repo session. Context: the Piano-Master app (architecture §2.5, §4, §11) now has a web client served from `/opt/piano/www/app/` (https://192.168.2.128/app/). Its next part is the **App API**: a small Python (FastAPI) service with a SQLite database. The Piano-Master session writes and deploys the API code; this brief covers only the server setup it runs in.
+Written for the Server repo session. Context: the Piano-Master app (architecture §2.5, §4, §11) now has a web client served from `/opt/piano/www/app/` (https://<piano-server>/app/). Its next part is the **App API**: a small Python (FastAPI) service with a SQLite database. The Piano-Master session writes and deploys the API code; this brief covers only the server setup it runs in.
 
-**Goal:** run the App API as a container behind the existing Caddy at `https://192.168.2.128/api/`, with its SQLite database in a persistent host directory that is backed up. The site, the KB and every existing guarantee stay unchanged.
+**Goal:** run the App API as a container behind the existing Caddy at `https://<piano-server>/api/`, with its SQLite database in a persistent host directory that is backed up. The site, the KB and every existing guarantee stay unchanged.
 
 **Contract with the app** (the Piano-Master session builds to this):
 - **Code:** in `/opt/piano/api` on the host, including its own `Dockerfile` and pinned `requirements.txt`. App deploys replace this folder's contents.
@@ -30,7 +30,7 @@ Written for the Server repo session. Context: the Piano-Master app (architecture
    - Caddy stays bound to `${SERVER_IP}:443` only; no port 80;
    - `verify-lan.sh` P01 still reports exactly ports 22, 443 and 445;
    - `caddy_data` is never removed;
-   - the KB at `https://kb.durinforge.internal` is unaffected.
+   - the family knowledge base's site is unaffected.
 7. **Tests** in `verify.sh` / `verify-lan.sh`:
    - `curl --cacert caddy-root-ca.crt https://${SERVER_IP}/api/health` returns 200;
    - `https://${SERVER_IP}/app/` still returns 200;

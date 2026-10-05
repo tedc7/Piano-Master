@@ -1,8 +1,8 @@
 # Server brief — piano test site over HTTPS
 
-Written for the Server repo session. Context: Piano-Master HTTPS feasibility test (see RESULTS.md). The probe page to deploy (as /opt/piano/www/index.html) is /home/tedc/repos/Piano-Master/feasibility/https-probe/index.html.
+Written for the Server repo session. Context: Piano-Master HTTPS feasibility test (see RESULTS.md). The probe page to deploy (as /opt/piano/www/index.html) is feasibility/https-probe/index.html.
 
-**Goal:** add a second site to the existing Caddy so the piano app can be served at `https://192.168.2.128/` with Caddy's internal CA, without affecting Docmost at `https://kb.durinforge.internal`.
+**Goal:** add a second site to the existing Caddy so the piano app can be served at `https://<piano-server>/` with Caddy's internal CA, without affecting the server's existing site (the family knowledge base).
 
 **Requirements**
 1. **Caddy site block** for `${SERVER_IP}` in `setup/templates/Caddyfile.tmpl`:
@@ -20,7 +20,7 @@ Written for the Server repo session. Context: Piano-Master HTTPS feasibility tes
    - never `docker compose down -v`, because `caddy_data` holds the CA.
 4. **Tests:**
    - Add to `verify.sh` / `verify-lan.sh`: `curl --cacert caddy-root-ca.crt https://${SERVER_IP}/` returns 200;
-   - the certificate served without SNI has `IP Address:192.168.2.128` in its SAN and chains to the existing root;
+   - the certificate served without SNI has `IP Address:<piano-server>` in its SAN and chains to the existing root;
    - existing H01–H05 still pass.
 5. **Docs:** a new client doc, e.g. `setup/docs/13-ipad-client.md`:
    - get `caddy-root-ca.crt` onto the iPad (AirDrop, email, or Files);
@@ -32,5 +32,5 @@ Written for the Server repo session. Context: Piano-Master HTTPS feasibility tes
    - expect a few seconds of KB downtime while Caddy restarts;
    - work on a branch and open a PR as usual.
 
-**Report back:** the final URL, the `openssl s_client -connect 192.168.2.128:443` subject and SAN output, and the verify results.
+**Report back:** the final URL, the `openssl s_client -connect <piano-server>:443` subject and SAN output, and the verify results.
 

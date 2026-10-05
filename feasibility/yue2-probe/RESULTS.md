@@ -17,7 +17,7 @@ Arch v0.16 §10.5 and M0-S: can YuE2 sing a supplied melody and produce a usable
 | 3 | Same request and seed, with stems | **Pass** | Byte-identical audio to test 2 (deterministic); Demucs 7.5 s, 0.8 GiB; stems the same length as the mix and audible |
 | 4 | Piano-Master profile, **supplied melody and chords** ("Garden Morning", 16 bars, C major, 96 BPM, nursery genre); plus a variant with a 2-bar instrumental intro | **Pass** | 41.7 s song (score says 40.0 s) in 19 s + 3 s stems; peak VRAM 7.8 GiB. Intro variant: 47.8 s (score 45.0 s) |
 | 5 | Input contract: bad ABC / tempo mismatch rejected before the GPU; no overwrite | **Pass** | All exit 2 with a clear message |
-| 6 | Listening on the iPad (non-expert listeners): <https://192.168.2.128/listen/> | **Pass** | Garden Morning and Autumn Road: all Yes (melody followed, words clear, accompaniment soft and in time, clean split, usable). Note: in Autumn Road the vocals come in before the reference notes (see test 7) |
+| 6 | Listening on the iPad (non-expert listeners): <https://<piano-server>/listen/> | **Pass** | Garden Morning and Autumn Road: all Yes (melody followed, words clear, accompaniment soft and in time, clean split, usable). Note: in Autumn Road the vocals come in before the reference notes (see test 7) |
 | 7 | Timing and pitch vs the score ([analyze_vocal.py](analyze_vocal.py): pYIN pitch + DTW alignment; a first cut of §10.5 steps 3-4) | **Pass** (pitch) | Pitch on target after alignment: **92%** Garden Morning, **98%** Garden Morning + intro, **96%** Autumn Road (§10.5 bar: 90%). Timing vs score: Garden Morning within about ±0.1 s; with intro 0.4 s late rising to 0.8 s late; Autumn Road 2.5 s early drifting to 3.7 s early |
 
 **Findings:**
@@ -39,5 +39,5 @@ Arch v0.16 §10.5 and M0-S: can YuE2 sing a supplied melody and produce a usable
 ~/engines/yue2/.venv/bin/python run_tests.py                          # tests 1-5 -> results/ (gitignored)
 ~/engines/yue2/.venv/bin/python analyze_vocal.py results/garden-morning results/autumn-road-stems
 ~/engines/yue2/.venv/bin/python build_listen_site.py results/garden-morning results/garden-morning-intro results/autumn-road-stems
-./deploy_listen.sh                                                    # -> https://192.168.2.128/listen/
+./deploy_listen.sh                                                    # -> https://<piano-server>/listen/
 ```

@@ -6,7 +6,9 @@ The melody goes to YuE2 in its native two-voice ABC (generate-music skill, piano
     sidecar the skill checks;
   - the chord symbols kept on the Vocal voice, so YuE2 sings in the written harmony;
   - a throwaway lead-in bar with one sung "Oh" on another pitch, muted after alignment: without it
-    YuE2 starts early and sometimes drops the first word.
+    YuE2 starts early and sometimes drops the first word;
+  - each phrase moved by whole octaves into a singing range, and the key taken from the notes when
+    the signature doesn't name it (the curriculum's black-key songs, written in C with sharps).
 The stems' time 0 is ABC beat 0, which is `pad_beats` before playback beat 0 (the app's padBeats).
 Prototype: feasibility/sync-probe/convert.py (yue2_export), proven on five songs.
 """
@@ -34,7 +36,7 @@ SHARPS_ORDER, FLATS_ORDER = "FCGDAEB", "BEADGCF"
 MAJOR_KEYS = ["Cb", "Gb", "Db", "Ab", "Eb", "Bb", "F", "C", "G", "D", "A", "E", "B", "F#", "C#"]
 MINOR_KEYS = ["Abm", "Ebm", "Bbm", "Fm", "Cm", "Gm", "Dm", "Am", "Em", "Bm", "F#m", "C#m", "G#m", "D#m", "A#m"]
 KEYS_FIFTHS = {**{k: i - 7 for i, k in enumerate(MAJOR_KEYS)}, **{k: i - 7 for i, k in enumerate(MINOR_KEYS)}}
-SEEDS = (831001, 831002, 831003, 831004, 831005, 831006)
+SEEDS = tuple(831001 + i for i in range(24))
 
 
 def tonal_key(nota: dict) -> str:
@@ -48,8 +50,69 @@ def tonal_key(nota: dict) -> str:
     else:
         end = max(n["start"] for n in nota["notes"])
         tonic = min(n["pitch"] for n in nota["notes"] if n["start"] == end) % 12
-    return minor if tonic == m21pitch.Pitch(minor[:-1].replace("b", "-")).pitchClass and \
-        tonic != m21pitch.Pitch(major.replace("b", "-")).pitchClass else major
+    if tonic in (pc(major), pc(minor[:-1])):
+        return minor if tonic == pc(minor[:-1]) and tonic != pc(major) else major
+    # the signature names neither (a song on the black keys written in C with sharps): the key on
+    # that tonic that holds the most of its notes, major first, sharps for a song spelled in sharps
+    # (flats for flats), then the fewest sharps or flats
+    held = [n["pitch"] % 12 for n in nota["notes"]]
+    sharps = sum(n["spelled"]["alter"] for n in nota["notes"]) >= 0
+
+    def fit(name: str) -> tuple:
+        k = m21key.Key(name[:-1].replace("b", "-") if name.endswith("m") else name.replace("b", "-"),
+                       "minor" if name.endswith("m") else "major")
+        scale = {q.pitchClass for q in k.getPitches()}
+        return (-sum(x in scale for x in held), name.endswith("m"), (KEYS_FIFTHS[name] > 0) != sharps, abs(KEYS_FIFTHS[name]))
+    names = [k for k in MAJOR_KEYS if pc(k) == tonic] + [k for k in MINOR_KEYS if pc(k[:-1]) == tonic]
+    return min(names, key=fit)
+
+
+def pc(name: str) -> int:
+    """a key name's tonic pitch class ("Eb" -> 3)"""
+    return m21pitch.Pitch(name.replace("b", "-") if len(name) > 1 else name).pitchClass
+
+
+SING_LOW, SING_HIGH = 57, 77      # A3..F5: where the vocal is asked to sing
+
+
+def singable(mel: list[dict], phrases: list) -> list[dict]:
+    """Move each hand's passage (its notes until the other hand takes over) by whole octaves so most
+    of them lie in SING_LOW..SING_HIGH, the smallest move first: a left hand written two octaves down
+    is sung where a voice can sing it. A whole passage moves together, so a leap the song makes
+    within it stays a leap ("down an octave" in Pattern Up, Pattern Down had been moved apart, phrase
+    by phrase, onto one pitch); only a passage wider than the range is moved phrase by phrase. One
+    hand's passage never moves with the other's (Sleepy Owl's "whoo" had gone to C#5 with the left
+    hand's bar). The checks compare pitch classes, so the vocal still matches the staff. Returns the
+    changes."""
+    starts = sorted({Fraction(p) for p in phrases} | {Fraction(0)})
+    phrase_of = lambda n: sum(1 for x in starts if x <= n["start"])
+    passages: list[list[dict]] = []
+    for n in mel:
+        if not passages or (n.get("hand") or n.get("staff")) != (passages[-1][0].get("hand") or passages[-1][0].get("staff")):
+            passages.append([])
+        passages[-1].append(n)
+    groups: list[list[dict]] = []
+    for ns in passages:
+        if max(n["pitch"] for n in ns) - min(n["pitch"] for n in ns) <= SING_HIGH - SING_LOW:
+            groups.append(ns)
+            continue
+        for n in ns:                         # too wide to sing as one: phrase by phrase
+            if not groups or groups[-1][0] not in ns or phrase_of(groups[-1][0]) != phrase_of(n):
+                groups.append([])
+            groups[-1].append(n)
+    changes = []
+    for ns in groups:
+        k = min(range(-3, 4), key=lambda k: (sum(not SING_LOW <= n["pitch"] + 12 * k <= SING_HIGH for n in ns), abs(k)))
+        if not k:
+            continue
+        for n in ns:
+            n["pitch"] += 12 * k
+            n["spelled"] = {**n["spelled"], "octave": n["spelled"]["octave"] + k}
+            if n.get("merged"):
+                n["merged"] = [m + 12 * k for m in n["merged"]]
+        changes.append({"change": f"sung {abs(k)} octave{'s' if abs(k) > 1 else ''} {'higher' if k > 0 else 'lower'}",
+                        "songBeat": str(ns[0]["start"]), "notes": len(ns)})
+    return changes
 
 
 def to_pitch(sp):
@@ -149,7 +212,7 @@ def felt(nota: dict) -> tuple[dict, Fraction]:
     return out, k
 
 
-def export(nota: dict, denom: int = 32) -> tuple[str, str, dict]:
+def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict]:
     """(native ABC, lyrics, abcmap) for YuE2: one attack per syllable, chords, the "Oh" lead-in.
     abcmap's beats are ABC beats; `songPadBeats` is the lead-in in the song's own beats."""
     nota, scale = felt(nota)
@@ -160,6 +223,15 @@ def export(nota: dict, denom: int = 32) -> tuple[str, str, dict]:
     mel, changes = syllabic_melody(merged_melody(unrolled))
     if not mel:
         raise ValueError("no sung syllables: the vocal needs lyrics under the melody")
+    changes += singable(mel, nota["phrases"])
+    if octave:      # the piece's `media: {vocal_octave: N}`: the whole vocal N octaves away, leaps kept
+        for n in mel:
+            n["pitch"] += 12 * octave
+            n["spelled"] = {**n["spelled"], "octave": n["spelled"]["octave"] + octave}
+            if n.get("merged"):
+                n["merged"] = [m + 12 * octave for m in n["merged"]]
+        changes.append({"change": f"the whole vocal {abs(octave)} octave{'s' if abs(octave) > 1 else ''} "
+                                  f"{'higher' if octave > 0 else 'lower'} (vocal_octave)", "songBeat": "0", "notes": len(mel)})
     for n in mel:
         n["abc_start"] = n["start"] + pad
     total = Fraction(math.ceil((unrolled["length"] + pad) / bar_len)) * bar_len
@@ -290,7 +362,7 @@ def write_inputs(piece: Piece) -> Path:
     """build the YuE2 inputs in the piece's work folder; returns the folder."""
     out = piece.work / "yue2"
     out.mkdir(parents=True, exist_ok=True)
-    abc, lyrics, abcmap = export(piece.nota)
+    abc, lyrics, abcmap = export(piece.nota, octave=int(piece.spec.get("vocal_octave", 0)))
     (out / "score.abc").write_text(abc)
     (out / "lyrics.txt").write_text(lyrics)
     (out / "abcmap.json").write_text(json.dumps(abcmap, indent=1, ensure_ascii=False) + "\n")

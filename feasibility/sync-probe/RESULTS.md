@@ -2,7 +2,7 @@
 
 Arch v0.16 §3 ("one song-clock position drives the staff, audio, lyrics and scoring"), §5 (notation format), §10.5 steps 3, 4 and 7 (alignment, pitch check, tempo versions), §12 M0-S "still open". Run 2026-09-25 on the dev box and the iPad; round 4 (YuE2 input, one note per syllable) 2026-09-26. Feasibility closed: see "Where the vocal problems come from" for the decision and known issues.
 
-**Page:** <https://192.168.2.128/sync/> (round-4 takes deployed 2026-09-27) ([site/index.html](site/index.html)). Pipeline: see "Reproduce" at the end.
+**Page:** <https://<piano-server>/sync/> (round-4 takes deployed 2026-09-27) ([site/index.html](site/index.html)). Pipeline: see "Reproduce" at the end.
 
 ## Songs (real public-domain sources, no hand edits)
 
@@ -301,7 +301,7 @@ Staff position, lyric highlight, key light and the flash square all come from on
 
 **On the iPad (MIDIWeb Browser, full screen, silent mode off):**
 
-1. Open <https://192.168.2.128/sync/>. Check each song's staff with **Staff check** (drag to scroll): are the notes, words and chords readable?
+1. Open <https://<piano-server>/sync/>. Check each song's staff with **Staff check** (drag to scroll): are the notes, words and chords readable?
 2. **Clock sync:** choose Amazing Grace at 100%. Leave **Click** and **Flash** on, turn **Vocal** and **Backing** off. Film the screen at 240 fps slow motion for about 20 s while it plays. Count frames between each flash and its click (each frame is about 4 ms). The flash should be within about 30 ms of the click. If it's consistently off, the **−10 / +10 ms** buttons find the display offset.
 3. **Drift and rewinds:** turn Vocal and Backing on and **Auto-rewind 20 s** on, and play one full song (about 3 minutes). Watch whether the lit syllable stays with the sung word to the end and after each rewind. Tap **Results** and copy the text: fps, clock method, drift in ppm, and load times.
 4. **Tempo switch:** while playing, switch between 100% and 50%. It should carry on at the same place with no gap.

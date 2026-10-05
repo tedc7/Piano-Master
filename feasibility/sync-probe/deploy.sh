@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
-# Deploy dist/ to the piano server as https://192.168.2.128/sync/
+# Deploy dist/ to the piano server as $PIANO_SERVER/sync/
 # Touches only /opt/piano/www/sync (swapped in whole); everything else is left alone.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SRC="$HERE/dist"
-HOST="${PIANO_HOST:-kb}"
-URL="https://192.168.2.128/sync/"
-CA="${CADDY_ROOT_CA:-$HOME/repos/Server/caddy-root-ca.crt}"
+. "$HERE/../../tools/server_env.sh"
+HOST="$PIANO_HOST"
+URL="$PIANO_SERVER/sync/"
+CA="$CADDY_ROOT_CA"
 
 [ -f "$SRC/index.html" ] && [ -f "$SRC/manifest.json" ] || { echo "build first: build_site.py" >&2; exit 1; }
 
@@ -25,7 +26,7 @@ ssh "$HOST" 'set -e
 
 # Checks: page and manifest load, and audio supports range requests (iOS needs 206).
 curl_opts=(-s -o /dev/null -w "%{http_code}")
-if [ -f "$CA" ]; then curl_opts+=(--cacert "$CA"); else curl_opts+=(-k); fi
+curl_opts+=(--cacert "$CA")
 page=$(curl "${curl_opts[@]}" "$URL")
 manifest=$(curl "${curl_opts[@]}" "${URL}manifest.json")
 first=$(python3 -c "import json; m=json.load(open('$SRC/manifest.json')); print(next(t['stems']['100']['vocals']['url'] for s in m['songs'] for t in s['takes'].values()))")

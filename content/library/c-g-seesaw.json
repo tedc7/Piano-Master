@@ -1,0 +1,403 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 3,
+  "3": 4,
+  "4": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-a97b5bc19b",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.treble-g",
+  "prep-a.middle-c"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "R",
+ "id": "c-g-seesaw",
+ "info": {
+  "hands": "R",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "seeded": true,
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/c-g-seesaw.yaml"
+  }
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 230,
+ "media": null,
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "pickupBeats": 0.0,
+   "range": [
+    60,
+    67
+   ],
+   "staves": [
+    "treble"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 16.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "See",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "saw,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "down,",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "begin",
+    "text": "see",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "end",
+    "text": "saw,",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "begin",
+    "text": "see",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "end",
+    "text": "saw,",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "begin",
+    "text": "see",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "end",
+    "text": "saw,",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "down!",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.whole-note",
+  "prep-a.middle-c",
+  "prep-a.treble-g"
+ ],
+ "skillId": "prep-a.treble-g",
+ "skillMeasures": {
+  "prep-a.half-note": [
+   2
+  ],
+  "prep-a.middle-c": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.treble-g": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.whole-note": [
+   4
+  ]
+ },
+ "song": "c-g-seesaw",
+ "songTitle": "C and G Seesaw",
+ "title": "C and G Seesaw",
+ "version": null
+}

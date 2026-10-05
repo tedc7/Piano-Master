@@ -331,6 +331,25 @@ def skill_library(skill: str = Depends(require_skill)):
         con.close()
 
 
+@router.get("/api/skill/library/{pid}")
+def skill_library_piece(pid: str, skill: str = Depends(require_skill)):
+    """One approved song as the library holds it, with its details (license, source) and the
+    parent's helper choices: what tools/library_export.py files in the repo, so a fresh install
+    can seed exactly what the parent approved (v0.31). Its stems: GET /api/library/media/<id>/<file>."""
+    f = folder("library", pid, "piece.json")
+    if not re.match(SLUG, pid) or not f.exists():
+        raise HTTPException(404, "no such song")
+    con = db.connect()
+    try:
+        r = con.execute("SELECT * FROM library WHERE piece_id = ?", (pid,)).fetchone()
+        if not r:
+            raise HTTPException(404, "no such song")
+        return {"id": pid, "approvedAt": r["approved_at"], "entry": loads(r["entry"], {}), "info": loads(r["info"], {}),
+                "display": display_of(con, pid), "piece": json.loads(f.read_text()), "files": media_files(json.loads(f.read_text()))}
+    finally:
+        con.close()
+
+
 @router.get("/api/skill/deleted")
 def skill_deleted(skill: str = Depends(require_skill)):
     con = db.connect()
@@ -925,9 +944,10 @@ def discard_update(item: str):
 
 def adopt_seed() -> list[str]:
     """Songs a deploy brings straight into the library as approved (tools/deploy.sh --seed-songs:
-    <content>/seed/, from build/songs/). Used once, for the songs that were built into the app
-    before v0.27, so they needn't each go through the review list; every other song comes through
-    intake and the parent's review. Only songs not in the library, not waiting for review and never
+    <content>/seed/, from content/library/). Used once on a new server (v0.31: the approved
+    curriculum songs the repo keeps, with their details and the parent's helper choices; v0.27: the
+    songs built into the app before then), so they needn't each go through the review list; every
+    other song comes through intake and the parent's review. Only songs not in the library, not waiting for review and never
     deleted come in, so a later start brings nothing. Returns their ids."""
     d = content_mod.content_dir() / "seed"
     if not (d / "index.json").exists():
@@ -944,12 +964,13 @@ def adopt_seed() -> list[str]:
         with db.transaction(con):
             con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at, reviewed_at) "
                         "VALUES (?, ?, 'deploy', ?, 'done', ?, ?, ?)",
-                        (pkg, "Songs built into the app before v0.27", "moved into the library by a deploy, as approved", t, t, t))
+                        (pkg, "Songs a new install starts with", "moved into the library by a deploy, as approved", t, t, t))
             for e in new:
                 pid = e["id"]
                 src = d / f"{pid}.json"
                 piece = json.loads(src.read_text()) if src.exists() else dict(e)
                 info = piece.pop("info", None) or {}
+                shown = piece.pop("display", None) or {}          # the parent's helper choices, from an export
                 dest = folder("library", pid)
                 (dest / "media").mkdir(parents=True, exist_ok=True)
                 for m in media_files(piece):
@@ -964,6 +985,9 @@ def adopt_seed() -> list[str]:
                             (pid, entry.get("song") or pid, piece["title"], piece.get("composer"), piece.get("genre") or "",
                              json.dumps(src_ids), json.dumps(sorted(fingerprint.fingerprint(nota)) if nota else []),
                              json.dumps({**info, "seeded": True}), json.dumps(entry), t, pkg))
+                if any(v is not None for v in shown.values()):
+                    con.execute("INSERT OR IGNORE INTO song_display (piece_id, fingers, letters, updated_at) VALUES (?, ?, ?, ?)",
+                                (pid, shown.get("fingers"), shown.get("letters"), t))
             write_index(con)
         return [e["id"] for e in new]
     finally:

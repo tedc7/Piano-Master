@@ -15,6 +15,8 @@ songTitle: "Hot Cross Buns"
 version: Left hand
 letters: true             # pre-staff: letter names under the note heads (Units 1 to 3 read by letter names)
 phraseBars: 2
+media:
+  backing: none            # a vocal only, like the other curriculum songs: the app's own piano plays the music
 abc: |
   X:1
   T:Hot Cross Buns for the Left Hand

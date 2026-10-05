@@ -1,4 +1,5 @@
 # Curriculum song (Prep A, prep-a.quarter-note). Original music and words for this app.
+# The left hand's words changed at the parent's request (Oct 4): four "stomp"s in a row made the vocal stutter; now a big bear marches.
 title: "Steady Steps"
 composer: Piano-Master
 genre: studies
@@ -25,4 +26,4 @@ abc: |
   [V:RH] !2!^C ^C ^C ^C | !3!^D ^D ^D ^D | z4 | z4 |]
   w: Walk, walk, walk, walk, step, step, step, step.
   [V:LH] z4 | z4 | !3!^C,, ^C,, ^C,, ^C,, | !2!^D,, ^D,, ^D,, ^D,, |]
-  w: March, march, march, march, stomp, stomp, stomp, stomp.
+  w: Big bear march-es, stomp-ing feet, boom!

@@ -382,3 +382,35 @@ def test_a_songs_finger_numbers_and_letters_are_switched_for_every_child(client,
     client.put("/api/library/pieces/pa1/display", json={"letters": None}, headers=parent)      # back to the default
     assert client.get("/api/library/pieces/pa1").json()["display"] == {"fingers": False, "letters": None}
     assert client.put("/api/library/pieces/nope/display", json={"fingers": True}, headers=parent).status_code == 404
+
+
+def test_an_approved_song_exported_to_the_repo_seeds_a_new_install(client, parent, skill, tmp_path, monkeypatch):
+    """tools/library_export.py files the approved songs in content/library/ (v0.31); a new server's
+    first start adopts them as approved, with their stems and the parent's helper choices."""
+    import json
+    from fastapi.testclient import TestClient
+    from app import main
+    from conftest import write_content
+    approve_all(client, parent, skill, item())
+    assert client.put("/api/library/pieces/new-song/display", json={"letters": True}, headers=parent).status_code == 200
+    assert client.get("/api/skill/library/new-song").status_code == 401
+    got = client.get("/api/skill/library/new-song", headers=skill).json()
+    assert got["info"]["license"]["composition"] == "public-domain" and got["display"] == {"fingers": None, "letters": True}
+    assert [f["file"] for f in got["files"]] == [f"accompaniment_{k}.mp3" for k in ("100", "50", "75", "90")]
+    # the export's files, as the seed a new install deploys
+    new = tmp_path / "new"
+    write_content(new / "content", pieces=[got["entry"]])
+    seed = new / "content" / "seed"
+    (seed / "new-song.json").write_text(json.dumps({**got["piece"], "info": got["info"], "display": got["display"]}))
+    (seed / "media" / "new-song").mkdir(parents=True)
+    for f in got["files"]:
+        (seed / "media" / "new-song" / f["file"]).write_bytes(client.get(f"/api/library/media/new-song/{f['file']}").content)
+    monkeypatch.setenv("PIANO_DB", str(new / "piano.db"))
+    monkeypatch.setenv("PIANO_CONTENT", str(new / "content"))
+    with TestClient(main.app) as fresh:
+        assert [e["id"] for e in fresh.get("/api/library").json()["pieces"]] == ["new-song"]
+        p = fresh.get("/api/library/pieces/new-song").json()
+        assert p["display"] == {"fingers": None, "letters": True}
+        assert fresh.get(p["media"]["presets"]["100"]["accompaniment"]["url"]).content == b"x" * 5
+    with TestClient(main.app) as again:                     # a second start brings nothing more
+        assert len(again.get("/api/library").json()["pieces"]) == 1

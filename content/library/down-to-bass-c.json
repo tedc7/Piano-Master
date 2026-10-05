@@ -1,0 +1,447 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 2,
+  "3": 4,
+  "4": 3
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-51443fc891",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.bass-c",
+  "prep-a.bass-d"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "L",
+ "id": "down-to-bass-c",
+ "info": {
+  "hands": "L",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "seeded": true,
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/down-to-bass-c.yaml"
+  }
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 410,
+ "media": null,
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "pickupBeats": 0.0,
+   "range": [
+    48,
+    55
+   ],
+   "staves": [
+    "bass"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 16.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Down,",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "down,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "down",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "Bass",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "C,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "down",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "begin",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "end",
+    "text": "gain",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "C.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 50,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 50,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 50,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 55,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 53,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 50,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 50,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 48,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.middle-c",
+  "prep-a.bass-f",
+  "prep-a.bass-b",
+  "prep-a.bass-g",
+  "prep-a.skips",
+  "prep-a.bass-d",
+  "prep-a.bass-c"
+ ],
+ "skillId": "prep-a.bass-c",
+ "skillMeasures": {
+  "prep-a.bass-b": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.bass-c": [
+   1,
+   2,
+   4
+  ],
+  "prep-a.bass-d": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.bass-f": [
+   1,
+   3
+  ],
+  "prep-a.bass-g": [
+   1,
+   3
+  ],
+  "prep-a.half-note": [
+   2,
+   4
+  ],
+  "prep-a.middle-c": [
+   4
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.skips": [
+   1,
+   3,
+   4
+  ]
+ },
+ "song": "down-to-bass-c",
+ "songTitle": "Down to Bass C",
+ "title": "Down to Bass C",
+ "version": null
+}

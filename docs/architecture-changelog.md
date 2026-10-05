@@ -6,6 +6,9 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.32 | Oct 5, 2026 | The Server session's report: the library in the nightly backup and its restore test passed; a new server also needs the deploy account's sudo and, without Caddy's data, a new certificate root; the install scripts check both; the server's details moved out of the repo into a local config file |
+| v0.31 | Oct 3, 2026 | A fresh install: the approved curriculum songs kept in the repo (`content/library/`, stems in Git LFS) by `tools/library_export.py`, seeded on a new server by `tools/fresh_install.sh`; the library in the backup and its restore test |
+| v0.30 | Oct 3, 2026 | Vocals for curriculum songs: a vocal alone, with no backing (a `none` backing style, the default for the map's own songs), and the app playing songs whose stems have no backing; YuE2's input in the song's real key and a singable range; repeated-note songs placed by their words |
 | v0.29 | Oct 1, 2026 | Daily-use fixes: Back returns to the screen as it was left; one bubble per Journey skill (no lightbulb); pop-ups close on a tap outside; a locked song names the one skill that unlocks it; the metronome one choice per student; finger numbers and letter names switched per song by the parent |
 | v0.28 | Oct 1, 2026 | Two of our own studies are never duplicates of each other (the melody check is for imports); words for ten wordless warm-ups through the live-song update flow |
 | v0.27 | Sep 30, 2026 | One song library: every song in the server's library through the review list, the map naming only approved songs, the 108 built-in songs seeded once; updating a live song (Needs improvement, the fix as an update, approved in place; Diagnostics on current notes only); library re-analysis after a map change built; letter names under the note heads |
@@ -24,6 +27,30 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.32 (Oct 5, 2026)
+
+From the Server session's report on `docs/server-brief-backup-restore.md` (it also answers the M4 backup brief and item 1 of the M7 library brief):
+- **Backup (11.2):** the database's consistent copy, `library/` and `staging/` are in the nightly backup (30 daily and 12 monthly copies). The restore test, extended to the library, passed: integrity ok, schema 10, 113 songs in both copies, a stem's range request, the same students. M4's restore test is done.
+- **A new server (11.6):** the list in the brief was incomplete. The deploy account needs sudo with no password for the commands `tools/deploy.sh` uses (`rsync`, `rm`, `cp`, `chown`, `find`, `mv`), not only `piano-api-redeploy`; and a rebuilt server has a new certificate authority unless Caddy's data is restored. `tools/fresh_install.sh` now checks the sudo in one ssh connection (the server limits connections in a row), and it, `tools/deploy.sh` and `tools/library_export.py` stop with an explanation instead of skipping the certificate check (`curl -k`).
+- **No install's details in the public repo:** the dev box's scripts (deploy, fresh install, the song and library tools, the feasibility probes) read the server's address, ssh host and certificate from `~/.config/piano-master/server.env` (`tools/server.env.example`) instead of having them written in; the docs say `<piano-server>` and `<piano-api container>`, and no longer name the server's other services, its domain or the router. `content/incoming/` (song batches, some for private family use only) is in `.gitignore`.
+
+## v0.31 (Oct 3, 2026)
+
+From the review of next steps (the core working well):
+- **A fresh install (11.6):** restoring the backup stays the first way back. Without one, `tools/fresh_install.sh` (safe to run again) checks the dev tools, the stems, the content and the server, then deploys with `--seed-songs`; the API adopts the curriculum songs as approved on its first start, with the parent's helper choices.
+- **The curriculum songs in the repo (11.2, 11.6):** `content/library/`, exactly as approved, kept by `tools/library_export.py` from a new Skill API call (`GET /api/skill/library/{id}`: the piece, its details and the helper choices). Only songs on the map whose source is our own or public domain. Stems in Git LFS (`.gitattributes`). The seed now comes from here instead of `build/songs/` (the v0.27 one-time seed).
+- **Backup (11.2):** the library and staging folders listed with what they hold; a new Server brief asks for them in the backup and a restore test that brings the library back (`docs/server-brief-backup-restore.md`).
+
+## v0.30 (Oct 3, 2026)
+
+From the parent's Needs improvement notes on 43 live Prep A songs ("Add vocals to this song"):
+- **Curriculum songs get a vocal alone (10.5):** a backing style `none`, the default for `genre: studies` (the map's own songs) and set in the files of the four curriculum songs in other genres (By the Moonlight, Hot Cross Buns for the Left Hand, Merrily We Roll Along, Joyful, Joyful (letter names)). The media tool would otherwise have built a strings pad and cello from the song's own hands; whether these songs get backings is still an open Next steps item. The app plays its own piano with the stems, so a vocal-only song still has its music.
+- **Vocal-only stems (M8):** the client loads a tempo version with vocals and no accompaniment; the backing volume shows only for songs that have a backing.
+- **YuE2's input (10.5):** the song's real key when the signature names neither its major nor its minor (the black-key songs, written in C with sharps, had been sung toward C), and each phrase moved by whole octaves into A3–F5 (a left hand written down to C♯2 had been unsingable). Of the first 13 songs, 1 passed before these fixes.
+- **Repeated-note songs (10.5):** a melody with too few pitch changes for the alignment windows is placed by its words, and flagged for the listen.
+- **Checks from the parent's listen (10.5):** a word the aligner can't place with confidence counts as off (a garbled word had counted for nothing); a held note sung in another octave from the rest of the take fails it; the octave move is made for each run of one hand's notes, not a whole phrase; up to 12 takes.
+- **Words for Two-Key Hops,** the one song asked for that had none.
 
 ## v0.29 (Oct 1, 2026)
 

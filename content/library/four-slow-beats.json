@@ -1,0 +1,636 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 1,
+  "3": 4,
+  "4": 1,
+  "5": 2,
+  "6": 1,
+  "7": 2,
+  "8": 1
+ },
+ "beyondMap": [],
+ "composer": "Piano-Master",
+ "contentVersion": "lib-e1500e06cc",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.whole-note"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "studies",
+ "hands": "RL",
+ "id": "four-slow-beats",
+ "info": {
+  "checks": {
+   "bleedDb": -39.1,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 17.4,
+    "p95_ms": 104.5,
+    "share_over_50ms": 0.238,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 35.4,
+    "p95_ms": 214.8,
+    "share_over_50ms": 0.476,
+    "windows": 21
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "a phrase sits 103 ms off the beat",
+    "words off the staff: 12%"
+   ],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsOff": 0.125,
+   "worstPhraseMs": 102.6
+  },
+  "engine": "YuE2 vocal",
+  "hands": "RL",
+  "level": "Prep A",
+  "license": {
+   "composition": "original",
+   "edition": "original"
+  },
+  "lyrics": "1. Count to four and hold. Count to four and hold. Long, long note. Low, low sound.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/four-slow-beats.yaml"
+  },
+  "sourceIds": []
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 100,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -39.1,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 17.4,
+    "p95_ms": 104.5,
+    "share_over_50ms": 0.238,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 35.4,
+    "p95_ms": 214.8,
+    "share_over_50ms": 0.476,
+    "windows": 21
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "a phrase sits 103 ms off the beat",
+    "words off the staff: 12%"
+   ],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsOff": 0.125,
+   "worstPhraseMs": 102.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 496800,
+     "url": "/api/library/media/four-slow-beats/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 992640,
+     "url": "/api/library/media/four-slow-beats/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 661920,
+     "url": "/api/library/media/four-slow-beats/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 552000,
+     "url": "/api/library/media/four-slow-beats/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "four-slow-beats-s5 (words)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    49,
+    75
+   ],
+   "staves": [
+    "treble",
+    "bass"
+   ],
+   "tempo": 96,
+   "timeSig": "4/4"
+  },
+  "length": 32.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Count",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "four",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "hold.",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "Long,",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "long",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "note.",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "Count",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "four",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "hold.",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "Low,",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "low",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "sound.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   },
+   {
+    "duration": 4.0,
+    "number": 7,
+    "start": 24.0
+   },
+   {
+    "duration": 4.0,
+    "number": 8,
+    "start": 28.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 70,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 68,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 66,
+    "spelled": {
+     "alter": 1,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 58,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 54,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 56,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 58,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 73,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 75,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 73,
+    "spelled": {
+     "alter": 1,
+     "octave": 5,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 51,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 3,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 49,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0,
+   24.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.low-and-high",
+  "prep-a.three-black-keys",
+  "prep-a.half-note",
+  "prep-a.whole-note"
+ ],
+ "skillId": "prep-a.whole-note",
+ "skillMeasures": {
+  "prep-a.half-note": [
+   5,
+   7
+  ],
+  "prep-a.low-and-high": [
+   5,
+   6
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.three-black-keys": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.whole-note": [
+   2,
+   4,
+   6,
+   8
+  ]
+ },
+ "song": "four-slow-beats",
+ "songTitle": "Four Slow Beats",
+ "title": "Four Slow Beats",
+ "version": null
+}

@@ -89,7 +89,7 @@ source, level, lyrics, your header notes, the check's warnings and the media che
 intake checks it again (license, id, melody fingerprint against the library and the deleted list,
 the skill map) and stages the pieces that pass; its report comes back straight away. The token is
 in `~/.config/piano-master/skill-token` (made in Config › Dev box connection, or with
-`docker exec docmost-piano-api-1 python -m app.admin skill-token NAME` on the server).
+`docker exec <piano-api container> python -m app.admin skill-token NAME` on the server).
 
 Then tell the parent in a few lines what's waiting in **Config › Review list**: what was
 simplified, what's beyond the current map, and anything flagged or uncertain. **Stop there.** They
@@ -121,6 +121,10 @@ Every song reaches the app through the review list (arch §10.7, v0.27), whateve
   `content/pieces/` (`composer: Piano-Master`, `genre: studies`, `license: {composition: original,
   edition: original}`), then `import_song.py submit content/pieces ID…`. The map that names them is
   deployed only after the parent approves them (`tools/deploy.sh` runs `tools/library_check.py`).
+- **Curriculum songs in the repo (v0.31):** once the parent approves songs the skill map names (new
+  practice songs, or a live song's fix such as a new vocal), copy them into `content/library/` with
+  `tools/.venv/bin/python tools/library_export.py` (`--check` first shows what changes) and commit it:
+  it's what a fresh install seeds (`docs/fresh-install.md`). The stems go to Git LFS.
 - **Updating a live song:** the parent's Needs improvement on a song in use shows in
   `import_song.py feedback` as a live song, with its source and the submit command. Fix the source,
   check it, and submit it under the same id: it waits in the review list as an update, and the

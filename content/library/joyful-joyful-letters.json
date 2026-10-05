@@ -1,0 +1,975 @@
+{
+ "barNotes": {
+  "1": 4,
+  "2": 4,
+  "3": 4,
+  "4": 3,
+  "5": 4,
+  "6": 4,
+  "7": 4,
+  "8": 3
+ },
+ "beyondMap": [],
+ "composer": "Ludwig van Beethoven",
+ "contentVersion": "lib-1a1c40e15b",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.mezzo-forte",
+  "prep-a.f-g-a-b"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "classical",
+ "hands": "R",
+ "id": "joyful-joyful-letters",
+ "info": {
+  "checks": {
+   "bleedDb": -34.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.5,
+    "p95_ms": 109.1,
+    "share_over_50ms": 0.171,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 40.6,
+    "p95_ms": 177.8,
+    "share_over_50ms": 0.457,
+    "windows": 35
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.967,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsOff": 0.045,
+   "worstPhraseMs": 19.3
+  },
+  "engine": "YuE2 vocal",
+  "flags": [
+   "no `tempoSource`: say where the 100% tempo came from (a metronome mark or recordings)"
+  ],
+  "hands": "R",
+  "level": "Prep A",
+  "license": {
+   "composition": "public-domain",
+   "edition": "original (our own arrangement)"
+  },
+  "lyrics": "1. Joyful, joyful, we adore Thee, God of glory, Lord of love; hearts unfold like flow'rs before Thee, op'ning to the sun above.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.mezzo-forte). Ode to Joy, Ludwig van Beethoven (1824); words Henry van Dyke (1907); public domain. Our own arrangement."
+  ],
+  "songTitle": "Joyful, Joyful",
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/joyful-joyful-letters.yaml"
+  },
+  "sourceIds": [],
+  "version": "Letter names"
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 170,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -34.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.5,
+    "p95_ms": 109.1,
+    "share_over_50ms": 0.171,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 40.6,
+    "p95_ms": 177.8,
+    "share_over_50ms": 0.457,
+    "windows": 35
+   },
+   "melodyStretches": [],
+   "notesOnPitch": 0.967,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsOff": 0.045,
+   "worstPhraseMs": 19.3
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 459360,
+     "url": "/api/library/media/joyful-joyful-letters/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 917760,
+     "url": "/api/library/media/joyful-joyful-letters/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 612480,
+     "url": "/api/library/media/joyful-joyful-letters/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 510720,
+     "url": "/api/library/media/joyful-joyful-letters/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "joyful-joyful-letters-s1 (words)"
+ },
+ "notation": {
+  "chordSymbols": [],
+  "dynamics": [
+   {
+    "beat": 0.0,
+    "mark": "mf"
+   }
+  ],
+  "graces": [],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "letters": true,
+   "pickupBeats": 0.0,
+   "range": [
+    60,
+    67
+   ],
+   "staves": [
+    "treble"
+   ],
+   "tempo": 100,
+   "timeSig": "4/4"
+  },
+  "length": 32.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "Joy",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "ful,",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "begin",
+    "text": "joy",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "end",
+    "text": "ful,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "we",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "begin",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "end",
+    "text": "dore",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "Thee,",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "God",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "of",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "begin",
+    "text": "glo",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "end",
+    "text": "ry,",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "Lord",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "of",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "love;",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "hearts",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "begin",
+    "text": "un",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "end",
+    "text": "fold",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "like",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "flow'rs",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "begin",
+    "text": "be",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "end",
+    "text": "fore",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "Thee,",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "begin",
+    "text": "op'",
+    "verse": 1
+   },
+   {
+    "note": 24,
+    "syllabic": "end",
+    "text": "ning",
+    "verse": 1
+   },
+   {
+    "note": 25,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 27,
+    "syllabic": "single",
+    "text": "sun",
+    "verse": 1
+   },
+   {
+    "note": 28,
+    "syllabic": "begin",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 29,
+    "syllabic": "end",
+    "text": "bove.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   },
+   {
+    "duration": 4.0,
+    "number": 7,
+    "start": 24.0
+   },
+   {
+    "duration": 4.0,
+    "number": 8,
+    "start": 28.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 7.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 17.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 19.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 21.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 23.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 25.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 26.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 27.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 29.0,
+    "velocity": 75,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 30.0,
+    "velocity": 75,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0,
+   24.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.c-d-e",
+  "prep-a.f-g-a-b",
+  "prep-a.mezzo-forte"
+ ],
+ "skillId": "prep-a.mezzo-forte",
+ "skillMeasures": {
+  "prep-a.c-d-e": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.f-g-a-b": [
+   1,
+   2,
+   5,
+   6
+  ],
+  "prep-a.half-note": [
+   4,
+   8
+  ],
+  "prep-a.mezzo-forte": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ]
+ },
+ "song": "joyful-joyful",
+ "songTitle": "Joyful, Joyful",
+ "title": "Joyful, Joyful (letter names)",
+ "version": "Letter names"
+}
