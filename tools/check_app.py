@@ -586,7 +586,16 @@ def main():
         page.get_by_label("Genre").select_option(genre)
         n = len({x.get("song") or x["id"] for x in mine if x.get("genre") == genre})
         check(page.locator(".song").count() == n, f"songs: the genre choice shows only {genre} ({page.locator('.song').count()} of {n})")
-        page.get_by_label("Genre").select_option("")
+        # All songs clears everything that narrows the list: Favorites, the search and the genre
+        page.get_by_role("button", name="♥ Favorites").click()
+        page.get_by_label("Genre").select_option(genre)
+        search.fill(word)
+        all_sel = lambda: "sel" in (page.get_by_role("button", name="All songs").get_attribute("class") or "")
+        check(not all_sel(), "songs: All songs is grayed out while the list is narrowed")
+        page.get_by_role("button", name="All songs").click()
+        check(all_sel(), "songs: All songs is highlighted when every song shows")
+        check(page.locator(".song").count() == songs and search.input_value() == "" and page.get_by_label("Genre").input_value() == "",
+              "songs: All songs clears the favorites, the search and the genre")
         page.screenshot(path=str(OUT / "nav-songs.png"))
         search.fill(word)
         page.locator(".song .card:not([disabled])").first.click()

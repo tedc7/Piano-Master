@@ -8,7 +8,7 @@
   // placed where its easiest version opens, with a button for each version; the card opens the
   // most advanced version that is ready. Parent mode opens every song for review. A search narrows
   // the list to songs with the text in their title or words, and a genre choice to one genre
-  // (v0.35); both stay with Back from a song, as the filter does.
+  // (v0.35); both stay with Back from a song, as the filter does. All songs clears them all.
   import { onMount } from "svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
@@ -71,6 +71,11 @@
   const genres = $derived([...new Set(allowedPieces.map((p) => p.genre ?? "").filter(Boolean))]
     .sort((a, b) => genreLabel(a).localeCompare(genreLabel(b))));
   const narrowed = $derived(!!searchText(query) || !!genre);
+  function showAll(): void {
+    filter = "all";
+    query = "";
+    genre = "";
+  }
   const levels = $derived([...new Set(rows.map((r) => r.level))]);
   const openCount = $derived(rows.filter((r) => r.ready).length);
 </script>
@@ -83,7 +88,7 @@
   <main class="body" bind:this={bodyEl}>
     {#if error}<p class="notice error">{error}</p>{/if}
     <div class="filters">
-      <button class="quiet" class:sel={filter === "all"} onclick={() => { filter = "all"; }}>All songs</button>
+      <button class="quiet" class:sel={filter === "all" && !narrowed} onclick={showAll}>All songs</button>
       <button class="quiet" class:sel={filter === "favorites"} onclick={() => { filter = "favorites"; }}>♥ Favorites</button>
       <input type="search" bind:value={query} placeholder="Find a song or its words" aria-label="Find a song or its words" />
       {#if genres.length > 1 || genre}
@@ -127,7 +132,7 @@
     {:else}
       {#if content}
         <p class="muted">{narrowed ? "No songs match." : filter === "favorites" ? "Tap ♥ on a song to add it to your favorites." : "No songs yet."}</p>
-        {#if narrowed}<button class="quiet" onclick={() => { query = ""; genre = ""; }}>Show every song</button>{/if}
+        {#if narrowed}<button class="quiet" onclick={showAll}>Show every song</button>{/if}
       {/if}
     {/each}
   </main>
