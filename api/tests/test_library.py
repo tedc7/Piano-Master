@@ -414,3 +414,50 @@ def test_an_approved_song_exported_to_the_repo_seeds_a_new_install(client, paren
         assert fresh.get(p["media"]["presets"]["100"]["accompaniment"]["url"]).content == b"x" * 5
     with TestClient(main.app) as again:                     # a second start brings nothing more
         assert len(again.get("/api/library").json()["pieces"]) == 1
+
+
+def test_the_holiday_genre_becomes_christmas(client, parent, skill, tmp_path):
+    """Migration 011 (v0.35): approved and waiting songs, their files and index, and each child's rule."""
+    import json
+    from app import db
+    approve_all(client, parent, skill, item("carol", "Carol", genre="holiday"))
+    stage(client, skill, item("noel", "Noel", genre="holiday", pitches=[67, 65, 64, 62, 60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65]))
+    kid = client.post("/api/students", json={"name": "Cleo", "avatar": "🦊"}, headers=parent).json()["id"]
+    client.put(f"/api/students/{kid}/rules/genres/holiday", json={"allowed": True}, headers=parent)
+    con = db.connect()
+    con.execute("PRAGMA user_version = 10")
+    con.close()
+    assert db.migrate() == 12
+    con = db.connect()
+    try:
+        assert {r["genre"] for r in con.execute("SELECT genre FROM library WHERE piece_id = 'carol'")} == {"christmas"}
+        assert json.loads(con.execute("SELECT entry FROM library WHERE piece_id = 'carol'").fetchone()["entry"])["genre"] == "christmas"
+        assert {r["genre"] for r in con.execute("SELECT genre FROM staged_items")} == {"christmas"}
+    finally:
+        con.close()
+    pieces = [json.loads(f.read_text()) for f in [*tmp_path.glob("library/*/piece.json"), *tmp_path.glob("staging/*/*/piece.json")]]
+    assert {p["id"]: p["genre"] for p in pieces if p["id"] in ("carol", "noel")} == {"carol": "christmas", "noel": "christmas"}
+    index = json.loads((tmp_path / "library" / "index.json").read_text())["pieces"]
+    assert next(e for e in index if e["id"] == "carol")["genre"] == "christmas"
+    assert client.get(f"/api/students/{kid}/rules").json()["genres"] == {"christmas": True}
+
+
+def test_each_song_lists_its_words_for_the_library_search(client, parent, skill):
+    """The index entry carries the song's words (v0.35), and migration 012 adds them to songs already in."""
+    import json
+    from app import db
+    song = item("words-song", "Words Song")
+    lyr = [("Twin", "begin"), ("kle", "end"), ("lit", "begin"), ("tle", "end"), ("star", "single")]
+    song["piece"]["notation"]["lyrics"] = [{"note": i, "verse": 1, "text": t, "syllabic": s} for i, (t, s) in enumerate(lyr)]
+    approve_all(client, parent, skill, song)
+    words = lambda: next(e for e in client.get("/api/library").json()["pieces"] if e["id"] == "words-song").get("words")
+    assert words() == "Twinkle little star"
+    con = db.connect()
+    try:
+        e = json.loads(con.execute("SELECT entry FROM library WHERE piece_id = 'words-song'").fetchone()["entry"])
+        e.pop("words")
+        con.execute("UPDATE library SET entry = ? WHERE piece_id = 'words-song'", (json.dumps(e),))
+        con.execute("PRAGMA user_version = 11")
+    finally:
+        con.close()
+    assert db.migrate() == 12 and words() == "Twinkle little star"

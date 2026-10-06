@@ -34,7 +34,7 @@ import notation as nt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "api"))
 from app import analysis, fingering  # noqa: E402  (shared with the App API)
-from app.content import song_version  # noqa: E402
+from app.content import song_version, song_words  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "voice"))
 import spoken  # noqa: E402  (the lesson voice's lines, tools/voice)
@@ -451,7 +451,7 @@ def make_piece(pid, meta, skills, parsed, version=None, written_for=None, media_
                                     "song", "songTitle", "version")}
              | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],
                 "measures": len(nota["playbackOrder"]), "beats": float(nota["length"]), "phrases": len(nota["phrases"]),
-                "hasMedia": media is not None, "contentVersion": piece["contentVersion"]} | an)
+                "hasMedia": media is not None, "contentVersion": piece["contentVersion"], "words": song_words(nota)} | an)
     return piece, entry, warnings
 
 

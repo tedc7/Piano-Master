@@ -129,6 +129,7 @@ export interface PieceSummary {
   songTitle?: string;
   version?: string | null;            // e.g. "Beginner", when a song has several arrangements
   hasMedia: boolean;
+  words?: string;                     // its lyrics, verse after verse, for the library search (v0.35)
   new?: boolean;                      // approved in the last 14 days (the "New" badge)
   approvedAt?: string;
 }

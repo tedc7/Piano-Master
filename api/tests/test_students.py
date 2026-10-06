@@ -109,6 +109,15 @@ def test_song_choices_are_remembered_per_student(client, parent):
     assert client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pa1", "preset": "60"}).status_code == 422
 
 
+def test_chord_symbols_are_one_choice_for_every_song(client, parent):
+    a = client.post("/api/students", json={"name": "Ada", "avatar": "🦊"}, headers=parent).json()["id"]
+    assert client.get("/api/students").json()["students"][0]["settings"]["chords"] is None    # off until chosen (v0.35)
+    s = client.patch(f"/api/students/{a}/prefs", json={"pieceId": "pa1", "chords": True}).json()["settings"]
+    assert s["chords"] is True and s["metronome"] is None
+    s = client.patch(f"/api/students/{a}", json={"settings": {"resetSongChoices": True}}, headers=parent).json()["settings"]
+    assert s["chords"] is None
+
+
 def test_reading_aloud_is_one_choice_for_every_lesson(client, parent):
     a = client.post("/api/students", json={"name": "Ada", "avatar": "🦊"}, headers=parent).json()["id"]
     assert client.get("/api/students").json()["students"][0]["settings"]["autoRead"] is True

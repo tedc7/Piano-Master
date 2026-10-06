@@ -85,7 +85,7 @@ def test_hymn_backing_is_the_alto_tenor_and_bass(tmp_path):
 
 
 def test_holiday_backing_is_strings_harp_cello_and_sleigh_bells_on_the_drum_channel(tmp_path):
-    p = piece(tmp_path, {**SONG, "genre": "holiday"})
+    p = piece(tmp_path, {**SONG, "genre": "christmas"})
     name, parts = bk.parts_for(p)
     assert name == "holiday" and [x.name for x in parts] == ["Strings, warm", "Harp arpeggios", "Cello (roots)", "Sleigh bells"]
     bells, harp = parts[3], parts[1]
@@ -101,7 +101,7 @@ def test_holiday_backing_is_strings_harp_cello_and_sleigh_bells_on_the_drum_chan
     synth.midi(parts, 100, out, 1.0)
     chans = [{m.channel for m in t if hasattr(m, "channel")} for t in mido.MidiFile(str(out)).tracks[1:]]
     assert chans[3] == {9} and all(9 not in c for c in chans[:3])
-    off = piece(tmp_path, {**SONG, "genre": "holiday", "media": {"backing": {"style": "holiday", "bells": False}}}, pid="u")
+    off = piece(tmp_path, {**SONG, "genre": "christmas", "media": {"backing": {"style": "holiday", "bells": False}}}, pid="u")
     assert [x.name for x in bk.parts_for(off)[1]][-1] == "Cello (roots)"
 
 

@@ -36,7 +36,7 @@ PAD_BEATS = 1.0             # an instrumental piece's lead-in: a note on beat 0 
 # default FluidSynth backing style (arch §10.5 genre table). "yue2": keep YuE2's own backing; "none": no backing.
 GENRES = {
     "hymns": ("Hymns", "hymn-strings"),
-    "holiday": ("Holiday", "holiday"),
+    "christmas": ("Holiday", "holiday"),     # the Holiday genre until v0.35; YuE2's style and the backing keep the name
     "folk": ("Folk", "yue2"),
     "kids": ("Nursery and kids' songs", "kids"),
     "classical": ("Classical", "pad"),

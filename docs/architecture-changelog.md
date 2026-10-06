@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.35 | Oct 6, 2026 | M0, M7 and M8 closed; the FluidSynth backing replaces the chord pad and choir voice; the Holiday genre renamed Christmas; the song library's search and genre choice; the Chords button, one choice per student |
 | v0.34 | Oct 6, 2026 | The lesson voice: every lesson line recorded ahead with Kokoro's Heart at 80% speed, checked by Whisper, kept in Git LFS; a card read a moment after it shows; Auto-read (the student's choice for every lesson) beside Read it to me / Stop reading; the `lesson-voice` skill |
 | v0.33 | Oct 5, 2026 | Dragging the staff to play or listen from any bar (a drag back is a rewind; ahead, practice of part of the song); a Christmas batch of 15 public-domain songs; the holiday backing style (strings, harp arpeggios, cello, sleigh bells) |
 | v0.32 | Oct 5, 2026 | The Server session's report: the library in the nightly backup and its restore test passed; a new server also needs the deploy account's sudo and, without Caddy's data, a new certificate root; the install scripts check both; the server's details moved out of the repo into a local config file |
@@ -29,6 +30,15 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.35 (Oct 6, 2026)
+
+From the review of the code against this document, and the parent's decisions:
+- **Milestones (12):** M0 is closed by the parent: the keyboard runs (`docs/keyboard-day.md`), the no-internet check and the lockdown decision carry on in Next steps. M7 is done: its media updates were built in v0.27 (a live song's fix, with the media made again, approved in place), and the parent closed it from the family's use. M8 is done: the parent closed it, with the FluidSynth backing in place of the chord pad and choir voice.
+- **No chord pad or choir voice (2.4, 3, 4):** a song without stems has the app's own piano; a backing comes from the media skill, rendered with FluidSynth from the song's notes. Whether the curriculum songs get backings is still a Next steps item.
+- **The Christmas genre (10.1, 10.5):** the Holiday genre is now Christmas. Migration 011 renames it in the library, the review area, the songs' files and each child's genre rule (an allowed Holiday stays allowed). The backing style keeps its name, `holiday`. Migrations can now be Python scripts when they must change the library's files too.
+- **Finding a song (3):** the song library has a search box (title or words) and a genre choice, beside All songs and Favorites; both come back with Back from a song. Each index entry now carries the song's words (`words`); migration 012 adds them to songs already in the library and the review area.
+- **The Chords button (3, 5):** chord symbols on the staff are one choice per student for every song (`Student.settings.chords`), off until the student first turns them on, and cleared with the other song choices in Config › Students. The button shows only on songs with chord symbols, and works while the music plays.
 
 ## v0.34 (Oct 6, 2026)
 
