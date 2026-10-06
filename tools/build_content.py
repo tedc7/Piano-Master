@@ -2,7 +2,8 @@
 
     tools/.venv/bin/python tools/build_content.py
 
-Writes client/public/content/ (skillmap.json, lessons/<skill>.json), which deploys with the app,
+Writes client/public/content/ (skillmap.json, lessons/<skill>.json, and the lesson voice's recordings
+in lessons/voice/ with their index, lessons/voice.json), which deploys with the app,
 and build/songs/ (<id>.json, index.json and media/), which doesn't: every song reaches the app
 through the piano server's library (v0.27, arch §6.10, §10.7). `import_song.py submit` sends songs
 to its review list, and `tools/deploy.sh --seed-songs` loads them straight into the library (once,
@@ -34,6 +35,9 @@ import notation as nt
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "api"))
 from app import analysis, fingering  # noqa: E402  (shared with the App API)
 from app.content import song_version  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / "voice"))
+import spoken  # noqa: E402  (the lesson voice's lines, tools/voice)
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "content"
@@ -384,6 +388,25 @@ def build_lesson(path, skill_ids):
     return {"skill": sid, "title": data.get("title", sid), "cards": cards}
 
 
+def lesson_voice(out: Path) -> list[str]:
+    """The lesson voice (arch §10.5, v0.34): copy each line's recording (content/lessons/voice/, made by
+    tools/voice/lesson_voice.py) into the app, with an index by the text shown. Returns the lines with
+    no up-to-date recording, which the device's own voice reads."""
+    lines, man = spoken.lines(), spoken.manifest()
+    (out / "voice").mkdir()
+    index, missing = {}, []
+    for text, line in lines.items():
+        name = spoken.recorded(text, line, man)
+        src = spoken.VOICE_DIR / name if name else None
+        if not src or src.stat().st_size < 1024 and src.read_bytes().startswith(b"version https://git-lfs"):
+            missing.append(text)        # not recorded yet, or only its Git LFS pointer (git lfs pull)
+            continue
+        shutil.copy2(src, out / "voice" / name)
+        index[text] = f"voice/{name}"
+    (out / "voice.json").write_text(json.dumps(index, indent=1, ensure_ascii=False))
+    return missing
+
+
 def content_version() -> str:
     """A short hash of the deployed content's sources: the skill map and lessons (arch §5
     ContentVersion). Songs have their own version, from their notes (app.content.song_version)."""
@@ -483,6 +506,14 @@ def main():
             return 1
         lessons[lesson["skill"]] = lesson
         (OUT / "lessons" / f"{lesson['skill']}.json").write_text(json.dumps(lesson, indent=1))
+    try:
+        unvoiced = lesson_voice(OUT / "lessons")
+    except ValueError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 1
+    if unvoiced:
+        warnings.append(f"{len(unvoiced)} lesson lines have no recording (tools/voice/lesson_voice.py make); "
+                        f"the device's voice reads them, e.g. {unvoiced[0]!r}")
     for s in skills:
         if s.get("conceptLesson", True) is not False and s["id"] not in lessons:
             msg = f"{s['id']}: no concept lesson in content/lessons/"

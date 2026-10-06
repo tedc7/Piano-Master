@@ -1,0 +1,10 @@
+# The lesson voice's tools (tools/voice/setup.sh): Kokoro speaks, Whisper checks what it said.
+# torch comes first, from the CPU index (setup.sh): the model is small enough not to need the GPU.
+kokoro==0.9.4
+misaki[en]==0.9.4
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+faster-whisper==1.2.1
+jiwer==4.0.0
+soundfile==0.13.1
+numpy<2.3
+PyYAML==6.0.3

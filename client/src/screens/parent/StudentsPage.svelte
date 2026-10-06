@@ -2,6 +2,7 @@
   // Parent > Students (arch §3 "Parent mode", §5 Student): add, edit, archive and delete
   // students, and each student's settings. The Play screen's choices (vocals and tempo for each song,
   // the metronome for every song) are remembered as the student plays; the parent can clear them.
+  // Reading lessons aloud (Auto-read, v0.34) is the student's choice too; the parent can change it.
   import { onMount } from "svelte";
   import PlayerSettings from "../../components/PlayerSettings.svelte";
   import { api } from "../../lib/api";
@@ -101,6 +102,9 @@
       <span>Song choices</span>
       <span>{songChoices(s)} remembered (vocals and tempo for each song{s.settings.metronome === null ? "" : `; metronome ${s.settings.metronome ? "on" : "off"} for every song`})
         {#if songChoices(s)}<button class="quiet" onclick={() => setSettings(s, { resetSongChoices: true } as never)}>Clear</button>{/if}</span>
+      <span>Lessons read aloud</span>
+      <span><button class="toggle" class:off={s.settings.autoRead === false} onclick={() => setSettings(s, { autoRead: s.settings.autoRead === false })}>{s.settings.autoRead === false ? "Only when asked" : "Each card"}</button>
+        <span class="muted">the lesson page's Auto-read, which the student can also change</span></span>
     </div>
   </section>
 {:else}

@@ -1,6 +1,6 @@
-// Audio Engine (arch §4): stems, metronome and count-in clicks, and a sampled piano for Listen
-// mode, the other hand in one-hand practice and the concept lessons. Plain Web Audio, the API the
-// feasibility tests proved in MIDIWeb Browser.
+// Audio Engine (arch §4): stems, metronome and count-in clicks, a sampled piano for Listen mode, the
+// other hand in one-hand practice and the concept lessons, and the lesson voice's recordings (v0.34).
+// Plain Web Audio, the API the feasibility tests proved in MIDIWeb Browser.
 import { api } from "./api";
 import type { Media, Preset } from "./types";
 
@@ -27,6 +27,8 @@ export class AudioEngine {
   private clickBus!: GainNode;
   private toneBus!: GainNode;
   private pianoBus!: GainNode;
+  private speechBus!: GainNode;
+  private clips = new Map<string, Promise<AudioBuffer>>();
   private samples = new Map<number, AudioBuffer>();
   private sampleLoads = new Map<number, Promise<void>>();
   private voices: Voice[] = [];
@@ -44,6 +46,12 @@ export class AudioEngine {
     return ctx;
   }
 
+  /** Start the context from a tap anywhere (the app's own listener), without waiting for it. */
+  unlock(): void {
+    const ctx = this.create();
+    if (ctx.state !== "running") ctx.resume().catch(() => {});
+  }
+
   /** Create the context without resuming it: enough for decoding, and safe without a tap
    *  (resume() before a tap can stay pending on iPadOS). */
   create(): AudioContext {
@@ -58,6 +66,7 @@ export class AudioEngine {
       this.clickBus = this.bus(0.5);
       this.toneBus = this.bus(0.35);
       this.pianoBus = this.bus(0.8);
+      this.speechBus = this.bus(1);
       this.applyMix();
       // after a lock or app switch iPadOS marks the context "interrupted"; resume on return
       document.addEventListener("visibilitychange", () => {
@@ -220,6 +229,43 @@ export class AudioEngine {
       o.start(when);
       o.stop(end + 0.02);
     }
+  }
+
+  /** Fetch and decode a recording (a lesson voice line), once (safe before a tap). */
+  loadClip(url: string): Promise<AudioBuffer> {
+    let p = this.clips.get(url);
+    if (!p) {
+      const ctx = this.create();
+      p = fetch(url)
+        .then((r) => { if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`); return r.arrayBuffer(); })
+        .then((b) => ctx.decodeAudioData(b));
+      p.catch(() => this.clips.delete(url));
+      this.clips.set(url, p);
+    }
+    return p;
+  }
+
+  /** Play a recording now; `onEnd` runs when it finishes by itself. Returns a stop function. */
+  playClip(buf: AudioBuffer, onEnd: () => void): () => void {
+    const ctx = this.ctx!;
+    const src = ctx.createBufferSource();
+    const gain = ctx.createGain();
+    src.buffer = buf;
+    src.connect(gain);
+    gain.connect(this.speechBus);
+    let stopped = false;
+    src.onended = () => { if (!stopped) onEnd(); };
+    src.start();
+    return () => {
+      if (stopped) return;
+      stopped = true;
+      const now = ctx.currentTime;
+      try {
+        gain.gain.setValueAtTime(gain.gain.value, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.05);
+        src.stop(now + 0.06);
+      } catch { /* already ended */ }
+    };
   }
 
   /** Fetch and decode the piano samples these pitches need (safe before a tap). A sample that

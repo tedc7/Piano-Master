@@ -1,0 +1,7 @@
+# Words the lesson voice says wrong on its own, and how it should say them, in Kokoro's phonemes
+# (misaki's alphabet: A is the "ay" in "day", I the "eye" in "high", O the "oh" in "go"; ˈ marks the
+# stress). A word matches whole and with this capitalisation. A change here records again every line
+# that has the word (tools/voice/lesson_voice.py make).
+words:
+  Bass: bˈAs          # the bass staff and clef, never the fish
+  bass: bˈAs

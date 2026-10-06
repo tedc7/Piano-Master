@@ -91,6 +91,9 @@ class AppState {
     measure();
     window.addEventListener("resize", measure);
     window.addEventListener("pointerdown", () => this.touched(), { capture: true });
+    // start the audio on the first tap anywhere (iPadOS only starts it from one), so a lesson that opens
+    // after it can read its first card aloud
+    for (const ev of ["touchend", "click"]) window.addEventListener(ev, () => this.audio.unlock(), { capture: true });
     document.addEventListener("visibilitychange", () => { if (document.hidden) this.leaveParent(); });
     setInterval(() => {
       if (this.parentMode && performance.now() - this.lastTouch > this.autoLogoutMinutes * 60000) this.leaveParent();
@@ -357,6 +360,17 @@ class AppState {
     if (this.student) {
       this.student.settings = $state.snapshot(this.prefs) as StudentSettings;
       api.request(`/students/${this.student.id}/prefs`, "PATCH", { pieceId, ...p }).catch(() => {});
+    } else {
+      saveParentSettings($state.snapshot(this.prefs) as StudentSettings);
+    }
+  }
+
+  /** The lesson screen's Auto-read, remembered for this player for every lesson (v0.34). */
+  setAutoRead(on: boolean): void {
+    this.prefs.autoRead = on;
+    if (this.student) {
+      this.student.settings = $state.snapshot(this.prefs) as StudentSettings;
+      api.request(`/students/${this.student.id}/prefs`, "PATCH", { autoRead: on }).catch(() => {});
     } else {
       saveParentSettings($state.snapshot(this.prefs) as StudentSettings);
     }

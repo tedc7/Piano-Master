@@ -1,0 +1,3663 @@
+{
+ "lines": {
+  "...and C, D, E again, one set of keys higher.": {
+   "check": {
+    "flag": false,
+    "heard": "and C, D, E again, one set of keys higher.",
+    "off": 0.0
+   },
+   "file": "92bbc07110b82504.mp3",
+   "say": "and C, D, E again, one set of keys higher.",
+   "seconds": 4.12,
+   "where": "prep-a.musical-alphabet.yaml card 4"
+  },
+  "...and mezzo forte, medium loud.": {
+   "check": {
+    "flag": false,
+    "heard": "and mezzo forte, medium-loud.",
+    "off": 0.0
+   },
+   "file": "d5c5eaaf23795073.mp3",
+   "say": "and mezzo forte, medium loud.",
+   "seconds": 3.25,
+   "where": "prep-a.mezzo-forte.yaml card 2"
+  },
+  "...and the left hand on the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "and the left hand on the base staff.",
+    "off": 0.0
+   },
+   "file": "e25a5af7dc250b31.mp3",
+   "say": "and the left hand on the [bass](/bˈAs/) staff.",
+   "seconds": 2.8,
+   "where": "prep-a.the-clefs.yaml card 3"
+  },
+  "A dot after a note makes it longer by half. A half note gets two beats, so a dotted half note gets three: count 1, 2, 3.": {
+   "check": {
+    "flag": false,
+    "heard": "A dot after a note makes it longer by half. A half note gets two beats, so a dotted half note gets three. Count one, two, three.",
+    "off": 0.0
+   },
+   "file": "36b1b68e098f9e02.mp3",
+   "say": "A dot after a note makes it longer by half. A half note gets two beats, so a dotted half note gets three: count 1, 2, 3.",
+   "seconds": 10.15,
+   "where": "prep-a.dotted-half.yaml card 1"
+  },
+  "A dotted half note, then a quarter note: four beats in all.": {
+   "check": {
+    "flag": false,
+    "heard": "A dotted half note, then a quarter note, four beats in all.",
+    "off": 0.0
+   },
+   "file": "f3966e6a3f6d317f.mp3",
+   "say": "A dotted half note, then a quarter note: four beats in all.",
+   "seconds": 4.72,
+   "where": "prep-a.dotted-half.yaml card 2"
+  },
+  "A group of two black keys in the middle: fingers 2 and 3.": {
+   "check": {
+    "flag": false,
+    "heard": "A group of two black keys in the middle, fingers 2 and 3.",
+    "off": 0.0
+   },
+   "file": "548c25029cc40ec3.mp3",
+   "say": "A group of two black keys in the middle: fingers 2 and 3.",
+   "seconds": 4.95,
+   "where": "prep-a.two-black-keys.yaml card 2"
+  },
+  "A half note is hollow, with a stem. It gets two beats: play it and hold it while you count 1, 2.": {
+   "check": {
+    "flag": false,
+    "heard": "A half note is hollow, with a stem. It gets two beats. Play it and hold it while you count one, too.",
+    "off": 0.014
+   },
+   "file": "f3165e0237ef4cb2.mp3",
+   "say": "A half note is hollow, with a stem. It gets two beats: play it and hold it while you count 1, 2.",
+   "seconds": 7.7,
+   "where": "prep-a.half-note.yaml card 1"
+  },
+  "A half note tied to a quarter note lasts how many beats?": {
+   "check": {
+    "flag": false,
+    "heard": "A half note tied to a quarter note lasts how many beats.",
+    "off": 0.0
+   },
+   "file": "010bb80cfa309186.mp3",
+   "say": "A half note tied to a quarter note lasts how many beats?",
+   "seconds": 4.42,
+   "where": "prep-a.tie.yaml card 5"
+  },
+  "A half note tied to a whole note: play once, hold for six beats.": {
+   "check": {
+    "flag": false,
+    "heard": "A half note tied to a whole note. Play once, hold for six beats.",
+    "off": 0.0
+   },
+   "file": "651333aa66bed6e6.mp3",
+   "say": "A half note tied to a whole note: play once, hold for six beats.",
+   "seconds": 5.38,
+   "where": "prep-a.tie.yaml card 2"
+  },
+  "A is two steps below Middle C, on the top line of the bass staff. Play it with left-hand finger 3.": {
+   "check": {
+    "flag": false,
+    "heard": "A is two steps below middle C on the top line of the bass staff. Play it with left hand finger 3.",
+    "off": 0.0
+   },
+   "file": "a4c02c34eb5f2053.mp3",
+   "say": "[A](/ˈA/) is two steps below Middle C, on the top line of the [bass](/bˈAs/) staff. Play it with left-hand finger 3.",
+   "seconds": 8.4,
+   "where": "prep-a.bass-a.yaml card 1"
+  },
+  "A measure has two half notes. How many beats is that?": {
+   "check": {
+    "flag": false,
+    "heard": "A measure has two half notes. How many beats is that?",
+    "off": 0.0
+   },
+   "file": "428fc20ee5ded561.mp3",
+   "say": "A measure has two half notes. How many beats is that?",
+   "seconds": 4.55,
+   "where": "prep-a.the-measure.yaml card 5"
+  },
+  "A musical answer ends on...": {
+   "check": {
+    "flag": false,
+    "heard": "A musical answer ends on...",
+    "off": 0.0
+   },
+   "file": "78c234045e0837d1.mp3",
+   "say": "A musical answer ends on.",
+   "seconds": 2.88,
+   "where": "prep-a.question-answer.yaml card 4"
+  },
+  "A note higher on the staff sounds...": {
+   "check": {
+    "flag": false,
+    "heard": "A note higher on the staff sounds.",
+    "off": 0.0
+   },
+   "file": "0378ee89c0cffce3.mp3",
+   "say": "A note higher on the staff sounds.",
+   "seconds": 2.95,
+   "where": "prep-a.the-staff.yaml card 5"
+  },
+  "A quarter note is...": {
+   "check": {
+    "flag": false,
+    "heard": "A quarter note is",
+    "off": 0.0
+   },
+   "file": "92022e6154122901.mp3",
+   "say": "A quarter note is.",
+   "seconds": 2.23,
+   "where": "prep-a.quarter-note.yaml card 6"
+  },
+  "A question, then a parallel answer.": {
+   "check": {
+    "flag": false,
+    "heard": "A question, then a parallel answer.",
+    "off": 0.0
+   },
+   "file": "4953a6bc6cd0e906.mp3",
+   "say": "A question, then a parallel answer.",
+   "seconds": 3.35,
+   "where": "prep-a.question-answer.yaml card 2"
+  },
+  "A rest is a beat of silence. The quarter rest looks like a little squiggle and gets one beat. Lift your hand and keep counting, then come back in on time.": {
+   "check": {
+    "flag": false,
+    "heard": "A rest is a beat of silence. The quarter rest looks like a little squiggle and gets one beat. Lift your hand and keep counting, then come back in on time.",
+    "off": 0.0
+   },
+   "file": "3d00937ec3ad7340.mp3",
+   "say": "A rest is a beat of silence. The quarter rest looks like a little squiggle and gets one beat. Lift your hand and keep counting, then come back in on time.",
+   "seconds": 12.32,
+   "where": "prep-a.quarter-rest.yaml card 1"
+  },
+  "A round hand on the two black keys: fingertips firm, a bubble under the palm.": {
+   "check": {
+    "flag": false,
+    "heard": "A round hand on the two black keys, fingertips firm, a bubble under the palm.",
+    "off": 0.0
+   },
+   "file": "ac30bffae59c33e4.mp3",
+   "say": "A round hand on the two black keys: fingertips firm, a bubble under the palm.",
+   "seconds": 6.75,
+   "where": "prep-a.round-hand.yaml card 2"
+  },
+  "A scale steps up or down from one key to the next, like stairs. Put one finger on each key, C D E F G, for the C 5-finger scale. C is the lowest note for each hand, and it's the home note.": {
+   "check": {
+    "flag": false,
+    "heard": "A scale steps up or down from one key to the next, like stairs. Put one finger on each key, C-D-E-F-G, for the C5 finger scale. C is the lowest note for each hand, and it's the home note.",
+    "off": 0.0
+   },
+   "file": "41282c60a340728f.mp3",
+   "say": "A scale steps up or down from one key to the next, like stairs. Put one finger on each key, C D E F G, for the C 5-finger scale. C is the lowest note for each hand, and it's the home note.",
+   "seconds": 16.6,
+   "where": "prep-a.c-five-finger.yaml card 1"
+  },
+  "A skip also goes from a space to the next space, like D to F on the treble staff, or G to B on the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "A skip also goes from a space to the next space, like D to F on the treble staff or G to B on the bass staff.",
+    "off": 0.0
+   },
+   "file": "801a75fabf89c921.mp3",
+   "say": "A skip also goes from a space to the next space, like D to F on the treble staff, or G to B on the [bass](/bˈAs/) staff.",
+   "seconds": 9.3,
+   "where": "prep-a.more-skips.yaml card 1"
+  },
+  "A skip goes from a line to the next line. On the piano you skip a key and skip a finger; in the alphabet you skip a letter, like C to E.": {
+   "check": {
+    "flag": false,
+    "heard": "A skip goes from a line to the next line. On the piano, you skip a key and skip a finger. In the alphabet, you skip a letter, like C to E.",
+    "off": 0.0
+   },
+   "file": "9fab9a372d2e711d.mp3",
+   "say": "A skip goes from a line to the next line. On the piano you skip a key and skip a finger; in the alphabet you skip a letter, like C to E.",
+   "seconds": 11.07,
+   "where": "prep-a.skips.yaml card 1"
+  },
+  "A step goes to the next key, with the next finger, to the next letter, up or down. Playing the same key again is a repeat.": {
+   "check": {
+    "flag": false,
+    "heard": "A step goes to the next key, with the next finger to the next letter, up or down. Playing the same key again is a repeat.",
+    "off": 0.0
+   },
+   "file": "f04f81e2f002a44d.mp3",
+   "say": "A step goes to the next key, with the next finger, to the next letter, up or down. Playing the same key again is a repeat.",
+   "seconds": 9.6,
+   "where": "prep-a.steps.yaml card 1"
+  },
+  "A step goes to the...": {
+   "check": {
+    "flag": false,
+    "heard": "A step goes to the what.",
+    "off": 0.0
+   },
+   "file": "d2855fe832a53b39.mp3",
+   "say": "A step goes to the what?",
+   "seconds": 2.48,
+   "where": "prep-a.steps.yaml card 6"
+  },
+  "A tie is a curved line joining two notes on the same line or space. Play the note once and hold it for both notes' beats added together.": {
+   "check": {
+    "flag": false,
+    "heard": "A tie is a curved line joining two notes on the same line or space. Play the note once and hold it for both notes' beats added together.",
+    "off": 0.0
+   },
+   "file": "17a14dbcf1d5e578.mp3",
+   "say": "A tie is a curved line joining two notes on the same line or space. Play the note once and hold it for both notes' beats added together.",
+   "seconds": 10.75,
+   "where": "prep-a.tie.yaml card 1"
+  },
+  "A whole note fills a whole measure of four beats.": {
+   "check": {
+    "flag": false,
+    "heard": "A whole note fills a whole measure of four beats.",
+    "off": 0.0
+   },
+   "file": "2a9038b6b261b2dd.mp3",
+   "say": "A whole note fills a whole measure of four beats.",
+   "seconds": 3.7,
+   "where": "prep-a.whole-note.yaml card 2"
+  },
+  "A whole note is hollow with no stem. It gets four beats: play it and hold it while you count 1, 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "A whole note is hollow with no stem. It gets four beats. Play it and hold it while you count one, two, three, four.",
+    "off": 0.0
+   },
+   "file": "766205eb1eec55a1.mp3",
+   "say": "A whole note is hollow with no stem. It gets four beats: play it and hold it while you count 1, 2, 3, 4.",
+   "seconds": 8.65,
+   "where": "prep-a.whole-note.yaml card 1"
+  },
+  "All right!": {
+   "check": {
+    "flag": false,
+    "heard": "All right.",
+    "off": 0.0
+   },
+   "file": "b8bb95ece78b7be3.mp3",
+   "say": "All right!",
+   "seconds": 1.85,
+   "where": "lessonPhrases.ts"
+  },
+  "Allegro is an Italian word written at the start of a piece. It means fast and lively.": {
+   "check": {
+    "flag": false,
+    "heard": "Allegro is an Italian word written at the start of a piece. It means fast and lively.",
+    "off": 0.0
+   },
+   "file": "d6f71d3c6bedd557.mp3",
+   "say": "Allegro is an Italian word written at the start of a piece. It means fast and lively.",
+   "seconds": 7.15,
+   "where": "prep-a.allegro.yaml card 1"
+  },
+  "An octave below Middle C is...": {
+   "check": {
+    "flag": false,
+    "heard": "An octave below middle C is...",
+    "off": 0.0
+   },
+   "file": "0a606c7fcc3abc50.mp3",
+   "say": "An octave below Middle C is.",
+   "seconds": 3.0,
+   "where": "prep-a.octave.yaml card 5"
+  },
+  "An octave: the same letter, higher and lower.": {
+   "check": {
+    "flag": false,
+    "heard": "An octave, the same letter, higher and lower.",
+    "off": 0.0
+   },
+   "file": "18afc3f3a02c1369.mp3",
+   "say": "An octave: the same letter, higher and lower.",
+   "seconds": 3.83,
+   "where": "prep-a.octave.yaml card 3"
+  },
+  "And repeats: the same key again and again.": {
+   "check": {
+    "flag": false,
+    "heard": "And repeats, the same key again and again.",
+    "off": 0.0
+   },
+   "file": "566aad9fb4cd4f5d.mp3",
+   "say": "And repeats: the same key again and again.",
+   "seconds": 3.88,
+   "where": "prep-a.steps.yaml card 3"
+  },
+  "And steps, for comparison.": {
+   "check": {
+    "flag": false,
+    "heard": "and steps for comparison.",
+    "off": 0.0
+   },
+   "file": "661f13935f673b8e.mp3",
+   "say": "And steps, for comparison.",
+   "seconds": 2.67,
+   "where": "prep-a.skips.yaml card 3"
+  },
+  "And the same tune slowly. Which one feels allegro?": {
+   "check": {
+    "flag": false,
+    "heard": "And the same tune slowly, which one feels allegro?",
+    "off": 0.0
+   },
+   "file": "ac9fd73c09780012.mp3",
+   "say": "And the same tune slowly. Which one feels allegro?",
+   "seconds": 4.53,
+   "where": "prep-a.allegro.yaml card 2"
+  },
+  "B is a step below Middle C, in the space just above the bass staff. Play it with left-hand finger 2.": {
+   "check": {
+    "flag": false,
+    "heard": "B is a step below middle C in the space just above the bass staff. Play it with left hand finger 2.",
+    "off": 0.0
+   },
+   "file": "f3cfe2018c092f63.mp3",
+   "say": "B is a step below Middle C, in the space just above the [bass](/bˈAs/) staff. Play it with left-hand finger 2.",
+   "seconds": 8.62,
+   "where": "prep-a.bass-b.yaml card 1"
+  },
+  "Bass C is a ... below Bass D.": {
+   "check": {
+    "flag": false,
+    "heard": "Base C is a blank below Base D.",
+    "off": 0.0
+   },
+   "file": "f74a29f761a3af04.mp3",
+   "say": "[Bass](/bˈAs/) C is a blank below [Bass](/bˈAs/) D.",
+   "seconds": 3.52,
+   "where": "prep-a.bass-c.yaml card 5"
+  },
+  "Bass C is a step below Bass D, in the second space of the bass staff. It's the C one octave below Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Base C is a step below base D in the second space of the base staff. It's the C1 octave below middle C.",
+    "off": 0.0
+   },
+   "file": "293db06ed609b74f.mp3",
+   "say": "[Bass](/bˈAs/) C is a step below [Bass](/bˈAs/) D, in the second space of the [bass](/bˈAs/) staff. It's the C one octave below Middle C.",
+   "seconds": 9.1,
+   "where": "prep-a.bass-c.yaml card 1"
+  },
+  "Bass D is a ... below Bass F.": {
+   "check": {
+    "flag": false,
+    "heard": "Base D is a blank below base F.",
+    "off": 0.0
+   },
+   "file": "979c58af48b1dcd3.mp3",
+   "say": "[Bass](/bˈAs/) D is a blank below [Bass](/bˈAs/) F.",
+   "seconds": 3.38,
+   "where": "prep-a.bass-d.yaml card 5"
+  },
+  "Bass D sits on the middle line of the bass staff. It's a skip below Bass F.": {
+   "check": {
+    "flag": false,
+    "heard": "Base D sits on the middle line of the base staff. It's a skip below base F.",
+    "off": 0.0
+   },
+   "file": "4cc09422a259d36b.mp3",
+   "say": "[Bass](/bˈAs/) D sits on the middle line of the [bass](/bˈAs/) staff. It's a skip below [Bass](/bˈAs/) F.",
+   "seconds": 6.2,
+   "where": "prep-a.bass-d.yaml card 1"
+  },
+  "Bass D, then a step down to Bass C.": {
+   "check": {
+    "flag": false,
+    "heard": "Base D, then a step down to base C.",
+    "off": 0.0
+   },
+   "file": "a293e9ee860d5bbc.mp3",
+   "say": "[Bass](/bˈAs/) D, then a step down to [Bass](/bˈAs/) C.",
+   "seconds": 3.38,
+   "where": "prep-a.bass-c.yaml card 2"
+  },
+  "Bass F is the F just below Middle C, on the fourth line of the bass staff. The bass clef's two dots sit either side of that line, so it's also called the F clef.": {
+   "check": {
+    "flag": false,
+    "heard": "Base F is the F just below middle C on the fourth line of the base staff. The base clef's two dots sit either side of that line, so it's also called the F clef.",
+    "off": 0.0
+   },
+   "file": "a53fae5b4da9c122.mp3",
+   "say": "[Bass](/bˈAs/) F is the F just below Middle C, on the fourth line of the [bass](/bˈAs/) staff. The [bass](/bˈAs/) clef's two dots sit either side of that line, so it's also called the F clef.",
+   "seconds": 13.15,
+   "where": "prep-a.bass-f.yaml card 1"
+  },
+  "Bass F, then skip down to Bass D.": {
+   "check": {
+    "flag": false,
+    "heard": "Base F, then skip down to base D.",
+    "off": 0.0
+   },
+   "file": "4152dc8266171449.mp3",
+   "say": "[Bass](/bˈAs/) F, then skip down to [Bass](/bˈAs/) D.",
+   "seconds": 3.42,
+   "where": "prep-a.bass-d.yaml card 2"
+  },
+  "Between Middle C and Treble G are D, E and F. D sits in the space just under the treble staff, E on its first line and F in its first space. Keep your right thumb on Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Between middle C and treble GRD, E and FD sits in the space just under the treble staff, E on its first line, and F in its first space. Keep your right thumb on middle C.",
+    "off": 0.015
+   },
+   "file": "73ee456fcc3d6389.mp3",
+   "say": "Between Middle C and Treble G are D, E and F. D sits in the space just under the treble staff, E on its first line and F in its first space. Keep your right thumb on Middle C.",
+   "seconds": 14.18,
+   "where": "prep-a.d-e-f.yaml card 1"
+  },
+  "Both hands can play at the same time. Here one hand holds a long note while the other hand keeps playing.": {
+   "check": {
+    "flag": false,
+    "heard": "Both hands can play at the same time. Here, one hand holds a long note while the other hand keeps playing.",
+    "off": 0.0
+   },
+   "file": "4b73ccbcbda69ed1.mp3",
+   "say": "Both hands can play at the same time. Here one hand holds a long note while the other hand keeps playing.",
+   "seconds": 8.07,
+   "where": "prep-a.hands-at-once.yaml card 1"
+  },
+  "Both thumbs share Middle C: the left hand down to F, the right hand up to G.": {
+   "check": {
+    "flag": false,
+    "heard": "Both thumbs share middle C the left hand down to F the right hand up to G",
+    "off": 0.0
+   },
+   "file": "7c22facf1ff8fdd2.mp3",
+   "say": "Both thumbs share Middle C: the left hand down to F, the right hand up to G.",
+   "seconds": 6.35,
+   "where": "prep-a.middle-c-position.yaml card 2"
+  },
+  "C and E are a...": {
+   "check": {
+    "flag": false,
+    "heard": "C and E are a",
+    "off": 0.0
+   },
+   "file": "970289afaf1d87bb.mp3",
+   "say": "C and E are a.",
+   "seconds": 2.23,
+   "where": "prep-a.skips-together.yaml card 5"
+  },
+  "C and E together: a skip played at once.": {
+   "check": {
+    "flag": false,
+    "heard": "C and E together, a skip played at once.",
+    "off": 0.0
+   },
+   "file": "a2762c8036e671d4.mp3",
+   "say": "C and E together: a skip played at once.",
+   "seconds": 3.92,
+   "where": "prep-a.skips-together.yaml card 2"
+  },
+  "C, D and E, with right-hand fingers 2, 3 and 4.": {
+   "check": {
+    "flag": false,
+    "heard": "C, D, and E, with right hand fingers 2, 3, and 4.",
+    "off": 0.0
+   },
+   "file": "1a5a31e8f0405206.mp3",
+   "say": "C, D and E, with right-hand fingers 2, 3 and 4.",
+   "seconds": 5.1,
+   "where": "prep-a.c-d-e.yaml card 2"
+  },
+  "C, D, E here, and the same C, D, E again higher up: same letters, higher sound.": {
+   "check": {
+    "flag": false,
+    "heard": "C D E here and the same C D E again higher up same letters higher sound",
+    "off": 0.0
+   },
+   "file": "14958b6bb28f9c30.mp3",
+   "say": "C, D, E here, and the same C, D, E again higher up: same letters, higher sound.",
+   "seconds": 6.65,
+   "where": "prep-a.musical-alphabet.yaml card 2"
+  },
+  "Can both hands play at the same time?": {
+   "check": {
+    "flag": false,
+    "heard": "Can both hands play at the same time?",
+    "off": 0.0
+   },
+   "file": "e039865ad7fafc4f.mp3",
+   "say": "Can both hands play at the same time?",
+   "seconds": 3.2,
+   "where": "prep-a.hands-at-once.yaml card 5"
+  },
+  "Count along: 1, 2, 3, 4, in every measure.": {
+   "check": {
+    "flag": false,
+    "heard": "Count along, 1, 2, 3, 4, in every measure.",
+    "off": 0.0
+   },
+   "file": "dd4bb614c2072176.mp3",
+   "say": "Count along: 1, 2, 3, 4, in every measure.",
+   "seconds": 4.53,
+   "where": "prep-a.four-four.yaml card 3"
+  },
+  "Count along: quarter, quarter, half, then a whole note.": {
+   "check": {
+    "flag": false,
+    "heard": "Count along, quarter, quarter, half, then a whole note.",
+    "off": 0.0
+   },
+   "file": "6b3f87c54a96db52.mp3",
+   "say": "Count along: quarter, quarter, half, then a whole note.",
+   "seconds": 4.15,
+   "where": "prep-a.whole-note.yaml card 3"
+  },
+  "D and F: a skip on the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "D and F, a skip on the base staff.",
+    "off": 0.0
+   },
+   "file": "0b04f8e1e51cbf6c.mp3",
+   "say": "D and F: a skip on the [bass](/bˈAs/) staff.",
+   "seconds": 3.38,
+   "where": "prep-a.bass-d.yaml card 3"
+  },
+  "D lives between the two black keys. Play the D just above Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "D lives between the two black keys. Play the D just above middle C.",
+    "off": 0.0
+   },
+   "file": "6afdd31ad55a405e.mp3",
+   "say": "D lives between the two black keys. Play the D just above Middle C.",
+   "seconds": 5.97,
+   "where": "prep-a.c-d-e.yaml card 6"
+  },
+  "D, E and F in a row.": {
+   "check": {
+    "flag": false,
+    "heard": "D, E, and F in a row.",
+    "off": 0.0
+   },
+   "file": "672ac1ab67446f73.mp3",
+   "say": "D, E and F in a row.",
+   "seconds": 2.73,
+   "where": "prep-a.d-e-f.yaml card 3"
+  },
+  "Does every measure have the same number of beats?": {
+   "check": {
+    "flag": false,
+    "heard": "Does every measure have the same number of beats?",
+    "off": 0.0
+   },
+   "file": "726eb4899ee3cf78.mp3",
+   "say": "Does every measure have the same number of beats?",
+   "seconds": 3.73,
+   "where": "prep-a.the-measure.yaml card 5"
+  },
+  "Down C, B, A and back up.": {
+   "check": {
+    "flag": false,
+    "heard": "Down C, B, A and back up.",
+    "off": 0.0
+   },
+   "file": "91e4813a5eca8a7d.mp3",
+   "say": "Down C, B, [A](/ˈA/) and back up.",
+   "seconds": 3.1,
+   "where": "prep-a.bass-a.yaml card 3"
+  },
+  "Down D, C, and back up.": {
+   "check": {
+    "flag": false,
+    "heard": "Down D, C, and back up.",
+    "off": 0.0
+   },
+   "file": "9c08569732cb5ee3.mp3",
+   "say": "Down D, C, and back up.",
+   "seconds": 2.73,
+   "where": "prep-a.bass-c.yaml card 3"
+  },
+  "Down from Middle C to Bass F and back up.": {
+   "check": {
+    "flag": false,
+    "heard": "Down from middle C to base F and back up.",
+    "off": 0.0
+   },
+   "file": "e27ebf9fcca7d520.mp3",
+   "say": "Down from Middle C to [Bass](/bˈAs/) F and back up.",
+   "seconds": 4.05,
+   "where": "prep-a.bass-g.yaml card 3"
+  },
+  "During a rest, you...": {
+   "check": {
+    "flag": false,
+    "heard": "During arrest, you.",
+    "off": 0.071
+   },
+   "file": "d5d9ffaa995a3484.mp3",
+   "say": "During a rest, you.",
+   "seconds": 2.23,
+   "where": "prep-a.quarter-rest.yaml card 5"
+  },
+  "E, D, C. Do you know this song?": {
+   "check": {
+    "flag": false,
+    "heard": "EDC do you know this song?",
+    "off": 0.0
+   },
+   "file": "7b6062c3e6333ee1.mp3",
+   "say": "E, D, C. Do you know this song?",
+   "seconds": 2.8,
+   "where": "prep-a.c-d-e.yaml card 3"
+  },
+  "F is just to the left of the three black keys. Play the F above Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "F is just to the left of the three black keys. Play the F above middle C.",
+    "off": 0.0
+   },
+   "file": "ecaad7ce049d9826.mp3",
+   "say": "F is just to the left of the three black keys. Play the F above Middle C.",
+   "seconds": 6.42,
+   "where": "prep-a.f-g-a-b.yaml card 6"
+  },
+  "F, G, A and B are next to the group of...": {
+   "check": {
+    "flag": false,
+    "heard": "F, G, A, and B are next to the group of.",
+    "off": 0.0
+   },
+   "file": "451e5471dd4e7bf0.mp3",
+   "say": "F, G, [A](/ˈA/) and B are next to the group of.",
+   "seconds": 3.58,
+   "where": "prep-a.f-g-a-b.yaml card 6"
+  },
+  "F, G, A and B are the four white keys by the group of three black keys: F just to the left of the group, then G, A and B.": {
+   "check": {
+    "flag": false,
+    "heard": "F, G, A, and B are the four white keys by the group of three black keys. F just to the left of the group, then G, A, and B.",
+    "off": 0.0
+   },
+   "file": "0c2a753f9a797899.mp3",
+   "say": "F, G, [A](/ˈA/) and B are the four white keys by the group of three black keys: F just to the left of the group, then G, [A](/ˈA/) and B.",
+   "seconds": 10.15,
+   "where": "prep-a.f-g-a-b.yaml card 1"
+  },
+  "F, G, A, B beside the three black keys.": {
+   "check": {
+    "flag": false,
+    "heard": "F, G, A, B beside the three black keys.",
+    "off": 0.0
+   },
+   "file": "5871d10216109793.mp3",
+   "say": "F, G, [A](/ˈA/), B beside the three black keys.",
+   "seconds": 4.1,
+   "where": "prep-a.f-g-a-b.yaml card 2"
+  },
+  "Find Middle C and play it.": {
+   "check": {
+    "flag": false,
+    "heard": "Find middle C and play it.",
+    "off": 0.0
+   },
+   "file": "17e396551140136b.mp3",
+   "say": "Find Middle C and play it.",
+   "seconds": 2.65,
+   "where": "prep-a.c-d-e.yaml card 6"
+  },
+  "Find a group of two black keys. C is the white key just to the left of it, D sits in the middle between the two black keys, and E is just to the right. The C in the middle of the piano is called Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Find a group of two black keys. C is the white key just to the left of it, D sits in the middle between the two black keys, and E is just to the right. The C in the middle of the piano is called middle C.",
+    "off": 0.0
+   },
+   "file": "7580e2a870c779a8.mp3",
+   "say": "Find a group of two black keys. C is the white key just to the left of it, D sits in the middle between the two black keys, and E is just to the right. The C in the middle of the piano is called Middle C.",
+   "seconds": 15.95,
+   "where": "prep-a.c-d-e.yaml card 1"
+  },
+  "Find the group of two just above the middle and play it with fingers 2 and 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Find the group of two just above the middle and play it with fingers two and three.",
+    "off": 0.0
+   },
+   "file": "f1c990ca1f7242cb.mp3",
+   "say": "Find the group of two just above the middle and play it with fingers 2 and 3.",
+   "seconds": 5.97,
+   "where": "prep-a.two-black-keys.yaml card 4"
+  },
+  "Fingers 1, 2, 3 on C, D, E; then the hand hops so the thumb lands on D.": {
+   "check": {
+    "flag": false,
+    "heard": "Fingers 1, 2, 3 on C, D, E. Then the hand hops so the thumb lands on D.",
+    "off": 0.0
+   },
+   "file": "71d17f90bc27d8e4.mp3",
+   "say": "Fingers 1, 2, 3 on C, D, E; then the hand hops so the thumb lands on D.",
+   "seconds": 6.83,
+   "where": "prep-a.hand-shift.yaml card 2"
+  },
+  "Forte: loud and strong.": {
+   "check": {
+    "flag": false,
+    "heard": "Forte loud and strong",
+    "off": 0.0
+   },
+   "file": "540e3ac7cda863be.mp3",
+   "say": "Forte: loud and strong.",
+   "seconds": 2.77,
+   "where": "prep-a.forte-piano.yaml card 2"
+  },
+  "Four quarter notes: one beat each.": {
+   "check": {
+    "flag": false,
+    "heard": "Four quarter notes, one beat each.",
+    "off": 0.0
+   },
+   "file": "d6c82a781f5e7f34.mp3",
+   "say": "Four quarter notes: one beat each.",
+   "seconds": 3.45,
+   "where": "prep-a.quarter-note.yaml card 2"
+  },
+  "From one C to the next C is 8 white keys: an octave. Middle C down to Bass C is an octave. Leap there with the whole hand, fingers 1 and 5, instead of stretching.": {
+   "check": {
+    "flag": false,
+    "heard": "From one C to the next C is eight white keys, an octave. Middle C down to base C is an octave. Leap there with the whole hand, fingers one and five, instead of stretching.",
+    "off": 0.0
+   },
+   "file": "a138a52a59bcb531.mp3",
+   "say": "From one C to the next C is 8 white keys: an octave. Middle C down to [Bass](/bˈAs/) C is an octave. Leap there with the whole hand, fingers 1 and 5, instead of stretching.",
+   "seconds": 14.18,
+   "where": "prep-a.octave.yaml card 1"
+  },
+  "G is in the top space of the bass staff, between A and Bass F. Play it with left-hand finger 4.": {
+   "check": {
+    "flag": false,
+    "heard": "G is in the top space of the bass staff. Between A and bass F, play it with left-hand finger 4.",
+    "off": 0.0
+   },
+   "file": "cd1385b20f6398b3.mp3",
+   "say": "G is in the top space of the [bass](/bˈAs/) staff, between [A](/ˈA/) and [Bass](/bˈAs/) F. Play it with left-hand finger 4.",
+   "seconds": 8.0,
+   "where": "prep-a.bass-g.yaml card 1"
+  },
+  "Going down the keyboard, to the left, the sounds get lower. Going up, to the right, they get higher. Keep a steady beat as you move.": {
+   "check": {
+    "flag": false,
+    "heard": "Going down the keyboard to the left, the sounds get lower. Going up to the right, they get higher. Keep a steady beat as you move.",
+    "off": 0.0
+   },
+   "file": "877c9c306c6d85a2.mp3",
+   "say": "Going down the keyboard, to the left, the sounds get lower. Going up, to the right, they get higher. Keep a steady beat as you move.",
+   "seconds": 9.47,
+   "where": "prep-a.low-and-high.yaml card 1"
+  },
+  "Going to the right on the keyboard, the sounds get...": {
+   "check": {
+    "flag": false,
+    "heard": "Going to the right on the keyboard, the sounds get.",
+    "off": 0.0
+   },
+   "file": "15f25c4e4c4a36a5.mp3",
+   "say": "Going to the right on the keyboard, the sounds get.",
+   "seconds": 4.05,
+   "where": "prep-a.low-and-high.yaml card 5"
+  },
+  "Good try! Listen again and play it back.": {
+   "check": {
+    "flag": false,
+    "heard": "Good try listen again and play it back",
+    "off": 0.0
+   },
+   "file": "a1da923a16826738.mp3",
+   "say": "Good try! Listen again and play it back.",
+   "seconds": 3.48,
+   "where": "lessonPhrases.ts"
+  },
+  "Here it is.": {
+   "check": {
+    "flag": false,
+    "heard": "Here it is.",
+    "off": 0.0
+   },
+   "file": "bee82af1bcdf9d45.mp3",
+   "say": "Here it is.",
+   "seconds": 1.88,
+   "where": "lessonPhrases.ts"
+  },
+  "Hold Bass F with left-hand finger 5, and play Middle C with your right thumb.": {
+   "check": {
+    "flag": false,
+    "heard": "Hold bass F with left hand finger 5 and play middle C with your right thumb.",
+    "off": 0.0
+   },
+   "file": "43e7cfcfb99343f3.mp3",
+   "say": "Hold [Bass](/bˈAs/) F with left-hand finger 5, and play Middle C with your right thumb.",
+   "seconds": 6.55,
+   "where": "prep-a.hands-at-once.yaml card 4"
+  },
+  "Hold, 2, 3, and step.": {
+   "check": {
+    "flag": false,
+    "heard": "Hold two, three, and step.",
+    "off": 0.0
+   },
+   "file": "04c22baaa039048e.mp3",
+   "say": "Hold, 2, 3, and step.",
+   "seconds": 2.73,
+   "where": "prep-a.dotted-half.yaml card 3"
+  },
+  "How many beats are in each measure of 3/4 time?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats are in each measure of three four time?",
+    "off": 0.0
+   },
+   "file": "52572c023764d5b8.mp3",
+   "say": "How many beats are in each measure of 3/4 time?",
+   "seconds": 4.12,
+   "where": "prep-a.three-four.yaml card 5"
+  },
+  "How many beats are in each measure of 4/4 time?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats are in each measure of 4-4 time?",
+    "off": 0.0
+   },
+   "file": "82380862b8e56a74.mp3",
+   "say": "How many beats are in each measure of 4/4 time?",
+   "seconds": 4.12,
+   "where": "prep-a.four-four.yaml card 5"
+  },
+  "How many beats does a dotted half note get?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats does a dotted half note get?",
+    "off": 0.0
+   },
+   "file": "a3d5e70093162789.mp3",
+   "say": "How many beats does a dotted half note get?",
+   "seconds": 3.52,
+   "where": "prep-a.dotted-half.yaml card 6"
+  },
+  "How many beats does a half note get?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats does a half note get?",
+    "off": 0.0
+   },
+   "file": "c6cf6aca5b8d33c0.mp3",
+   "say": "How many beats does a half note get?",
+   "seconds": 3.08,
+   "where": "prep-a.half-note.yaml card 6"
+  },
+  "How many beats does a quarter note get?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats does a quarter note get?",
+    "off": 0.0
+   },
+   "file": "f0f061756daba7dd.mp3",
+   "say": "How many beats does a quarter note get?",
+   "seconds": 3.2,
+   "where": "prep-a.quarter-note.yaml card 6"
+  },
+  "How many beats does a quarter rest get?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats does a quarter rest get?",
+    "off": 0.0
+   },
+   "file": "a69f08f60f89a44c.mp3",
+   "say": "How many beats does a quarter rest get?",
+   "seconds": 3.23,
+   "where": "prep-a.quarter-rest.yaml card 5"
+  },
+  "How many beats does a whole note get?": {
+   "check": {
+    "flag": false,
+    "heard": "How many beats does a whole note get?",
+    "off": 0.0
+   },
+   "file": "fbbb31afe7f39a20.mp3",
+   "say": "How many beats does a whole note get?",
+   "seconds": 3.02,
+   "where": "prep-a.whole-note.yaml card 6"
+  },
+  "How many black keys are in the bigger group?": {
+   "check": {
+    "flag": false,
+    "heard": "How many black keys are in the bigger group?",
+    "off": 0.0
+   },
+   "file": "c38bd5d2bafe18bb.mp3",
+   "say": "How many black keys are in the bigger group?",
+   "seconds": 3.45,
+   "where": "prep-a.three-black-keys.yaml card 7"
+  },
+  "How many black keys are in the smaller group?": {
+   "check": {
+    "flag": false,
+    "heard": "How many black keys are in the smaller group?",
+    "off": 0.0
+   },
+   "file": "cb5cc6e5b85e6d46.mp3",
+   "say": "How many black keys are in the smaller group?",
+   "seconds": 3.52,
+   "where": "prep-a.two-black-keys.yaml card 6"
+  },
+  "How many letters are in the musical alphabet?": {
+   "check": {
+    "flag": false,
+    "heard": "How many letters are in the musical alphabet?",
+    "off": 0.0
+   },
+   "file": "80f5ee63855bb6fb.mp3",
+   "say": "How many letters are in the musical alphabet?",
+   "seconds": 3.92,
+   "where": "prep-a.musical-alphabet.yaml card 5"
+  },
+  "How many lines does a staff have?": {
+   "check": {
+    "flag": false,
+    "heard": "How many lines does a staff have?",
+    "off": 0.0
+   },
+   "file": "d0f45eeba334d74c.mp3",
+   "say": "How many lines does a staff have?",
+   "seconds": 2.9,
+   "where": "prep-a.the-staff.yaml card 5"
+  },
+  "How many spaces does a staff have?": {
+   "check": {
+    "flag": false,
+    "heard": "How many spaces does a staff have?",
+    "off": 0.0
+   },
+   "file": "a088c9a6b10acdf2.mp3",
+   "say": "How many spaces does a staff have?",
+   "seconds": 3.05,
+   "where": "prep-a.the-staff.yaml card 5"
+  },
+  "How many times do you play two tied notes?": {
+   "check": {
+    "flag": false,
+    "heard": "How many times do you play two tied notes?",
+    "off": 0.0
+   },
+   "file": "a01b71bba13eb9ea.mp3",
+   "say": "How many times do you play two tied notes?",
+   "seconds": 3.4,
+   "where": "prep-a.tie.yaml card 5"
+  },
+  "How many white keys is an octave, counting both ends?": {
+   "check": {
+    "flag": false,
+    "heard": "How many white keys is an octave counting both ends?",
+    "off": 0.0
+   },
+   "file": "8019c236fcc284f5.mp3",
+   "say": "How many white keys is an octave, counting both ends?",
+   "seconds": 4.5,
+   "where": "prep-a.octave.yaml card 5"
+  },
+  "I'll show you.": {
+   "check": {
+    "flag": false,
+    "heard": "I'll show you",
+    "off": 0.0
+   },
+   "file": "b88cad0a89253d78.mp3",
+   "say": "I'll show you.",
+   "seconds": 1.98,
+   "where": "lessonPhrases.ts"
+  },
+  "If your arms are lower than the keys, you can...": {
+   "check": {
+    "flag": false,
+    "heard": "If your arms are lower than the keys, you can.",
+    "off": 0.0
+   },
+   "file": "97489dedbb256787.mp3",
+   "say": "If your arms are lower than the keys, you can.",
+   "seconds": 3.73,
+   "where": "prep-a.sitting.yaml card 6"
+  },
+  "In 3/4 time there are three beats in each measure, with a strong first beat: ONE two three, ONE two three. The quarter note still gets one beat.": {
+   "check": {
+    "flag": false,
+    "heard": "In 3-4 time, there are three beats in each measure with a strong first beat, 1-2-3, 1-2-3. The quarter note still gets one beat.",
+    "off": 0.0
+   },
+   "file": "93ee53271eefa407.mp3",
+   "say": "In 3/4 time there are three beats in each measure, with a strong first beat: ONE two three, ONE two three. The quarter note still gets one beat.",
+   "seconds": 11.65,
+   "where": "prep-a.three-four.yaml card 1"
+  },
+  "In 4/4 time, which note gets one beat?": {
+   "check": {
+    "flag": false,
+    "heard": "In 4-4 time, which note gets one beat?",
+    "off": 0.0
+   },
+   "file": "4669e4557c17d211.mp3",
+   "say": "In 4/4 time, which note gets one beat?",
+   "seconds": 3.8,
+   "where": "prep-a.four-four.yaml card 5"
+  },
+  "In Middle C position, where do both thumbs go?": {
+   "check": {
+    "flag": false,
+    "heard": "In middle C position, where do both thumbs go?",
+    "off": 0.0
+   },
+   "file": "95345bce59b8e7bb.mp3",
+   "say": "In Middle C position, where do both thumbs go?",
+   "seconds": 4.12,
+   "where": "prep-a.middle-c-position.yaml card 6"
+  },
+  "In left-hand C position, which finger plays C?": {
+   "check": {
+    "flag": false,
+    "heard": "in left-hand C position, which finger plays C.",
+    "off": 0.0
+   },
+   "file": "8cfbfd1577435d16.mp3",
+   "say": "In left-hand C position, which finger plays C?",
+   "seconds": 4.35,
+   "where": "prep-a.bass-c-scale.yaml card 6"
+  },
+  "In music the beats are grouped into measures, and each measure has the same number of beats. Bar lines are the lines that divide the music into measures.": {
+   "check": {
+    "flag": false,
+    "heard": "In music, the beats are grouped into measures, and each measure has the same number of beats. Bar lines are the lines that divide the music into measures.",
+    "off": 0.0
+   },
+   "file": "a01e6f14b96031e6.mp3",
+   "say": "In music the beats are grouped into measures, and each measure has the same number of beats. Bar lines are the lines that divide the music into measures.",
+   "seconds": 11.68,
+   "where": "prep-a.the-measure.yaml card 1"
+  },
+  "In the right-hand C 5-finger scale, which finger plays G?": {
+   "check": {
+    "flag": false,
+    "heard": "In the right-hand C5 finger scale, which finger plays G?",
+    "off": 0.0
+   },
+   "file": "b3c489457b137121.mp3",
+   "say": "In the right-hand C 5-finger scale, which finger plays G?",
+   "seconds": 5.15,
+   "where": "prep-a.c-five-finger.yaml card 7"
+  },
+  "Is the left thumb number 1 too?": {
+   "check": {
+    "flag": false,
+    "heard": "Is the left thumb number one, too?",
+    "off": 0.0
+   },
+   "file": "c93006d03b59d7d6.mp3",
+   "say": "Is the left thumb number 1 too?",
+   "seconds": 2.95,
+   "where": "prep-a.finger-numbers.yaml card 5"
+  },
+  "Keep the bubble: tap each black key twice with firm fingertips.": {
+   "check": {
+    "flag": false,
+    "heard": "Keep the bubble. Tap each black key twice with firm fingertips.",
+    "off": 0.0
+   },
+   "file": "640ad4c4219a1e46.mp3",
+   "say": "Keep the bubble: tap each black key twice with firm fingertips.",
+   "seconds": 5.05,
+   "where": "prep-a.round-hand.yaml card 3"
+  },
+  "Leap an octave: left thumb on Middle C, then finger 5 on Bass C.": {
+   "check": {
+    "flag": false,
+    "heard": "Leap an octave. Left thumb on middle C, then finger 5 on base C.",
+    "off": 0.0
+   },
+   "file": "e61cc82db9ab0677.mp3",
+   "say": "Leap an octave: left thumb on Middle C, then finger 5 on [Bass](/bˈAs/) C.",
+   "seconds": 5.8,
+   "where": "prep-a.octave.yaml card 4"
+  },
+  "Left hand C position: Bass C, D, E, F, G.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand C position, Bay C D E F G.",
+    "off": 0.077
+   },
+   "file": "11869734472d7516.mp3",
+   "say": "Left hand C position: [Bass](/bˈAs/) C, D, E, F, G.",
+   "seconds": 4.62,
+   "where": "prep-a.bass-c-scale.yaml card 2"
+  },
+  "Left hand from Middle C down to Bass F: C, B, A, G, F.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand from middle C down to base F. C, B, A, G, F.",
+    "off": 0.0
+   },
+   "file": "049a2588bd5dfc29.mp3",
+   "say": "Left hand from Middle C down to [Bass](/bˈAs/) F: C, B, [A](/ˈA/), G, F.",
+   "seconds": 5.83,
+   "where": "prep-a.bass-g.yaml card 2"
+  },
+  "Left hand from Middle C down to F.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand from middle C down to F.",
+    "off": 0.0
+   },
+   "file": "f3bec5b2dea0b672.mp3",
+   "say": "Left hand from Middle C down to F.",
+   "seconds": 3.0,
+   "where": "prep-a.middle-c-position.yaml card 4"
+  },
+  "Left hand from Middle C, stepping down to F.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand from middle C, stepping down to F.",
+    "off": 0.0
+   },
+   "file": "ae2e13a2faa12f28.mp3",
+   "say": "Left hand from Middle C, stepping down to F.",
+   "seconds": 3.9,
+   "where": "prep-a.c-b-a-g-f.yaml card 2"
+  },
+  "Left hand, one C lower: finger 5 on C, up to the thumb on G.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand 1C lower, finger 5 on C, up to the thumb on G.",
+    "off": 0.0
+   },
+   "file": "54d58bb0b95d7e42.mp3",
+   "say": "Left hand, one C lower: finger 5 on C, up to the thumb on G.",
+   "seconds": 5.95,
+   "where": "prep-a.c-five-finger.yaml card 3"
+  },
+  "Left hand: Bass F and Middle C together, fingers 5 and 1.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, base F and middle C together, fingers 5 and 1.",
+    "off": 0.0
+   },
+   "file": "3dc8423dd0b594b4.mp3",
+   "say": "Left hand: [Bass](/bˈAs/) F and Middle C together, fingers 5 and 1.",
+   "seconds": 5.8,
+   "where": "prep-a.two-notes-together.yaml card 5"
+  },
+  "Left hand: C, B, A with fingers 1, 2, 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, CB, A with fingers 1, 2, 3.",
+    "off": 0.0
+   },
+   "file": "bd39dee2c1fbf2d4.mp3",
+   "say": "Left hand: C, B, [A](/ˈA/) with fingers 1, 2, 3.",
+   "seconds": 4.8,
+   "where": "prep-a.bass-a.yaml card 2"
+  },
+  "Left hand: E, D, C with fingers 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand EDC with fingers 2 3 4",
+    "off": 0.0
+   },
+   "file": "ba14aa2fdbfb3636.mp3",
+   "say": "Left hand: E, D, C with fingers 2, 3, 4.",
+   "seconds": 4.78,
+   "where": "prep-a.c-d-e.yaml card 5"
+  },
+  "Left hand: F and G.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, F and G.",
+    "off": 0.0
+   },
+   "file": "da3d0fdf79527290.mp3",
+   "say": "Left hand: F and G.",
+   "seconds": 2.73,
+   "where": "prep-a.f-g-a-b.yaml card 5"
+  },
+  "Left hand: finger 3, then finger 2.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, finger 3, then finger 2.",
+    "off": 0.0
+   },
+   "file": "4b82a3fcc9349ca6.mp3",
+   "say": "Left hand: finger 3, then finger 2.",
+   "seconds": 3.85,
+   "where": "prep-a.finger-numbers.yaml card 4"
+  },
+  "Left hand: fingers 4, 3 and 2 on the three black keys below the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand. Fingers 4, 3, and 2 on the three black keys below the middle.",
+    "off": 0.0
+   },
+   "file": "c1d86b90ac6fcf9c.mp3",
+   "say": "Left hand: fingers 4, 3 and 2 on the three black keys below the middle.",
+   "seconds": 6.25,
+   "where": "prep-a.three-black-keys.yaml card 5"
+  },
+  "Left hand: play the two black keys down low.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, play the two black keys down low.",
+    "off": 0.0
+   },
+   "file": "f398149a46d0daac.mp3",
+   "say": "Left hand: play the two black keys down low.",
+   "seconds": 3.98,
+   "where": "prep-a.low-and-high.yaml card 4"
+  },
+  "Left hand: thumb on Middle C, finger 5 down on Bass F.": {
+   "check": {
+    "flag": false,
+    "heard": "Left hand, thumb on middle C, finger 5 down on base F.",
+    "off": 0.0
+   },
+   "file": "4b8e0da707e0bfd1.mp3",
+   "say": "Left hand: thumb on Middle C, finger 5 down on [Bass](/bˈAs/) F.",
+   "seconds": 5.15,
+   "where": "prep-a.bass-f.yaml card 4"
+  },
+  "Left thumb on Middle C, then finger 2 on B.": {
+   "check": {
+    "flag": false,
+    "heard": "Left thumb on middle C, then finger 2 on B.",
+    "off": 0.0
+   },
+   "file": "ed10f2dba397735a.mp3",
+   "say": "Left thumb on Middle C, then finger 2 on B.",
+   "seconds": 4.1,
+   "where": "prep-a.bass-b.yaml card 2"
+  },
+  "Let your arms hang down, heavy and loose, then float your hands up onto the keys. Curve your fingers as if your hand is holding a bubble: the fingertips stay firm and the thumb rests on its side tip.": {
+   "check": {
+    "flag": false,
+    "heard": "Let your arms hang down, heavy and loose, then float your hands up onto the keys. Curve your fingers as if your hand is holding a bubble. The fingertips stay firm and the thumb rests on its side tip.",
+    "off": 0.0
+   },
+   "file": "483996021be53e74.mp3",
+   "say": "Let your arms hang down, heavy and loose, then float your hands up onto the keys. Curve your fingers as if your hand is holding a bubble: the fingertips stay firm and the thumb rests on its side tip.",
+   "seconds": 15.2,
+   "where": "prep-a.round-hand.yaml card 1"
+  },
+  "Let's look at it again.": {
+   "check": {
+    "flag": false,
+    "heard": "Let's look at it again.",
+    "off": 0.0
+   },
+   "file": "76e4245082203e80.mp3",
+   "say": "Let's look at it again.",
+   "seconds": 2.33,
+   "where": "lessonPhrases.ts"
+  },
+  "Line to the next line is a...": {
+   "check": {
+    "flag": false,
+    "heard": "Line to the next line is A.",
+    "off": 0.0
+   },
+   "file": "1ccccdb1af4eca91.mp3",
+   "say": "Line to the next line is a.",
+   "seconds": 2.67,
+   "where": "prep-a.skips.yaml card 6"
+  },
+  "Line to the next space is a...": {
+   "check": {
+    "flag": false,
+    "heard": "Line to the next space is A.",
+    "off": 0.0
+   },
+   "file": "073e781c4e131a6a.mp3",
+   "say": "Line to the next space is a.",
+   "seconds": 2.88,
+   "where": "prep-a.steps-on-the-staff.yaml card 6"
+  },
+  "Listen for the silent beat after each group of three.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen for the silent beat after each group of three.",
+    "off": 0.0
+   },
+   "file": "d64751713f7e5948.mp3",
+   "say": "Listen for the silent beat after each group of three.",
+   "seconds": 4.42,
+   "where": "prep-a.quarter-rest.yaml card 3"
+  },
+  "Listen for the strong first beat in every measure.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen for the strong first beat in every measure.",
+    "off": 0.0
+   },
+   "file": "ba299cc50821df83.mp3",
+   "say": "Listen for the strong first beat in every measure.",
+   "seconds": 4.1,
+   "where": "prep-a.three-four.yaml card 3"
+  },
+  "Listen, then play it back and hold the last note for four.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back and hold the last note for four.",
+    "off": 0.0
+   },
+   "file": "7b4bb96fb9937f87.mp3",
+   "say": "Listen, then play it back and hold the last note for four.",
+   "seconds": 4.5,
+   "where": "prep-a.whole-note.yaml card 5"
+  },
+  "Listen, then play it back in C position.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back in C position.",
+    "off": 0.0
+   },
+   "file": "6fcdff230b56b367.mp3",
+   "say": "Listen, then play it back in C position.",
+   "seconds": 3.65,
+   "where": "prep-a.bass-c-scale.yaml card 5"
+  },
+  "Listen, then play it back in Middle C position.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back in middle C position.",
+    "off": 0.0
+   },
+   "file": "58bbbbf707d1bcf7.mp3",
+   "say": "Listen, then play it back in Middle C position.",
+   "seconds": 4.03,
+   "where": "prep-a.d-e-f.yaml card 5"
+  },
+  "Listen, then play it back on the three black keys.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back on the three black keys.",
+    "off": 0.0
+   },
+   "file": "e4553d1db6904516.mp3",
+   "say": "Listen, then play it back on the three black keys.",
+   "seconds": 4.03,
+   "where": "prep-a.three-black-keys.yaml card 6"
+  },
+  "Listen, then play it back on the two black keys in the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back on the two black keys in the middle.",
+    "off": 0.0
+   },
+   "file": "c4e5290438725734.mp3",
+   "say": "Listen, then play it back on the two black keys in the middle.",
+   "seconds": 4.72,
+   "where": "prep-a.two-black-keys.yaml card 5"
+  },
+  "Listen, then play it back with the same steady beat.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back with the same steady beat.",
+    "off": 0.0
+   },
+   "file": "fe4f062e1674a5df.mp3",
+   "say": "Listen, then play it back with the same steady beat.",
+   "seconds": 4.12,
+   "where": "prep-a.quarter-note.yaml card 5"
+  },
+  "Listen, then play it back with your left hand.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back with your left hand.",
+    "off": 0.0
+   },
+   "file": "308382b0014de0bf.mp3",
+   "say": "Listen, then play it back with your left hand.",
+   "seconds": 3.62,
+   "where": "prep-a.bass-a.yaml card 5"
+  },
+  "Listen, then play it back. Hold the long notes for three.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back. Hold the long notes for three.",
+    "off": 0.0
+   },
+   "file": "65e989caa107b73d.mp3",
+   "say": "Listen, then play it back. Hold the long notes for three.",
+   "seconds": 4.72,
+   "where": "prep-a.dotted-half.yaml card 5"
+  },
+  "Listen, then play it back. Leave the gap!": {
+   "check": {
+    "flag": false,
+    "heard": "Listen then play it back, leave the gap.",
+    "off": 0.0
+   },
+   "file": "97763bd20a1a9576.mp3",
+   "say": "Listen, then play it back. Leave the gap!",
+   "seconds": 3.62,
+   "where": "prep-a.quarter-rest.yaml card 4"
+  },
+  "Listen, then play it back. Steps or skips?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen then play it back, steps or skips.",
+    "off": 0.0
+   },
+   "file": "92d61be3e4bcf9fe.mp3",
+   "say": "Listen, then play it back. Steps or skips?",
+   "seconds": 3.95,
+   "where": "prep-a.skips.yaml card 5"
+  },
+  "Listen, then play it back. Where does it step, and where does it repeat?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back. Where does it step and where does it repeat?",
+    "off": 0.0
+   },
+   "file": "a85ef12b24c3790f.mp3",
+   "say": "Listen, then play it back. Where does it step, and where does it repeat?",
+   "seconds": 5.33,
+   "where": "prep-a.steps.yaml card 5"
+  },
+  "Listen, then play it back: D to F.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen then play it back, D to F.",
+    "off": 0.0
+   },
+   "file": "a95caa14f4e0cbc2.mp3",
+   "say": "Listen, then play it back: D to F.",
+   "seconds": 3.23,
+   "where": "prep-a.more-skips.yaml card 5"
+  },
+  "Listen, then play it back: Middle C and Treble G.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back, middle C and treble G.",
+    "off": 0.0
+   },
+   "file": "1e7a03f591a8653f.mp3",
+   "say": "Listen, then play it back: Middle C and Treble G.",
+   "seconds": 4.45,
+   "where": "prep-a.treble-g.yaml card 5"
+  },
+  "Listen, then play it back: does it step up or down?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back. Does it step up or down?",
+    "off": 0.0
+   },
+   "file": "691c6a7900708082.mp3",
+   "say": "Listen, then play it back: does it step up or down?",
+   "seconds": 4.25,
+   "where": "prep-a.steps-on-the-staff.yaml card 5"
+  },
+  "Listen, then play it back: some notes are short and some are long.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, then play it back. Some notes are short and some are long.",
+    "off": 0.0
+   },
+   "file": "19cd79549a2b5c1f.mp3",
+   "say": "Listen, then play it back: some notes are short and some are long.",
+   "seconds": 5.22,
+   "where": "prep-a.half-note.yaml card 5"
+  },
+  "Listen. Did the notes go up or down?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, did the notes go up or down?",
+    "off": 0.0
+   },
+   "file": "5ff9363930642ce4.mp3",
+   "say": "Listen. Did the notes go up or down?",
+   "seconds": 3.25,
+   "where": "prep-a.three-black-keys.yaml card 7"
+  },
+  "Listen. Does the answer start the same way as the question?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, does the answer start the same way as the question?",
+    "off": 0.0
+   },
+   "file": "9488d72158bdde8b.mp3",
+   "say": "Listen. Does the answer start the same way as the question?",
+   "seconds": 4.5,
+   "where": "prep-a.question-answer.yaml card 4"
+  },
+  "Listen. How long was the first note?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, how long was the first note?",
+    "off": 0.0
+   },
+   "file": "2148d93e157ba738.mp3",
+   "say": "Listen. How long was the first note?",
+   "seconds": 3.2,
+   "where": "prep-a.dotted-half.yaml card 6"
+  },
+  "Listen. How many beats was the last note?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, how many beats was the last note.",
+    "off": 0.0
+   },
+   "file": "bf249b2104d4468a.mp3",
+   "say": "Listen. How many beats was the last note?",
+   "seconds": 3.52,
+   "where": "prep-a.whole-note.yaml card 6"
+  },
+  "Listen. Is this allegro?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, is this Allegro?",
+    "off": 0.0
+   },
+   "file": "e151ac85c8260565.mp3",
+   "say": "Listen. Is this allegro?",
+   "seconds": 2.83,
+   "where": "prep-a.allegro.yaml card 4"
+  },
+  "Listen. Is this in three or in four?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, is this in 3 or in 4?",
+    "off": 0.0
+   },
+   "file": "57486a66b935ce27.mp3",
+   "say": "Listen. Is this in three or in four?",
+   "seconds": 3.52,
+   "where": "prep-a.three-four.yaml card 5"
+  },
+  "Listen. One note or two at once?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, one note or two at once.",
+    "off": 0.0
+   },
+   "file": "833f101607aa2f3d.mp3",
+   "say": "Listen. One note or two at once?",
+   "seconds": 3.12,
+   "where": "prep-a.hands-at-once.yaml card 5"
+  },
+  "Listen. Steps or repeats?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, steps or repeats.",
+    "off": 0.0
+   },
+   "file": "6728f0cbf19d24d3.mp3",
+   "say": "Listen. Steps or repeats?",
+   "seconds": 2.85,
+   "where": "prep-a.steps.yaml card 6"
+  },
+  "Listen. Steps or skips?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, steps, or skips.",
+    "off": 0.0
+   },
+   "file": "7b1dd23d75c0a600.mp3",
+   "say": "Listen. Steps or skips?",
+   "seconds": 2.75,
+   "where": "prep-a.skips.yaml card 6"
+  },
+  "Listen. Up or down?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen up or down.",
+    "off": 0.0
+   },
+   "file": "1db9091567db47a0.mp3",
+   "say": "Listen. Up or down?",
+   "seconds": 2.65,
+   "where": "prep-a.steps-on-the-staff.yaml card 6"
+  },
+  "Listen. Was it short, short, long or long, short, short?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, was it short, short long or long short short?",
+    "off": 0.0
+   },
+   "file": "1b977c6652e33f14.mp3",
+   "say": "Listen. Was it short, short, long or long, short, short?",
+   "seconds": 4.65,
+   "where": "prep-a.half-note.yaml card 6"
+  },
+  "Listen. Was that high or low?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, was that high or low?",
+    "off": 0.0
+   },
+   "file": "d60952424a0da8e4.mp3",
+   "say": "Listen. Was that high or low?",
+   "seconds": 2.95,
+   "where": "prep-a.low-and-high.yaml card 5"
+  },
+  "Listen. Was the long note played once or twice?": {
+   "check": {
+    "flag": false,
+    "heard": "Listen was the long note played once or twice.",
+    "off": 0.0
+   },
+   "file": "dda6045a620c468a.mp3",
+   "say": "Listen. Was the long note played once or twice?",
+   "seconds": 4.03,
+   "where": "prep-a.tie.yaml card 5"
+  },
+  "Listen: the low note keeps ringing while the high notes play over it.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, the low note keeps ringing while the high notes play over it.",
+    "off": 0.0
+   },
+   "file": "a0dbf431e3e9f7bb.mp3",
+   "say": "Listen: the low note keeps ringing while the high notes play over it.",
+   "seconds": 4.9,
+   "where": "prep-a.hands-at-once.yaml card 3"
+  },
+  "Listen: the same little pattern, one key higher each time.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, the same little pattern, one key higher each time.",
+    "off": 0.0
+   },
+   "file": "c4ddf1c02cc71c64.mp3",
+   "say": "Listen: the same little pattern, one key higher each time.",
+   "seconds": 4.92,
+   "where": "prep-a.hand-shift.yaml card 3"
+  },
+  "Listen: the tied note sounds once and keeps on ringing.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, the tied note sounds once and keeps on ringing.",
+    "off": 0.0
+   },
+   "file": "b776e0899870a8e4.mp3",
+   "say": "Listen: the tied note sounds once and keeps on ringing.",
+   "seconds": 4.45,
+   "where": "prep-a.tie.yaml card 3"
+  },
+  "Loud and soft make music more interesting. Forte means loud, and it's written f. Piano means soft, and it's written p.": {
+   "check": {
+    "flag": false,
+    "heard": "Loud and soft make music more interesting. Forte means loud and it's written F. Piano means soft and it's written P.",
+    "off": 0.0
+   },
+   "file": "a7b27a875c049afa.mp3",
+   "say": "Loud and soft make music more interesting. Forte means loud, and it's written f. Piano means soft, and it's written p.",
+   "seconds": 10.18,
+   "where": "prep-a.forte-piano.yaml card 1"
+  },
+  "Middle C and Treble G at once: fingers 1 and 5.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C and treble G at once, fingers 1 and 5.",
+    "off": 0.0
+   },
+   "file": "db3aac98d3021bec.mp3",
+   "say": "Middle C and Treble G at once: fingers 1 and 5.",
+   "seconds": 4.92,
+   "where": "prep-a.two-notes-together.yaml card 2"
+  },
+  "Middle C sits on its own short line, right between the treble staff and the bass staff. Either thumb can play it.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C sits on its own short line, right between the treble staff and the bass staff. Either thumb can play it.",
+    "off": 0.0
+   },
+   "file": "c30ce52c97ccf663.mp3",
+   "say": "Middle C sits on its own short line, right between the treble staff and the [bass](/bˈAs/) staff. Either thumb can play it.",
+   "seconds": 8.85,
+   "where": "prep-a.middle-c.yaml card 1"
+  },
+  "Middle C sits...": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C sets.",
+    "off": 0.091
+   },
+   "file": "2c681e7db82f0b48.mp3",
+   "say": "Middle C sits.",
+   "seconds": 2.2,
+   "where": "prep-a.middle-c.yaml card 6"
+  },
+  "Middle C with the left thumb, then Bass F with finger 5.": {
+   "check": {
+    "flag": false,
+    "heard": "middle C with the left thumb, then bass F with finger 5.",
+    "off": 0.0
+   },
+   "file": "fbc0a9ec27162481.mp3",
+   "say": "Middle C with the left thumb, then [Bass](/bˈAs/) F with finger 5.",
+   "seconds": 5.03,
+   "where": "prep-a.bass-f.yaml card 2"
+  },
+  "Middle C with the left thumb.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C with the left thumb.",
+    "off": 0.0
+   },
+   "file": "a569c2446a4ddaf0.mp3",
+   "say": "Middle C with the left thumb.",
+   "seconds": 2.7,
+   "where": "prep-a.middle-c.yaml card 3"
+  },
+  "Middle C with the right thumb, then Treble G with finger 5.": {
+   "check": {
+    "flag": false,
+    "heard": "middle C with the right thumb, then treble G with finger 5.",
+    "off": 0.0
+   },
+   "file": "1cb954d31eeb1a80.mp3",
+   "say": "Middle C with the right thumb, then Treble G with finger 5.",
+   "seconds": 5.0,
+   "where": "prep-a.treble-g.yaml card 2"
+  },
+  "Middle C with the right thumb.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C with the right thumb.",
+    "off": 0.0
+   },
+   "file": "a22d6510d5815c6d.mp3",
+   "say": "Middle C with the right thumb.",
+   "seconds": 2.62,
+   "where": "prep-a.middle-c.yaml card 2"
+  },
+  "Middle C, D, E, F, G: fingers 1 to 5.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C, D, E, F, G. Fingers 1 to 5.",
+    "off": 0.0
+   },
+   "file": "3c86f122cc53d3f1.mp3",
+   "say": "Middle C, D, E, F, G: fingers 1 to 5.",
+   "seconds": 4.6,
+   "where": "prep-a.d-e-f.yaml card 2"
+  },
+  "Middle C, then down a step to B, and back.": {
+   "check": {
+    "flag": false,
+    "heard": "middle C, then down a step to B, and back.",
+    "off": 0.0
+   },
+   "file": "6ce7c50c45e352cf.mp3",
+   "say": "Middle C, then down a step to B, and back.",
+   "seconds": 3.88,
+   "where": "prep-a.bass-b.yaml card 3"
+  },
+  "Middle C, then down to Bass F.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C, then down to base F.",
+    "off": 0.0
+   },
+   "file": "327849a819c5ed1e.mp3",
+   "say": "Middle C, then down to [Bass](/bˈAs/) F.",
+   "seconds": 3.17,
+   "where": "prep-a.bass-f.yaml card 3"
+  },
+  "Middle C, then leap down an octave to Bass C.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C, then leap down an octave to base C.",
+    "off": 0.0
+   },
+   "file": "8c31d21c9ce0a1d8.mp3",
+   "say": "Middle C, then leap down an octave to [Bass](/bˈAs/) C.",
+   "seconds": 4.05,
+   "where": "prep-a.octave.yaml card 2"
+  },
+  "Middle C, then up to Treble G.": {
+   "check": {
+    "flag": false,
+    "heard": "Middle C, then up to treble G.",
+    "off": 0.0
+   },
+   "file": "daa9b91392921c4c.mp3",
+   "say": "Middle C, then up to Treble G.",
+   "seconds": 3.17,
+   "where": "prep-a.treble-g.yaml card 3"
+  },
+  "Music can ask and answer. A musical question ends away from home; the answer ends on the home note, C. A parallel answer starts the same way as the question, and a contrasting answer starts differently.": {
+   "check": {
+    "flag": false,
+    "heard": "Music can ask and answer. A musical question ends away from home. The answer ends on the home note, see a parallel answer starts the same way as the question, and a contrasting answer starts differently.",
+    "off": 0.019
+   },
+   "file": "bbb4cdebeb3d39e7.mp3",
+   "say": "Music can ask and answer. A musical question ends away from home; the answer ends on the home note, C. A parallel answer starts the same way as the question, and a contrasting answer starts differently.",
+   "seconds": 16.3,
+   "where": "prep-a.question-answer.yaml card 1"
+  },
+  "Music has a steady beat, like a clock ticking. A quarter note is a filled-in note with a stem, and it gets one beat.": {
+   "check": {
+    "flag": false,
+    "heard": "Music has a steady beat, like a clock ticking. A quarter note is a filled-in note with a stem, and it gets one beat.",
+    "off": 0.0
+   },
+   "file": "fbc449bc0bb64f40.mp3",
+   "say": "Music has a steady beat, like a clock ticking. A quarter note is a filled-in note with a stem, and it gets one beat.",
+   "seconds": 9.25,
+   "where": "prep-a.quarter-note.yaml card 1"
+  },
+  "Music is written on a staff: 5 lines and 4 spaces. Each note sits on a line or in a space, and the higher it sits, the higher it sounds. Two staffs joined by a brace make the grand staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Music is written on a staff. Five lines and four spaces. Each note sits on a line or in a space, and the higher it sits, the higher it sounds. Two staffs joined by a brace make the grand staff.",
+    "off": 0.0
+   },
+   "file": "51eb5e25cf833f77.mp3",
+   "say": "Music is written on a staff: 5 lines and 4 spaces. Each note sits on a line or in a space, and the higher it sits, the higher it sounds. Two staffs joined by a brace make the grand staff.",
+   "seconds": 16.02,
+   "where": "prep-a.the-staff.yaml card 1"
+  },
+  "Next to each group of two black keys is a group of three. Play them with fingers 2, 3 and 4, one finger on each key.": {
+   "check": {
+    "flag": false,
+    "heard": "Next to each group of two black keys is a group of three. Play them with fingers two, three, and four, one finger on each key.",
+    "off": 0.0
+   },
+   "file": "da9b13210e72e489.mp3",
+   "say": "Next to each group of two black keys is a group of three. Play them with fingers 2, 3 and 4, one finger on each key.",
+   "seconds": 9.75,
+   "where": "prep-a.three-black-keys.yaml card 1"
+  },
+  "Nice listening!": {
+   "check": {
+    "flag": false,
+    "heard": "Nice listening.",
+    "off": 0.0
+   },
+   "file": "4332be9bc2b8ab72.mp3",
+   "say": "Nice listening!",
+   "seconds": 2.17,
+   "where": "lessonPhrases.ts"
+  },
+  "Notes stepping up the staff: line, space, line, space, line.": {
+   "check": {
+    "flag": false,
+    "heard": "Note stepping up the staff. Line, space, line, space, line.",
+    "off": 0.022
+   },
+   "file": "c747d781ddee2db6.mp3",
+   "say": "Notes stepping up the staff: line, space, line, space, line.",
+   "seconds": 5.38,
+   "where": "prep-a.the-staff.yaml card 2"
+  },
+  "Now all quarter notes, no holding.": {
+   "check": {
+    "flag": false,
+    "heard": "Now all quarter notes, no holding.",
+    "off": 0.0
+   },
+   "file": "62e4beaa7d26b786.mp3",
+   "say": "Now all quarter notes, no holding.",
+   "seconds": 3.15,
+   "where": "prep-a.half-note.yaml card 3"
+  },
+  "Now four times with your left thumb.": {
+   "check": {
+    "flag": false,
+    "heard": "Now four times with your left thumb.",
+    "off": 0.0
+   },
+   "file": "f5ebc560c83dc05e.mp3",
+   "say": "Now four times with your left thumb.",
+   "seconds": 3.02,
+   "where": "prep-a.middle-c.yaml card 5"
+  },
+  "Now play them piano, soft and gentle.": {
+   "check": {
+    "flag": false,
+    "heard": "Now play them piano, soft and gentle.",
+    "off": 0.0
+   },
+   "file": "83c31ce2e6c5b99e.mp3",
+   "say": "Now play them piano, soft and gentle.",
+   "seconds": 3.75,
+   "where": "prep-a.forte-piano.yaml card 4"
+  },
+  "Now the left hand, round and firm.": {
+   "check": {
+    "flag": false,
+    "heard": "Now the left hand, round and firm.",
+    "off": 0.0
+   },
+   "file": "9c378181e8cacf74.mp3",
+   "say": "Now the left hand, round and firm.",
+   "seconds": 3.38,
+   "where": "prep-a.round-hand.yaml card 4"
+  },
+  "Now the left hand: C D E F G with fingers 5 to 1.": {
+   "check": {
+    "flag": false,
+    "heard": "Now the left hand, C.D.E.F.G. with fingers 5 to 1.",
+    "off": 0.0
+   },
+   "file": "cd5dfc9759bcc186.mp3",
+   "say": "Now the left hand: C D E F G with fingers 5 to 1.",
+   "seconds": 5.42,
+   "where": "prep-a.c-five-finger.yaml card 6"
+  },
+  "Now the same notes counted in four. Can you hear the difference?": {
+   "check": {
+    "flag": false,
+    "heard": "Now the same notes counted in four. Can you hear the difference?",
+    "off": 0.0
+   },
+   "file": "d92aed070a55ed9a.mp3",
+   "say": "Now the same notes counted in four. Can you hear the difference?",
+   "seconds": 4.92,
+   "where": "prep-a.three-four.yaml card 3"
+  },
+  "Now two black keys down low on the left. Deep and low!": {
+   "check": {
+    "flag": false,
+    "heard": "Now two black keys down low on the left, deep and low.",
+    "off": 0.0
+   },
+   "file": "3c54fdbae56b591e.mp3",
+   "say": "Now two black keys down low on the left. Deep and low!",
+   "seconds": 4.85,
+   "where": "prep-a.low-and-high.yaml card 2"
+  },
+  "Now without the rests: the notes run on with no gap.": {
+   "check": {
+    "flag": false,
+    "heard": "Now, without the rests, the notes run on with no gap.",
+    "off": 0.0
+   },
+   "file": "29270912cadb2c47.mp3",
+   "say": "Now without the rests: the notes run on with no gap.",
+   "seconds": 4.58,
+   "where": "prep-a.quarter-rest.yaml card 3"
+  },
+  "On the bass staff: G, then skip up to B.": {
+   "check": {
+    "flag": false,
+    "heard": "On the base staff, G then skip up to B.",
+    "off": 0.0
+   },
+   "file": "9cbce83595a48736.mp3",
+   "say": "On the [bass](/bˈAs/) staff: G, then skip up to B.",
+   "seconds": 3.8,
+   "where": "prep-a.more-skips.yaml card 3"
+  },
+  "On the staff, a step goes from a line to the very next space, or from a space to the very next line.": {
+   "check": {
+    "flag": false,
+    "heard": "On the staff, a step goes from a line to the very next space, or from a space to the very next line.",
+    "off": 0.0
+   },
+   "file": "f711bd001130cc1a.mp3",
+   "say": "On the staff, a step goes from a line to the very next space, or from a space to the very next line.",
+   "seconds": 8.18,
+   "where": "prep-a.steps-on-the-staff.yaml card 1"
+  },
+  "One hand can play two keys at the same time. Drop into Middle C and Treble G together with right-hand fingers 1 and 5, then lift.": {
+   "check": {
+    "flag": false,
+    "heard": "One hand can play two keys at the same time. Drop into middle C and treble G together with right hand fingers 1 and 5, then lift.",
+    "off": 0.0
+   },
+   "file": "3d48deea79ef7961.mp3",
+   "say": "One hand can play two keys at the same time. Drop into Middle C and Treble G together with right-hand fingers 1 and 5, then lift.",
+   "seconds": 11.3,
+   "where": "prep-a.two-notes-together.yaml card 1"
+  },
+  "One measure of 4/4: four quarter notes.": {
+   "check": {
+    "flag": false,
+    "heard": "One measure of 4-4, four quarter notes.",
+    "off": 0.0
+   },
+   "file": "14a4f16f126b3908.mp3",
+   "say": "One measure of 4/4: four quarter notes.",
+   "seconds": 3.85,
+   "where": "prep-a.four-four.yaml card 2"
+  },
+  "One measure of four quarter notes.": {
+   "check": {
+    "flag": false,
+    "heard": "One measure of four quarter notes.",
+    "off": 0.0
+   },
+   "file": "7ea940a0c39e8278.mp3",
+   "say": "One measure of four quarter notes.",
+   "seconds": 2.95,
+   "where": "prep-a.the-measure.yaml card 2"
+  },
+  "Perfect!": {
+   "check": {
+    "flag": false,
+    "heard": "perfect",
+    "off": 0.0
+   },
+   "file": "445171a25fd8d768.mp3",
+   "say": "Perfect!",
+   "seconds": 1.82,
+   "where": "lessonPhrases.ts"
+  },
+  "Piano, soft...": {
+   "check": {
+    "flag": false,
+    "heard": "Piano soft",
+    "off": 0.0
+   },
+   "file": "d48e0800d8183fe7.mp3",
+   "say": "Piano, soft.",
+   "seconds": 2.15,
+   "where": "prep-a.mezzo-forte.yaml card 2"
+  },
+  "Piano: soft and gentle.": {
+   "check": {
+    "flag": false,
+    "heard": "Piano, soft and gentle.",
+    "off": 0.0
+   },
+   "file": "175425ca2721c1a7.mp3",
+   "say": "Piano: soft and gentle.",
+   "seconds": 2.95,
+   "where": "prep-a.forte-piano.yaml card 2"
+  },
+  "Play A, G, F with left-hand fingers 3, 4, 5.": {
+   "check": {
+    "flag": false,
+    "heard": "Play AG, F with left hand fingers 3, 4, 5.",
+    "off": 0.0
+   },
+   "file": "7bb5f634461820c6.mp3",
+   "say": "Play [A](/ˈA/), G, F with left-hand fingers 3, 4, 5.",
+   "seconds": 4.83,
+   "where": "prep-a.bass-g.yaml card 4"
+  },
+  "Play A, on the top line of the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play A on the top line of the bass staff.",
+    "off": 0.0
+   },
+   "file": "e73cc3cf672f21fc.mp3",
+   "say": "Play [A](/ˈA/), on the top line of the [bass](/bˈAs/) staff.",
+   "seconds": 3.58,
+   "where": "prep-a.bass-a.yaml card 6"
+  },
+  "Play Bass C.": {
+   "check": {
+    "flag": false,
+    "heard": "Play Base C.",
+    "off": 0.0
+   },
+   "file": "8e966d5da1160536.mp3",
+   "say": "Play [Bass](/bˈAs/) C.",
+   "seconds": 2.12,
+   "where": "prep-a.bass-c.yaml card 5"
+  },
+  "Play Bass D, on the middle line of the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play bass D on the middle line of the bass staff.",
+    "off": 0.0
+   },
+   "file": "aba7b77fa01413a0.mp3",
+   "say": "Play [Bass](/bˈAs/) D, on the middle line of the [bass](/bˈAs/) staff.",
+   "seconds": 4.05,
+   "where": "prep-a.bass-d.yaml card 5"
+  },
+  "Play Bass E, on the third line of the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play bass E on the third line of the bass staff.",
+    "off": 0.0
+   },
+   "file": "f1447c2b6390fa8d.mp3",
+   "say": "Play [Bass](/bˈAs/) E, on the third line of the [bass](/bˈAs/) staff.",
+   "seconds": 4.1,
+   "where": "prep-a.bass-c-scale.yaml card 6"
+  },
+  "Play Bass F, the note between the bass clef's two dots.": {
+   "check": {
+    "flag": false,
+    "heard": "Play bass F, the note between the bass clefs two dots.",
+    "off": 0.0
+   },
+   "file": "4a2f72389f822e05.mp3",
+   "say": "Play [Bass](/bˈAs/) F, the note between the [bass](/bˈAs/) clef's two dots.",
+   "seconds": 4.6,
+   "where": "prep-a.bass-f.yaml card 6"
+  },
+  "Play C D E F G with left-hand fingers 5 to 1.": {
+   "check": {
+    "flag": false,
+    "heard": "Play CD-EFG with left hand fingers 5 to 1.",
+    "off": 0.0
+   },
+   "file": "e7ba203f6f6bea9f.mp3",
+   "say": "Play C D E F G with left-hand fingers 5 to 1.",
+   "seconds": 5.0,
+   "where": "prep-a.bass-c-scale.yaml card 4"
+  },
+  "Play C D E F G with right-hand fingers 1 to 5.": {
+   "check": {
+    "flag": false,
+    "heard": "Play CD-EFG with right-hand fingers 1 to 5.",
+    "off": 0.0
+   },
+   "file": "453db9d3956a84d0.mp3",
+   "say": "Play C D E F G with right-hand fingers 1 to 5.",
+   "seconds": 4.97,
+   "where": "prep-a.c-five-finger.yaml card 5"
+  },
+  "Play C D E, then hold F for three beats.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C D E, then hold F for three beats.",
+    "off": 0.0
+   },
+   "file": "af45fe78c45c2f3a.mp3",
+   "say": "Play C D E, then hold F for three beats.",
+   "seconds": 4.05,
+   "where": "prep-a.three-four.yaml card 4"
+  },
+  "Play C and E at the same time, fingers 1 and 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Place C and E at the same time, fingers 1 and 3.",
+    "off": 0.05
+   },
+   "file": "0a0c9f9a2ecf9e33.mp3",
+   "say": "Play C and E at the same time, fingers 1 and 3.",
+   "seconds": 4.55,
+   "where": "prep-a.skips-together.yaml card 4"
+  },
+  "Play C and E together.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C and E together.",
+    "off": 0.0
+   },
+   "file": "4a109367137ac7b2.mp3",
+   "say": "Play C and E together.",
+   "seconds": 2.62,
+   "where": "prep-a.skips-together.yaml card 5"
+  },
+  "Play C and hold it for three beats, then D.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C and hold it for 3 beats, then D.",
+    "off": 0.0
+   },
+   "file": "39af0e0558b3f89e.mp3",
+   "say": "Play C and hold it for three beats, then D.",
+   "seconds": 4.03,
+   "where": "prep-a.dotted-half.yaml card 4"
+  },
+  "Play C, B, A with left-hand fingers 1, 2, 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C, B, A with left hand fingers 1, 2, 3.",
+    "off": 0.0
+   },
+   "file": "4e79d0a89cf2067e.mp3",
+   "say": "Play C, B, [A](/ˈA/) with left-hand fingers 1, 2, 3.",
+   "seconds": 4.88,
+   "where": "prep-a.bass-a.yaml card 4"
+  },
+  "Play C, B, C, B with left-hand fingers 1 and 2.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C B C B with left hand fingers one and two",
+    "off": 0.0
+   },
+   "file": "f0a1f0b0525cd9da.mp3",
+   "say": "Play C, B, C, B with left-hand fingers 1 and 2.",
+   "seconds": 5.12,
+   "where": "prep-a.bass-b.yaml card 4"
+  },
+  "Play C, D, E in the middle...": {
+   "check": {
+    "flag": false,
+    "heard": "Play C, D, E in the middle.",
+    "off": 0.0
+   },
+   "file": "b80520430fd5c942.mp3",
+   "say": "Play C, D, E in the middle.",
+   "seconds": 2.83,
+   "where": "prep-a.musical-alphabet.yaml card 3"
+  },
+  "Play C, D, E with right-hand fingers 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Play CD, E with right hand fingers 2, 3, 4.",
+    "off": 0.0
+   },
+   "file": "a54afff92aeaa739.mp3",
+   "say": "Play C, D, E with right-hand fingers 2, 3, 4.",
+   "seconds": 4.85,
+   "where": "prep-a.c-d-e.yaml card 4"
+  },
+  "Play C, D, E, D, C mezzo forte: not too soft, not too loud.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C D E D C mezzo forte not too soft not too loud",
+    "off": 0.0
+   },
+   "file": "0c3969cafe45cec8.mp3",
+   "say": "Play C, D, E, D, C mezzo forte: not too soft, not too loud.",
+   "seconds": 6.0,
+   "where": "prep-a.mezzo-forte.yaml card 3"
+  },
+  "Play C, D, E, then hop: thumb on D for D, E, F.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C D E then hop thumb on D for D E F",
+    "off": 0.0
+   },
+   "file": "5bafe70806939127.mp3",
+   "say": "Play C, D, E, then hop: thumb on D for D, E, F.",
+   "seconds": 4.67,
+   "where": "prep-a.hand-shift.yaml card 4"
+  },
+  "Play C, E, F, G, lively and bright.": {
+   "check": {
+    "flag": false,
+    "heard": "Play C, E, F, G, Lively and Bright.",
+    "off": 0.0
+   },
+   "file": "750c5543b37e818c.mp3",
+   "say": "Play C, E, F, G, lively and bright.",
+   "seconds": 3.98,
+   "where": "prep-a.allegro.yaml card 3"
+  },
+  "Play D, C, D with left-hand fingers 4, 5, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Play D, C, D with left hand fingers 4, 5, 4.",
+    "off": 0.0
+   },
+   "file": "e11b57c80aa718fd.mp3",
+   "say": "Play D, C, D with left-hand fingers 4, 5, 4.",
+   "seconds": 4.88,
+   "where": "prep-a.bass-c.yaml card 4"
+  },
+  "Play D, E, F with fingers 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Play D, E, F with fingers 2, 3, 4.",
+    "off": 0.0
+   },
+   "file": "db8b3ff0d7c198d3.mp3",
+   "say": "Play D, E, F with fingers 2, 3, 4.",
+   "seconds": 4.03,
+   "where": "prep-a.d-e-f.yaml card 4"
+  },
+  "Play D, F, D with your left hand.": {
+   "check": {
+    "flag": false,
+    "heard": "Play D, F, D with your left hand.",
+    "off": 0.0
+   },
+   "file": "83f9fa0f558c969b.mp3",
+   "say": "Play D, F, D with your left hand.",
+   "seconds": 3.23,
+   "where": "prep-a.bass-d.yaml card 4"
+  },
+  "Play D, in the space just under the treble staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play D in the space just under the treble staff.",
+    "off": 0.0
+   },
+   "file": "b6b221fcc5994e27.mp3",
+   "say": "Play D, in the space just under the treble staff.",
+   "seconds": 4.15,
+   "where": "prep-a.d-e-f.yaml card 6"
+  },
+  "Play E, the note on the first line of the treble staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play E, the note on the first line of the treble staff.",
+    "off": 0.0
+   },
+   "file": "9837c825ad0a522f.mp3",
+   "say": "Play E, the note on the first line of the treble staff.",
+   "seconds": 4.47,
+   "where": "prep-a.d-e-f.yaml card 6"
+  },
+  "Play F, G, A, B going up.": {
+   "check": {
+    "flag": false,
+    "heard": "Play FG, A, B going up.",
+    "off": 0.0
+   },
+   "file": "a88b7d4b741baa60.mp3",
+   "say": "Play F, G, [A](/ˈA/), B going up.",
+   "seconds": 3.1,
+   "where": "prep-a.f-g-a-b.yaml card 4"
+  },
+  "Play F, in the first space of the treble staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play F in the first space of the treble staff.",
+    "off": 0.0
+   },
+   "file": "e9051db66da697bd.mp3",
+   "say": "Play F, in the first space of the treble staff.",
+   "seconds": 4.0,
+   "where": "prep-a.d-e-f.yaml card 6"
+  },
+  "Play G once and hold it while you count six beats.": {
+   "check": {
+    "flag": false,
+    "heard": "Play G once, and hold it while you count six beats.",
+    "off": 0.0
+   },
+   "file": "481c38f7073fe8ac.mp3",
+   "say": "Play G once and hold it while you count six beats.",
+   "seconds": 4.2,
+   "where": "prep-a.tie.yaml card 4"
+  },
+  "Play G, in the top space of the bass staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play G in the top space of the bass staff.",
+    "off": 0.0
+   },
+   "file": "a4322966c9d27c76.mp3",
+   "say": "Play G, in the top space of the [bass](/bˈAs/) staff.",
+   "seconds": 3.77,
+   "where": "prep-a.bass-g.yaml card 6"
+  },
+  "Play Middle C and Treble G at the same time.": {
+   "check": {
+    "flag": false,
+    "heard": "Play middle C and treble G at the same time.",
+    "off": 0.0
+   },
+   "file": "03296ea7e2e9e89f.mp3",
+   "say": "Play Middle C and Treble G at the same time.",
+   "seconds": 4.1,
+   "where": "prep-a.two-notes-together.yaml card 6"
+  },
+  "Play Middle C and Treble G together. Drop, then lift.": {
+   "check": {
+    "flag": false,
+    "heard": "Play middle C and treble G together. Drop, then lift.",
+    "off": 0.0
+   },
+   "file": "fc808068786f2b0d.mp3",
+   "say": "Play Middle C and Treble G together. Drop, then lift.",
+   "seconds": 5.03,
+   "where": "prep-a.two-notes-together.yaml card 4"
+  },
+  "Play Middle C four times with your right thumb.": {
+   "check": {
+    "flag": false,
+    "heard": "Play middle C four times with your right thumb.",
+    "off": 0.0
+   },
+   "file": "3e481f2d3f1430af.mp3",
+   "say": "Play Middle C four times with your right thumb.",
+   "seconds": 3.73,
+   "where": "prep-a.middle-c.yaml card 4"
+  },
+  "Play Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Play Middle C.",
+    "off": 0.0
+   },
+   "file": "9b4c4800d1898639.mp3",
+   "say": "Play Middle C.",
+   "seconds": 2.08,
+   "where": "prep-a.middle-c.yaml card 6"
+  },
+  "Play Treble G, the note on the treble clef's curly line.": {
+   "check": {
+    "flag": false,
+    "heard": "Play treble G, the note on the treble clef's curly line.",
+    "off": 0.0
+   },
+   "file": "33d3459334db786a.mp3",
+   "say": "Play Treble G, the note on the treble clef's curly line.",
+   "seconds": 4.95,
+   "where": "prep-a.treble-g.yaml card 6"
+  },
+  "Play four quarter notes, steady like a clock.": {
+   "check": {
+    "flag": false,
+    "heard": "And play four quarter notes, steady like a clock.",
+    "off": 0.083
+   },
+   "file": "f0270f177647f5c1.mp3",
+   "say": "Play four quarter notes, steady like a clock.",
+   "seconds": 3.73,
+   "where": "prep-a.quarter-note.yaml card 4"
+  },
+  "Play one measure of 4/4 and count 1, 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Play one measure of 4-4 and count one, two, three, four.",
+    "off": 0.0
+   },
+   "file": "3ed9ca4d64c77797.mp3",
+   "say": "Play one measure of 4/4 and count 1, 2, 3, 4.",
+   "seconds": 5.03,
+   "where": "prep-a.four-four.yaml card 4"
+  },
+  "Play one measure: four beats.": {
+   "check": {
+    "flag": false,
+    "heard": "Play one measure, four beats.",
+    "off": 0.0
+   },
+   "file": "8688d0a205b6c985.mp3",
+   "say": "Play one measure: four beats.",
+   "seconds": 2.98,
+   "where": "prep-a.the-measure.yaml card 4"
+  },
+  "Play the A just below Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the A just below middle C.",
+    "off": 0.0
+   },
+   "file": "340047bb6c620964.mp3",
+   "say": "Play the [A](/ˈA/) just below Middle C.",
+   "seconds": 2.85,
+   "where": "prep-a.c-b-a-g-f.yaml card 6"
+  },
+  "Play the B just below Middle C.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the B just below middle C.",
+    "off": 0.0
+   },
+   "file": "199c5007a61bf75b.mp3",
+   "say": "Play the B just below Middle C.",
+   "seconds": 2.92,
+   "where": "prep-a.bass-b.yaml card 5"
+  },
+  "Play the answer: end on the home note, C.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the answer. End on the home note C.",
+    "off": 0.0
+   },
+   "file": "fbc7bb5e295a74d1.mp3",
+   "say": "Play the answer: end on the home note, C.",
+   "seconds": 3.7,
+   "where": "prep-a.question-answer.yaml card 3"
+  },
+  "Play the bass clef notes with your left hand.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the bass clef notes with your left hand.",
+    "off": 0.0
+   },
+   "file": "ec4b59f436318226.mp3",
+   "say": "Play the [bass](/bˈAs/) clef notes with your left hand.",
+   "seconds": 3.55,
+   "where": "prep-a.the-clefs.yaml card 5"
+  },
+  "Play the first of the two black keys in the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the first of the two black keys in the middle.",
+    "off": 0.0
+   },
+   "file": "e22e3648fd1766ff.mp3",
+   "say": "Play the first of the two black keys in the middle.",
+   "seconds": 3.88,
+   "where": "prep-a.two-black-keys.yaml card 6"
+  },
+  "Play the middle key of the three black keys, with finger 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the middle key of the three black keys with finger 3.",
+    "off": 0.0
+   },
+   "file": "da69997a440cbfa6.mp3",
+   "say": "Play the middle key of the three black keys, with finger 3.",
+   "seconds": 4.95,
+   "where": "prep-a.three-black-keys.yaml card 7"
+  },
+  "Play the three black keys going up with fingers 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the three black keys going up with fingers two three four",
+    "off": 0.0
+   },
+   "file": "57e6993149332fce.mp3",
+   "say": "Play the three black keys going up with fingers 2, 3, 4.",
+   "seconds": 5.05,
+   "where": "prep-a.three-black-keys.yaml card 4"
+  },
+  "Play the treble clef notes with your right hand.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the treble clef notes with your right hand.",
+    "off": 0.0
+   },
+   "file": "40dd208130931c3a.mp3",
+   "say": "Play the treble clef notes with your right hand.",
+   "seconds": 3.67,
+   "where": "prep-a.the-clefs.yaml card 4"
+  },
+  "Play the whole note and keep holding for four beats.": {
+   "check": {
+    "flag": false,
+    "heard": "Play the whole note and keep holding for four beats.",
+    "off": 0.0
+   },
+   "file": "cc4f2bbcc1e25789.mp3",
+   "say": "Play the whole note and keep holding for four beats.",
+   "seconds": 4.0,
+   "where": "prep-a.whole-note.yaml card 4"
+  },
+  "Play these notes going up the staff.": {
+   "check": {
+    "flag": false,
+    "heard": "Play these notes going up the staff.",
+    "off": 0.0
+   },
+   "file": "3d493a6457db91db.mp3",
+   "say": "Play these notes going up the staff.",
+   "seconds": 3.08,
+   "where": "prep-a.the-staff.yaml card 4"
+  },
+  "Play these three keys forte, loud and strong.": {
+   "check": {
+    "flag": false,
+    "heard": "Play these three keys forte, loud and strong.",
+    "off": 0.0
+   },
+   "file": "6353ad4a356c61ac.mp3",
+   "say": "Play these three keys forte, loud and strong.",
+   "seconds": 4.12,
+   "where": "prep-a.forte-piano.yaml card 3"
+  },
+  "Play two quarter notes and a half note. Count 1, 2 on the long one.": {
+   "check": {
+    "flag": false,
+    "heard": "Play two quarter notes and a half note count one two on the long one",
+    "off": 0.0
+   },
+   "file": "0c0dd1e60f333207.mp3",
+   "say": "Play two quarter notes and a half note. Count 1, 2 on the long one.",
+   "seconds": 5.7,
+   "where": "prep-a.half-note.yaml card 4"
+  },
+  "Play with the fingers the numbers say: 2, 3, 2, 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Play with the fingers the numbers say 2 3 2 3",
+    "off": 0.0
+   },
+   "file": "cec5134a04423a60.mp3",
+   "say": "Play with the fingers the numbers say: 2, 3, 2, 3.",
+   "seconds": 5.0,
+   "where": "prep-a.finger-numbers.yaml card 3"
+  },
+  "Play, play, play, then lift your hand for the rest on beat four.": {
+   "check": {
+    "flag": false,
+    "heard": "Play, play, play, then lift your hand for the rest on beat four.",
+    "off": 0.0
+   },
+   "file": "46538e6a43583c7f.mp3",
+   "say": "Play, play, play, then lift your hand for the rest on beat four.",
+   "seconds": 4.97,
+   "where": "prep-a.quarter-rest.yaml card 2"
+  },
+  "Put both thumbs on Middle C. The right hand covers C D E F G going up, and the left hand C B A G F going down: that's Middle C position.": {
+   "check": {
+    "flag": false,
+    "heard": "Put both thumbs on middle C, the right hand covers C, D, E, F, G going up, and the left hand, C, B, A, G, F going down. That's middle C position.",
+    "off": 0.0
+   },
+   "file": "e236209c212a2d82.mp3",
+   "say": "Put both thumbs on Middle C. The right hand covers C D E F G going up, and the left hand C B [A](/ˈA/) G F going down: that's Middle C position.",
+   "seconds": 12.9,
+   "where": "prep-a.middle-c-position.yaml card 1"
+  },
+  "Put your left thumb on a C. The fingers step down from it: 2 on B, 3 on A, 4 on G and 5 on F. A and B are the last two white keys by the group of three black keys.": {
+   "check": {
+    "flag": false,
+    "heard": "Put your left thumb on a C, the fingers step down from it. Two on B, three on A, four on G, and five on F, A, and B are the last two white keys by the group of three black keys.",
+    "off": 0.0
+   },
+   "file": "cfdf211574604958.mp3",
+   "say": "Put your left thumb on a C. The fingers step down from it: 2 on B, 3 on [A](/ˈA/), 4 on G and 5 on F. [A](/ˈA/) and B are the last two white keys by the group of three black keys.",
+   "seconds": 14.68,
+   "where": "prep-a.c-b-a-g-f.yaml card 1"
+  },
+  "Read and play: step up from Middle C to G.": {
+   "check": {
+    "flag": false,
+    "heard": "Read and play. Step up from middle C to G.",
+    "off": 0.0
+   },
+   "file": "d5f3f9ea191fee6c.mp3",
+   "say": "Read and play: step up from Middle C to G.",
+   "seconds": 4.08,
+   "where": "prep-a.steps-on-the-staff.yaml card 4"
+  },
+  "Right hand from Middle C up to G.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand from middle C up to G.",
+    "off": 0.0
+   },
+   "file": "2b97c6110c3a62e0.mp3",
+   "say": "Right hand from Middle C up to G.",
+   "seconds": 3.05,
+   "where": "prep-a.middle-c-position.yaml card 5"
+  },
+  "Right hand: finger 2, then finger 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand, finger 2, then finger 3.",
+    "off": 0.0
+   },
+   "file": "4081ef59d1fc8eb4.mp3",
+   "say": "Right hand: finger 2, then finger 3.",
+   "seconds": 3.9,
+   "where": "prep-a.finger-numbers.yaml card 2"
+  },
+  "Right hand: fingers 2, 3 and 4 on the three black keys.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand. Fingers two, three and four on the three black keys.",
+    "off": 0.0
+   },
+   "file": "64098d4fe0ba10f9.mp3",
+   "say": "Right hand: fingers 2, 3 and 4 on the three black keys.",
+   "seconds": 5.42,
+   "where": "prep-a.three-black-keys.yaml card 2"
+  },
+  "Right hand: play the two black keys up high.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand, play the two black keys up high.",
+    "off": 0.0
+   },
+   "file": "2fe918004b2aca9b.mp3",
+   "say": "Right hand: play the two black keys up high.",
+   "seconds": 3.88,
+   "where": "prep-a.low-and-high.yaml card 3"
+  },
+  "Right hand: thumb on C, then fingers 2, 3, 4, 5 on D, E, F, G.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand, thumb on C, then fingers 2, 3, 4, 5 on D, E, F, G.",
+    "off": 0.0
+   },
+   "file": "30b62a20d43ae665.mp3",
+   "say": "Right hand: thumb on C, then fingers 2, 3, 4, 5 on D, E, F, G.",
+   "seconds": 6.42,
+   "where": "prep-a.c-five-finger.yaml card 2"
+  },
+  "Right hand: thumb on Middle C, finger 5 on Treble G.": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand, thumb on middle C, finger 5 on treble G.",
+    "off": 0.0
+   },
+   "file": "1398a0bc787dd296.mp3",
+   "say": "Right hand: thumb on Middle C, finger 5 on Treble G.",
+   "seconds": 5.05,
+   "where": "prep-a.treble-g.yaml card 4"
+  },
+  "Sit like a pianist: tall and relaxed, on the front part of the bench, in the middle of the keyboard. Stretch your arms out: your knuckles should just reach the edge behind the keys. Your arms should be level with the keys; if they're lower, sit on a cushion.": {
+   "check": {
+    "flag": false,
+    "heard": "Sit like a pianist, tall and relaxed on the front part of the bench in the middle of the keyboard. Stretch your arms out. Your knuckles should just reach the edge behind the keys. Your arms should be level with the keys. If they're lower, sit on a cushion.",
+    "off": 0.0
+   },
+   "file": "37e64099e78688f7.mp3",
+   "say": "Sit like a pianist: tall and relaxed, on the front part of the bench, in the middle of the keyboard. Stretch your arms out: your knuckles should just reach the edge behind the keys. Your arms should be level with the keys; if they're lower, sit on a cushion.",
+   "seconds": 18.0,
+   "where": "prep-a.sitting.yaml card 1"
+  },
+  "Sit tall, then play the two black keys in the middle, one after the other.": {
+   "check": {
+    "flag": false,
+    "heard": "Sit tall, then play the two black keys in the middle, one after the other.",
+    "off": 0.0
+   },
+   "file": "f440a7af0ddfe55c.mp3",
+   "say": "Sit tall, then play the two black keys in the middle, one after the other.",
+   "seconds": 5.72,
+   "where": "prep-a.sitting.yaml card 3"
+  },
+  "Sitting tall, listen, then play it back on the two black keys in the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Sitting tall, listen, then play it back on the two black keys in the middle.",
+    "off": 0.0
+   },
+   "file": "37fe00c72c1a14a6.mp3",
+   "say": "Sitting tall, listen, then play it back on the two black keys in the middle.",
+   "seconds": 5.67,
+   "where": "prep-a.sitting.yaml card 5"
+  },
+  "Sitting tall, play the first of the two black keys in the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Sitting tall, play the first of the two black keys in the middle.",
+    "off": 0.0
+   },
+   "file": "a0eff7d4a1f63f26.mp3",
+   "say": "Sitting tall, play the first of the two black keys in the middle.",
+   "seconds": 4.9,
+   "where": "prep-a.sitting.yaml card 6"
+  },
+  "Sitting tall, rest your right hand on the two black keys in the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Sitting tall, rest your right hand on the two black keys in the middle.",
+    "off": 0.0
+   },
+   "file": "7e7d55ffdb165361.mp3",
+   "say": "Sitting tall, rest your right hand on the two black keys in the middle.",
+   "seconds": 5.3,
+   "where": "prep-a.sitting.yaml card 2"
+  },
+  "Skip from D up to F and back.": {
+   "check": {
+    "flag": false,
+    "heard": "Skip from D up to F and back.",
+    "off": 0.0
+   },
+   "file": "1013bae174d4db43.mp3",
+   "say": "Skip from D up to F and back.",
+   "seconds": 2.88,
+   "where": "prep-a.more-skips.yaml card 4"
+  },
+  "Skip up from D. Play the note you land on.": {
+   "check": {
+    "flag": false,
+    "heard": "Skip up from dplay, the note you land on.",
+    "off": 0.0
+   },
+   "file": "305efc7c7ab5bbe2.mp3",
+   "say": "Skip up from D. Play the note you land on.",
+   "seconds": 3.6,
+   "where": "prep-a.more-skips.yaml card 6"
+  },
+  "Skip up from Middle C. Which note do you land on?": {
+   "check": {
+    "flag": false,
+    "heard": "Skip up from middle C, which note do you land on?",
+    "off": 0.0
+   },
+   "file": "7d3234eda94dbddc.mp3",
+   "say": "Skip up from Middle C. Which note do you land on?",
+   "seconds": 3.92,
+   "where": "prep-a.skips.yaml card 6"
+  },
+  "Skip up: C, E, G with fingers 1, 3, 5.": {
+   "check": {
+    "flag": false,
+    "heard": "Skip up, C, E, G with fingers 1, 3, 5.",
+    "off": 0.0
+   },
+   "file": "5e6f0456b8582a0a.mp3",
+   "say": "Skip up: C, E, G with fingers 1, 3, 5.",
+   "seconds": 4.5,
+   "where": "prep-a.skips.yaml card 4"
+  },
+  "Skips going up and down.": {
+   "check": {
+    "flag": false,
+    "heard": "Skip's going up and down.",
+    "off": 0.0
+   },
+   "file": "000afc9beb19d71e.mp3",
+   "say": "Skips going up and down.",
+   "seconds": 2.4,
+   "where": "prep-a.skips.yaml card 3"
+  },
+  "Skips played together, stepping up.": {
+   "check": {
+    "flag": false,
+    "heard": "Skips played together, stepping up.",
+    "off": 0.0
+   },
+   "file": "ef9986ae69c51a51.mp3",
+   "say": "Skips played together, stepping up.",
+   "seconds": 3.15,
+   "where": "prep-a.skips-together.yaml card 3"
+  },
+  "Skips up in C position: C, E, G, line to line.": {
+   "check": {
+    "flag": false,
+    "heard": "Skips up in C position. C, E, G, line to line.",
+    "off": 0.0
+   },
+   "file": "4b1c60eb4f7ee75c.mp3",
+   "say": "Skips up in C position: C, E, G, line to line.",
+   "seconds": 4.88,
+   "where": "prep-a.skips.yaml card 2"
+  },
+  "Sometimes the whole hand hops to a new place on the keyboard. The finger number on the first note there tells you which finger lands on it.": {
+   "check": {
+    "flag": false,
+    "heard": "Sometimes, the whole hand hops to a new place on the keyboard. The finger number on the first note, there tells you which finger lands on it.",
+    "off": 0.0
+   },
+   "file": "1616f59c8cfab49c.mp3",
+   "say": "Sometimes the whole hand hops to a new place on the keyboard. The finger number on the first note there tells you which finger lands on it.",
+   "seconds": 10.6,
+   "where": "prep-a.hand-shift.yaml card 1"
+  },
+  "Space to space: D, then skip up to F.": {
+   "check": {
+    "flag": false,
+    "heard": "Space to space, D then skip up to F.",
+    "off": 0.0
+   },
+   "file": "9778f7d907f92e7f.mp3",
+   "say": "Space to space: D, then skip up to F.",
+   "seconds": 3.67,
+   "where": "prep-a.more-skips.yaml card 2"
+  },
+  "Space to the next space is a...": {
+   "check": {
+    "flag": false,
+    "heard": "Space to the next space is A.",
+    "off": 0.0
+   },
+   "file": "c771871078485faf.mp3",
+   "say": "Space to the next space is a.",
+   "seconds": 3.02,
+   "where": "prep-a.more-skips.yaml card 6"
+  },
+  "Step down: E, D, C.": {
+   "check": {
+    "flag": false,
+    "heard": "Step down, EDC.",
+    "off": 0.0
+   },
+   "file": "e59430ae0bb0b7b8.mp3",
+   "say": "Step down: E, D, C.",
+   "seconds": 2.67,
+   "where": "prep-a.steps.yaml card 4"
+  },
+  "Step up from D. Which key do you land on?": {
+   "check": {
+    "flag": false,
+    "heard": "Step up from D, which key do you land on?",
+    "off": 0.0
+   },
+   "file": "3127671cd5897381.mp3",
+   "say": "Step up from D. Which key do you land on?",
+   "seconds": 3.4,
+   "where": "prep-a.steps.yaml card 6"
+  },
+  "Steps going down, then steps going up.": {
+   "check": {
+    "flag": false,
+    "heard": "Steps going down, then steps going up.",
+    "off": 0.0
+   },
+   "file": "3c4cd4470f0a634a.mp3",
+   "say": "Steps going down, then steps going up.",
+   "seconds": 3.58,
+   "where": "prep-a.steps.yaml card 3"
+  },
+  "Steps going up, then steps going down.": {
+   "check": {
+    "flag": false,
+    "heard": "Steps going up, then steps going down.",
+    "off": 0.0
+   },
+   "file": "7c3e561c98c8f01f.mp3",
+   "say": "Steps going up, then steps going down.",
+   "seconds": 3.5,
+   "where": "prep-a.steps-on-the-staff.yaml card 3"
+  },
+  "Steps up the staff: line, space, line, space.": {
+   "check": {
+    "flag": false,
+    "heard": "Steps up the staff. Line space, line space.",
+    "off": 0.0
+   },
+   "file": "b2c2833398092772.mp3",
+   "say": "Steps up the staff: line, space, line, space.",
+   "seconds": 4.45,
+   "where": "prep-a.steps-on-the-staff.yaml card 2"
+  },
+  "Steps up: C to D to E, fingers 2, 3, 4.": {
+   "check": {
+    "flag": false,
+    "heard": "Steps up, C to D to E, fingers 2, 3, 4.",
+    "off": 0.0
+   },
+   "file": "e780fc7b65461674.mp3",
+   "say": "Steps up: C to D to E, fingers 2, 3, 4.",
+   "seconds": 4.47,
+   "where": "prep-a.steps.yaml card 2"
+  },
+  "Still sitting tall: now the left hand, on the two black keys just below.": {
+   "check": {
+    "flag": false,
+    "heard": "Still sitting tall, now the left hand on the two black keys just below.",
+    "off": 0.0
+   },
+   "file": "29ff6dfe7b4e8822.mp3",
+   "say": "Still sitting tall: now the left hand, on the two black keys just below.",
+   "seconds": 5.88,
+   "where": "prep-a.sitting.yaml card 4"
+  },
+  "Tap, tap, hold. Hear the long note at the end?": {
+   "check": {
+    "flag": false,
+    "heard": "Tap, tap, hold. Hear the long note at the end.",
+    "off": 0.0
+   },
+   "file": "b0bf756c26e85d28.mp3",
+   "say": "Tap, tap, hold. Hear the long note at the end?",
+   "seconds": 4.03,
+   "where": "prep-a.half-note.yaml card 3"
+  },
+  "The bass clef is also called the...": {
+   "check": {
+    "flag": false,
+    "heard": "The base clef is also called the...",
+    "off": 0.0
+   },
+   "file": "4c98892a64a0e26e.mp3",
+   "say": "The [bass](/bˈAs/) clef is also called the.",
+   "seconds": 3.08,
+   "where": "prep-a.bass-f.yaml card 6"
+  },
+  "The black keys come in groups of two and three, all the way up the keyboard. Every group of two black keys, low or high, is played with fingers 2 and 3.": {
+   "check": {
+    "flag": false,
+    "heard": "The black keys come in groups of 2 and 3, all the way up the keyboard. Every group of two black keys, low or high, is played with fingers 2 and 3.",
+    "off": 0.0
+   },
+   "file": "031f187090b00f0a.mp3",
+   "say": "The black keys come in groups of two and three, all the way up the keyboard. Every group of two black keys, low or high, is played with fingers 2 and 3.",
+   "seconds": 12.03,
+   "where": "prep-a.two-black-keys.yaml card 1"
+  },
+  "The left hand from Middle C, down to F and back up.": {
+   "check": {
+    "flag": false,
+    "heard": "The left hand from middle C, down to F and back up.",
+    "off": 0.0
+   },
+   "file": "dd5ffd1a8e505762.mp3",
+   "say": "The left hand from Middle C, down to F and back up.",
+   "seconds": 4.58,
+   "where": "prep-a.c-b-a-g-f.yaml card 3"
+  },
+  "The left hand holds Bass F while the right hand plays Middle C and Treble G.": {
+   "check": {
+    "flag": false,
+    "heard": "The left hand holds base F, while the right hand plays middle C and treble G.",
+    "off": 0.0
+   },
+   "file": "17471958a2adb155.mp3",
+   "say": "The left hand holds [Bass](/bˈAs/) F while the right hand plays Middle C and Treble G.",
+   "seconds": 6.22,
+   "where": "prep-a.hands-at-once.yaml card 2"
+  },
+  "The left hand moves down to C position: finger 5 on Bass C, then D, E, F and G up to the thumb. Bass E is on the third line, above the middle line's D.": {
+   "check": {
+    "flag": false,
+    "heard": "The left hand moves down to C position, finger 5 on base C, then D, E, F, and G up to the thumb. Base E is on the third line, above the middle lines D.",
+    "off": 0.0
+   },
+   "file": "4ff8232529d0c625.mp3",
+   "say": "The left hand moves down to C position: finger 5 on [Bass](/bˈAs/) C, then D, E, F and G up to the thumb. [Bass](/bˈAs/) E is on the third line, above the middle line's D.",
+   "seconds": 14.15,
+   "where": "prep-a.bass-c-scale.yaml card 1"
+  },
+  "The left hand steps down from Middle C, then the right hand steps up.": {
+   "check": {
+    "flag": false,
+    "heard": "The left hand steps down from middle C then the right hand steps up",
+    "off": 0.0
+   },
+   "file": "d9d614858e7bdfca.mp3",
+   "say": "The left hand steps down from Middle C, then the right hand steps up.",
+   "seconds": 5.62,
+   "where": "prep-a.middle-c-position.yaml card 3"
+  },
+  "The right hand on the treble staff...": {
+   "check": {
+    "flag": false,
+    "heard": "The right hand on the treble staff.",
+    "off": 0.0
+   },
+   "file": "4ff29b989a4c253e.mp3",
+   "say": "The right hand on the treble staff.",
+   "seconds": 3.02,
+   "where": "prep-a.the-clefs.yaml card 2"
+  },
+  "The same group of two, three times: low, middle and high.": {
+   "check": {
+    "flag": false,
+    "heard": "The same group of two, three times, low, middle, and high.",
+    "off": 0.0
+   },
+   "file": "44b13617240f26a2.mp3",
+   "say": "The same group of two, three times: low, middle and high.",
+   "seconds": 5.05,
+   "where": "prep-a.two-black-keys.yaml card 3"
+  },
+  "The same question, then a contrasting answer.": {
+   "check": {
+    "flag": false,
+    "heard": "The same question, then a contrasting answer.",
+    "off": 0.0
+   },
+   "file": "4abf3a3204296bd7.mp3",
+   "say": "The same question, then a contrasting answer.",
+   "seconds": 3.95,
+   "where": "prep-a.question-answer.yaml card 2"
+  },
+  "The thumb plays on its...": {
+   "check": {
+    "flag": false,
+    "heard": "The thumb plays on it.",
+    "off": 0.056
+   },
+   "file": "38e5a743093e9760.mp3",
+   "say": "The thumb plays on its.",
+   "seconds": 2.48,
+   "where": "prep-a.round-hand.yaml card 5"
+  },
+  "The treble clef is also called the...": {
+   "check": {
+    "flag": false,
+    "heard": "The treble clef is also called the.",
+    "off": 0.0
+   },
+   "file": "917b217925b89ece.mp3",
+   "say": "The treble clef is also called the.",
+   "seconds": 3.25,
+   "where": "prep-a.treble-g.yaml card 6"
+  },
+  "The two numbers at the start of the music are the time signature. 4/4 means there are 4 beats in every measure, and the quarter note gets one beat.": {
+   "check": {
+    "flag": false,
+    "heard": "The two numbers at the start of the music are the time signature. For four means, there are four beats in every measure, and the quarter note gets one beat.",
+    "off": 0.008
+   },
+   "file": "153f66069727b8d9.mp3",
+   "say": "The two numbers at the start of the music are the time signature. 4/4 means there are 4 beats in every measure, and the quarter note gets one beat.",
+   "seconds": 11.47,
+   "where": "prep-a.four-four.yaml card 1"
+  },
+  "The upper staff has a treble clef: its notes are high, and the right hand usually plays them. The lower staff has a bass clef: its notes are low, for the left hand.": {
+   "check": {
+    "flag": false,
+    "heard": "The upper staff has a treble clef. Its notes are high, and the right hand usually plays them. The lower staff has a bass clef. Its notes are low for the left hand.",
+    "off": 0.0
+   },
+   "file": "329e7870606b3599.mp3",
+   "say": "The upper staff has a treble clef: its notes are high, and the right hand usually plays them. The lower staff has a [bass](/bˈAs/) clef: its notes are low, for the left hand.",
+   "seconds": 13.25,
+   "where": "prep-a.the-clefs.yaml card 1"
+  },
+  "The white keys are named with the musical alphabet: just seven letters, A B C D E F G. After G it starts again with A, all the way up the keyboard.": {
+   "check": {
+    "flag": false,
+    "heard": "The white keys are named with the musical alphabet. Just seven letters, A, B, C, D, E, F, G, after G it starts again with A, all the way up the keyboard.",
+    "off": 0.0
+   },
+   "file": "5b334ce220a84955.mp3",
+   "say": "The white keys are named with the musical alphabet: just seven letters, [A](/ˈA/) B C D E F G. After G it starts again with [A](/ˈA/), all the way up the keyboard.",
+   "seconds": 13.03,
+   "where": "prep-a.musical-alphabet.yaml card 1"
+  },
+  "This tune played allegro: fast and lively!": {
+   "check": {
+    "flag": false,
+    "heard": "This tune played Allegro, fast and lively.",
+    "off": 0.0
+   },
+   "file": "e24c9226c421aea9.mp3",
+   "say": "This tune played allegro: fast and lively!",
+   "seconds": 4.03,
+   "where": "prep-a.allegro.yaml card 2"
+  },
+  "Three quarter notes, then a dotted half note: two measures of 3/4.": {
+   "check": {
+    "flag": false,
+    "heard": "three quarter notes, then a dotted half note, two measures of 3-4.",
+    "off": 0.0
+   },
+   "file": "28623845af6b5db8.mp3",
+   "say": "Three quarter notes, then a dotted half note: two measures of 3/4.",
+   "seconds": 5.75,
+   "where": "prep-a.three-four.yaml card 2"
+  },
+  "Tick, tock, tick, tock: four steady quarter notes.": {
+   "check": {
+    "flag": false,
+    "heard": "Tick, Tock, Tick, Tock, four steady quarter notes.",
+    "off": 0.0
+   },
+   "file": "75dd3d28d8d6200e.mp3",
+   "say": "Tick, tock, tick, tock: four steady quarter notes.",
+   "seconds": 4.17,
+   "where": "prep-a.quarter-note.yaml card 3"
+  },
+  "Treble G is the G just above Middle C, on the second line of the treble staff. The treble clef circles that line, so it's also called the G clef.": {
+   "check": {
+    "flag": false,
+    "heard": "Treble G is the G just above middle C, on the second line of the treble staff. The treble clef circles that line, so it's also called the G clef.",
+    "off": 0.0
+   },
+   "file": "1a003024af925cf1.mp3",
+   "say": "Treble G is the G just above Middle C, on the second line of the treble staff. The treble clef circles that line, so it's also called the G clef.",
+   "seconds": 12.28,
+   "where": "prep-a.treble-g.yaml card 1"
+  },
+  "Two black keys high up on the right. Bright and high!": {
+   "check": {
+    "flag": false,
+    "heard": "Two black keys high up on the right bright and high",
+    "off": 0.0
+   },
+   "file": "5807d51f27df9e79.mp3",
+   "say": "Two black keys high up on the right. Bright and high!",
+   "seconds": 4.25,
+   "where": "prep-a.low-and-high.yaml card 2"
+  },
+  "Two measures: four beats, then four beats. Can you hear where the second one starts?": {
+   "check": {
+    "flag": false,
+    "heard": "Two measures, four beats, then four beats. Can you hear where the second one starts?",
+    "off": 0.0
+   },
+   "file": "335a09684f138a53.mp3",
+   "say": "Two measures: four beats, then four beats. Can you hear where the second one starts?",
+   "seconds": 6.25,
+   "where": "prep-a.the-measure.yaml card 3"
+  },
+  "Two notes a skip apart can be played together, like C and E with right-hand fingers 1 and 3.": {
+   "check": {
+    "flag": false,
+    "heard": "Two notes a skip apart can be played together like C and E with right hand fingers one and three",
+    "off": 0.0
+   },
+   "file": "85219adaf134d891.mp3",
+   "say": "Two notes a skip apart can be played together, like C and E with right-hand fingers 1 and 3.",
+   "seconds": 7.62,
+   "where": "prep-a.skips-together.yaml card 1"
+  },
+  "Two notes together, like a doorbell.": {
+   "check": {
+    "flag": false,
+    "heard": "Two notes together, like a doorbell.",
+    "off": 0.0
+   },
+   "file": "88139b935cdf4279.mp3",
+   "say": "Two notes together, like a doorbell.",
+   "seconds": 3.33,
+   "where": "prep-a.two-notes-together.yaml card 3"
+  },
+  "Two quarter notes, then a half note.": {
+   "check": {
+    "flag": false,
+    "heard": "Two quarter notes, then a half note.",
+    "off": 0.0
+   },
+   "file": "43ce0a309a5cf2fc.mp3",
+   "say": "Two quarter notes, then a half note.",
+   "seconds": 3.17,
+   "where": "prep-a.half-note.yaml card 2"
+  },
+  "Up F, G, A, B and back down.": {
+   "check": {
+    "flag": false,
+    "heard": "Up F, G, A, B, and back down.",
+    "off": 0.0
+   },
+   "file": "090fcdd8fd673cc8.mp3",
+   "say": "Up F, G, [A](/ˈA/), B and back down.",
+   "seconds": 3.52,
+   "where": "prep-a.f-g-a-b.yaml card 3"
+  },
+  "Up the C 5-finger scale and back down to the home note.": {
+   "check": {
+    "flag": false,
+    "heard": "Up the C5 finger scale and back down to the home note.",
+    "off": 0.0
+   },
+   "file": "6392fcd6f4f990f9.mp3",
+   "say": "Up the C 5-finger scale and back down to the home note.",
+   "seconds": 4.92,
+   "where": "prep-a.c-five-finger.yaml card 4"
+  },
+  "Up the C scale in the bass and back down.": {
+   "check": {
+    "flag": false,
+    "heard": "Up the C scale in the bass and back down.",
+    "off": 0.0
+   },
+   "file": "4a902327a2059382.mp3",
+   "say": "Up the C scale in the [bass](/bˈAs/) and back down.",
+   "seconds": 3.58,
+   "where": "prep-a.bass-c-scale.yaml card 3"
+  },
+  "Up the staff, higher and higher, then back down.": {
+   "check": {
+    "flag": false,
+    "heard": "Up the staff, higher and higher, then back down.",
+    "off": 0.0
+   },
+   "file": "ddb7acbc9bb4d6f0.mp3",
+   "say": "Up the staff, higher and higher, then back down.",
+   "seconds": 3.8,
+   "where": "prep-a.the-staff.yaml card 3"
+  },
+  "Up the three black keys and back down.": {
+   "check": {
+    "flag": false,
+    "heard": "Up the three black keys and back down.",
+    "off": 0.0
+   },
+   "file": "5f00f14ffa2b7d39.mp3",
+   "say": "Up the three black keys and back down.",
+   "seconds": 3.48,
+   "where": "prep-a.three-black-keys.yaml card 3"
+  },
+  "What divides the music into measures?": {
+   "check": {
+    "flag": false,
+    "heard": "What divides the music into measures?",
+    "off": 0.0
+   },
+   "file": "0cb967ee320269da.mp3",
+   "say": "What divides the music into measures?",
+   "seconds": 3.23,
+   "where": "prep-a.the-measure.yaml card 5"
+  },
+  "What does allegro mean?": {
+   "check": {
+    "flag": false,
+    "heard": "What does Allegro mean?",
+    "off": 0.0
+   },
+   "file": "e81b09f2cc610e8b.mp3",
+   "say": "What does allegro mean?",
+   "seconds": 2.27,
+   "where": "prep-a.allegro.yaml card 4"
+  },
+  "What does f mean?": {
+   "check": {
+    "flag": false,
+    "heard": "What does F mean?",
+    "off": 0.0
+   },
+   "file": "37ff355eac00cbff.mp3",
+   "say": "What does f mean?",
+   "seconds": 2.08,
+   "where": "prep-a.forte-piano.yaml card 5"
+  },
+  "What does mf mean?": {
+   "check": {
+    "flag": false,
+    "heard": "What does MF mean?",
+    "off": 0.0
+   },
+   "file": "b112d01377223daf.mp3",
+   "say": "What does mf mean?",
+   "seconds": 2.2,
+   "where": "prep-a.mezzo-forte.yaml card 4"
+  },
+  "What does p mean?": {
+   "check": {
+    "flag": false,
+    "heard": "What does P mean?",
+    "off": 0.0
+   },
+   "file": "4d797e299ea888ae.mp3",
+   "say": "What does p mean?",
+   "seconds": 2.1,
+   "where": "prep-a.forte-piano.yaml card 5"
+  },
+  "What is the home note of the C 5-finger scale?": {
+   "check": {
+    "flag": false,
+    "heard": "What is the home note of the C5 finger scale?",
+    "off": 0.0
+   },
+   "file": "013c5207b1a6019d.mp3",
+   "say": "What is the home note of the C 5-finger scale?",
+   "seconds": 4.08,
+   "where": "prep-a.c-five-finger.yaml card 7"
+  },
+  "What letter comes after G?": {
+   "check": {
+    "flag": false,
+    "heard": "What letter comes after G?",
+    "off": 0.0
+   },
+   "file": "659c66eb94282140.mp3",
+   "say": "What letter comes after G?",
+   "seconds": 2.73,
+   "where": "prep-a.musical-alphabet.yaml card 5"
+  },
+  "What letter comes before D?": {
+   "check": {
+    "flag": false,
+    "heard": "What letter comes before D?",
+    "off": 0.0
+   },
+   "file": "210de160b3b1ac8b.mp3",
+   "say": "What letter comes before D?",
+   "seconds": 2.67,
+   "where": "prep-a.musical-alphabet.yaml card 5"
+  },
+  "When the hand hops, which note tells you the finger?": {
+   "check": {
+    "flag": false,
+    "heard": "When the hand hops, which note tells you the finger?",
+    "off": 0.0
+   },
+   "file": "7bc76821684d1320.mp3",
+   "say": "When the hand hops, which note tells you the finger?",
+   "seconds": 3.92,
+   "where": "prep-a.hand-shift.yaml card 5"
+  },
+  "Where do you sit on the bench?": {
+   "check": {
+    "flag": false,
+    "heard": "Where do you sit on the bench?",
+    "off": 0.0
+   },
+   "file": "9ab5fcb6a0c30f2a.mp3",
+   "say": "Where do you sit on the bench?",
+   "seconds": 2.25,
+   "where": "prep-a.sitting.yaml card 6"
+  },
+  "Which clef is for the high notes?": {
+   "check": {
+    "flag": false,
+    "heard": "Which clef is for the high notes?",
+    "off": 0.0
+   },
+   "file": "07bfd55d18f38ebc.mp3",
+   "say": "Which clef is for the high notes?",
+   "seconds": 2.67,
+   "where": "prep-a.the-clefs.yaml card 6"
+  },
+  "Which finger is number 1?": {
+   "check": {
+    "flag": false,
+    "heard": "Which finger is number one?",
+    "off": 0.0
+   },
+   "file": "a792943560a3438c.mp3",
+   "say": "Which finger is number 1?",
+   "seconds": 2.55,
+   "where": "prep-a.finger-numbers.yaml card 5"
+  },
+  "Which finger is number 5?": {
+   "check": {
+    "flag": false,
+    "heard": "Which finger is number five?",
+    "off": 0.0
+   },
+   "file": "d5d64b8b14e975df.mp3",
+   "say": "Which finger is number 5?",
+   "seconds": 2.67,
+   "where": "prep-a.finger-numbers.yaml card 5"
+  },
+  "Which hand usually plays the bass clef notes?": {
+   "check": {
+    "flag": false,
+    "heard": "Which hand usually plays the bass clef notes?",
+    "off": 0.0
+   },
+   "file": "91116d9822420e46.mp3",
+   "say": "Which hand usually plays the [bass](/bˈAs/) clef notes?",
+   "seconds": 3.85,
+   "where": "prep-a.the-clefs.yaml card 6"
+  },
+  "Which is the softest?": {
+   "check": {
+    "flag": false,
+    "heard": "Which is the softest?",
+    "off": 0.0
+   },
+   "file": "c5eeab764d1778d4.mp3",
+   "say": "Which is the softest?",
+   "seconds": 2.48,
+   "where": "prep-a.mezzo-forte.yaml card 4"
+  },
+  "Which key comes after A?": {
+   "check": {
+    "flag": false,
+    "heard": "Which key comes after A?",
+    "off": 0.0
+   },
+   "file": "18538074416fa64f.mp3",
+   "say": "Which key comes after [A](/ˈA/)?",
+   "seconds": 2.5,
+   "where": "prep-a.f-g-a-b.yaml card 6"
+  },
+  "Which left-hand finger plays A in Middle C position?": {
+   "check": {
+    "flag": false,
+    "heard": "Which left-hand finger plays A in middle C position?",
+    "off": 0.0
+   },
+   "file": "e6bd7217b17626c5.mp3",
+   "say": "Which left-hand finger plays [A](/ˈA/) in Middle C position?",
+   "seconds": 4.67,
+   "where": "prep-a.bass-a.yaml card 6"
+  },
+  "Which left-hand finger plays B in Middle C position?": {
+   "check": {
+    "flag": false,
+    "heard": "Which left-hand finger plays B in middle C position?",
+    "off": 0.0
+   },
+   "file": "f5b498844790cff9.mp3",
+   "say": "Which left-hand finger plays B in Middle C position?",
+   "seconds": 4.65,
+   "where": "prep-a.bass-b.yaml card 5"
+  },
+  "Which left-hand finger plays Bass F?": {
+   "check": {
+    "flag": false,
+    "heard": "Which left-hand finger plays bass F?",
+    "off": 0.0
+   },
+   "file": "d9a7a0c761c737a2.mp3",
+   "say": "Which left-hand finger plays [Bass](/bˈAs/) F?",
+   "seconds": 3.3,
+   "where": "prep-a.middle-c-position.yaml card 6"
+  },
+  "Which left-hand finger plays G?": {
+   "check": {
+    "flag": false,
+    "heard": "Which left-hand finger plays G?",
+    "off": 0.0
+   },
+   "file": "08d54e5bf1aa247a.mp3",
+   "say": "Which left-hand finger plays G?",
+   "seconds": 2.98,
+   "where": "prep-a.bass-g.yaml card 6"
+  },
+  "Which note fills a whole measure of 3/4?": {
+   "check": {
+    "flag": false,
+    "heard": "Which note fills a whole measure of 3-4?",
+    "off": 0.0
+   },
+   "file": "2f47a44cb1a92d5e.mp3",
+   "say": "Which note fills a whole measure of 3/4?",
+   "seconds": 3.58,
+   "where": "prep-a.three-four.yaml card 5"
+  },
+  "Which note has no stem?": {
+   "check": {
+    "flag": false,
+    "heard": "Which note has no stem?",
+    "off": 0.0
+   },
+   "file": "d4d4b322f3eb1bea.mp3",
+   "say": "Which note has no stem?",
+   "seconds": 2.55,
+   "where": "prep-a.whole-note.yaml card 6"
+  },
+  "Which right-hand fingers play Middle C and Treble G together?": {
+   "check": {
+    "flag": false,
+    "heard": "Which right-hand fingers play middle C and treble G together?",
+    "off": 0.0
+   },
+   "file": "d2922d8b79d59d17.mp3",
+   "say": "Which right-hand fingers play Middle C and Treble G together?",
+   "seconds": 5.08,
+   "where": "prep-a.two-notes-together.yaml card 6"
+  },
+  "Which sign tells you to play loudly?": {
+   "check": {
+    "flag": false,
+    "heard": "Which sign tells you to play loudly?",
+    "off": 0.0
+   },
+   "file": "e02b4a92ac678ae1.mp3",
+   "say": "Which sign tells you to play loudly?",
+   "seconds": 2.98,
+   "where": "prep-a.forte-piano.yaml card 5"
+  },
+  "Which white key is just to the right of the two black keys?": {
+   "check": {
+    "flag": false,
+    "heard": "Which white key is just to the right of the two black keys?",
+    "off": 0.0
+   },
+   "file": "997323a02554d988.mp3",
+   "say": "Which white key is just to the right of the two black keys?",
+   "seconds": 4.38,
+   "where": "prep-a.c-d-e.yaml card 6"
+  },
+  "With the left thumb on C, which finger plays F?": {
+   "check": {
+    "flag": false,
+    "heard": "With the left thumb on C, which finger plays F?",
+    "off": 0.0
+   },
+   "file": "98d8314e26b26bbf.mp3",
+   "say": "With the left thumb on C, which finger plays F?",
+   "seconds": 4.05,
+   "where": "prep-a.c-b-a-g-f.yaml card 6"
+  },
+  "Without the tie, G is played twice.": {
+   "check": {
+    "flag": false,
+    "heard": "Without the tie, G is played twice.",
+    "off": 0.0
+   },
+   "file": "2b3569310adc2276.mp3",
+   "say": "Without the tie, G is played twice.",
+   "seconds": 3.23,
+   "where": "prep-a.tie.yaml card 3"
+  },
+  "You did it!": {
+   "check": {
+    "flag": false,
+    "heard": "You did it.",
+    "off": 0.0
+   },
+   "file": "7451c8566ed24a53.mp3",
+   "say": "You did it!",
+   "seconds": 1.88,
+   "where": "lessonPhrases.ts"
+  },
+  "Your arms should be...": {
+   "check": {
+    "flag": false,
+    "heard": "Your arms should be.",
+    "off": 0.0
+   },
+   "file": "1d5312942b573883.mp3",
+   "say": "Your arms should be.",
+   "seconds": 2.2,
+   "where": "prep-a.sitting.yaml card 6"
+  },
+  "Your fingers have numbers. The thumbs are 1, then pointer fingers 2, middle fingers 3, ring fingers 4 and little fingers 5, on both hands. A number over a note tells you which finger plays it.": {
+   "check": {
+    "flag": false,
+    "heard": "Your fingers have numbers. The thumbs are one, then pointer fingers two, middle fingers three, ring fingers four, and little fingers five on both hands. A number over a note tells you which finger plays it.",
+    "off": 0.0
+   },
+   "file": "daaeb073416e3b04.mp3",
+   "say": "Your fingers have numbers. The thumbs are 1, then pointer fingers 2, middle fingers 3, ring fingers 4 and little fingers 5, on both hands. A number over a note tells you which finger plays it.",
+   "seconds": 16.12,
+   "where": "prep-a.finger-numbers.yaml card 1"
+  },
+  "Your fingertips should be...": {
+   "check": {
+    "flag": false,
+    "heard": "Your fingertips should be",
+    "off": 0.0
+   },
+   "file": "8ff80ee9636d727f.mp3",
+   "say": "Your fingertips should be.",
+   "seconds": 2.38,
+   "where": "prep-a.round-hand.yaml card 5"
+  },
+  "Your hand is curved as if it holds a...": {
+   "check": {
+    "flag": false,
+    "heard": "Your hand is curved as if it holds A.",
+    "off": 0.0
+   },
+   "file": "fc7820dda15b5825.mp3",
+   "say": "Your hand is curved as if it holds a.",
+   "seconds": 3.35,
+   "where": "prep-a.round-hand.yaml card 5"
+  },
+  "p for soft and f for loud are dynamic marks. A new one sits between them: mf, mezzo forte, which means medium loud.": {
+   "check": {
+    "flag": false,
+    "heard": "P for soft and F for loud are dynamic marks. A new one sits between them. M-F, mezzo-forte, which means medium loud.",
+    "off": 0.0
+   },
+   "file": "90258b3fe1e75b83.mp3",
+   "say": "p for soft and f for loud are dynamic marks. A new one sits between them: mf, mezzo forte, which means medium loud.",
+   "seconds": 10.82,
+   "where": "prep-a.mezzo-forte.yaml card 1"
+  },
+  "p, mf and f are called...": {
+   "check": {
+    "flag": false,
+    "heard": "P, MF, and F are called.",
+    "off": 0.0
+   },
+   "file": "e06bff20bdbc29dd.mp3",
+   "say": "p, mf and f are called.",
+   "seconds": 2.98,
+   "where": "prep-a.mezzo-forte.yaml card 4"
+  }
+ },
+ "voice": {
+  "engine": "kokoro 0.9.4",
+  "model": "hexgrad/Kokoro-82M",
+  "revision": "f3ff3571791e39611d31c381e3a41a3af07b4987",
+  "speed": 0.8,
+  "voice": "af_heart"
+ }
+}

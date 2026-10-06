@@ -382,8 +382,10 @@ def main():
                     if page.evaluate("__lesson.card.kind") == "show":
                         continue
                 elif kind == "echo":
-                    # a key pressed while the app is still playing the phrase doesn't count
-                    page.wait_for_timeout(900 + 60000 / page.evaluate("__lesson.card.tempo") * len(page.evaluate("__lesson.card.play")) + 300)
+                    # the card is read and "Here it is" said first (Auto-read on); a key pressed before the
+                    # phrase is played, or while it is, doesn't count
+                    page.wait_for_function("__lesson.heard.thisCard && performance.now() > __lesson.heard.until + 300", timeout=60000)
+                    echo_cues.append(([x["text"] for x in page.evaluate("__lesson.voice.log")[-2:]], page.evaluate("[__lesson.card.text, __lesson.voice.autoRead]")))
                     for ps in page.evaluate("__lesson.card.play.map(n => n.pitches)"):
                         page.evaluate("ps => { for (const p of ps) __midiSend([0x90, p, 80]); for (const p of ps) __midiSend([0x80, p, 0]); }", ps)
                         page.wait_for_timeout(120)
@@ -398,6 +400,8 @@ def main():
                     return went_back, points
                 page.wait_for_timeout(100)
             raise AssertionError("lesson: never finished")
+
+        echo_cues = []
 
         def ok_pin(digits):
             pad(digits)
@@ -442,19 +446,64 @@ def main():
         page.wait_for_selector(".card-big")
         page.wait_for_timeout(300)
         page.screenshot(path=str(OUT / "lesson-explain.png"))
+        # reading aloud (v0.34): a card is read by the lesson voice's recording a moment after it shows;
+        # Read it to me becomes Stop reading while it reads; Auto-read is the student's, for every lesson
+        voice = lambda: page.evaluate("__lesson.voice")
+        read_btn = page.locator("button.read")
+        check(voice()["log"] == [], "lesson voice: a new card isn't read the moment it shows")
+        page.wait_for_function("__lesson.voice.log.length > 0", timeout=4000)
+        first = page.evaluate("__lesson.card.text")
+        check(voice()["log"][0] == {"text": first, "by": "recording"},
+              f"lesson voice: the card is read by its recording after a moment ({voice()['log'][:1]})")
+        check(voice()["speaking"] and read_btn.inner_text().strip() == "⏹ Stop reading",
+              f"lesson voice: Read it to me becomes Stop reading while it reads ({read_btn.inner_text()!r})")
+        read_btn.click()
+        check(not voice()["speaking"] and read_btn.inner_text().strip() == "🔊 Read it to me", "lesson voice: Stop reading stops it")
+        read_btn.click()
+        page.wait_for_function("__lesson.voice.log.length === 2 && __lesson.voice.speaking", timeout=4000)
+        check(voice()["log"][1]["text"] == first, "lesson voice: Read it to me reads the card again")
+        page.locator("button.autoread").click()
+        check(not voice()["speaking"] and not voice()["autoRead"] and page.locator("button.autoread.off").count() == 1,
+              "lesson voice: turning Auto-read off stops the reading")
+        page.get_by_role("button", name="Next ›").click()
+        page.wait_for_timeout(1500)
+        check(len(voice()["log"]) == 2, "lesson voice: with Auto-read off the next card isn't read")
+        ada = next(x for x in page.evaluate("fetch('api/students').then(r => r.json())")["students"] if x["name"] == "Ada")
+        check(ada["settings"]["autoRead"] is False, "lesson voice: Auto-read is remembered in the student's settings")
+        page.locator("button.autoread").click()
+        page.wait_for_function("__lesson.voice.log.length === 3", timeout=4000)
+        check(voice()["autoRead"] and voice()["log"][2]["text"] == page.evaluate("__lesson.card.text"),
+              "lesson voice: turning Auto-read on reads the card")
+        page.get_by_role("button", name="‹ Back").click()
+        page.wait_for_timeout(200)
         backs = 0
         while page.evaluate("__lesson.card.kind") != "show":            # past the explain cards
             page.get_by_role("button", name="Next ›").click()
             page.wait_for_timeout(200)
             backs += 1
         page.wait_for_selector(".mini svg")
-        page.wait_for_timeout(1200)
+        # with Auto-read on, a Show card is read, then says "I'll show you", then plays its keys
+        lit = "document.querySelectorAll('.mini .pm-glow').length + document.querySelectorAll('.keys .kb-t-R').length"
+        show_text = page.evaluate("__lesson.card.text")
+        page.wait_for_function("t => __lesson.voice.log.some(x => x.text === t)", arg=show_text, timeout=4000)
+        check(page.evaluate(lit) == 0, "lesson voice: a Show card is read before its keys play")
+        page.wait_for_function(lit + " > 0", timeout=30000)
         page.screenshot(path=str(OUT / "lesson-show.png"))
-        check(page.locator(".mini .pm-glow").count() + page.locator(".keys .kb-t-R").count() > 0, "lesson: Show lights the keys and the staff notes")
+        check([x["text"] for x in voice()["log"][-2:]] == [show_text, "I'll show you."],
+              f"lesson: Show lights the keys and the staff notes after the card is read and \"I'll show you\" ({voice()['log'][-2:]})")
+        n_said = len(voice()["log"])
+        page.get_by_role("button", name="👀 Show me again").click()
+        page.wait_for_function(f"__lesson.voice.log.length === {n_said + 1}", timeout=4000)
+        check(voice()["log"][-1]["text"] == "I'll show you." and page.evaluate(lit) == 0,
+              "lesson voice: Show me again says \"I'll show you\" first")
+        page.wait_for_function(lit + " > 0", timeout=8000)
+        check(True, "lesson voice: then Show me again plays the keys")
         for _ in range(backs):
             page.get_by_role("button", name="‹ Back").click()
             page.wait_for_timeout(150)
         _, pts = do_lesson()
+        said, (echo_text, _) = echo_cues[0]
+        check(said == [echo_text, "Here it is."], f"lesson voice: an Echo card is read, then says \"Here it is\", then plays its phrase ({said})")
         check(sorted(pts.values()) == [1] * 5 and any(k.endswith("/echo") for k in pts),
               f"lesson: the echo card and the Check questions each earn a point, right first time ({pts})")
         page.wait_for_selector(".path .bubble.done")
@@ -689,6 +738,17 @@ def main():
         page.get_by_role("button", name="Close").click()
         # the 3/4 lesson's identify questions: tap an answer, after listening to a phrase
         page.goto(url + "#/lesson/prep-a.three-four")
+        # a Hear card is read, then says "Here it is", then plays its tune by itself (Auto-read on)
+        page.wait_for_function("window.__lesson && window.__lesson.card")
+        while page.evaluate("__lesson.card.kind") != "hear":
+            page.get_by_role("button", name="Next ›").click()
+            page.wait_for_timeout(150)
+        hear_text = page.evaluate("__lesson.card.text")
+        page.wait_for_function("t => __lesson.voice.log.some(x => x.text === t)", arg=hear_text, timeout=4000)
+        check(not page.evaluate("__lesson.heard.thisCard"), "lesson voice: a Hear card is read before its tune plays")
+        page.wait_for_function("__lesson.heard.thisCard", timeout=30000)
+        said = [x["text"] for x in page.evaluate("__lesson.voice.log")[-2:]]
+        check(said == [hear_text, "Here it is."], f"lesson voice: then it says \"Here it is\" and plays the tune by itself ({said})")
         _, pts = do_lesson()
         check(len(pts) == 3 and sum(pts.values()) == 3, f"lesson: tap-an-answer questions score like key questions ({pts})")
         page.goto(url + "#/config")

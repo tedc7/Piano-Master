@@ -1,3 +1,6 @@
 # The approved curriculum songs' stems (tools/library_export.py, docs/fresh-install.md) are kept with
 # Git LFS: about 2.5 MB a song, replaced whenever a vocal is re-rendered and approved.
 content/library/media/** filter=lfs diff=lfs merge=lfs -text
+# The lesson voice's recordings (tools/voice/lesson_voice.py, arch §10.5 v0.34): one small MP3 per line
+# read aloud, re-recorded whenever a line's words change. Their index, voice.json, stays plain text.
+content/lessons/voice/*.mp3 filter=lfs diff=lfs merge=lfs -text

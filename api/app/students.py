@@ -26,9 +26,10 @@ PRESET = r"^(50|75|90|100)$"
 
 # Student.settings (arch §5); the parent sets the first four, the Play screen remembers the rest: vocals
 # and the tempo preset per song, and the metronome for every song (v0.29; None until the child first
-# turns it on or off: then each song starts with it on unless the song has singing)
+# turns it on or off: then each song starts with it on unless the song has singing). The lesson
+# screen remembers whether it reads each card aloud by itself (autoRead, v0.34), for every lesson.
 DEFAULTS: dict[str, Any] = {"autoRewind": True, "rewindBars": 2, "backingVolume": 2.0, "otherHand": True, "vocalsOff": [],
-                            "metronome": None, "presets": {}}
+                            "metronome": None, "presets": {}, "autoRead": True}
 
 
 def today() -> date:
@@ -85,6 +86,7 @@ class StudentSettingsIn(BaseModel):
     rewindBars: int | None = Field(None, ge=1, le=8)
     backingVolume: float | None = Field(None, ge=0, le=3)
     otherHand: bool | None = None       # one-hand practice: the app plays the other hand
+    autoRead: bool | None = None        # the lesson screen reads each card aloud by itself
     resetSongChoices: bool = False
 
 
@@ -98,11 +100,13 @@ class StudentPatch(BaseModel):
 
 class SongPrefIn(BaseModel):
     """What the Play screen remembers (arch §3): vocals and tempo preset for the song, and the
-    metronome (`click`) for every song (v0.29)."""
-    pieceId: str = Field(pattern=SLUG)
+    metronome (`click`) for every song (v0.29); and what the lesson screen remembers, reading aloud
+    (`autoRead`) for every lesson (v0.34). The song's choices need its `pieceId`."""
+    pieceId: str | None = Field(None, pattern=SLUG)
     vocalsOff: bool | None = None
     click: bool | None = None
     preset: str | None = Field(None, pattern=PRESET)
+    autoRead: bool | None = None
 
 
 class CheckIn(BaseModel):
@@ -158,7 +162,7 @@ def edit_student(student_id: str, body: StudentPatch):
             r = get_student(con, student_id)
             s = settings_of(r["settings"])
             if body.settings:
-                for k in ("autoRewind", "rewindBars", "backingVolume", "otherHand"):
+                for k in ("autoRewind", "rewindBars", "backingVolume", "otherHand", "autoRead"):
                     v = getattr(body.settings, k)
                     if v is not None:
                         s[k] = v
@@ -194,6 +198,10 @@ def song_pref(student_id: str, body: SongPrefIn):
         with db.transaction(con):
             s = settings_of(get_student(con, student_id)["settings"])
             p = body.pieceId
+            if p is None and (body.vocalsOff is not None or body.preset is not None):
+                raise HTTPException(422, "vocals and tempo are remembered per song: send its pieceId")
+            if body.autoRead is not None:
+                s["autoRead"] = body.autoRead
             if body.vocalsOff is not None:
                 s["vocalsOff"] = [x for x in s["vocalsOff"] if x != p] + ([p] if body.vocalsOff else [])
             if body.click is not None:

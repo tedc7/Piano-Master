@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.34 | Oct 6, 2026 | The lesson voice: every lesson line recorded ahead with Kokoro's Heart at 80% speed, checked by Whisper, kept in Git LFS; a card read a moment after it shows; Auto-read (the student's choice for every lesson) beside Read it to me / Stop reading; the `lesson-voice` skill |
 | v0.33 | Oct 5, 2026 | Dragging the staff to play or listen from any bar (a drag back is a rewind; ahead, practice of part of the song); a Christmas batch of 15 public-domain songs; the holiday backing style (strings, harp arpeggios, cello, sleigh bells) |
 | v0.32 | Oct 5, 2026 | The Server session's report: the library in the nightly backup and its restore test passed; a new server also needs the deploy account's sudo and, without Caddy's data, a new certificate root; the install scripts check both; the server's details moved out of the repo into a local config file |
 | v0.31 | Oct 3, 2026 | A fresh install: the approved curriculum songs kept in the repo (`content/library/`, stems in Git LFS) by `tools/library_export.py`, seeded on a new server by `tools/fresh_install.sh`; the library in the backup and its restore test |
@@ -28,6 +29,13 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.34 (Oct 6, 2026)
+
+The lessons' spoken words, from the parent's "the voices do not sound natural at all":
+- **The lesson voice (3 "Teaching concepts", 10.5):** a feasibility test (`feasibility/voice-probe/`) put six open-source neural voices beside the device's own on real lesson lines, on the piano server for the iPad; the family chose Kokoro-82M's Heart at 80% speed. Every line a lesson reads is now recorded ahead with it on the dev box (`tools/voice/`, on the CPU), checked by transcribing it with Whisper, and kept in Git LFS (`content/lessons/voice/`); the content build hands the recordings to the app, and the device's voice reads only a line not recorded yet. A lexicon and the note-letter rule fix "bass" and the letter A, and a "..." is read so the voice adds no sound (a stop at the end, "blank" in the middle); a line can carry `say:`.
+- **Reading on the lesson screen (3):** a card is read 0.8 s after it appears, so the child sees it first; a Show card is read, then says "I'll show you" and plays its keys (before, its demonstration started at once and cut the reading off); a Hear or Echo card is read, then says "Here it is" and plays its tune by itself (first "Listen", but the voice put a sound before it) (before, a Hear card waited for Play it, and an Echo card played while it was read). Read it to me becomes Stop reading while anything is read. Auto-read, the student's choice for every lesson like Metro (`autoRead` in the student's settings, default on; also in Config › Students), decides whether the lesson reads and praises by itself. A Check card's first question is now read too, like the questions after it.
+- **The `lesson-voice` skill:** recording is part of writing or changing a lesson.
 
 ## v0.33 (Oct 5, 2026)
 

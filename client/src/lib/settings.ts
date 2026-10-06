@@ -4,7 +4,8 @@
 //    the piano server's DeviceProfile when the parent changes them.
 //  - Each student (Student.settings on the piano server; Config > Students): auto-rewind, rewind
 //    bars, backing volume and the app playing the other hand, set by the parent, and the Play screen's choices, remembered as
-//    the student makes them: vocals and the tempo preset per song, the metronome for every song (v0.29).
+//    the student makes them: vocals and the tempo preset per song, the metronome for every song (v0.29);
+//    and the lesson screen's reading aloud, for every lesson (v0.34).
 //  - The parent playing: the same student-style settings, kept in this browser.
 // Storage can be missing or cleared on iPadOS, so defaults always work.
 import type { Preset } from "./types";
@@ -28,6 +29,7 @@ export interface StudentSettings {
   vocalsOff: string[];       // piece ids with vocals off (remembered per song, arch §3)
   metronome: boolean | null;  // metronome during play, for every song; null until first turned on or off (then: on unless the song has singing)
   presets: Record<string, Preset>;
+  autoRead: boolean;         // the lesson screen reads each card aloud by itself (the student's Auto-read)
 }
 
 /** What the Play screen and the player read: this device's settings and the player's. */
@@ -58,6 +60,7 @@ export const STUDENT_DEFAULTS: StudentSettings = {
   vocalsOff: [],
   metronome: null,
   presets: {},
+  autoRead: true,
 };
 
 function read<T extends object>(key: string, defaults: T): T {

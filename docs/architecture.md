@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.33** · Oct 5, 2026
+**Version 0.34** · Oct 6, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -166,7 +166,7 @@ Three measurements, all recorded in the DeviceProfile:
 | Risk | Kids react instead of reading ahead | Kids lose their place |
 | Used in levels | 1 to about 4 | 4 and up, and all "real music" pieces |
 
-The staff is real music notation, not colored falling blocks. Kids learn actual reading from day one. All students are assumed to read; on-screen text is not read aloud except in concept lessons.
+The staff is real music notation, not colored falling blocks. Kids learn actual reading from day one. All students are assumed to read; on-screen text is not read aloud except in concept lessons (by the lesson voice, v0.34).
 
 ### Two ways to play
 
@@ -215,12 +215,14 @@ Every new concept (for example the I chord) is taught inside the app by a **conc
 
 | Card | What happens |
 | --- | --- |
-| Explain | 1 to 3 short sentences in kid-friendly words, read aloud by the device's built-in voice (tap to replay) |
+| Explain | 1 to 3 short sentences in kid-friendly words, read aloud by the lesson voice (v0.34, below) |
 | Show | Animated keyboard and staff diagram, for example the three keys of the C chord lighting up and the stacked notes on the staff |
 | Hear | The app plays the example, then a contrast ("Here is C major... here is a wrong note, hear the difference?") |
 | Try | The student plays it on the piano; MIDI confirms, with hints until correct |
 | Check | 1 to 2 quick questions (tap the right keys on screen or on the piano); wrong answers loop back to Show |
 | Watch (optional) | A parent-approved video on the topic, if one has been added. The card is built; the videos are a potential feature (section 14) |
+
+**Reading aloud (v0.34).** Every line a lesson reads (each card's words, Check questions, a Hear card's contrast, and the screen's praise: "You did it!", "Good try!…") is a recording made ahead of time by the lesson voice (10.5, "The lesson voice"), played by the Audio Engine like a song's vocal; the device's own voice, which sounded mechanical, now reads only a line with no recording yet. A card is read 0.8 s after it appears, so the child sees the page and its words first; a Show card is read, then the voice says "I'll show you" and the keys play (Show me again says it too), and a Hear or Echo card is read, then the voice says "Here it is" and the tune plays by itself (a Hear card's contrast is read before it plays, too). With Auto-read off, a Show card's keys and an Echo card's phrase play at once and a Hear card waits for Play it, as before. On an Echo card, keys pressed before the phrase has played don't count. Two controls sit together on the card: **Read it to me** reads the card again (a Check card's current question) and becomes **Stop reading** while anything is being read; **Auto-read** (on or off, like Metro on the Play screen) is the student's one choice for every lesson, remembered in their settings (`autoRead`, default on). With it off the lesson says nothing by itself, praise included, and Read it to me still reads on request; turning it on reads the card at once. The parent can also change it in Config › Students. The first tap anywhere in the app starts its audio (iPadOS starts audio only from a tap), so a lesson opened by a tap can read its first card.
 
 On the Journey map, a skill's concept lesson opens from its bubble: the bubble's sheet starts with the concept lesson, then its practice songs. (Until v0.29 each bubble also had a small lightbulb bubble before it for the lesson; every skill has one lesson, reached from the sheet anyway, so the second bubble only crowded the map.) **One concept per bubble (v0.25):** each skill teaches one idea, with one Explain card, and its bubble holds only its own practice songs (6.8); the bubble, its sheet and the Explain card show the kind of idea (Notes, Rhythm, Technique, Theory, Musicianship). The concept lesson opens when the skill's prerequisites are passed (the bubble shows Ready to learn); finishing it makes that skill Current. The student can reopen any concept lesson later as a refresher.
 
@@ -582,7 +584,7 @@ For the earliest skills (for example three black keys, or five notes in C positi
 | Content | Authored as | Notes |
 | --- | --- | --- |
 | Skill map | One YAML file per level: skills with id, sequence, track, constraints, prerequisites, capabilities, book refs | Drafted by Claude from the book photos and syllabus |
-| Concept lessons | YAML, one file per skill in `content/lessons/`, with a list of cards (explain, show, hear, try, check, watch); notes as `C4 D4:2 [C4,E4,G4]` (v0.20) | The Show card is declarative (keys to light, staff notes, order and timing), so no animation authoring is needed |
+| Concept lessons | YAML, one file per skill in `content/lessons/`, with a list of cards (explain, show, hear, try, check, watch); notes as `C4 D4:2 [C4,E4,G4]` (v0.20) | The Show card is declarative (keys to light, staff notes, order and timing), so no animation authoring is needed. Every line read aloud is recorded with the lesson voice when it is written or changed (the `lesson-voice` skill, 10.5, v0.34); `say:` beside a `text` gives the words to read when they differ from what is shown |
 | Songs | MusicXML (e.g. from MuseScore) or ABC, with a small YAML header (title, composer, genre, level, hands, source, license), one file per song in `content/pieces/` | Converted to the notation format by the shared converter. Every song's source is kept in git, whether it was written here or imported (`promote` moves an approved import's source in); the songs themselves reach the app through the library (10.7) |
 | Drills | Parameters only (6.6); built by the generators | No notation files |
 
@@ -1173,6 +1175,16 @@ The parent hears the vocal and accompaniment in the staging review list, so medi
 | FluidSynth 2.6 (conda-forge) and the MuseScore General SoundFont (MIT) | Renders the backing from notation at each tempo preset (v0.22); the SoundFont's acknowledgements go in the app's credits |
 | Skill scripts (ours) | Run the steps and build the package (prototypes in `feasibility/sync-probe/`) |
 
+#### The lesson voice (v0.34)
+
+The concept lessons' words are recorded ahead of time with **Kokoro-82M** (Apache-2.0), voice **Heart at 80% speed**, chosen by ear on the iPad from six voices on real lesson lines (`feasibility/voice-probe/`, Oct 6, 2026: Kokoro's Heart, Bella, Emma and Michael, Heart at 90% and 80%, and Chatterbox; the device's own voice beside them). Recording on the dev box, not speech made on the iPad, gives the same natural voice on every device and works offline; every line is fixed text written in advance, so nothing is lost.
+
+- **Tools** (`tools/voice/`, set up by `tools/voice/setup.sh` into `tools/.voice/`): Kokoro on the CPU (it doesn't need the GPU, so it never waits for YuE2), the model pinned to one revision, and Whisper small.en for the check.
+- **The lines** (`tools/voice/spoken.py`): each lesson card's `text`, Check question and contrast from `content/lessons/*.yaml`, and the lesson screen's own lines from `client/src/lib/lessonPhrases.ts`. A line can carry **`say:`** beside its `text` when the voice should read something other than what is shown. The **lexicon** (`tools/voice/lexicon.yaml`) fixes words the voice says wrong everywhere ("bass" as in the fish, in 55 lines), and the note letter A is marked so it isn't read as the word "a" (when no noun follows it). A "..." (a fill-in question, a line that runs on) is read as a plain stop at the end of a line, "blank" in the middle, and nothing at the start: with the dots, and on one-word lines, the voice adds a sound the family heard ("a listen"), so the screen's cue before a tune is "Here it is." rather than "Listen."
+- **Recording and the check** (`tools/voice/lesson_voice.py make`): each line missing a recording, or whose words or voice changed, is recorded, levelled to one loudness, saved as an MP3 named by a hash of its words and the voice, and transcribed by Whisper; the letters heard are compared with the letters written (numbers as words, so "E, D, C" heard as "EDC" matches), and more than 10% different is flagged for a listen. Recordings no line uses are removed. The 330 lines are about 27 minutes of speech and 12 MB.
+- **Storage:** `content/lessons/voice/` with its index `voice.json` (each line's file, the words spoken, length and check), the MP3s in **Git LFS** like the curriculum songs' stems. The content build copies the up-to-date recordings into the app (`lessons/voice/`, with `lessons/voice.json` by the text shown) and warns about lines with none; those are read by the device's voice until they are recorded.
+- **Writing a lesson** includes recording it: the `lesson-voice` skill (`.claude/skills/lesson-voice/`) runs after any lesson's words change.
+
 ### 10.6 Concept-video skill
 
 **A potential feature (section 14, v0.26):** the design is kept here for when it is built. Replaces downloading on the server.
@@ -1373,8 +1385,11 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [x] Add feature so a tap outside the Gear icon 'Song Settings' pop-up will close that pop-up and go back to the Song play page.
 - [X] For the Play page, the vertical white space between the header bar and the Treble Staff seems to be more than it needs to be.  Can this vertical white space be cut in roughly half?  But if there is a good reason (e.g. sometimes an important musical symbol is shown there), then we don't need to do this. Update: Postpone this because the staff saves the same fixed headroom for every song (staff.ts:28). That room is for high notes with ledger lines, finger numbers, chord symbols and the "verse 2" label.
 - [ ] Add rewards and star focus to encourage more engagement (M10)
-- [ ] What options are there for improving the spoken audio when 'reading' the lessons? Currently this is very mechanistic and robotic. Can we add a part of the app that can do this better?
-- [ ] Add a search functionality in the Songs page, which narrows the visible list to songs which have that text somewhere (title, lyrics). The student can already narrow by 'Favorites' from 'All Songs'. We should also add a genre pulldown so the student can narrow to a specific genre.
+- [x] What options are there for improving the spoken audio when 'reading' the lessons? Currently this is very mechanistic and robotic. Can we add a part of the app that can do this better? (v0.34: the lesson voice, Kokoro's Heart at 80% speed, recorded ahead; Auto-read and Read it to me / Stop reading)
+- [ ] Check the lesson voice on the iPad: the first lesson after opening the app reads its first card, and with the silent switch on
+- [ ] Add a search functionality in the Songs page, which narrows the visible list to songs which have that text somewhere (title, lyrics). The student can already narrow by 'Favorites' from 'All Songs'. As part of this work, also add a genre pulldown so the student can narrow to a specific genre.
+- [ ] Add option for the Song page to show/hide the Chord symbols on the staff. This should be a sticky button per student similar to 'Metro' button.  This should default to Off for beginner students.
+- [ ] When the user exits the lesson by tapping the 'back' button, which takes the user back to the Journey map, the journey map reverts back to is default position.  How difficult is it to have this go back to the same location in the journey map where the user had been when they initiated the Lesson?
 
 
 ## 13. Later-phase design (placeholders)
