@@ -6,6 +6,8 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.34 | Oct 6, 2026 | The lesson voice: every lesson line recorded ahead with Kokoro's Heart at 80% speed, checked by Whisper, kept in Git LFS; a card read a moment after it shows; Auto-read (the student's choice for every lesson) beside Read it to me / Stop reading; the `lesson-voice` skill |
+| v0.33 | Oct 5, 2026 | Dragging the staff to play or listen from any bar (a drag back is a rewind; ahead, practice of part of the song); a Christmas batch of 15 public-domain songs; the holiday backing style (strings, harp arpeggios, cello, sleigh bells) |
 | v0.32 | Oct 5, 2026 | The Server session's report: the library in the nightly backup and its restore test passed; a new server also needs the deploy account's sudo and, without Caddy's data, a new certificate root; the install scripts check both; the server's details moved out of the repo into a local config file |
 | v0.31 | Oct 3, 2026 | A fresh install: the approved curriculum songs kept in the repo (`content/library/`, stems in Git LFS) by `tools/library_export.py`, seeded on a new server by `tools/fresh_install.sh`; the library in the backup and its restore test |
 | v0.30 | Oct 3, 2026 | Vocals for curriculum songs: a vocal alone, with no backing (a `none` backing style, the default for the map's own songs), and the app playing songs whose stems have no backing; YuE2's input in the song's real key and a singable range; repeated-note songs placed by their words |
@@ -27,6 +29,21 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.34 (Oct 6, 2026)
+
+The lessons' spoken words, from the parent's "the voices do not sound natural at all":
+- **The lesson voice (3 "Teaching concepts", 10.5):** a feasibility test (`feasibility/voice-probe/`) put six open-source neural voices beside the device's own on real lesson lines, on the piano server for the iPad; the family chose Kokoro-82M's Heart at 80% speed. Every line a lesson reads is now recorded ahead with it on the dev box (`tools/voice/`, on the CPU), checked by transcribing it with Whisper, and kept in Git LFS (`content/lessons/voice/`); the content build hands the recordings to the app, and the device's voice reads only a line not recorded yet. A lexicon and the note-letter rule fix "bass" and the letter A, and a "..." is read so the voice adds no sound (a stop at the end, "blank" in the middle); a line can carry `say:`.
+- **Reading on the lesson screen (3):** a card is read 0.8 s after it appears, so the child sees it first; a Show card is read, then says "I'll show you" and plays its keys (before, its demonstration started at once and cut the reading off); a Hear or Echo card is read, then says "Here it is" and plays its tune by itself (first "Listen", but the voice put a sound before it) (before, a Hear card waited for Play it, and an Echo card played while it was read). Read it to me becomes Stop reading while anything is read. Auto-read, the student's choice for every lesson like Metro (`autoRead` in the student's settings, default on; also in Config › Students), decides whether the lesson reads and praises by itself. A Check card's first question is now read too, like the questions after it.
+- **The `lesson-voice` skill:** recording is part of writing or changing a lesson.
+
+## v0.33 (Oct 5, 2026)
+
+From the next steps while the keyboard is on its way:
+- **Dragging the staff (3):** the music pauses while the staff is held, the bar at the play line shows, and letting go plays on in the same mode from the nearest bar line after the usual glide and count-in. In Play mode a drag back over what was played is a rewind of the same attempt; a drag ahead (or from the start or the result) starts a new attempt from that bar, stored as practice of part of the song (`mode: "loop"`, a section to the end, `sectionOnly`), so it never passes a skill or checks off a Guided item. Everything else on the Play screen is unchanged: the browser check's 334 earlier checks pass, with 7 new ones for the drag.
+- **Christmas songs (6.8, 10.5):** 15 public-domain songs in `content/incoming/christmas/`. Ten carols come from the Open Hymnal Project's public-domain ABC with their hymnal four-part settings: the child plays the melody and the backing plays the written alto, tenor and bass (`hymn-strings`), with chord symbols worked out from the four parts for YuE2. Every note of every part was checked against the source, and three were moved to easier keys. Five songs (Jingle Bells, Deck the Halls, We Wish You a Merry Christmas, Up on the Housetop, Jolly Old Saint Nicholas) were typed by us and checked against reference versions that aren't openly licensed.
+- **YuE2's lyrics (10.5):** a run of notes on one vowel ("Glo-o-o-o-ria") reaches YuE2 with a hyphen before each note instead of as one long word, and the lyrics' lines never break inside a word. The parent heard Angels We Have Heard on High lose its place in the run.
+- **The holiday backing style (10.5):** warm strings, a harp breaking each chord, a cello on the roots and light sleigh bells (the General MIDI kit's jingle bell, on the drum channel, which the backing renderer now supports), the Holiday genre's default.
 
 ## v0.32 (Oct 5, 2026)
 

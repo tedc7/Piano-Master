@@ -33,3 +33,32 @@ describe("Attempt results for Diagnostics (arch §8.8)", () => {
     expect(a.result(false).noteResults.map(([i]) => i)).toEqual([0, 1, 2, 3]);
   });
 });
+
+describe("A play from a dragged-to bar (v0.33)", () => {
+  it("expects only the notes from that bar on, and counts as practice of part of the song", () => {
+    const tl = buildTimeline(FOUR_BARS);
+    const from = tl.barLines[2];
+    const a = new Attempt(tl, { hands: "both", handsWritten: "R", section: null, from, preset: "100" });
+    a.beginPass(from, 0);
+    const later = tl.notes.filter((n) => n.beat >= from);
+    for (const n of later) {
+      a.noteOn(n.pitch, n.beat, 80, SPB, n.beat * 500);
+      a.tick(n.beat + 0.2, SPB, false);
+    }
+    a.tick(20, SPB, false);
+    const r = a.result(true);
+    expect(r.evaluation.expected).toBe(later.length);
+    expect(r.evaluation.matched).toBe(later.length);
+    expect(r.conditions.sectionOnly).toBe(true);
+    expect(a.reached).toBe(20);
+    // the bars before it are outside the attempt: never wrong notes
+    expect(a.noteOn(tl.notes[0].pitch, tl.notes[0].beat, 80, SPB, 0).kind).toBe("ignored");
+  });
+
+  it("leaves a whole-piece attempt as it was", () => {
+    const tl = buildTimeline(FOUR_BARS);
+    const a = new Attempt(tl, { hands: "both", handsWritten: "R", section: null, preset: "100" });
+    expect(a.range.start).toBe(0);
+    expect(a.result(true).conditions.sectionOnly).toBe(false);
+  });
+});

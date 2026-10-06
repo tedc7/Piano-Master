@@ -197,6 +197,30 @@ sheets used only to check them (arch §10.2).
     Canyon Echo, Row, Row) it finds no octave errors, and on this one 11. The pitch check itself
     compares pitch classes, so the tracker's octave errors never affected it. Up to 24 seeds now.
 
+27. **The Christmas batch (Oct 5): 4 of 15 pass, and fast repeated-note songs defeat both
+    alignments.** Ten hymnal carols (backing: their own alto, tenor and bass) and five songs with the
+    new `holiday` style. Every backing was on the beat (worst part 6 ms). With up to 6 takes, Silent
+    Night, Hark! The Herald Angels Sing, O Little Town of Bethlehem and Joy to the World passed; seven
+    more missed only the word check, by a little (11-20% of words off, the limit is 10%), all on pitch.
+    Jingle Bells and Up on the Housetop failed in a new way: aligned by pitch, every take was 89-98% on
+    pitch and on the beat with 60-80% of words "off"; aligned by the words, the other way round. Both
+    are long runs of one repeated note ("jin-gle bells, jin-gle bells"), which the pitch windows can't
+    place (note 23's repeated-note case, at speed). Slowing them (half 100 to 88, quarter 120 to 104)
+    didn't change it, so the parent's listen decides. For Up on the Housetop the tool had picked a
+    words-aligned take 54% on pitch and a third of a second off the beat; `--skip-take 6` chose the
+    pitch-aligned one, on the beat. The Gloria run, sung with an "o" on each note, keeps its melody
+    (96% on pitch) and fails the word check, as expected.
+
+28. **The Gloria run, sent back (Oct 6): YuE2 had been given one word.** The parent heard the vocal
+    stop singing the "o" run too early, with many words off after it. The export joins a word's
+    syllables for YuE2's lyrics ("it-sy" -> "itsy"), so the 16 notes of "Glo-o-o-...-ri-a" reached
+    it as "Glooooooooooooooooria", with nothing to say it was 16 notes; and a line break at each
+    phrase start had cut words in two ("Gloooooooooo / ooooooria", "De / o!"). Now a run on one vowel
+    keeps a hyphen before each note in YuE2's lyrics ("Glo-o-o-o-...-oria"; the aligner still gets
+    the plain word), and a phrase that starts inside a word breaks the line at the next word.
+    Re-rendered: the first take passed (98% on pitch, 7% of words off, against 31-34% before), and
+    went back to the review list under the same id.
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

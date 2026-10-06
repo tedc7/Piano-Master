@@ -22,3 +22,11 @@
 - **Things the notation can't hold yet**: trills and other ornaments beyond grace notes (write the
   main note), pedal markings (kept out until the pedal scorer, Phase 3), dynamics (kept for later,
   not scored), and 8va lines (write the real octave).
+- **Open Hymnal ABC files are Latin-1**, not UTF-8 (`Kinderchöre`): re-encode them
+  (`iconv -f latin1 -t utf-8`) before `convert`. Their four-part settings work with `play: melody` as
+  they are. Under the music they print a refrain's words once, and later verses' lines show `*` where
+  the refrain's pickup words go: repeat the refrain under every verse. `compare` can't read their
+  four voices: build both the source and the piece with `notation.parse_abc` and `build_notation`
+  and compare their notes (the melody is the notes marked `isMelody`).
+- **A long melisma** ("Glo-o-o-ria") is sung as one held note by YuE2. To keep the run, write a
+  syllable under each note ("Glo- o- o- …"); the word check then fails it, so say so in the review.

@@ -1,0 +1,205 @@
+<title>Lesson Voice Trial</title>
+<style>
+  :root {
+    --ground: #f4f5f7; --surface: #ffffff; --ink: #15171c; --muted: #5a5f6b; --line: #d9dce3;
+    --key: #fdfdfd; --key-edge: #c9ccd4; --felt: #a3312b; --felt-ink: #ffffff; --felt-soft: #f6e4e2;
+    --good: #2f6b3f; --warn: #8a5a12;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground: #111216; --surface: #1a1c22; --ink: #eceef2; --muted: #a2a7b3; --line: #2e313a;
+      --key: #23262e; --key-edge: #3a3e48; --felt: #e0625b; --felt-ink: #16080a; --felt-soft: #3a1d1c;
+      --good: #7fc28f; --warn: #e2b05c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground: #111216; --surface: #1a1c22; --ink: #eceef2; --muted: #a2a7b3; --line: #2e313a;
+    --key: #23262e; --key-edge: #3a3e48; --felt: #e0625b; --felt-ink: #16080a; --felt-soft: #3a1d1c;
+    --good: #7fc28f; --warn: #e2b05c;
+  }
+  body { background: var(--ground); color: var(--ink); font: 16px/1.55 var(--sans); }
+  .wrap { max-width: 780px; margin: 0 auto; padding-inline: 16px; padding-block: 36px 64px; display: grid; gap: 36px; }
+  h1, h2 { font-family: var(--serif); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: 2.1rem; }
+  h2 { font-size: 1.35rem; }
+  p { margin: 0; max-width: 65ch; }
+  .lede { color: var(--muted); font-size: 1.05rem; }
+  header { display: grid; gap: 10px; }
+  .eyebrow { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--felt); }
+  section { display: grid; gap: 14px; }
+
+  .verdict { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: grid; gap: 14px; }
+  .verdict ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .fact { border-top: 2px solid var(--ink); padding-top: 8px; }
+  .fact b { display: block; font: 600 1.35rem/1.2 var(--serif); font-variant-numeric: tabular-nums; }
+  .fact span { color: var(--muted); font-size: 0.88rem; }
+
+  .legend { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .legend li { display: grid; grid-template-columns: 11rem 1fr; gap: 12px; align-items: baseline; }
+  .legend b { font-weight: 700; }
+  .legend span { color: var(--muted); }
+  @media (max-width: 520px) { .legend li { grid-template-columns: 1fr; gap: 0; } }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; color: var(--muted); font-size: 0.92rem; }
+  select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+
+  .lines { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .ln { padding-block: 18px; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
+  .ln q { quotes: none; font-size: 1.08rem; }
+  .ln small { font: 400 0.72rem/1 var(--mono); color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px; }
+  .keys button {
+    font: 700 0.85rem/1 var(--sans); color: var(--ink); background: var(--key); cursor: pointer;
+    border: 1px solid var(--key-edge); border-bottom-width: 4px; border-radius: 3px 3px 6px 6px;
+    padding: 10px 12px 9px; min-height: 40px;
+  }
+  .keys button:hover { border-color: var(--muted); }
+  .keys button:focus-visible { outline: 3px solid var(--felt); outline-offset: 2px; }
+  .keys button.device { background: transparent; border-style: dashed; border-bottom-width: 1px; font-weight: 400; }
+  .keys button.on { background: var(--felt); color: var(--felt-ink); border-color: var(--felt); border-bottom-width: 1px; padding-top: 13px; }
+  .note { color: var(--muted); font-size: 0.92rem; }
+  .fix { font-family: var(--mono); font-size: 0.85rem; background: var(--felt-soft); padding: 1px 5px; border-radius: 3px; }
+  @media (prefers-reduced-motion: no-preference) { .keys button { transition: background 0.12s, padding 0.08s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Piano-Master · feasibility test · Oct 5, 2026</div>
+    <h1>Lesson Voice Trial</h1>
+    <p class="lede">The concept lessons read their text with the device's own built-in voice. This trial renders real lesson lines with two open-source neural voices on the GPU box, the same way song vocals are made, so you can compare them by ear.</p>
+  </header>
+
+  <section class="verdict" aria-labelledby="v">
+    <h2 id="v">What the test found</h2>
+    <div class="facts">
+      <div class="fact"><b>324</b><span>spoken lines across 46 lessons, all fixed text</span></div>
+      <div class="fact"><b>26 s</b><span>to render all 22 minutes of lesson speech with Kokoro</span></div>
+      <div class="fact"><b>9.4 MB</b><span>for every line as MP3, per voice</span></div>
+      <div class="fact"><b>Free</b><span>Kokoro is Apache-2.0, Chatterbox is MIT; both run offline</span></div>
+    </div>
+    <ul id="findings">
+      <li><b>It's feasible.</b> Because every lesson line is written in advance, each one can be rendered once and shipped as a small audio file, cached on the iPad like the song media. Nothing runs on the iPad except playback, and the voice is the same on every device.</li>
+      <li><b>Pronunciation needs a short word list.</b> Out of the box, Kokoro reads <span class="fix">bass</span> like the fish (55 lines), and can read the note name <span class="fix">A</span> as the word "a". Both are fixed here with a pronunciation hint; in the app this would be one shared list (bass, note letters, Italian terms), checked on every line before rendering.</li>
+      <li><b>Every clip is clear to a speech recogniser.</b> Whisper transcribed all 105 clips: every word was found in every voice (2.6% to 5.8% word differences, nearly all spelling, like "base" and "EDC"). One real slip: Chatterbox added a word ("<i>Well,</i> you did it."). In the app, every rendered line would get this same check, as the song vocals do.</li>
+      <li><b>Kokoro is steadier; Chatterbox is more expressive but quicker.</b> Chatterbox speaks up to 4.6 words a second on the long lines, against Kokoro's 3.6, and as a larger model it can add or drop words. It needs about 15 s of GPU per minute of speech, against Kokoro's 1 s; both are fine for 330 lines.</li>
+      <li>Checked and correct without help: 4/4 and 3/4 ("four four"), f, p and mf as letters, forte, mezzo forte, Allegro, finger numbers.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="voices">
+    <h2 id="voices">The voices</h2>
+    <ul class="legend" id="legend">
+      <li><b>This device</b><span>The voice the lessons use today: your browser's built-in one. Open this page on the iPad to hear exactly what your child hears.</span></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="listen">
+    <h2 id="listen">Listen</h2>
+    <p class="note">Lines come from the real lessons, plus the app's spoken praise. Every voice is levelled to the same loudness. The pronunciation fixes are applied.</p>
+    <div class="tools">
+      <label for="play-all-voice">Play every line in</label>
+      <select id="play-all-voice"></select>
+      <div class="keys"><button id="play-all" type="button">Play all</button></div>
+    </div>
+    <div class="lines" id="lines"></div>
+  </section>
+</div>
+
+<script>
+  const DATA = /*DATA*/null;
+  const audio = new Audio();
+  let onBtn = null, queue = [], run = 0;
+
+  function mark(btn) {
+    if (onBtn) onBtn.classList.remove("on");
+    onBtn = btn;
+    if (btn) btn.classList.add("on");
+  }
+  function stopAll() {
+    audio.pause();
+    try { speechSynthesis.cancel(); } catch (e) { /* no speech */ }
+    queue = [];
+    run++;
+    mark(null);
+  }
+  function speakDevice(text, btn, done) {
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      const r = run;
+      u.onend = () => { if (r !== run) return; mark(null); done && done(); };
+      speechSynthesis.speak(u);
+      mark(btn);
+    } catch (e) { btn.textContent = "No device voice here"; }
+  }
+  function playFile(voice, id, btn, done) {
+    audio.src = `audio/${voice}-${id}.mp3`;
+    const r = run;
+    audio.onended = () => { if (r !== run) return; mark(null); done && done(); };
+    audio.play().then(() => mark(btn)).catch(() => mark(null));
+  }
+  function play(voice, line, btn, done) {
+    const again = onBtn === btn && !done;
+    stopAll();
+    if (again) return;
+    if (voice === "device") speakDevice(line.text, btn, done);
+    else playFile(voice, line.id, btn, done);
+  }
+
+  const legend = document.getElementById("legend");
+  const sel = document.getElementById("play-all-voice");
+  sel.add(new Option("This device", "device"));
+  for (const v of DATA.voices) {
+    const li = document.createElement("li");
+    li.innerHTML = `<b></b><span></span>`;
+    li.querySelector("b").textContent = v.name;
+    li.querySelector("span").textContent = v.note;
+    legend.append(li);
+    sel.add(new Option(v.name, v.key));
+  }
+  sel.value = DATA.voices[0].key;
+
+  const host = document.getElementById("lines");
+  const buttons = {};
+  for (const line of DATA.lines) {
+    const row = document.createElement("div");
+    row.className = "ln";
+    row.innerHTML = `<small></small><q></q><div class="keys"></div>`;
+    row.querySelector("small").textContent = line.id.replace(/-/g, " ");
+    row.querySelector("q").textContent = line.text;
+    const keys = row.querySelector(".keys");
+    buttons[line.id] = {};
+    for (const v of [{ key: "device", name: "This device" }, ...DATA.voices]) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = v.name.replace("Kokoro · ", "");
+      if (v.key === "device") b.className = "device";
+      b.setAttribute("aria-label", `Play with ${v.name}`);
+      b.addEventListener("click", () => play(v.key, line, b));
+      keys.append(b);
+      buttons[line.id][v.key] = b;
+    }
+    host.append(row);
+  }
+
+  document.getElementById("play-all").addEventListener("click", () => {
+    stopAll();
+    const voice = sel.value;
+    queue = DATA.lines.slice();
+    const next = () => {
+      const line = queue.shift();
+      if (!line) return;
+      const b = buttons[line.id][voice];
+      b.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      const rest = queue;
+      if (voice === "device") speakDevice(line.text, b, () => { queue = rest; setTimeout(next, 400); });
+      else playFile(voice, line.id, b, () => { queue = rest; setTimeout(next, 400); });
+    };
+    next();
+  });
+</script>

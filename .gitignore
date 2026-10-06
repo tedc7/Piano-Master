@@ -13,6 +13,8 @@ tests-output/
 api/app/content/
 # the media skill's tools (tools/media/setup.sh) and its work files
 tools/.media/
+# the lesson voice's tools (tools/voice/setup.sh)
+tools/.voice/
 # stems made by the media skill (arch §10.5): regenerated, not versioned
 content/media/
 # song batches being made (the import skill): sources, drafts and stems, some for private family

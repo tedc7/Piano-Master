@@ -1,7 +1,7 @@
 <script lang="ts">
   // Concept lesson (arch §3 screen 4, "Teaching concepts"): a short sequence of cards the student
   // taps through, from content/lessons/ (built into content/lessons/<skill>.json):
-  //  - Explain: a few sentences, read aloud (tap to replay);
+  //  - Explain: a few sentences, read aloud;
   //  - Show: the keys light up in order with their finger numbers, and the notes on a small staff;
   //  - Hear: the app plays the example, then a contrast;
   //  - Try: the student plays it on the piano; each note is confirmed, with the next key lit as a hint;
@@ -13,6 +13,12 @@
   // the parent can skip the Try, Check and Echo cards to review the rest. Check questions score 1
   // right first time and 0.5 the second; Echo scores by edit distance, 10% less per replay; the
   // total goes to the server with the lesson (§7.8), where it passes a theory skill.
+  // Reading aloud (v0.34): the lesson voice's recordings (lib/lessonVoice). With Auto-read on (the
+  // student's choice for every lesson, remembered like Metro), each card is read a moment after it
+  // appears, so the child sees the page and its words first, and the praise is spoken; then a Show
+  // card says "I'll show you" and plays its keys (Show me again says it too), and a Hear or Echo card
+  // says "Here it is" and plays its tune (a contrast is read before it plays, too). Read it to me reads the
+  // card again at any time, and becomes Stop reading while anything is being read.
   import { onMount, tick, untrack } from "svelte";
   import Status from "../components/Status.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -23,6 +29,8 @@
   import { renderMini, type MiniNote } from "../lib/staff";
   import { stars } from "../lib/scoring";
   import { echoScore, MAX_REPLAYS, questionPoints } from "../lib/theory";
+  import { SAY } from "../lib/lessonPhrases";
+  import { LessonVoice } from "../lib/lessonVoice.svelte";
   import Stars from "../components/Stars.svelte";
   import type { Hand, Skill } from "../lib/types";
 
@@ -44,6 +52,8 @@
     video?: string;
   }
   interface Lesson { skill: string; title: string; cards: Card[] }
+
+  const READ_DELAY_MS = 800;       // a new card shows this long before it is read aloud
 
   const NAMES: Record<Card["kind"], [string, string]> = {
     explain: ["Explain", "💬"], show: ["Show", "👀"], hear: ["Hear", "👂"], try: ["Try", "🎹"], check: ["Check", "✅"], echo: ["Echo", "🦜"], watch: ["Watch", "🎬"],
@@ -69,6 +79,11 @@
   let echoResult = $state<number | null>(null);
   let echoTimer = 0;
   let hearingUntil = 0;
+  let intro = 0;                               // the reading-then-action under way; a newer one, or leaving, cancels it
+  let heardIn = -1;                            // the visit to a card in which its tune was last played
+  let entry = 0;                               // which visit to a card this is
+  const voice = new LessonVoice(app.audio);
+  const autoRead = $derived(app.prefs.autoRead ?? true);
 
   // fixed when the screen opens, like the Play screen's session item
   const itemId = untrack(() => app.session?.items.find((i) => !i.done && i.kind === "lesson" && i.skillId === skillId)?.id ?? null);
@@ -80,7 +95,9 @@
     (window as unknown as { __lesson: unknown }).__lesson = { get card() { return card; }, get progress() { return progress; },
                                                              get step() { return step; }, get done() { return done[step]; },
                                                              get echo() { return { played: echoPlayed, result: echoResult }; },
-                                                             get points() { return points; } };
+                                                             get points() { return points; },
+                                                             get voice() { return { speaking: voice.speaking, log: voice.log, autoRead }; },
+                                                             get heard() { return { thisCard: heardIn === entry, until: hearingUntil }; } };
     void (async () => {
       try { skill = (await loadContent()).map.skills.find((s) => s.id === skillId) ?? null; } catch { /* title only */ }
       try {
@@ -88,6 +105,8 @@
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         lesson = await r.json();
         done = lesson!.cards.map((c) => c.kind !== "try" && c.kind !== "check" && c.kind !== "echo");
+        void voice.preload([...lesson!.cards.flatMap((c) => [c.text, ...(c.questions ?? []).map((q) => q.text), c.contrast?.text ?? ""]),
+                            ...Object.values(SAY)]);
         await enter();
       } catch (e) {
         error = `This lesson isn't ready yet (${(e as Error).message}).`;
@@ -96,22 +115,28 @@
     return () => {
       off(); clearTimers(); kb?.destroy();
       delete (window as unknown as { __lesson?: unknown }).__lesson;
-      try { speechSynthesis.cancel(); } catch { /* none */ }
+      voice.stop();
     };
   });
 
   const card = $derived(lesson?.cards[step] ?? null);
   const last = $derived(!!lesson && step === lesson.cards.length - 1);
   const canNext = $derived(!!card && (done[step] || app.parentMode));
+  /** What Read it to me reads: a Check card's current question, otherwise the card's words. */
+  const reading = () => (card?.kind === "check" && card.questions && !done[step] ? card.questions[progress].text : card?.text ?? "");
 
   function clearTimers(): void {
     timers.forEach((t) => clearTimeout(t));
     timers = [];
   }
 
-  /** Set up the card on screen: its staff, its keyboard, and what it does straight away. */
-  async function enter(): Promise<void> {
+  /** Set up the card on screen: its staff, its keyboard, and what it does straight away. `keepVoice`
+   *  lets a line being read finish (until this card's own reading starts). */
+  async function enter(keepVoice = false): Promise<void> {
     clearTimers();
+    entry++;
+    intro++;
+    if (!keepVoice) voice.stop();
     feedback = "";
     progress = 0;
     kb?.destroy();
@@ -119,7 +144,8 @@
     await tick();
     const c = card;
     if (!c) return;
-    if (c.text) speak(c.text);
+    const acts = c.kind === "show" || c.kind === "echo" || (c.kind === "hear" && autoRead);
+    if (autoRead && !acts) timers.push(window.setTimeout(() => void voice.speak(reading()), READ_DELAY_MS));
     const answers = (c.questions ?? []).flatMap((q) => [...(typeof q.answer === "string" ? [] : [q.answer]), ...(q.hear ?? [])]);
     const all = [...(c.notes ?? []), ...(c.play ?? []), ...answers, ...(c.contrast?.play ?? [])];
     if (kbHost && all.length) {
@@ -129,13 +155,15 @@
       if (c.kind === "check") kb.onTap((p) => answer(p));
     }
     if (staffHost && c.notes) heads = renderMini(staffHost, c.notes, c.clef ?? "treble");
-    if (c.kind === "show") showMe();
+    if (c.kind === "show") void readThen(true, SAY.showYou, showMe);
+    if (c.kind === "hear" && autoRead) void readThen(true, SAY.hereItIs, () => void hear(c.play ?? [], c.tempo, c.level));
     if (c.kind === "try") hint();
     if (c.kind === "echo") {
       echoPlayed = [];
       replays = 0;
       echoResult = null;
-      timers.push(window.setTimeout(() => void hear(c.play ?? [], c.tempo), 900));
+      if (autoRead) void readThen(true, SAY.hereItIs, () => void hear(c.play ?? [], c.tempo));
+      else timers.push(window.setTimeout(() => void hear(c.play ?? [], c.tempo), 900));
     }
   }
 
@@ -147,6 +175,49 @@
     if (i === null) { kb?.setTargets([]); return; }
     heads[i]?.forEach((h) => h.classList.add("pm-glow"));
     kb?.setTargets(c.notes![i].pitches.map((p) => ({ pitch: p, hand: handOf(c, i), finger: c.fingers?.[i] })));
+  }
+
+  /** With Auto-read on: read the card (on arriving, after the pause), say `cue` ("I'll show you",
+   *  "Here it is"), then do what the card does (`act`: its keys or its tune). Stop reading skips straight
+   *  to `act`; leaving the card, or a tap that does `act` itself, cancels the rest. With Auto-read off,
+   *  `act` at once. */
+  async function readThen(readCard: boolean, cue: string, act: () => void): Promise<void> {
+    const at = ++intro;
+    if (autoRead) {
+      if (readCard) {
+        await new Promise((r) => timers.push(window.setTimeout(r, READ_DELAY_MS)));
+        if (at !== intro) return;
+        const read = await voice.speak(reading());
+        if (at !== intro) return;
+        if (!read) { act(); return; }
+      }
+      await voice.speak(cue);
+      if (at !== intro) return;
+    }
+    act();
+  }
+
+  /** A tap that plays or shows something now: whatever reading-then-action was under way stops. */
+  function now(): void {
+    intro++;
+    voice.stop();
+  }
+
+  /** Show me again: the keys again ("I'll show you" first with Auto-read on), replacing what was under way. */
+  function showAgain(): void {
+    clearTimers();
+    light(null);
+    void readThen(false, SAY.showYou, showMe);
+  }
+
+  /** Now listen to this: the contrast, read first with Auto-read on, then played. */
+  function contrast(): void {
+    const k = card!.contrast!;
+    feedback = k.text;
+    now();
+    const at = intro;
+    const play = () => { if (at === intro) void hear(k.play, card!.tempo, k.level); };
+    if (autoRead) void voice.speak(k.text).then(play); else play();
   }
 
   /** Show: each key in turn, with its finger number and its note on the staff. */
@@ -165,6 +236,7 @@
     const spb = 60 / tempo;
     let t = ctx.currentTime + 0.1;
     hearingUntil = performance.now() + (0.1 + notes.reduce((n, x) => n + x.beats, 0) * spb) * 1000;
+    heardIn = entry;
     for (const n of notes) {
       for (const p of n.pitches) app.audio.piano(p, t, n.beats * spb * 0.95, level);
       const at = t;
@@ -200,8 +272,8 @@
       kb?.press(pitch, "ok");
       if (want.every((p) => held.has(p))) {
         progress++;
-        feedback = progress < c.notes!.length ? "Yes!" : "You did it! 🎉";
-        if (progress >= c.notes!.length) { done[step] = true; speak("You did it!"); }
+        feedback = progress < c.notes!.length ? "Yes!" : `${SAY.tryDone} 🎉`;
+        if (progress >= c.notes!.length) { done[step] = true; say(SAY.tryDone); }
         hint();
       }
     } else {
@@ -241,24 +313,24 @@
     const k = qKey();
     if (!(k in points)) points[k] = questionPoints(wrongTries[k] ?? 0);   // the first time it is got right
     progress++;
-    if (progress >= c.questions!.length) { done[step] = true; feedback = "All right! 🎉"; speak("All right!"); }
-    else { feedback = "Yes!"; timers.push(window.setTimeout(() => { after?.(); speak(c.questions![progress].text); }, 600)); }
+    if (progress >= c.questions!.length) { done[step] = true; feedback = `${SAY.checkDone} 🎉`; say(SAY.checkDone); }
+    else { feedback = "Yes!"; timers.push(window.setTimeout(() => { after?.(); say(c.questions![progress].text); }, 600)); }
   }
 
   function wrongAnswer(): void {
     const k = qKey();
     wrongTries[k] = (wrongTries[k] ?? 0) + 1;
-    feedback = "Let's look at it again.";
-    speak("Let's look at it again.");
+    feedback = SAY.lookAgain;
+    say(SAY.lookAgain);
     const show = lesson!.cards.findIndex((x) => x.kind === "show");
-    if (show >= 0) timers.push(window.setTimeout(() => { step = show; void enter(); }, 1200));
+    if (show >= 0) timers.push(window.setTimeout(() => { step = show; void enter(true); }, 1200));   // "Let's look…" finishes
   }
 
   /** Echo: the student plays the phrase back; it is scored when they have played as many notes,
    *  or stop for 2.5 seconds. Keys pressed while the app is still playing it don't count. */
   function echoKey(pitch: number): void {
     kb?.press(pitch, "neutral");
-    if (echoResult !== null || performance.now() < hearingUntil) return;
+    if (echoResult !== null || heardIn !== entry || performance.now() < hearingUntil) return;   // not yet heard, or still playing
     echoPlayed = [...echoPlayed, pitch];
     clearTimeout(echoTimer);
     if (echoPlayed.length >= echoWant().length) finishEcho();
@@ -273,12 +345,14 @@
     const k = `${step}/echo`;
     if (!(k in points)) points[k] = echoResult;          // the first play-back counts; more are practice
     done[step] = true;
-    feedback = echoResult >= 0.99 ? "Perfect! 🎉" : echoResult >= 0.74 ? "Nice listening! 🎉" : "Good try! Listen again and play it back.";
-    speak(feedback.replace(" 🎉", ""));
+    const line = echoResult >= 0.99 ? SAY.perfect : echoResult >= 0.74 ? SAY.nice : SAY.goodTry;
+    feedback = line === SAY.goodTry ? line : `${line} 🎉`;
+    say(line);
   }
 
   function echoReplay(): void {
     if (echoPlayed.length || replays >= MAX_REPLAYS) return;
+    now();
     replays++;
     void hear(card!.play ?? [], card!.tempo);
   }
@@ -287,14 +361,25 @@
     echoPlayed = [];
     echoResult = null;
     feedback = "";
+    now();
     void hear(card!.play ?? [], card!.tempo);
   }
 
-  function speak(text: string): void {
-    try {
-      speechSynthesis.cancel();
-      speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-    } catch { /* no speech on this device */ }
+  /** Something the lesson says by itself (praise, the next question): only with Auto-read on. */
+  function say(text: string): void {
+    if (autoRead) void voice.speak(text);
+  }
+
+  /** Read it to me, or Stop reading. */
+  function readButton(): void {
+    if (voice.speaking) voice.stop(); else void voice.speak(reading());
+  }
+
+  /** Auto-read on or off, for every lesson; turned on, it reads this card now. */
+  function toggleAutoRead(): void {
+    const on = !autoRead;
+    app.setAutoRead(on);
+    if (on) void voice.speak(reading()); else voice.stop();
   }
 
   function move(by: number): void {
@@ -356,11 +441,13 @@
           {/if}
           {#if feedback}<p class="feedback" class:good={feedback.startsWith("Yes") || feedback.includes("🎉")}>{feedback}</p>{/if}
           <div class="actions">
-            <button class="quiet" onclick={() => speak(card.kind === "check" && card.questions && !done[step] ? card.questions[progress].text : card.text)}>🔊 Read it to me</button>
-            {#if card.kind === "show"}<button class="quiet" onclick={showMe}>👀 Show me again</button>{/if}
+            <button class="quiet read" onclick={readButton}>{voice.speaking ? "⏹ Stop reading" : "🔊 Read it to me"}</button>
+            <button class="toggle autoread" class:off={!autoRead} onclick={toggleAutoRead} aria-pressed={autoRead}
+                    title="Read each card aloud by itself, in every lesson">Auto-read</button>
+            {#if card.kind === "show"}<button class="quiet" onclick={showAgain}>👀 Show me again</button>{/if}
             {#if card.kind === "hear"}
-              <button onclick={() => hear(card.play ?? [], card.tempo, card.level)}>▶ Play it</button>
-              {#if card.contrast}<button class="quiet" onclick={() => { feedback = card.contrast!.text; speak(card.contrast!.text); void hear(card.contrast!.play, card.tempo, card.contrast!.level); }}>▶ Now listen to this</button>{/if}
+              <button onclick={() => { now(); void hear(card.play ?? [], card.tempo, card.level); }}>▶ Play it</button>
+              {#if card.contrast}<button class="quiet" onclick={contrast}>▶ Now listen to this</button>{/if}
             {/if}
             {#if card.kind === "echo"}
               {#if echoResult === null}
@@ -409,6 +496,7 @@
   .mini { display: flex; justify-content: center; margin: 4px 0; }
   .feedback { font-size: 20px; font-weight: 700; color: #8a5a00; margin: 6px 0; }
   .feedback.good { color: var(--ok); }
+  .read { min-width: 190px; }
   .actions { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 8px; }
   video { max-width: 100%; max-height: 320px; border-radius: 12px; }
   .keys { position: relative; height: 170px; background: #2a2a2e; margin-top: 12px; border-radius: 10px; }

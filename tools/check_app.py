@@ -382,8 +382,10 @@ def main():
                     if page.evaluate("__lesson.card.kind") == "show":
                         continue
                 elif kind == "echo":
-                    # a key pressed while the app is still playing the phrase doesn't count
-                    page.wait_for_timeout(900 + 60000 / page.evaluate("__lesson.card.tempo") * len(page.evaluate("__lesson.card.play")) + 300)
+                    # the card is read and "Here it is" said first (Auto-read on); a key pressed before the
+                    # phrase is played, or while it is, doesn't count
+                    page.wait_for_function("__lesson.heard.thisCard && performance.now() > __lesson.heard.until + 300", timeout=60000)
+                    echo_cues.append(([x["text"] for x in page.evaluate("__lesson.voice.log")[-2:]], page.evaluate("[__lesson.card.text, __lesson.voice.autoRead]")))
                     for ps in page.evaluate("__lesson.card.play.map(n => n.pitches)"):
                         page.evaluate("ps => { for (const p of ps) __midiSend([0x90, p, 80]); for (const p of ps) __midiSend([0x80, p, 0]); }", ps)
                         page.wait_for_timeout(120)
@@ -398,6 +400,8 @@ def main():
                     return went_back, points
                 page.wait_for_timeout(100)
             raise AssertionError("lesson: never finished")
+
+        echo_cues = []
 
         def ok_pin(digits):
             pad(digits)
@@ -442,19 +446,64 @@ def main():
         page.wait_for_selector(".card-big")
         page.wait_for_timeout(300)
         page.screenshot(path=str(OUT / "lesson-explain.png"))
+        # reading aloud (v0.34): a card is read by the lesson voice's recording a moment after it shows;
+        # Read it to me becomes Stop reading while it reads; Auto-read is the student's, for every lesson
+        voice = lambda: page.evaluate("__lesson.voice")
+        read_btn = page.locator("button.read")
+        check(voice()["log"] == [], "lesson voice: a new card isn't read the moment it shows")
+        page.wait_for_function("__lesson.voice.log.length > 0", timeout=4000)
+        first = page.evaluate("__lesson.card.text")
+        check(voice()["log"][0] == {"text": first, "by": "recording"},
+              f"lesson voice: the card is read by its recording after a moment ({voice()['log'][:1]})")
+        check(voice()["speaking"] and read_btn.inner_text().strip() == "⏹ Stop reading",
+              f"lesson voice: Read it to me becomes Stop reading while it reads ({read_btn.inner_text()!r})")
+        read_btn.click()
+        check(not voice()["speaking"] and read_btn.inner_text().strip() == "🔊 Read it to me", "lesson voice: Stop reading stops it")
+        read_btn.click()
+        page.wait_for_function("__lesson.voice.log.length === 2 && __lesson.voice.speaking", timeout=4000)
+        check(voice()["log"][1]["text"] == first, "lesson voice: Read it to me reads the card again")
+        page.locator("button.autoread").click()
+        check(not voice()["speaking"] and not voice()["autoRead"] and page.locator("button.autoread.off").count() == 1,
+              "lesson voice: turning Auto-read off stops the reading")
+        page.get_by_role("button", name="Next ›").click()
+        page.wait_for_timeout(1500)
+        check(len(voice()["log"]) == 2, "lesson voice: with Auto-read off the next card isn't read")
+        ada = next(x for x in page.evaluate("fetch('api/students').then(r => r.json())")["students"] if x["name"] == "Ada")
+        check(ada["settings"]["autoRead"] is False, "lesson voice: Auto-read is remembered in the student's settings")
+        page.locator("button.autoread").click()
+        page.wait_for_function("__lesson.voice.log.length === 3", timeout=4000)
+        check(voice()["autoRead"] and voice()["log"][2]["text"] == page.evaluate("__lesson.card.text"),
+              "lesson voice: turning Auto-read on reads the card")
+        page.get_by_role("button", name="‹ Back").click()
+        page.wait_for_timeout(200)
         backs = 0
         while page.evaluate("__lesson.card.kind") != "show":            # past the explain cards
             page.get_by_role("button", name="Next ›").click()
             page.wait_for_timeout(200)
             backs += 1
         page.wait_for_selector(".mini svg")
-        page.wait_for_timeout(1200)
+        # with Auto-read on, a Show card is read, then says "I'll show you", then plays its keys
+        lit = "document.querySelectorAll('.mini .pm-glow').length + document.querySelectorAll('.keys .kb-t-R').length"
+        show_text = page.evaluate("__lesson.card.text")
+        page.wait_for_function("t => __lesson.voice.log.some(x => x.text === t)", arg=show_text, timeout=4000)
+        check(page.evaluate(lit) == 0, "lesson voice: a Show card is read before its keys play")
+        page.wait_for_function(lit + " > 0", timeout=30000)
         page.screenshot(path=str(OUT / "lesson-show.png"))
-        check(page.locator(".mini .pm-glow").count() + page.locator(".keys .kb-t-R").count() > 0, "lesson: Show lights the keys and the staff notes")
+        check([x["text"] for x in voice()["log"][-2:]] == [show_text, "I'll show you."],
+              f"lesson: Show lights the keys and the staff notes after the card is read and \"I'll show you\" ({voice()['log'][-2:]})")
+        n_said = len(voice()["log"])
+        page.get_by_role("button", name="👀 Show me again").click()
+        page.wait_for_function(f"__lesson.voice.log.length === {n_said + 1}", timeout=4000)
+        check(voice()["log"][-1]["text"] == "I'll show you." and page.evaluate(lit) == 0,
+              "lesson voice: Show me again says \"I'll show you\" first")
+        page.wait_for_function(lit + " > 0", timeout=8000)
+        check(True, "lesson voice: then Show me again plays the keys")
         for _ in range(backs):
             page.get_by_role("button", name="‹ Back").click()
             page.wait_for_timeout(150)
         _, pts = do_lesson()
+        said, (echo_text, _) = echo_cues[0]
+        check(said == [echo_text, "Here it is."], f"lesson voice: an Echo card is read, then says \"Here it is\", then plays its phrase ({said})")
         check(sorted(pts.values()) == [1] * 5 and any(k.endswith("/echo") for k in pts),
               f"lesson: the echo card and the Check questions each earn a point, right first time ({pts})")
         page.wait_for_selector(".path .bubble.done")
@@ -689,6 +738,17 @@ def main():
         page.get_by_role("button", name="Close").click()
         # the 3/4 lesson's identify questions: tap an answer, after listening to a phrase
         page.goto(url + "#/lesson/prep-a.three-four")
+        # a Hear card is read, then says "Here it is", then plays its tune by itself (Auto-read on)
+        page.wait_for_function("window.__lesson && window.__lesson.card")
+        while page.evaluate("__lesson.card.kind") != "hear":
+            page.get_by_role("button", name="Next ›").click()
+            page.wait_for_timeout(150)
+        hear_text = page.evaluate("__lesson.card.text")
+        page.wait_for_function("t => __lesson.voice.log.some(x => x.text === t)", arg=hear_text, timeout=4000)
+        check(not page.evaluate("__lesson.heard.thisCard"), "lesson voice: a Hear card is read before its tune plays")
+        page.wait_for_function("__lesson.heard.thisCard", timeout=30000)
+        said = [x["text"] for x in page.evaluate("__lesson.voice.log")[-2:]]
+        check(said == [hear_text, "Here it is."], f"lesson voice: then it says \"Here it is\" and plays the tune by itself ({said})")
         _, pts = do_lesson()
         check(len(pts) == 3 and sum(pts.values()) == 3, f"lesson: tap-an-answer questions score like key questions ({pts})")
         page.goto(url + "#/config")
@@ -891,6 +951,73 @@ def main():
         page.get_by_role("button", name="Rewind").click()
         after = page.evaluate("__pm.player.position.display")
         check(page.evaluate("__pm.player.state") == "paused" and after < before, f"rewind while paused: stays paused, further back ({before:.2f} -> {after:.2f})")
+
+        # 4d. Dragging the staff (v0.33): a tap does nothing; a drag pauses, shows the bar, and on
+        # letting go plays on from the nearest bar line in the same mode
+        def drag_staff(a, b):
+            """Drag across the staff from `a` to `b` (fractions of its width)."""
+            box = page.locator(".stage").bounding_box()
+            x, y = box["x"] + box["width"] * a, box["y"] + box["height"] * 0.3
+            page.mouse.move(x, y)
+            page.mouse.down()
+            page.mouse.move(box["x"] + box["width"] * b, y, steps=16)
+            held = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display, label: document.querySelector('.dragbar')?.textContent ?? null})")
+            page.mouse.up()
+            return held
+
+        open_piece(page, "mary-had-a-little-lamb")
+        page.get_by_role("button", name="100%").click()
+        before = page.evaluate("__pm.player.position.display")
+        box = page.locator(".stage").bounding_box()
+        page.mouse.click(box["x"] + box["width"] * 0.6, box["y"] + box["height"] * 0.3)
+        page.wait_for_timeout(200)
+        check(page.evaluate("__pm.player.state") == "idle" and page.evaluate("__pm.player.position.display") == before,
+              "drag: a tap on the staff changes nothing")
+        page.locator(".modes button").nth(1).click()
+        page.wait_for_function("__pm.player.state === 'playing' && __pm.player.position.logic > 13", timeout=20000)
+        at = page.evaluate("__pm.player.position.display")
+        held = drag_staff(0.5, 0.75)
+        page.screenshot(path=str(OUT / "drag-held.png"))
+        check(held["s"] == "paused" and held["b"] < at - 1 and (held["label"] or "").startswith("Bar "),
+              f"drag while listening: the music pauses, the staff follows back, and the bar shows ({held}, from {at:.2f})")
+        page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
+        r = page.evaluate("({from: __pm.player.debug().passStart, lines: __pm.tl.barLines, mode: __pm.player.mode})")
+        check(r["from"] in r["lines"] and r["from"] < at and r["mode"] == "listen",
+              f"drag while listening: listens on from the bar line nearest where it was let go (beat {r['from']})")
+        page.wait_for_function("__pm.player.state === 'playing'", timeout=10000)
+        page.get_by_role("button", name="Pause").click()
+
+        open_piece(page, "twinkle-twinkle")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").first.click()
+        page.evaluate(AUTOPLAY, [[], 0, 7, False])
+        a0 = page.evaluate("__pm.player.debug().attempt")
+        held = drag_staff(0.5, 0.7)
+        page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
+        d = page.evaluate("__pm.player.debug()")
+        check(held["s"] == "paused" and d["attempt"]["id"] == a0["id"] and d["attempt"]["rewinds"] == a0["rewinds"] + 1 and d["state"] in ("countin", "playing"),
+              f"drag back while playing: a rewind in the same attempt, like the Rewind button ({a0} -> {d['attempt']})")
+        page.get_by_role("button", name="Pause").click()
+
+        page.goto(url + "#/library")              # leave the song, so it opens afresh
+        open_piece(page, "twinkle-twinkle")
+        page.get_by_role("button", name="100%").click()
+        drag_staff(0.9, 0.05)
+        page.wait_for_function("__pm.player.state === 'gliding' || __pm.player.state === 'countin'", timeout=5000)
+        start = page.evaluate("__pm.player.debug().attempt.start")
+        r = page.evaluate(AUTOPLAY, [[], 0, 60, False])
+        later = page.evaluate(f"__pm.tl.notes.filter(n => !n.tieContinuation && n.beat >= {start} - 1e-6).length")
+        m = r["debug"]["matcher"]
+        check(start > 0 and r["state"] == "finished" and m["expected"] == later and m["hits"] == later,
+              f"drag ahead from the start: plays from that bar to the end, scoring only those notes (from beat {start}, {m})")
+        page.wait_for_selector(".result")
+        page.screenshot(path=str(OUT / "drag-result.png"))
+        check(page.get_by_text("Practice mode: one section").count() == 1, "drag ahead: the result says it was part of the song")
+        wait_api(page, "fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
+        part = [a for a in page.evaluate("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json())")["attempts"] if a["mode"] == "loop"]
+        full = page.evaluate(f"fetch('api/attempts/{part[0]['id']}').then(r => r.json())") if part else {}
+        check(len(part) == 1 and part[0]["completed"] and full.get("section") == {"fromBeat": start, "toBeat": page.evaluate("__pm.tl.length")},
+              f"drag ahead: stored as practice of part of the song, which never passes a skill ({len(part)}, {full.get('section')})")
 
         # 5. Mary with nothing played: a lost-place rewind at the next bar line
         open_piece(page, "mary-had-a-little-lamb")

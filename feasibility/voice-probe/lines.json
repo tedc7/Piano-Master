@@ -1,0 +1,66 @@
+[
+ {
+  "id": "c-d-e",
+  "text": "Find a group of two black keys. C is the white key just to the left of it, D sits in the middle between the two black keys, and E is just to the right. The C in the middle of the piano is called Middle C."
+ },
+ {
+  "id": "bass-f",
+  "text": "Bass F is the F just below Middle C, on the fourth line of the bass staff. The bass clef's two dots sit either side of that line, so it's also called the F clef.",
+  "say_kokoro": "[Bass](/bˈAs/) F is the F just below Middle C, on the fourth line of the [bass](/bˈAs/) staff. The [bass](/bˈAs/) clef's two dots sit either side of that line, so it's also called the F clef.",
+  "say_plain": "Base F is the F just below Middle C, on the fourth line of the base staff. The base clef's two dots sit either side of that line, so it's also called the F clef."
+ },
+ {
+  "id": "forte-piano",
+  "text": "Loud and soft make music more interesting. Forte means loud, and it's written f. Piano means soft, and it's written p."
+ },
+ {
+  "id": "mezzo-forte",
+  "text": "p for soft and f for loud are dynamic marks. A new one sits between them: mf, mezzo forte, which means medium loud."
+ },
+ {
+  "id": "four-four",
+  "text": "The two numbers at the start of the music are the time signature. 4/4 means there are 4 beats in every measure, and the quarter note gets one beat."
+ },
+ {
+  "id": "three-four",
+  "text": "In 3/4 time there are three beats in each measure, with a strong first beat: ONE two three, ONE two three. The quarter note still gets one beat."
+ },
+ {
+  "id": "allegro",
+  "text": "Allegro is an Italian word written at the start of a piece. It means fast and lively."
+ },
+ {
+  "id": "musical-alphabet",
+  "text": "The white keys are named with the musical alphabet: just seven letters, A B C D E F G. After G it starts again with A, all the way up the keyboard.",
+  "say_kokoro": "The white keys are named with the musical alphabet: just seven letters, [A](/ˈA/) B C D E F G. After G it starts again with A, all the way up the keyboard.",
+  "say_plain": "The white keys are named with the musical alphabet: just seven letters, A, B, C, D, E, F, G. After G it starts again with A, all the way up the keyboard."
+ },
+ {
+  "id": "round-hand",
+  "text": "Let your arms hang down, heavy and loose, then float your hands up onto the keys. Curve your fingers as if your hand is holding a bubble: the fingertips stay firm and the thumb rests on its side tip."
+ },
+ {
+  "id": "try-right",
+  "text": "Play C, D, E with right-hand fingers 2, 3, 4."
+ },
+ {
+  "id": "try-left",
+  "text": "Left hand: E, D, C with fingers 2, 3, 4."
+ },
+ {
+  "id": "check",
+  "text": "Which white key is just to the right of the two black keys?"
+ },
+ {
+  "id": "done",
+  "text": "You did it!"
+ },
+ {
+  "id": "nice",
+  "text": "Nice listening!"
+ },
+ {
+  "id": "good-try",
+  "text": "Good try! Listen again and play it back."
+ }
+]

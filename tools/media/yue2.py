@@ -38,6 +38,14 @@ MINOR_KEYS = ["Abm", "Ebm", "Bbm", "Fm", "Cm", "Gm", "Dm", "Am", "Em", "Bm", "F#
 KEYS_FIFTHS = {**{k: i - 7 for i, k in enumerate(MAJOR_KEYS)}, **{k: i - 7 for i, k in enumerate(MINOR_KEYS)}}
 SEEDS = tuple(831001 + i for i in range(24))
 
+HOLD = "\u2011"            # a run on one vowel inside a word: a hyphen in YuE2's lyrics, none for the aligner
+
+
+def vowel_run(before: str, syllable: str) -> bool:
+    """A syllable that only carries on the vowel the word has reached ("Glo" then "o")."""
+    s = syllable.lower().strip(",.;:!?")
+    return bool(s) and all(c in "aeiou" for c in s) and before.lower().endswith(s[0])
+
 
 def tonal_key(nota: dict) -> str:
     """YuE2's K: value: the key the song is in, which can differ from the written signature. Songs
@@ -314,19 +322,27 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
         i = j
     abc = "\n".join(lines) + "\n"
 
-    # lyrics: words per verse, a new line at each phrase start
+    # lyrics: words per verse, a new line at each phrase start (at the next word, when a phrase
+    # starts inside one). A word's syllables are joined ("it-sy" -> "itsy"), except a run on one
+    # vowel ("Glo-o-o-o-ri-a"), which keeps a hyphen before each note, so YuE2 sings every note of it
+    # instead of one long "Glooooria" (the Christmas batch's Gloria, Oct 6, 2026)
     phrase_starts = set(Fraction(p) for p in nota["phrases"])
-    verses, word_starts = {}, {}
+    verses, word_starts, breaks = {}, {}, set()
     for n in mel:
         v = verse_at(n["abc_start"])
         ly = n["lyric"]
         line = verses.setdefault(v, [[]])
-        if n["start"] in phrase_starts and line[-1]:
-            line.append([])
+        if n["start"] in phrase_starts:
+            breaks.add(v)
         cur = line[-1]
         if cur and cur[-1].endswith("⁠"):
-            cur[-1] = cur[-1][:-1] + ly["text"]
+            prev = cur[-1][:-1]
+            cur[-1] = prev + (HOLD if vowel_run(prev, ly["text"]) else "") + ly["text"]
         else:
+            if v in breaks and cur:
+                line.append([])
+                cur = line[-1]
+            breaks.discard(v)
             cur.append(ly["text"])
             word_starts.setdefault(v, []).append(n["start"] + pad)
         if ly["syllabic"] in ("begin", "middle"):
@@ -334,12 +350,12 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
     verses[sorted(verses)[0]][0].insert(0, "Oh,")
     words = [{"word": "Oh,", "beat": "0"}]
     for v in sorted(verses):
-        flat = [w.replace("⁠", "") for line in verses[v] for w in line if w != "Oh,"]
+        flat = [w.replace("⁠", "").replace(HOLD, "") for line in verses[v] for w in line if w != "Oh,"]
         words += [{"word": w, "beat": str(b), "verse": v} for w, b in zip(flat, word_starts.get(v, []))]
     lyrics = []
     for v in sorted(verses):
         lyrics.append("[Verse]")
-        lyrics += [" ".join(w.replace("⁠", "") for w in ws) for ws in verses[v] if ws]
+        lyrics += [" ".join(w.replace("⁠", "").replace(HOLD, "-") for w in ws) for ws in verses[v] if ws]
         lyrics.append("")
     shift = pad - song_pad
     syllables = [{"verse": n["verse"], "syllable": n["lyric"]["text"], "pitch": n["pitch"],

@@ -37,6 +37,7 @@ cards:
 - kind: check
   questions:
   - text: A step goes to the...
+    say: A step goes to the what?
     choices:
     - Next key
     - Same key

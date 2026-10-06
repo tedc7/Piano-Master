@@ -21,6 +21,9 @@ export interface AttemptOptions {
   hands: "both" | "R" | "L";
   handsWritten: "R" | "L" | "RL";
   section: { start: number; end: number } | null;   // beats; null = the whole piece
+  /** Play started part-way, from the staff dragged to this beat (v0.33): the notes before it aren't
+   *  expected, and the attempt is practice of part of the song, like a section. */
+  from?: number;
   level?: string;
   preset: Preset;
 }
@@ -64,12 +67,14 @@ export class Attempt {
   readonly rawEvents: RawEvent[] = [];
   readonly passes: { from: number; t: number }[] = [];
   rewinds = 0;
+  /** The furthest beat the song clock has reached in this attempt. */
+  reached = -Infinity;
   slowest: Preset;
   private other: Expected[];       // the other hand's notes, when practising one hand
 
   constructor(readonly tl: Timeline, readonly opts: AttemptOptions) {
     const s = opts.section;
-    this.range = { start: s?.start ?? 0, end: s?.end ?? tl.length, loop: !!s };
+    this.range = { start: Math.max(s?.start ?? 0, opts.from ?? 0), end: s?.end ?? tl.length, loop: !!s };
     const inRange = (b: number) => b >= this.range.start - 1e-6 && b < this.range.end - 1e-6;
     const all = tl.notes.filter((n) => !n.tieContinuation && inRange(n.beat))
       .map((n) => ({ id: n.id, pitch: n.pitch, beat: n.beat, phrase: n.phrase, hand: n.hand }));
@@ -86,6 +91,7 @@ export class Attempt {
 
   beginPass(beat: number, t: number): void {
     this.passes.push({ from: beat, t });
+    this.reached = Math.max(this.reached, beat);
     this.matcher.resetFrom(beat);
     this.policy.beginPass(beat);
   }
@@ -121,6 +127,7 @@ export class Attempt {
 
   /** Advance to `beat`: newly missed notes, and a rewind plan when one is due. */
   tick(beat: number, spb: number, autoRewind: boolean): { missed: number[]; plan: RewindPlan | null } {
+    this.reached = Math.max(this.reached, beat);
     const missed = this.matcher.advance(beat, spb);
     const plan = autoRewind ? this.policy.update(beat) : null;
     if (plan) this.rewinds++;
@@ -136,7 +143,7 @@ export class Attempt {
       tempoPreset: this.slowest,
       hands: this.opts.hands,
       handsWritten: this.opts.handsWritten,
-      sectionOnly: !!this.opts.section,
+      sectionOnly: !!this.opts.section || (this.opts.from ?? 0) > 1e-6,
       extraHints: false,
       rewinds: this.rewinds,
     };
