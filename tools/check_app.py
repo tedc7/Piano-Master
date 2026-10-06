@@ -892,6 +892,73 @@ def main():
         after = page.evaluate("__pm.player.position.display")
         check(page.evaluate("__pm.player.state") == "paused" and after < before, f"rewind while paused: stays paused, further back ({before:.2f} -> {after:.2f})")
 
+        # 4d. Dragging the staff (v0.33): a tap does nothing; a drag pauses, shows the bar, and on
+        # letting go plays on from the nearest bar line in the same mode
+        def drag_staff(a, b):
+            """Drag across the staff from `a` to `b` (fractions of its width)."""
+            box = page.locator(".stage").bounding_box()
+            x, y = box["x"] + box["width"] * a, box["y"] + box["height"] * 0.3
+            page.mouse.move(x, y)
+            page.mouse.down()
+            page.mouse.move(box["x"] + box["width"] * b, y, steps=16)
+            held = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display, label: document.querySelector('.dragbar')?.textContent ?? null})")
+            page.mouse.up()
+            return held
+
+        open_piece(page, "mary-had-a-little-lamb")
+        page.get_by_role("button", name="100%").click()
+        before = page.evaluate("__pm.player.position.display")
+        box = page.locator(".stage").bounding_box()
+        page.mouse.click(box["x"] + box["width"] * 0.6, box["y"] + box["height"] * 0.3)
+        page.wait_for_timeout(200)
+        check(page.evaluate("__pm.player.state") == "idle" and page.evaluate("__pm.player.position.display") == before,
+              "drag: a tap on the staff changes nothing")
+        page.locator(".modes button").nth(1).click()
+        page.wait_for_function("__pm.player.state === 'playing' && __pm.player.position.logic > 13", timeout=20000)
+        at = page.evaluate("__pm.player.position.display")
+        held = drag_staff(0.5, 0.75)
+        page.screenshot(path=str(OUT / "drag-held.png"))
+        check(held["s"] == "paused" and held["b"] < at - 1 and (held["label"] or "").startswith("Bar "),
+              f"drag while listening: the music pauses, the staff follows back, and the bar shows ({held}, from {at:.2f})")
+        page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
+        r = page.evaluate("({from: __pm.player.debug().passStart, lines: __pm.tl.barLines, mode: __pm.player.mode})")
+        check(r["from"] in r["lines"] and r["from"] < at and r["mode"] == "listen",
+              f"drag while listening: listens on from the bar line nearest where it was let go (beat {r['from']})")
+        page.wait_for_function("__pm.player.state === 'playing'", timeout=10000)
+        page.get_by_role("button", name="Pause").click()
+
+        open_piece(page, "twinkle-twinkle")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").first.click()
+        page.evaluate(AUTOPLAY, [[], 0, 7, False])
+        a0 = page.evaluate("__pm.player.debug().attempt")
+        held = drag_staff(0.5, 0.7)
+        page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
+        d = page.evaluate("__pm.player.debug()")
+        check(held["s"] == "paused" and d["attempt"]["id"] == a0["id"] and d["attempt"]["rewinds"] == a0["rewinds"] + 1 and d["state"] in ("countin", "playing"),
+              f"drag back while playing: a rewind in the same attempt, like the Rewind button ({a0} -> {d['attempt']})")
+        page.get_by_role("button", name="Pause").click()
+
+        page.goto(url + "#/library")              # leave the song, so it opens afresh
+        open_piece(page, "twinkle-twinkle")
+        page.get_by_role("button", name="100%").click()
+        drag_staff(0.9, 0.05)
+        page.wait_for_function("__pm.player.state === 'gliding' || __pm.player.state === 'countin'", timeout=5000)
+        start = page.evaluate("__pm.player.debug().attempt.start")
+        r = page.evaluate(AUTOPLAY, [[], 0, 60, False])
+        later = page.evaluate(f"__pm.tl.notes.filter(n => !n.tieContinuation && n.beat >= {start} - 1e-6).length")
+        m = r["debug"]["matcher"]
+        check(start > 0 and r["state"] == "finished" and m["expected"] == later and m["hits"] == later,
+              f"drag ahead from the start: plays from that bar to the end, scoring only those notes (from beat {start}, {m})")
+        page.wait_for_selector(".result")
+        page.screenshot(path=str(OUT / "drag-result.png"))
+        check(page.get_by_text("Practice mode: one section").count() == 1, "drag ahead: the result says it was part of the song")
+        wait_api(page, "fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
+        part = [a for a in page.evaluate("fetch('api/attempts?piece_id=twinkle-twinkle').then(r => r.json())")["attempts"] if a["mode"] == "loop"]
+        full = page.evaluate(f"fetch('api/attempts/{part[0]['id']}').then(r => r.json())") if part else {}
+        check(len(part) == 1 and part[0]["completed"] and full.get("section") == {"fromBeat": start, "toBeat": page.evaluate("__pm.tl.length")},
+              f"drag ahead: stored as practice of part of the song, which never passes a skill ({len(part)}, {full.get('section')})")
+
         # 5. Mary with nothing played: a lost-place rewind at the next bar line
         open_piece(page, "mary-had-a-little-lamb")
         page.get_by_role("button", name="100%").click()

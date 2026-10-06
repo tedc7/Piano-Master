@@ -49,6 +49,21 @@ def test_yue2_inputs_one_attack_per_syllable_after_the_lead_in(tmp_path):
     assert amap["syllables"][0]["beat"] == str(Fraction(amap["padBeats"]))       # "The", on playback beat 0
 
 
+def test_yue2_lyrics_sing_each_note_of_a_vowel_run_and_never_break_inside_a_word(tmp_path):
+    yue2 = pytest.importorskip("yue2")
+    # "Glo-o-o-ri-a" over a phrase line (phrases of 1 bar: bar 2 starts inside the word)
+    run = {**SONG, "phraseBars": 1, "abc": "X:1\nM:4/4\nL:1/4\nQ:1/4=90\nK:C\n"
+           "\"C\"c d c B | A B c2 | \"G\"B A G2 |]\nw: Glo- o- o- o- o- o- ri- a, in ex- cel- sis\n"}
+    p = piece(tmp_path, run)
+    _, lyrics, amap = yue2.export(p.nota)
+    lines = lyrics.splitlines()
+    assert "Glo-o-o-o-o-oria," in lines[1]                            # every note of the run, in one word
+    assert not any(line.startswith(("o", "ria")) for line in lines)   # no line starts inside a word
+    assert [w["word"] for w in amap["words"]][1] == "Glooooooria,"    # the aligner's word, as before
+    _, plain, _ = yue2.export(piece(tmp_path, SONG, pid="u").nota)
+    assert "itsy bitsy" in plain                                      # other words join as before
+
+
 def test_kids_backing_follows_the_bar_lines_through_a_pickup(tmp_path):
     p = piece(tmp_path, SONG)
     name, parts = bk.parts_for(p)
@@ -67,6 +82,27 @@ def test_hymn_backing_is_the_alto_tenor_and_bass(tmp_path):
     assert name == "hymn-strings"
     assert sorted({n.pitch for n in cello.notes}) == [43, 48]                                   # G2, C3
     assert {n.pitch for n in strings.notes} == {64, 60, 59, 55, 52}                             # alto and tenor
+
+
+def test_holiday_backing_is_strings_harp_cello_and_sleigh_bells_on_the_drum_channel(tmp_path):
+    p = piece(tmp_path, {**SONG, "genre": "holiday"})
+    name, parts = bk.parts_for(p)
+    assert name == "holiday" and [x.name for x in parts] == ["Strings, warm", "Harp arpeggios", "Cello (roots)", "Sleigh bells"]
+    bells, harp = parts[3], parts[1]
+    # 6/8 after the pickup: the bells ring on the two dotted-quarter beats, louder on the first
+    assert bells.drum and [n.beat for n in bells.notes[:3]] == [0.5, 2.0, 3.5] and bells.notes[0].vel > bells.notes[1].vel
+    assert {n.pitch for n in bells.notes} == {bk.JINGLE_BELL}
+    # the harp breaks the G chord upwards first: G, B, D, then G an octave up
+    assert [n.pitch % 12 for n in harp.notes[:4]] == [7, 11, 2, 7]
+    # the bells go on MIDI channel 10 (index 9); the other parts never do
+    import mido
+    import synth
+    out = tmp_path / "b.mid"
+    synth.midi(parts, 100, out, 1.0)
+    chans = [{m.channel for m in t if hasattr(m, "channel")} for t in mido.MidiFile(str(out)).tracks[1:]]
+    assert chans[3] == {9} and all(9 not in c for c in chans[:3])
+    off = piece(tmp_path, {**SONG, "genre": "holiday", "media": {"backing": {"style": "holiday", "bells": False}}}, pid="u")
+    assert [x.name for x in bk.parts_for(off)[1]][-1] == "Cello (roots)"
 
 
 def test_a_round_enters_behind_and_ends_on_the_tonic(tmp_path):

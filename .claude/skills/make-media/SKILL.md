@@ -35,7 +35,9 @@ The v0.22 decision decides it:
 Styles (`tools/media/backing.py`): `kids` (soft strings, pizzicato bass, glockenspiel chimes, from the
 chords), `hymn-strings` (strings on the alto and tenor, cello on the bass: chosen for Amazing Grace),
 `hymn-organ`, `pad` (strings and cello from the chords), `waltz`, `round` (the melody again on flute
-and clarinet, entering bars behind), and `yue2` (keep YuE2's backing). The genre sets the default; a
+and clarinet, entering bars behind), `holiday` (warm strings, harp arpeggios, cello and light sleigh
+bells from the chords; `{style: holiday, bells: false}` without the bells), and `yue2` (keep YuE2's
+backing). The genre sets the default; a
 piece can choose, in its file:
 
 ```yaml

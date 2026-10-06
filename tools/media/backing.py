@@ -37,6 +37,7 @@ class Part:
     volume: int = 100    # CC7
     pan: int = 64        # CC10
     reverb: int = 50     # CC91
+    drum: bool = False   # on the General MIDI drum channel: `pitch` is the kit's instrument
 
     def describe(self) -> dict:
         return {"name": self.name, "program": self.program, "notes": len(self.notes)}
@@ -329,7 +330,47 @@ def round_(piece) -> list[Part]:
     return parts + [bass]
 
 
-STYLES = {"kids": kids, "pad": pad, "waltz": waltz, "hymn-strings": hymn_strings, "hymn-organ": hymn_organ, "round": round_}
+JINGLE_BELL = 83         # the General MIDI drum kit's jingle bell (sleigh bells)
+
+
+def holiday(piece) -> list[Part]:
+    """Christmas songs: warm strings on the chords, a harp breaking each chord upwards and back in
+    eighth notes (quarter notes in a fast song), a cello on the roots, and light sleigh bells on the
+    beat, louder on the bar's strong beats (arch §10.5 genre table). `backing: {style: holiday,
+    bells: false}` leaves the bells out."""
+    nota = piece.nota
+    b = piece.spec.get("backing")
+    bells = not (isinstance(b, dict) and b.get("bells") is False)
+    strings = Part("Strings, warm", 48, volume=66, pan=72, reverb=65)
+    harp = Part("Harp arpeggios", 46, volume=74, pan=40, reverb=60)
+    cello = Part("Cello (roots)", 42, volume=88, pan=58)
+    sleigh = Part("Sleigh bells", 0, volume=48, pan=88, reverb=40, drum=True)
+    step = 0.5 if piece.bpm <= 132 else 1.0
+    spans = chords(nota)
+    for s in spans:
+        for p in voicing(s, 55):
+            strings.notes.append(Note(s.beat, s.dur, p, 48))
+        root = near(s.root, 36)
+        cello.notes.append(Note(s.beat, min(2.0, s.dur), root, 70))
+        if s.dur >= 4 - 1e-6:
+            cello.notes.append(Note(s.beat + 2, 2.0, root + 7 if root + 7 < 50 else root - 5, 62))
+        tones = voicing(s, 60, sevenths=False)
+        up = tones + [tones[0] + 12]
+        cycle = up + up[-2:0:-1]                       # up and back: 1 3 5 8 5 3
+        k, t = 0, 0.0
+        while t < s.dur - 1e-6:
+            harp.notes.append(Note(s.beat + t, min(step * 2, s.dur - t), cycle[k % len(cycle)], 50 if k % len(cycle) else 58))
+            k, t = k + 1, t + step
+    if bells:
+        bar, strong = beats_of(nota)
+        compound = nota["header"]["timeSig"].endswith("/8")
+        beats = strong if compound else [float(i) for i in range(int(round(bar)))]   # every quarter, or 6/8's two beats
+        for t, k in grid(nota, beats):
+            sleigh.notes.append(Note(t, 0.25, JINGLE_BELL, 64 if k == 0 else 44))
+    return [strings, harp, cello] + ([sleigh] if bells else [])
+
+
+STYLES = {"kids": kids, "pad": pad, "holiday": holiday, "waltz": waltz, "hymn-strings": hymn_strings, "hymn-organ": hymn_organ, "round": round_}
 
 
 def style_of(piece) -> str:

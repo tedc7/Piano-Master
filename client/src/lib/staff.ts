@@ -79,6 +79,21 @@ export function xAt(map: [number, number][], beat: number): number {
   return a[1] + (b[1] - a[1]) * (beat - a[0]) / (b[0] - a[0]);
 }
 
+/** The beat at staff position `x` (VexFlow units): xAt the other way round, for dragging the staff. */
+export function beatAt(map: [number, number][], x: number): number {
+  let lo = 0;
+  let hi = map.length - 1;
+  if (x <= map[0][1]) return map[0][0] + (x - map[0][1]) / Math.min(slope(map, 0), LEAD_IN_SLOPE);
+  if (x >= map[hi][1]) return map[hi][0];
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (map[mid][1] <= x) lo = mid; else hi = mid;
+  }
+  const a = map[lo];
+  const b = map[hi];
+  return a[0] + (b[0] - a[0]) * (x - a[1]) / (b[1] - a[1]);
+}
+
 function slope(map: [number, number][], i: number): number {
   return map.length > i + 1 ? (map[i + 1][1] - map[i][1]) / Math.max(map[i + 1][0] - map[i][0], 1e-6) : 40;
 }

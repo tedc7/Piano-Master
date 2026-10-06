@@ -13,7 +13,7 @@
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
   import { TRY_ANOTHER_WAY } from "../lib/progress";
-  import { helpersFor, LYRIC_FILL, renderStaff, xAt, type Helpers, type StaffLayout } from "../lib/staff";
+  import { beatAt, helpersFor, LYRIC_FILL, renderStaff, xAt, type Helpers, type StaffLayout } from "../lib/staff";
   import { go } from "../lib/route";
   import { buildTimeline, phraseIndexAt, type Timeline } from "../lib/timeline";
   import { PRESETS, type Piece, type Preset } from "../lib/types";
@@ -22,6 +22,7 @@
   let { id }: { id: string } = $props();
 
   const LINE_FRAC = 0.25;       // the play line sits a quarter of the way across the staff
+  const DRAG_PX = 8;            // a touch that moves less than this is a tap, not a drag
 
   let piece = $state<Piece | null>(null);
   let error = $state("");
@@ -50,6 +51,9 @@
   let wrongText = $state("");
   let recent = $state<{ text: string; key: number }[]>([]);
   let stats = $state({ fps: 0, worst: 0, over25: 0, renderMs: 0, problems: 0, measures: 0 });
+  // dragging the staff (v0.33): where the touch began, and the bar at the play line while it moves
+  let drag: { id: number; x0: number; beat0: number; moved: boolean } | null = null;
+  let dragBar = $state<string | null>(null);
 
   let stageEl: HTMLDivElement;
   let stripEl: HTMLDivElement;
@@ -168,7 +172,8 @@
         finished: (r) => {
           result = r;
           another = false;
-          if (opened && !sectionItem) {
+          // a play from a dragged-to bar is practice of part of the song: it doesn't check off the item
+          if (opened && !sectionItem && r.mode === "play") {
             const e = r.evaluation;
             app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: opened.kind === "pick" ? piece?.title : undefined });
           }
@@ -344,6 +349,49 @@
     stripEl.style.transform = `translate3d(${(lineX - x).toFixed(2)}px,0,0)`;
   }
 
+  // ------------------------------------------------------------------ dragging the staff
+  /** A touch on the staff: a drag moves it (the music pauses), and letting go plays on from the
+   *  nearest bar line in the same mode. A tap does nothing. Pop-ups on the staff keep their taps. */
+  function dragStart(e: PointerEvent): void {
+    if (!player || !layout || drag || uiState === "loading" || !e.isPrimary) return;
+    if ((e.target as Element).closest(".result, .message, button")) return;
+    drag = { id: e.pointerId, x0: e.clientX, beat0: player.position.display, moved: false };
+  }
+
+  function dragMove(e: PointerEvent): void {
+    if (!drag || e.pointerId !== drag.id || !player || !layout) return;
+    if (!drag.moved) {
+      if (Math.abs(e.clientX - drag.x0) < DRAG_PX) return;
+      drag.moved = true;
+      stageEl.setPointerCapture(e.pointerId);
+      if (player.running) player.pause();
+      // from here the staff follows the finger, without jumping the distance that made it a drag
+      drag.x0 = e.clientX;
+      drag.beat0 = player.position.display;
+      result = null;
+      loopNote = null;
+    }
+    // dragging right goes back in the song
+    const x = xAt(layout.map, drag.beat0) * layout.scale - (e.clientX - drag.x0);
+    player.scrub(beatAt(layout.map, x / layout.scale));
+    dragBar = barLabel(player.barNear(player.position.display));
+  }
+
+  function dragEnd(e: PointerEvent): void {
+    if (!drag || e.pointerId !== drag.id) return;
+    const moved = drag.moved;
+    drag = null;
+    dragBar = null;
+    if (stageEl.hasPointerCapture(e.pointerId)) stageEl.releasePointerCapture(e.pointerId);
+    if (moved && player) void player.dragTo(player.position.display, !needPiano);
+  }
+
+  /** "Bar 7" (and its verse) for the bar line at `beat`. */
+  function barLabel(beat: number): string {
+    const en = tl.entries.find((x) => Math.abs(x.start - beat) < 1e-6) ?? tl.entries[0];
+    return `Bar ${en.m.number}` + (en.verse > 1 ? ` (verse ${en.verse})` : "");
+  }
+
   function highlight(beat: number, logicBeat: number): void {
     if (!layout || !kb || !player) return;
     // the lyric syllable being sung
@@ -505,7 +553,8 @@
     {#if pending}<span class="muted">{pending} to send</span>{/if}
   </Status>
 
-  <div class="stage" bind:this={stageEl}>
+  <div class="stage" class:dragging={!!dragBar} bind:this={stageEl} role="presentation"
+       onpointerdown={dragStart} onpointermove={dragMove} onpointerup={dragEnd} onpointercancel={dragEnd}>
     <div class="strip" bind:this={stripEl}></div>
     <div class="fade" style:width="{LINE_FRAC * 100}%"></div>
     <div class="playline" style:left="{LINE_FRAC * 100}%"></div>
@@ -518,6 +567,9 @@
     {/if}
     {#if wrongText}
       <div class="wrong" style:left="{LINE_FRAC * 100}%">{wrongText}</div>
+    {/if}
+    {#if dragBar}
+      <div class="dragbar" style:left="{LINE_FRAC * 100}%">{dragBar}</div>
     {/if}
     {#if error}
       <div class="message error">{error}</div>
@@ -655,7 +707,12 @@
   .play { display: flex; flex-direction: column; height: 100%; }
   .progress { flex: 1; height: 8px; background: #ebe9e3; border-radius: 4px; overflow: hidden; min-width: 120px; }
   .bar { height: 100%; width: 0; background: var(--accent); }
-  .stage { position: relative; flex: 1 1 auto; min-height: 200px; overflow: hidden; background: var(--staff-bg); touch-action: none; }
+  .stage { position: relative; flex: 1 1 auto; min-height: 200px; overflow: hidden; background: var(--staff-bg); touch-action: none; cursor: grab; }
+  .stage.dragging { cursor: grabbing; }
+  .dragbar {
+    position: absolute; top: 12px; transform: translateX(-50%); pointer-events: none;
+    background: var(--accent); color: var(--accent-fg); border-radius: 999px; padding: 4px 14px; font-weight: 750;
+  }
   .strip { position: absolute; left: 0; top: 0; will-change: transform; }
   .fade { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255, 255, 255, 0.55); pointer-events: none; }
   .playline { position: absolute; top: 0; bottom: 0; width: 4px; margin-left: -2px; background: var(--accent); opacity: 0.55; pointer-events: none; }

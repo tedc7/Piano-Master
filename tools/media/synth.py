@@ -36,10 +36,12 @@ def midi(parts: list[Part], bpm: float, path: Path, pad: float, leads: dict[str,
     meta = mido.MidiTrack()
     meta.append(mido.MetaMessage("set_tempo", tempo=int(round(60e6 / bpm)), time=0))
     mf.tracks.append(meta)
-    for ch, part in enumerate(parts):
-        ch = ch if ch < 9 else ch + 1                  # skip the drum channel
+    melodic = iter(c for c in range(16) if c != 9)    # the drum channel only for drum parts
+    for part in parts:
+        ch = 9 if part.drum else next(melodic)
         tr = mido.MidiTrack()
-        tr.append(mido.Message("program_change", channel=ch, program=part.program, time=0))
+        if not part.drum:
+            tr.append(mido.Message("program_change", channel=ch, program=part.program, time=0))
         for cc, v in ((7, part.volume), (10, part.pan), (91, part.reverb), (93, 0)):
             tr.append(mido.Message("control_change", channel=ch, control=cc, value=v, time=0))
         events = []

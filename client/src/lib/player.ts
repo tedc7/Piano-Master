@@ -9,6 +9,11 @@
 //
 // The app's piano: Listen mode plays every note; in Play mode with one hand chosen, it plays the
 // other hand (the student setting "otherHand"), so one-hand practice still sounds like the piece.
+//
+// Dragging the staff (v0.33): the music pauses while the staff is held (scrub), and on letting go
+// it plays on in the same mode from the nearest bar line (dragTo), after the usual glide and
+// count-in. In Play mode a drag back over what was played is a rewind, like the Rewind button; a
+// drag anywhere else starts a new attempt from that bar, which is practice of part of the song.
 import { Attempt, type AttemptResult, type RawEvent } from "./attempt";
 import type { AudioEngine, StemBuffers } from "./audio";
 import type { Verdict } from "./matcher";
@@ -76,6 +81,7 @@ export class Player {
   /** The metronome for this visit, overriding the student's remembered choice (a remedy item's). */
   forceClick: boolean | null = null;
   private attempt: Attempt;
+  private from: number | null = null;         // the next attempt starts here (the staff was dragged)
   private clock: Clock | null = null;
   private glide: { t0: number; from: number; to: number; target: number } | null = null;
   private displayBeat: number;
@@ -122,6 +128,7 @@ export class Player {
       hands: this.hands,
       handsWritten: this.piece.hands,
       section: loop ? { start: this.start, end: this.end } : null,
+      from: this.from ?? undefined,
       level: this.piece.level,
       preset: this.preset,
     });
@@ -132,12 +139,14 @@ export class Player {
     const a = this.attempt;
     if (!this.scoring || !a.passes.length || !a.played) return null;
     const s = this.settings();
+    // part of the song (a section, or from a dragged-to bar) is practice: it never passes a skill
+    const part = !!this.section || a.range.start > this.start + 1e-6;
     const rec: AttemptRecord = {
       ...a.result(completed),
       id: a.id,
       pieceId: this.piece.id,
-      mode: this.section ? "loop" : "play",
-      section: this.section ? { fromBeat: this.start, toBeat: this.end } : null,
+      mode: part ? "loop" : "play",
+      section: part ? { fromBeat: a.range.start, toBeat: this.end } : null,
       startedAt: a.startedAt.toISOString(),
       durationSec: Math.round((Date.now() - a.startedAt.getTime()) / 100) / 10,
       latencyOffsetMs: s.latencyOffsetMs,
@@ -163,6 +172,7 @@ export class Player {
     if (this.state === "finished") return this.again();
     if (this.running || this.state === "loading") return;
     if (!(await this.ensureReady())) return;
+    this.from = null;
     this.attempt = this.newAttempt();
     this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, this.start));
     this.startAt(this.start);
@@ -196,7 +206,7 @@ export class Player {
     const lines = this.tl.barLines;
     let i = 0;
     while (i + 1 < lines.length && lines[i + 1] <= from + 0.05) i++;
-    const target = Math.max(this.start, lines[Math.max(0, i - bars)]);
+    const target = Math.max(this.attempt.range.start, lines[Math.max(0, i - bars)]);
     if (this.scoring) this.attempt.rewinds++;
     const phrase = phraseIndexAt(this.tl.phrases, target);
     this.hooks.pass(target, phrase);
@@ -213,6 +223,7 @@ export class Player {
   private async again(): Promise<void> {
     const from = this.displayBeat;
     if (!(await this.ensureReady())) return;
+    this.from = null;
     this.attempt = this.newAttempt();
     this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, this.start));
     this.beginGlide(from, this.start);
@@ -227,6 +238,7 @@ export class Player {
     this.pulseAt = null;
     this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
     this.resumeFrom = null;
+    this.from = null;
     this.attempt = this.newAttempt();
     this.setState("idle");
     this.releaseWake();
@@ -274,6 +286,48 @@ export class Player {
     this.reposition();
   }
 
+  /** The staff is being dragged: it shows `beat` (within the piece, or the section), and the music
+   *  is paused (the screen pauses it when the drag starts). */
+  scrub(beat: number): void {
+    if (this.running || this.state === "loading") return;
+    this.displayBeat = this.logicBeat = Math.max(this.start - this.tl.barLength, Math.min(this.end, beat));
+  }
+
+  /** The bar line nearest `beat`, where a dragged staff starts (never at the very end). */
+  barNear(beat: number): number {
+    const lines = this.tl.barLines.filter((b) => b >= this.start - 1e-6 && b < this.end - 1e-6);
+    let best = lines[0] ?? this.start;
+    for (const b of lines) if (Math.abs(b - beat) < Math.abs(best - beat)) best = b;
+    return best;
+  }
+
+  /** The staff was let go at `beat`: play on in this mode from the nearest bar line, after the glide
+   *  and count-in. With `start` false (Play mode with no piano connected) it only moves there. */
+  async dragTo(beat: number, start = true): Promise<void> {
+    if (this.state === "loading" || this.running) return;
+    const target = this.barNear(beat);
+    if (!start) {
+      this.scrub(target - this.tl.barLength);
+      this.resumeFrom = this.state === "paused" ? target : null;
+      return;
+    }
+    const a = this.attempt;
+    const under = this.scoring && this.state === "paused" && a.passes.length > 0;
+    if (under && target >= a.range.start - 1e-6 && target <= a.reached + 1e-6) {
+      // back over what was played: a rewind in the same attempt, like the Rewind button (§7.5)
+      a.rewinds++;
+      this.hooks.pass(target, phraseIndexAt(this.tl.phrases, target));
+    } else {
+      // ahead, or with nothing under way: a new attempt from that bar (the one under way is kept)
+      if (this.state === "paused") this.closeAttempt(false);
+      this.from = target > this.start + 1e-6 ? target : null;
+      this.attempt = this.newAttempt();
+      this.hooks.pass(-Infinity, phraseIndexAt(this.tl.phrases, target));
+    }
+    this.resumeFrom = null;
+    await this.resumeAt(target);
+  }
+
   /** "Practice tricky part": play along with that phrase, round and round, at the next slower
    *  preset (arch §3). */
   async practiceTricky(phrase: number): Promise<Preset> {
@@ -291,6 +345,7 @@ export class Player {
   }
 
   private reposition(): void {
+    this.from = null;
     this.attempt = this.newAttempt();
     this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
     this.hooks.pass(-Infinity, null);
@@ -343,7 +398,7 @@ export class Player {
   private phraseStartFor(beat: number): number {
     if (beat < this.start) return this.start;
     const p = this.tl.phrases[phraseIndexAt(this.tl.phrases, Math.max(beat, this.passStart))];
-    return Math.max(p.start, this.start);
+    return Math.max(p.start, this.attempt.range.start);
   }
 
   private barStartFor(beat: number): number {
@@ -451,6 +506,7 @@ export class Player {
   private loopAround(): void {
     const rec = this.closeAttempt(true);
     if (rec) this.hooks.loopPass(rec);
+    this.from = null;                    // every time round after the first is the whole section
     this.attempt = this.newAttempt();
     this.quiet(FADE_S);
     this.hooks.pass(this.start, this.section![0]);
@@ -605,6 +661,7 @@ export class Player {
       rewinds: [...this.attempt.policy.rewinds],
       passStart: this.passStart,
       state: this.state,
+      attempt: { id: this.attempt.id, rewinds: this.attempt.rewinds, start: this.attempt.range.start },
     };
   }
 }
