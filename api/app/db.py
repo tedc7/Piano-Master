@@ -1,10 +1,13 @@
 """SQLite access and numbered migrations (arch §5 "Schema changes").
 
 Migrations are app/migrations/NNN_name.sql, applied in order; PRAGMA user_version records the
-last one applied. The database is the file named by PIANO_DB (/data/piano.db on the server).
+last one applied. A migration that must also change the library's files is NNN_name.py instead, with
+`run(con, data)`: its database changes are in the same transaction, and its file changes are safe
+to make again. The database is the file named by PIANO_DB (/data/piano.db on the server).
 """
 from __future__ import annotations
 
+import importlib.util
 import os
 import re
 import sqlite3
@@ -35,7 +38,7 @@ def connect(path: str | None = None) -> sqlite3.Connection:
 
 def migrations() -> list[tuple[int, Path]]:
     out = []
-    for p in sorted(MIGRATIONS.glob("*.sql")):
+    for p in sorted([*MIGRATIONS.glob("*.sql"), *MIGRATIONS.glob("*.py")]):
         m = re.match(r"(\d+)_", p.name)
         if m:
             out.append((int(m.group(1)), p))
@@ -53,8 +56,14 @@ def migrate(path: str | None = None) -> int:
                 continue
             con.execute("BEGIN IMMEDIATE")      # each migration file runs in one transaction
             try:
-                for stmt in split_sql(p.read_text()):
-                    con.execute(stmt)
+                if p.suffix == ".py":
+                    spec = importlib.util.spec_from_file_location(f"migration_{n}", p)
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)
+                    mod.run(con, data_dir())
+                else:
+                    for stmt in split_sql(p.read_text()):
+                        con.execute(stmt)
                 con.execute(f"PRAGMA user_version = {n}")
                 con.execute("COMMIT")
             except Exception:

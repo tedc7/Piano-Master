@@ -414,7 +414,8 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
   for (const c of nota.chordSymbols ?? []) {
     for (const e of tl.entries) {
       if (c.beat >= e.m.start - 1e-6 && c.beat < e.m.start + e.m.duration - 1e-6) {
-        addText(c.symbol, xAt(map, e.start + c.beat - e.m.start), TOP - 22, 13, "bold", "#6b5a2e");
+        // class "chord": the Play screen hides them while the student has Chords off (v0.35)
+        addText(c.symbol, xAt(map, e.start + c.beat - e.m.start), TOP - 22, 13, "bold", "#6b5a2e").classList.add("chord");
       }
     }
   }

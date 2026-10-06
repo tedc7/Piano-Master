@@ -27,6 +27,16 @@ def song_version(nota: dict) -> str:
     return "lib-" + hashlib.sha256(json.dumps(nota, sort_keys=True).encode()).hexdigest()[:10]
 
 
+def song_words(nota: dict) -> str:
+    """A song's words, verse after verse, for finding it in the song library (v0.35); "" when it
+    has none. Syllables join into their words."""
+    out: list[str] = []
+    for v in sorted({ly["verse"] for ly in nota.get("lyrics") or []}):
+        for ly in sorted((ly for ly in nota["lyrics"] if ly["verse"] == v), key=lambda ly: ly["note"]):
+            out.append(ly["text"] + ("" if ly.get("syllabic") in ("begin", "middle") else " "))
+    return "".join(out).strip()
+
+
 @dataclass
 class Skill:
     id: str

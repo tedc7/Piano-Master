@@ -78,6 +78,10 @@
   // with singing have no click during play. The count-in always clicks.
   let clickOverride = $state<boolean | null>(null);      // a remedy item's metronome, until the student changes it
   const clickOn = $derived(clickOverride ?? app.prefs.metronome ?? (piece ? !piece.media : true));
+  // chord symbols on the staff: the student's one choice for every song, like the metronome (v0.35);
+  // off until they first turn them on, since the children start as beginners
+  const hasChords = $derived(!!piece?.notation.chordSymbols?.length);
+  const chordsOn = $derived(app.prefs.chords ?? false);
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
   const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
   const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
@@ -500,6 +504,9 @@
     app.setSongPref(piece.id, { vocalsOff: vocalsOn });
     applyMix();
   }
+  function toggleChords(): void {
+    if (piece) app.setSongPref(piece.id, { chords: !chordsOn });
+  }
   function toggleClick(): void {
     if (!piece) return;
     const on = !clickOn;
@@ -555,7 +562,7 @@
 
   <div class="stage" class:dragging={!!dragBar} bind:this={stageEl} role="presentation"
        onpointerdown={dragStart} onpointermove={dragMove} onpointerup={dragEnd} onpointercancel={dragEnd}>
-    <div class="strip" bind:this={stripEl}></div>
+    <div class="strip" class:no-chords={!chordsOn} bind:this={stripEl}></div>
     <div class="fade" style:width="{LINE_FRAC * 100}%"></div>
     <div class="playline" style:left="{LINE_FRAC * 100}%"></div>
     {#if countIn}
@@ -651,6 +658,9 @@
     {#if hasVocals}
       <button class="toggle" class:off={!vocalsOn} onclick={toggleVocals}>Vocals</button>
     {/if}
+    {#if hasChords}
+      <button class="toggle" class:off={!chordsOn} onclick={toggleChords}>Chords</button>
+    {/if}
     <button class="toggle" class:off={!clickOn} onclick={toggleClick}>Metro</button>
     {#if app.parentMode}
       <button class="quiet gear" onclick={toggleSheet} aria-label="Song and settings">⚙</button>
@@ -714,6 +724,7 @@
     background: var(--accent); color: var(--accent-fg); border-radius: 999px; padding: 4px 14px; font-weight: 750;
   }
   .strip { position: absolute; left: 0; top: 0; will-change: transform; }
+  .strip.no-chords :global(.chord) { display: none; }
   .fade { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(255, 255, 255, 0.55); pointer-events: none; }
   .playline { position: absolute; top: 0; bottom: 0; width: 4px; margin-left: -2px; background: var(--accent); opacity: 0.55; pointer-events: none; }
   .countin { position: absolute; top: 14px; transform: translateX(-50%); display: flex; gap: 10px; pointer-events: none; }

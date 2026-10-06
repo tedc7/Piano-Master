@@ -67,3 +67,9 @@ export function allowed(p: PieceSummary, rules: Rules | null): boolean {
 }
 
 export const handsLabel = (h: string) => (h === "RL" ? "Both hands" : h === "L" ? "Left hand" : "Right hand");
+
+/** A genre as the family reads it: "kids" is Kids' songs, "lesson-pieces" Lesson pieces, "christmas" Christmas. */
+export const genreLabel = (g: string) => (g === "kids" ? "Kids' songs" : g.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase()));
+
+/** Text as the song search compares it: lower case, letters and digits only ("Twinkle, twinkle" ~ "twinkle twinkle"). */
+export const searchText = (s: string | null | undefined) => (s ?? "").toLowerCase().replace(/['’]/g, "").replace(/[^\p{L}\p{N}]+/gu, " ").trim();

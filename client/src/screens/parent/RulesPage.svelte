@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
-  import { reloadContent } from "../../lib/content";
+  import { genreLabel as label, reloadContent } from "../../lib/content";
 
   interface Song { song: string; title: string; genre: string; pieces: string[]; curriculum: boolean }
   interface Kid { id: string; name: string; avatar: string; genres: Record<string, boolean>; songs: Record<string, boolean> }
@@ -56,7 +56,6 @@
     reloadContent();
     done = `${s.title} is out of the library. It's under Deleted songs in the Review list, where it can be sent back to review, improved or forgotten.`;
   }
-  const label = (g: string) => g.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
   const shown = $derived(songs.filter((s) => !filter || s.title.toLowerCase().includes(filter.toLowerCase())));
 </script>
 

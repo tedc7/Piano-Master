@@ -353,9 +353,10 @@ class AppState {
 
   /** A choice on the Play screen, remembered for this player (arch §3): vocals and the tempo preset
    *  for this song; the metronome (`click`) for every song (v0.29). */
-  setSongPref(pieceId: string, p: { vocalsOff?: boolean; click?: boolean; preset?: Preset }): void {
+  setSongPref(pieceId: string, p: { vocalsOff?: boolean; click?: boolean; chords?: boolean; preset?: Preset }): void {
     if (p.vocalsOff !== undefined) this.prefs.vocalsOff = toggleIn(this.prefs.vocalsOff, pieceId, p.vocalsOff);
     if (p.click !== undefined) this.prefs.metronome = p.click;
+    if (p.chords !== undefined) this.prefs.chords = p.chords;
     if (p.preset !== undefined) this.prefs.presets = { ...this.prefs.presets, [pieceId]: p.preset };
     if (this.student) {
       this.student.settings = $state.snapshot(this.prefs) as StudentSettings;

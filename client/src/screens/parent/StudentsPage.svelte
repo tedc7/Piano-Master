@@ -52,7 +52,10 @@
   }
 
   const setSettings = (s: Student, p: Partial<StudentSettings>) => call(`/students/${s.id}`, "PATCH", { settings: p });
-  const songChoices = (s: Student) => s.settings.vocalsOff.length + (s.settings.metronome === null ? 0 : 1) + Object.keys(s.settings.presets).length;
+  const songChoices = (s: Student) => s.settings.vocalsOff.length + (s.settings.metronome === null ? 0 : 1) + (s.settings.chords == null ? 0 : 1)
+    + Object.keys(s.settings.presets).length;
+  const everySong = (s: Student) => [s.settings.metronome === null ? "" : `metronome ${s.settings.metronome ? "on" : "off"}`,
+                                     s.settings.chords == null ? "" : `chords ${s.settings.chords ? "on" : "off"}`].filter(Boolean).join(", ");
 </script>
 
 {#if error}<p class="notice error">{error}</p>{/if}
@@ -100,7 +103,7 @@
     <div class="grid">
       <PlayerSettings settings={s.settings} onchange={(p) => setSettings(s, p)} />
       <span>Song choices</span>
-      <span>{songChoices(s)} remembered (vocals and tempo for each song{s.settings.metronome === null ? "" : `; metronome ${s.settings.metronome ? "on" : "off"} for every song`})
+      <span>{songChoices(s)} remembered (vocals and tempo for each song{everySong(s) ? `; ${everySong(s)} for every song` : ""})
         {#if songChoices(s)}<button class="quiet" onclick={() => setSettings(s, { resetSongChoices: true } as never)}>Clear</button>{/if}</span>
       <span>Lessons read aloud</span>
       <span><button class="toggle" class:off={s.settings.autoRead === false} onclick={() => setSettings(s, { autoRead: s.settings.autoRead === false })}>{s.settings.autoRead === false ? "Only when asked" : "Each card"}</button>

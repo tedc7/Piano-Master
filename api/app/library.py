@@ -191,7 +191,8 @@ def entry_of(p: dict) -> dict:
     an = {k: p.get(k) for k in ("barNotes", "requiredSkills", "featuredSkills", "mapPoint", "skillMeasures", "beyondMap")}
     return {**{k: p.get(k) for k in ENTRY_KEYS}, "song": p.get("song") or p["id"], "songTitle": p.get("songTitle") or p["title"],
             "tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"], "measures": len(nota["playbackOrder"]),
-            "beats": float(nota["length"]), "phrases": len(nota["phrases"]), "hasMedia": bool(p.get("media")), **an}
+            "beats": float(nota["length"]), "phrases": len(nota["phrases"]), "hasMedia": bool(p.get("media")),
+            "words": content_mod.song_words(nota), **an}
 
 
 def apply_analysis(d: dict, an: dict) -> None:
