@@ -17,9 +17,10 @@ SF="$M/soundfonts/MuseScore_General.sf3"
 [ -f "$SF" ] || curl -sfL -o "$SF" https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General.sf3
 [ -f "$M/soundfonts/MuseScore_General_License.md" ] || curl -sfL -o "$M/soundfonts/MuseScore_General_License.md" \
   https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/MuseScore_General_License.md
-# lyric aligner (ctc-forced-aligner, ONNX MMS model, 1.26 GB in ~/ctc_forced_aligner/model.onnx), in its own venv
+# lyric aligner (ctc-forced-aligner, ONNX MMS model, 1.26 GB in ~/ctc_forced_aligner/model.onnx), in its own venv,
+# with Whisper (faster-whisper small.en, the lesson voice's) for the words-heard check
 [ -x "$M/fa/bin/python" ] || python3 -m venv "$M/fa"
-"$M/fa/bin/pip" install -q --upgrade pip && "$M/fa/bin/pip" install -q ctc-forced-aligner soundfile
+"$M/fa/bin/pip" install -q --upgrade pip && "$M/fa/bin/pip" install -q ctc-forced-aligner soundfile faster-whisper
 mkdir -p ~/ctc_forced_aligner
 [ -f ~/ctc_forced_aligner/model.onnx ] || curl -L -C - --retry 5 -o ~/ctc_forced_aligner/model.onnx \
   https://huggingface.co/deskpai/ctc_forced_aligner/resolve/main/04ac86b67129634da93aea76e0147ef3.onnx

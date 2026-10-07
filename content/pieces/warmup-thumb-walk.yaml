@@ -1,5 +1,6 @@
 # Curriculum song (Prep A, prep-a.middle-c-position). Warm-up in our own music.
-# A 1-2-3-2-1 pattern, the left thumb walking down one key each time.
+# A 1-2-3-2-1 pattern, the left thumb walking down one key each time. The words are a short pig
+# reaching for a pie (at the parent's request, Oct 6, 2026); the last phrase climbs as it reaches.
 title: "Warm-up: Thumb Walk"
 composer: Piano-Master
 genre: studies
@@ -20,3 +21,4 @@ abc: |
   Q:1/4=88
   K:C clef=bass
   !1!C B, A, B, | C4 | !1!B, A, G, A, | B,4 | !1!A, G, F, G, | A,4 | G, A, B, C | C4 |]
+  w: Short pig wants a pie, way up on the shelf, stand-ing on tip-toes, reach-ing, got it, yum!

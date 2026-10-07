@@ -221,6 +221,101 @@ sheets used only to check them (arch §10.2).
     Re-rendered: the first take passed (98% on pitch, 7% of words off, against 31-34% before), and
     went back to the review list under the same id.
 
+29. **The First Noel, sent back (Oct 6): "the 2nd half got 1 syllable behind".** The kept take's
+    words drifted from 53 s to 91 s, all of verse 2, which starts "They look-ed up": the hymn sings
+    the old "-ed" on its own note (the hymnal's "look-èd"), but the export joined the syllables into
+    "looked", which YuE2 sings in one. It ran a syllable early from there to the refrain. Now a sung
+    "-ed" keeps its hyphen in YuE2's lyrics, as a vowel run does ("They look-ed up"); after a t or d
+    ("want-ed") the word already says it. Re-rendered under the same id.
+
+30. **The second round of curriculum vocals (the parent's notes, Oct 6).** 42 more live songs sent
+    back for a vocal, like note 22. Five had no words fit to sing and got new ones at the parent's
+    request: hens pecking grain (Thumbs Take Turns), a lazy turtle (Warm-up: Hop to the Next Key), a
+    short pig reaching for a pie (Warm-up: Thumb Walk), a game of checkers ending in checkmate
+    (Warm-up: Checkers), and green aliens hopping to planet Zorg (Space Hops, whose words were the
+    letter names). When the Saints ("popular, should have backing") got chord symbols (C, C7, F, G7)
+    and the `kids` style; folk's default is YuE2's own backing, which only follows chords it hears.
+    Mary Had a Little Lamb, Twinkle Twinkle and Are You Sleeping get the `kids` backing from their
+    chords too, as their genre's default.
+    - *A little word before a long note: the aligner's miss, not the singer's.* The off words of the
+      new songs kept landing in the same places in take after take: "nib-bles on **a** | leaf",
+      "wants **a** | pie", "crowned **a** | king". It looked like YuE2 slurring the article into the
+      held word, and three songs got new words for it, but Whisper (below) heard "on a leaf" in five
+      of six takes: the lyric aligner can't place a word that short (it gives "a" no length at all),
+      and counts it off. The words went back as they were.
+    - *Mary Had a Little Lamb: 30% "off", every word sung.* Its first take was on every note and
+      17 ms from the beat; the aligner put "fleece" before "its", stretched "little" over the start
+      of "lamb" (the same note, both starting with "l"), and couldn't place "a". Most of the batch's
+      failures were like this: 9 of 43 passed the first run, nearly all the rest on "words off" alone.
+      So each take now has a **words-heard check**: Whisper (small.en, the lesson voice's check,
+      `tools/media/hear.py`, in the aligner's venv) transcribes the take, and the share of the song's
+      words it heard, in order, goes into the take's checks and the choice between takes. Scattered
+      words the aligner can't place no longer fail a take when Whisper hears 90% or more of the
+      words; a stretch of 1.5 s or more still fails it anywhere in the song (that's a drift, The
+      First Noel's kind, which Whisper can't hear because every word is still sung); and a take
+      Whisper hears under 75% of fails however its words were placed (a garble the aligner can
+      miss). Between 75% and 90% it's flagged with what Whisper heard. Whisper also catches what
+      no check did: takes that sing the song again after it ends ("its fleece was white as snow,
+      little pig").
+    - *The vocal sang on after the song ended.* The packaged vocal kept everything the take sang
+      after the last note: Up and Down the Staff had 4 s at full voice past the end, and five more
+      had a loud tail. Packaging now keeps the last note's release (0.6 s), fades it out (0.4 s) and
+      silences the rest, at every tempo preset, the file's length unchanged.
+    - *Two songs whose words fought the notes.* Pony Trot's "Trot, trot, trot, go!" (three of one
+      word, note 25's trap) failed 12 takes; "Clip-pe-ty clop! Gal-lop-ing, whoa!" gave a take on
+      every note and 15 ms from the beat. C and G Seesaw's "see-saw, see-saw" on four Gs was sung up
+      and down like a seesaw in all 24 takes; with "hold it up, then down!" two takes of the next 12
+      sang it as written. Words that describe a different tune from the notes pull YuE2 off them.
+    - *Repeated phrases still fool the aligner* (note 8): Kangaroo Skips' "space to space" twice in
+      a row put the first onto the second in every take, and its 15 s length puts the whole song in
+      the first-15-s rule. Submitted flagged, for the listen.
+    - *Result:* 37 of 43 pass, 6 go to the review list flagged (The First Noel's refrain runs, Middle
+      C Stomp and Drum Beats just under the line, C and G Seesaw's bleed at -22.9 dB, Pony Trot and
+      Kangaroo Skips on the aligner's word share), against 9 of 43 on the first run's rules.
+    - *When the Saints: a song's own "Oh," was dropped from the word check.* Every take was 61-89%
+      "off", from the first word. The export takes the sung lead-in "Oh," out of the aligner's word
+      list by dropping every word equal to "Oh,", so the song's own opening "Oh," went too, and each
+      later word was paired with the beat of the one before. Now only the lead-in is dropped. Jingle
+      Bells and Up on the Housetop have "Oh," in their refrains, so the same bug shifted their word
+      check after each refrain: it likely explains their "new way" of failing in note 27 (on pitch,
+      60-80% of words off), more than the repeated notes do. Alignments now record the word list
+      they were made with (`wordsIn`), and `vocal` aligns a take again when the words change.
+
+31. **The parent's listen to the 43 (Oct 7): 34 approved, 9 sent back.**
+    - *New words asked for:* big dinosaurs stomping (Middle C Stomp: "some vocals didn't come
+      through"), two girls on a seesaw (C and G Seesaw, garbled), three frog friends croaking high and
+      low (Three Friends: "bass" was sung like the fish), a hungry kangaroo hopping home to dinner
+      (Kangaroo Skips: the letters and "space to space" mixed up), and the brother still in bed in
+      place of Are You Sleeping's "ding, dang, dong", which garbled. Four of the five had been flagged
+      by the checks; the words the parent heard as wrong were the ones the checks pointed at.
+    - *A wrong letter name, heard by Whisper and let through.* B and C sang "E and G" for "C and G",
+      Bunny Hops "to E" for "to D". Whisper had written exactly that, but the letters' share counted
+      each as one letter off in a song's worth. Now a letter name Whisper hears as another letter name
+      fails the take ("Whisper heard the wrong letter name: E for C"), with Whisper's spellings of
+      sung letters ("middle sea", "bee") counted as the letters they are.
+    - *Twinkle Twinkle's backing stopped whenever the left hand did.* The parent guessed YuE2 was
+      taking the bass notes for the backing; it was ours. Without chord symbols the `kids` backing
+      takes its chords from the left hand, and this arrangement shares the tune between the hands,
+      so every right-hand half bar had no chord. It has chord symbols now (G, C, D), and the
+      notation builder reads them from every part: it had read only the first, so symbols written
+      over the left hand's bars were dropped without a word.
+    - *The First Noel, "some vocals didn't sing to lyrics": would a FluidSynth backing let YuE2 focus
+      on the vocal?* It has one already (the hymnal's own parts on strings and cello); YuE2 always
+      sings over an accompaniment of its own, which is separated out and thrown away. What can be
+      changed is what that accompaniment is: its style now asks for "a very soft sustained string
+      pad, sparse and quiet in the background" and "very clear words", to see whether a thinner
+      arrangement gives a cleaner separated vocal. A render now counts as stale when the piece asks
+      for a style it wasn't sung in (only the score and lyrics counted before).
+      The result: take 8 passed every check (98% of notes on pitch, 8% of words off, every word
+      heard), the first take of this carol to pass in 18; one song isn't proof, but it's the first
+      thing to try on a long song that keeps drifting.
+    - *Choosing between failing alignments.* Bunny Hops and B and C each kept a take's worse
+      alignment (85% on pitch with the first word missing; 81 ms off the beat) over its better one,
+      on a score a hundredth higher. Takes are now ranked by passing, then the fewest failed checks,
+      then the score.
+    - *Result:* all nine re-rendered; eight pass, and B and C's take (the letters right, on the
+      beat) is over only on bleed, by under 1 dB.
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

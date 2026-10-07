@@ -42,6 +42,7 @@ from common import PAD_BEATS, PRESETS, ROOT, SR, Piece, pieces  # noqa: E402
 
 VOCAL_DB = -20.0            # the vocal's RMS over the song (the sync probe's level, kept for v0.22)
 YUE2_BACKING_BELOW_DB = 10.0   # YuE2's backing under the vocal above 250 Hz; the app plays backings at 200%
+END_TAIL_S, END_FADE_S = 0.6, 0.4   # what's kept after the last note's end (its release), then faded out
 TAKES = 2
 MAX_TAKES = 3             # arch §10.5: re-render up to 3 tries
 
@@ -51,6 +52,18 @@ def rel(p: Path) -> str:
         return str(Path(p).resolve().relative_to(ROOT))
     except ValueError:
         return str(p)
+
+
+def song_only(y: np.ndarray, sr: int, end_s: float) -> np.ndarray:
+    """A YuE2 stem ending with the song: the last note's release kept, then faded to silence. Takes
+    often sing on after the song ends, sometimes the whole song again (Up and Down the Staff: 4 s at
+    full voice, Oct 7, 2026); the length stays, so every preset still lines up with the playback."""
+    a, b = int((end_s + END_TAIL_S) * sr), int((end_s + END_TAIL_S + END_FADE_S) * sr)
+    y = y.copy()
+    if a < len(y):
+        y[a:b] *= np.linspace(1.0, 0.0, len(y[a:b]))[:, None]
+        y[b:] = 0
+    return y
 
 
 def plan_of(piece: Piece) -> dict:
@@ -90,12 +103,17 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
             print(f"  take {take}: render failed: {r.get('error') or r.get('reason') or r}", flush=True)
             return
         folder = piece.work / "renders" / f"{piece.pid}-s{take}"
+        h = align.heard(folder, [w["word"] for w in abcmap["words"][1:]])   # the words, after the lead-in "Oh,"
         for mode in align.MODES:
             f = folder / f"alignment-{mode}.json"
-            a = json.loads(f.read_text()) if f.exists() else align.align(folder, abcmap, phrases, mode)
+            a = json.loads(f.read_text()) if f.exists() else None
+            if a is None or a.get("wordsIn", abcmap["words"]) != abcmap["words"]:   # aligned to other words: again
+                a = align.align(folder, abcmap, phrases, mode)
+            a["wordsIn"] = abcmap["words"]
             if a.get("error"):
                 print(f"  take {take} ({mode}): {a['error']}", flush=True)
                 continue
+            a["heard"] = {"heard": h["heard"], "share": h["share"], "wrongLetters": h["wrongLetters"]}
             a["checks"] = align.verdict(a)                     # judged by the current rules
             a["score"] = align.score(a)
             f.write_text(json.dumps(a, indent=1) + "\n")
@@ -103,7 +121,7 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
             c = a["checks"]
             print(f"  take {take} ({mode}): score {a['score']:+.2f}, on pitch {a['pitch']['share']:.0%}, "
                   f"words off {a['words']['shareOver300ms']:.0%}, worst phrase {c['worstPhraseMs']:.0f} ms, "
-                  f"tuning {a['tuningCents']:+} c, bleed {a['bleed']['db']} dB: {'PASS' if c['pass'] else 'FAIL: ' + '; '.join(c['reasons'])}"
+                  f"heard {h['share']:.0%}, tuning {a['tuningCents']:+} c, bleed {a['bleed']['db']} dB: {'PASS' if c['pass'] else 'FAIL: ' + '; '.join(c['reasons'])}"
                   + (f" (flag: {'; '.join(c['flags'])})" if c["flags"] else ""),
                   flush=True)
 
@@ -116,7 +134,10 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
         run(t)
     if not results:
         raise RuntimeError(f"{piece.pid}: no usable YuE2 take")
-    best = max(results, key=lambda r: (r["checks"]["pass"], r["score"]))
+    # passing first, then the fewest failed checks (B and C: one take's two alignments, one only over
+    # on bleed and one 81 ms off the beat too, a hundredth apart on score), then the score
+    failed = lambda r: sum(1 for k, v in r["checks"].items() if isinstance(v, bool) and k != "pass" and not v)
+    best = max(results, key=lambda r: (r["checks"]["pass"], -failed(r), r["score"]))
     choice = {"take": best["take"], "mode": best["mode"], "pass": best["checks"]["pass"], "score": best["score"],
               "padBeats": abcmap.get("songPadBeats", abcmap["padBeats"]), "bpm": piece.bpm, "songStartS": best["songStartS"],
               "candidates": [{"take": r["take"], "mode": r["mode"], "score": r["score"], "pass": r["checks"]["pass"],
@@ -178,11 +199,13 @@ def package(piece: Piece) -> dict:
         slow = align.check_preset(folder, choice["mode"], "50", PRESETS["50"])
         src = folder / f"aligned-{choice['mode']}"
         start = int(choice["songStartS"] * SR)
+        end_s = align.score_notes(folder / "score.abc")[0][-1][1]     # the last note's end, at 100%
         v100, _ = sf.read(src / "vocals_100.wav", always_2d=True)
+        v100 = song_only(v100, SR, end_s)
         gain = VOCAL_DB - rms_db(v100[start:])                        # one gain for every preset
         for key, ratio in PRESETS.items():
             v, sr = sf.read(src / f"vocals_{key}.wav", always_2d=True)
-            synth.mp3(synth.level(v, gain), out / f"vocals_{key}.mp3", sr)
+            synth.mp3(synth.level(song_only(v, sr, end_s / ratio), gain), out / f"vocals_{key}.mp3", sr)
             presets[key]["vocals"] = f"vocals_{key}.mp3"
         if keep_yue2:
             import scipy.signal as ss
@@ -191,7 +214,7 @@ def package(piece: Piece) -> dict:
             bgain = None
             for key, ratio in PRESETS.items():
                 b, sr = sf.read(src / f"accompaniment_{key}.wav", always_2d=True)
-                b = hp(b, sr)
+                b = hp(song_only(b, sr, end_s / ratio), sr)
                 if bgain is None:
                     k = int(choice["songStartS"] * sr)
                     bgain = align_band(v100[k:] * 10 ** (gain / 20), sr) - YUE2_BACKING_BELOW_DB - align_band(b[k:], sr)
@@ -202,6 +225,7 @@ def package(piece: Piece) -> dict:
             engines.append("YuE2 vocal")
         media["take"] = f"{choice['take']} ({choice['mode']})"
         media["check"] = {"notesOnPitch": a["pitch"]["share"], "wordsOff": a["words"]["shareOver300ms"],
+                          "wordsHeard": (a.get("heard") or {}).get("share"), "heard": (a.get("heard") or {}).get("heard"),
                           "firstWordSung": a["firstWordSung"], "wordStretches": a["words"]["stretches"],
                           "melodyStretches": a["melodyStretches"], "worstPhraseMs": a["checks"]["worstPhraseMs"],
                           "grid100": a["after"], "grid50": slow,
@@ -251,6 +275,7 @@ def report(batch: Path) -> Path:
         m = json.loads(mj.read_text())
         c = m.get("check") or {}
         vocal = (f"{m['take']}: {c['notesOnPitch']:.0%} of notes on pitch, {c['wordsOff']:.0%} of words off the staff, "
+                 + (f"{c['wordsHeard']:.0%} of words heard by Whisper, " if c.get("wordsHeard") is not None else "") +
                  f"on the beat within {c['grid100']['median_ms']:.0f} ms at 100% and {c['grid50']['median_ms']:.0f} ms at 50% "
                  f"(median), tuning {c['tuningCents']:+} cents") if c else "none"
         b = m.get("backing")

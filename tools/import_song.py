@@ -474,8 +474,11 @@ def package_items(batch: Path, ids: list[str]) -> tuple[list[dict], list[dict]]:
         info = {k: meta.get(k) for k in ("level", "hands", "version", "songTitle", "source", "license", "tempoSource")}
         info.update(notes=header_notes(f), flags=r["warnings"], lyrics=lyrics_text(piece["notation"]),
                     checks=media.get("check"), backing=media.get("backing"), engine=media.get("engine"))
+        # the stems: the batch's media, else the build's copy (a sync-probe piece's stems, Amazing Grace)
+        stem = lambda url: next((p for p in (mroot / f.stem / Path(url).name, bc.SONGS / url) if p.exists()),
+                                mroot / f.stem / Path(url).name)
         items.append({"piece": piece, "info": {k: v for k, v in info.items() if v not in (None, [], "")},
-                      "files": {Path(x["url"]).name: mroot / f.stem / Path(x["url"]).name
+                      "files": {Path(x["url"]).name: stem(x["url"])
                                 for pr in ((piece.get("media") or {}).get("presets") or {}).values()
                                 for x in (pr.get("vocals"), pr.get("accompaniment")) if x}})
     return items, problems

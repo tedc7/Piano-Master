@@ -198,11 +198,15 @@ def build_notation(score, *, hand_for_single_staff: str = "R", phrase_bars: int 
     for ly in lyrics:
         ly["note"] = remap[ly["note"]]
 
-    chords = []
-    for cs in ref_part.recurse().getElementsByClass(harmony.ChordSymbol):
-        name = chord_name(cs.pitches)
-        if name:
-            chords.append({"beat": Q(cs.getOffsetInHierarchy(ref_part)), "symbol": name})
+    # chord symbols from every part, the first part's where two share a beat: a tune shared between
+    # the hands carries them on whichever hand plays (Twinkle Twinkle's left-hand bars, Oct 7, 2026)
+    at = {}
+    for part in (p for _, ps in layout for p in ps):
+        for cs in part.recurse().getElementsByClass(harmony.ChordSymbol):
+            name = chord_name(cs.pitches)
+            if name:
+                at.setdefault(Q(cs.getOffsetInHierarchy(part)), name)
+    chords = [{"beat": b, "symbol": at[b]} for b in sorted(at)]
 
     n_verses = max((ly["verse"] for ly in lyrics), default=1)
     if tempo is None:

@@ -1,4 +1,6 @@
 # Curriculum song (Prep A, prep-a.allegro). Spiritual, traditional; public domain. Our own arrangement.
+# Chord symbols (the usual C, C7, F, G7 harmony) give it a backing (at the parent's request, Oct 6,
+# 2026: a popular song should have one), in the kids style.
 title: "When the Saints Go Marching In"
 composer: Traditional
 genre: folk
@@ -10,6 +12,8 @@ source:
 license:
   composition: public-domain
   edition: original (our own arrangement)
+media:
+  backing: kids
 phraseBars: 2
 abc: |
   X:1
@@ -18,7 +22,7 @@ abc: |
   L:1/4
   Q:1/4=112
   K:C
-  !1!C2 E F | G4 | C2 E F | G4 | C2 E F | G2 E2 | C2 E2 | D4 |
+  "C"!1!C2 E F | G4 | C2 E F | G4 | C2 E F | G2 E2 | C2 E2 | "G7"D4 |
   w: Oh, when the saints go march-ing in, oh, when the saints go march-ing in,
-  E2 E D | C3 C | E G G F | F4 | E F G E | C2 D2 | C4 |]
+  "C"E2 E D | C3 C | "C7"E G G "F"F | F4 | "C"E F G E | C2 "G7"D2 | "C"C4 |]
   w: oh Lord, I want to be in that num-ber, when the saints go march-ing in.

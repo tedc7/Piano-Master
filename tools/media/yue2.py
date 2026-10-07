@@ -38,13 +38,20 @@ MINOR_KEYS = ["Abm", "Ebm", "Bbm", "Fm", "Cm", "Gm", "Dm", "Am", "Em", "Bm", "F#
 KEYS_FIFTHS = {**{k: i - 7 for i, k in enumerate(MAJOR_KEYS)}, **{k: i - 7 for i, k in enumerate(MINOR_KEYS)}}
 SEEDS = tuple(831001 + i for i in range(24))
 
-HOLD = "\u2011"            # a run on one vowel inside a word: a hyphen in YuE2's lyrics, none for the aligner
+HOLD = "\u2011"            # a syllable YuE2 would skip inside a word: a hyphen in YuE2's lyrics, none for the aligner
 
 
 def vowel_run(before: str, syllable: str) -> bool:
     """A syllable that only carries on the vowel the word has reached ("Glo" then "o")."""
     s = syllable.lower().strip(",.;:!?")
     return bool(s) and all(c in "aeiou" for c in s) and before.lower().endswith(s[0])
+
+
+def sung_ed(before: str, syllable: str) -> bool:
+    """An old sung "-ed" on its own note ("look-ed", "bless-ed"), which the joined word would say
+    in one syllable ("looked"); after a t or d it's a syllable anyway ("want-ed")."""
+    s = syllable.lower().strip(",.;:!?").replace("è", "e").replace("é", "e")
+    return s == "ed" and not before.lower().rstrip(HOLD).endswith(("t", "d"))
 
 
 def tonal_key(nota: dict) -> str:
@@ -325,7 +332,8 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
     # lyrics: words per verse, a new line at each phrase start (at the next word, when a phrase
     # starts inside one). A word's syllables are joined ("it-sy" -> "itsy"), except a run on one
     # vowel ("Glo-o-o-o-ri-a"), which keeps a hyphen before each note, so YuE2 sings every note of it
-    # instead of one long "Glooooria" (the Christmas batch's Gloria, Oct 6, 2026)
+    # instead of one long "Glooooria" (the Christmas batch's Gloria, Oct 6, 2026), and a sung "-ed"
+    # ("look-ed", not "looked": The First Noel's verse 2 ran a syllable early after it, Oct 6, 2026)
     phrase_starts = set(Fraction(p) for p in nota["phrases"])
     verses, word_starts, breaks = {}, {}, set()
     for n in mel:
@@ -337,7 +345,8 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
         cur = line[-1]
         if cur and cur[-1].endswith("⁠"):
             prev = cur[-1][:-1]
-            cur[-1] = prev + (HOLD if vowel_run(prev, ly["text"]) else "") + ly["text"]
+            hyphen = vowel_run(prev, ly["text"]) or sung_ed(prev, ly["text"])
+            cur[-1] = prev + (HOLD if hyphen else "") + ly["text"]
         else:
             if v in breaks and cur:
                 line.append([])
@@ -349,8 +358,10 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
             cur[-1] += "⁠"
     verses[sorted(verses)[0]][0].insert(0, "Oh,")
     words = [{"word": "Oh,", "beat": "0"}]
-    for v in sorted(verses):
-        flat = [w.replace("⁠", "").replace(HOLD, "") for line in verses[v] for w in line if w != "Oh,"]
+    for i, v in enumerate(sorted(verses)):
+        # the lead-in "Oh," only: a song's own "Oh," (When the Saints, Jingle Bells) is a word on its
+        # note, and leaving it out paired every later word with the beat of the one before (Oct 7, 2026)
+        flat = [w.replace("⁠", "").replace(HOLD, "") for line in verses[v] for w in line][1 if i == 0 else 0:]
         words += [{"word": w, "beat": str(b), "verse": v} for w, b in zip(flat, word_starts.get(v, []))]
     lyrics = []
     for v in sorted(verses):
@@ -397,14 +408,18 @@ def write_inputs(piece: Piece) -> Path:
     return out
 
 
-def stale(folder: Path, inputs: Path) -> bool:
-    """A render folder made from another score or other lyrics than the current inputs."""
+def stale(folder: Path, inputs: Path, request: dict | None = None) -> bool:
+    """A render folder made from another score, other lyrics or another style than the current inputs
+    (a piece's own `vocal_style` or `accompaniment_style` missing from the style it was sung in)."""
     job = folder / "job.json"
     if not (folder / "score.abc").exists() or not job.exists():
         return True
-    lyrics = json.loads(job.read_text()).get("lyrics", "")
+    j = json.loads(job.read_text())
+    lyrics = j.get("lyrics", "")
+    styles = [request[k] for k in ("vocal_style", "accompaniment_style") if request and request.get(k)]
     return (folder / "score.abc").read_text().strip() != (inputs / "score.abc").read_text().strip() or \
-        (isinstance(lyrics, str) and lyrics.strip() and lyrics.strip() != (inputs / "lyrics.txt").read_text().strip())
+        (isinstance(lyrics, str) and lyrics.strip() and lyrics.strip() != (inputs / "lyrics.txt").read_text().strip()) or \
+        any(x not in j.get("style", "") for x in styles)
 
 
 def render(piece: Piece, take: int, dry_run: bool = False) -> dict:
@@ -412,7 +427,8 @@ def render(piece: Piece, take: int, dry_run: bool = False) -> dict:
     req = piece.work / "yue2" / f"request-s{take}.json"
     renders = piece.work / "renders"
     folder = renders / f"{piece.pid}-s{take}"
-    if folder.exists() and (stale(folder, piece.work / "yue2") or not (folder / "report.json").exists()):
+    if folder.exists() and (stale(folder, piece.work / "yue2", json.loads(req.read_text()) if req.exists() else None)
+                            or not (folder / "report.json").exists()):
         shutil.rmtree(folder)          # made from other inputs (the piece changed), or cut off: render again
     if (folder / "report.json").exists() and not dry_run:
         return json.loads((folder / "report.json").read_text())
