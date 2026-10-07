@@ -3,12 +3,14 @@
   // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
   import { onMount, tick, untrack } from "svelte";
   import DeviceSettings from "../components/DeviceSettings.svelte";
+  import Medal from "../components/Medal.svelte";
   import PlayerSettings from "../components/PlayerSettings.svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import { api } from "../lib/api";
   import { loadContent } from "../lib/content";
-  import { app } from "../lib/app.svelte.js";
+  import { app, awardMoment } from "../lib/app.svelte.js";
+  import { starText, type AttemptRewards } from "../lib/awards";
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
@@ -32,6 +34,11 @@
   let loadingFrac = $state(0);
   let result = $state<AttemptRecord | null>(null);
   let loopNote = $state<{ text: string; stars: number } | null>(null);
+  // what the last play earned (M10), once the server has it: skills passed or mastered, medals, a
+  // new best on this song, and the stars it added to the collection. A unit or level medal shows
+  // over the screen (Celebration.svelte); the rest on the result card.
+  let earned = $state<{ passed: string[]; mastered: string[]; rewards: AttemptRewards } | null>(null);
+  let savedId = "";
   let hands = $state<Hands>("both");
   let section = $state<[number, number] | null>(null);   // null = all bars
   let phraseCount = $state(1);
@@ -108,6 +115,18 @@
     let alive = true;
     const offMidi = app.midi.onEvent(onMidi);
     const offApi = api.onChange(() => { pending = api.pending; });
+    const offStored = api.onStored((aid, fx) => {
+      if (aid !== savedId || !fx || !fx.stars || app.parentMode) return;
+      const rewards: AttemptRewards = { awards: fx.awards ?? [], stars: fx.stars, best: fx.best ?? null };
+      void loadContent().catch(() => null).then((c) => {
+        const name = (sid: string) => c?.map.skills.find((k) => k.id === sid)?.name ?? sid;
+        if (aid !== savedId) return;
+        earned = { passed: fx.passed.map(name), mastered: fx.mastered.map(name), rewards };
+        const big = rewards.awards.filter((a) => a.kind === "unit" || a.kind === "level");
+        if (big.length) app.celebrate(big.map(awardMoment));
+        else if (fx.passed.length || fx.mastered.length || rewards.awards.length || rewards.best) app.chime();
+      });
+    });
     const onVis = () => { if (document.hidden) player?.pause(); };
     const onResize = () => { if (!player?.running && stageEl && Math.abs(stageEl.clientHeight - lastStageH) > 20) drawStaff(); };
     document.addEventListener("visibilitychange", onVis);
@@ -194,6 +213,8 @@
         },
         save: (r) => {
           // the parent's plays are never recorded to a student (arch §3)
+          savedId = r.id;
+          earned = null;
           api.saveAttempt({
             ...r, contentVersion: piece?.contentVersion, studentId: app.student?.id ?? null,
             skillId: itemSkill, itemId: opened?.id ?? null, context: opened ? "guided" : "free",
@@ -251,6 +272,7 @@
       cancelAnimationFrame(raf);
       offMidi();
       offApi();
+      offStored();
       clearTimeout(loopTimer);
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("resize", onResize);
@@ -596,6 +618,17 @@
         {#if !tapping}<Stars label="Notes" value={e.accuracyStars} />{/if}
         <Stars label="Timing" value={e.timingStars} />
         <p class="meaning">{STAR_MEANING[main]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</p>
+        {#if earned}
+          {@const rw = earned.rewards}
+          {@const medals = rw.awards.filter((a) => a.kind !== "unit" && a.kind !== "level").slice(0, 3)}
+          <div class="earned">
+            {#each earned.mastered as n (n)}<div class="win"><span class="mark mastered">🏆</span><b>Skill mastered</b><span>{n}</span></div>{/each}
+            {#each earned.passed as n (n)}<div class="win"><span class="mark passed">✓</span><b>Skill passed</b><span>{n}</span></div>{/each}
+            {#each medals as a (a.id)}<div class="win"><Medal kind={a.kind} tier={a.tier} size={34} /><b>New medal</b><span>{a.title}: {a.detail}</span></div>{/each}
+            {#if rw.best}<div class="win"><span class="mark best">★</span><b>New best</b><span>{starText(rw.best.previous)} → {starText(rw.best.now)} stars</span></div>{/if}
+            {#if rw.stars.gained > 0}<p class="added">+{starText(rw.stars.gained)} ★ to your collection · {starText(rw.stars.total)} ★ in all</p>{/if}
+          </div>
+        {/if}
         <p class="detail">{e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.conditions.rewinds ? ` · ${result.conditions.rewinds} rewind${result.conditions.rewinds > 1 ? "s" : ""}` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</p>
         {#if e.aids.length}
           <p class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</p>
@@ -742,6 +775,16 @@
   .result h2 { margin: 0 0 8px; }
   .result p { margin: 6px 0; }
   .meaning { font-weight: 650; }
+  .earned { display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin: 10px 0 4px; animation: earn 0.4s ease-out; }
+  .win { display: flex; align-items: center; gap: 10px; background: #f6f4ee; border-radius: 12px; padding: 5px 12px; text-align: left; }
+  .win b { white-space: nowrap; }
+  .win span:last-child { color: var(--muted); font-weight: 650; }
+  .mark { flex: 0 0 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 18px; }
+  .mark.passed { background: var(--ok); }
+  .mark.mastered { background: #f2b01e; }
+  .mark.best { background: #fff3cc; color: #c98a00; font-size: 22px; }
+  .added { color: #8a6200; font-weight: 700; }
+  @keyframes earn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .detail { color: var(--muted); }
   .chip { display: inline-block; background: #eef3fd; border: 1px solid #cfdcf6; border-radius: 999px; padding: 3px 12px; font-size: 15px; }
   .hint { color: var(--muted); font-size: 15px; }

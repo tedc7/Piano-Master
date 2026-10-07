@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import Celebration from "./components/Celebration.svelte";
   import Config from "./screens/Config.svelte";
   import Journey from "./screens/Journey.svelte";
   import Lesson from "./screens/Lesson.svelte";
@@ -71,3 +72,4 @@
 {:else}
   <Picker />
 {/if}
+<Celebration />

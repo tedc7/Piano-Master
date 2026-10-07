@@ -8,6 +8,7 @@
   // closes it. In parent mode every bubble opens (the content preview). `test` draws a generated
   // 200-bubble map, the M5 render test.
   import { onMount, untrack } from "svelte";
+  import Medal from "../components/Medal.svelte";
   import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
@@ -154,6 +155,12 @@
   function canOpen(s: Skill): boolean {
     return app.parentMode || shown(progress.get(s.id)) !== "locked";
   }
+  /** How far the student is through a skill's unit (M10: every skill passed earns the unit's medal). */
+  function unitTally(s: Skill): { passed: number; mastered: number; n: number } {
+    const us = (content?.map.skills ?? []).filter((k) => k.level === s.level && k.unit === s.unit);
+    return { n: us.length, passed: us.filter((k) => isPassed(progress.get(k.id))).length,
+             mastered: us.filter((k) => progress.get(k.id)?.status === "mastered").length };
+  }
   function needs(s: Skill): string {
     const names = s.prerequisites.filter((p) => !isPassed(progress.get(p))).map((p) => content?.map.skills.find((k) => k.id === p)?.name ?? p);
     return names.join(" and ");
@@ -212,6 +219,13 @@
       </div>
       <p class="muted"><span class="type" style:background={conceptType(open.track).color}>{conceptType(open.track).label}</span>
         {statusText[st]}{open.unit ? ` · ${open.unit}` : ""}</p>
+      {#if open.unit && !app.parentMode}
+        {@const u = unitTally(open)}
+        <p class="unitline">
+          <Medal kind="unit" tier={u.mastered === u.n ? "silver" : u.passed === u.n ? "bronze" : null} size={30} />
+          <span>{open.unit.split(" · ")[0]}: {u.passed} of {u.n} skills passed{u.passed === u.n ? ` · ${u.mastered} mastered` : ""}</span>
+        </p>
+      {/if}
       {#if open.description}<p>{open.description}</p>{/if}
       {#if app.parentMode && open.bookRefs?.length}
         <!-- arch §6.2: the family's own book pages for this concept (from content/private/, never committed) -->
@@ -272,6 +286,7 @@
   .unit { width: 190px; text-align: center; white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--muted); }
   .stars { margin-top: 2px; }
   .type { color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; font-weight: 800; margin-right: 6px; }
+  .unitline { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 15px; color: var(--muted); margin: 4px 0; }
   .practice { margin: 6px 0 0; font-weight: 800; color: var(--muted); }
   .refs { font-size: 14px; background: #f6f3ea; border-radius: 10px; padding: 8px 12px; }
   .sheet {

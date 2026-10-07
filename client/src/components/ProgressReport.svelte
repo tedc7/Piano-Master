@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import Stars from "./Stars.svelte";
   import { api } from "../lib/api";
+  import { starText } from "../lib/awards";
   import { loadContent, type Content } from "../lib/content";
   import type { SkillProgress } from "../lib/progress";
 
@@ -17,7 +18,8 @@
     counts: Record<string, number>;
     days: { date: string; guidedSec: number; freeSec: number; practiced: boolean; sessionCompleted: boolean }[];
     streak: number;
-    starsThisWeek: number;
+    stars: number;                     // the star collection: each song's best (M10)
+    starsThisWeek: number;             // what it grew by in the last 7 days
     weeks: { from: string; plays: number; accuracyStars: number | null; timingStars: number | null }[];
     tracks: { track: string; mastery: number; skills: number }[];
     greatAt: string[];
@@ -100,7 +102,7 @@
           <div class="day" class:on={d.practiced} title={d.date}><span>{d.practiced ? (d.sessionCompleted ? "🔥" : "✓") : ""}</span><small>{weekday(d.date)}</small></div>
         {/each}
       </div>
-      <p class="line">🔥 {r.streak} day{r.streak === 1 ? "" : "s"} in a row · ★ {r.starsThisWeek} stars this week</p>
+      <p class="line">🔥 {r.streak} day{r.streak === 1 ? "" : "s"} in a row · ★ {starText(r.stars)} in the collection, +{starText(r.starsThisWeek)} this week</p>
       {#if full}
         <p class="line muted">Last 4 weeks: {r.guidedMinutes28} min Guided, {r.freeMinutes28} min Free Play. Today's target: {r.targetMinutes} min.</p>
         <div class="weeks">

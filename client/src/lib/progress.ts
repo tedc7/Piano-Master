@@ -1,6 +1,7 @@
 // Skill states, song readiness and today's session, as the lesson engine on the piano server
 // reports them (arch §6.8, §8.1, §8.5). The server is the one that decides; the client shows it
 // and keeps its own copy up to date between requests.
+import type { Rewards } from "./awards";
 import type { PieceSummary, Skill, SkillMap } from "./types";
 
 export type SkillStatus = "locked" | "current" | "passed" | "mastered";
@@ -57,7 +58,8 @@ export interface ItemResult { accuracyStars: number | null; timingStars: number 
 
 export interface SessionItem {
   id: string;
-  kind: "lesson" | "piece" | "pick" | "drill";   // pick: the student chooses from the library; drill: generated (§8.9)
+  kind: "lesson" | "piece" | "pick" | "drill" | "needed";   // pick: the student chooses from the library; drill: generated (§8.9);
+                                       // needed: no song this child may play practises the skill, a note for the parent (done from the start)
   reason: SessionReason;
   skillId: string | null;
   pieceId: string | null;
@@ -87,6 +89,7 @@ export interface StudentState {
   session: Session;
   day: Day;
   favorites: string[];
+  rewards?: Rewards;                   // the star collection and new medals (M10)
 }
 
 export const TRY_ANOTHER_WAY = 3;

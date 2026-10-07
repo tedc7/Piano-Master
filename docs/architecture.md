@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.35** · Oct 6, 2026
+**Version 0.37** · Oct 7, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -175,13 +175,13 @@ The app offers **Guided** practice (the daily session from the skill map) and **
 ### Screens
 
 1. **Student picker:** large avatar cards, one per child, plus a small "Parent" button that asks for the PIN. Shows the full-screen reminder when needed (2.2).
-2. **Home:** two big buttons, "Today's Practice" (Guided) and "Free Play". Shows today's session as 3 to 5 cards, a progress ring toward today's target minutes, the streak, and the stars earned today.
+2. **Home:** two big buttons, "Today's Practice" (Guided) and "Free Play". Shows today's session as 3 to 5 cards, a progress ring toward today's target minutes, the streak, and the star collection with what it grew by today (v0.36, "Rewards" below).
 3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its concept lesson and practice songs; a tap anywhere else closes them (v0.29).
 4. **Lesson intro:** a short interactive concept lesson, with an optional parent-approved video (see "Teaching concepts" below).
 5. **Play screen:** the core screen (below).
-6. **Result screen:** accuracy stars and timing stars (0.5 to 5), the trickiest measure, a small "practice mode" chip when practice aids were used (section 7.5), and "Practice tricky part", "Play again", "Next". After 3 tries at an item without passing, the main button becomes **"Try it another way"**, which opens gentle practice choices (8.1).
-7. **Song library (Free Play):** approved, library-ready songs (6.8), grouped by level. Songs further along the map show "Coming soon" with the one skill that unlocks them: the last one still to reach, since the map leads there (v0.29; the whole list of skills was too long for later songs). Favorites heart. A search box narrows the list to songs with the text in their title or words, and a genre choice to one of the genres the child can see (v0.35); both stay as they were after Back from a song, and All songs clears them with Favorites, showing every song.
-8. **My Progress:** the student's own report: skills mastered, star trends, practice days, strengths and "working on" areas, written in kid-friendly words. Same data the parent sees.
+6. **Result screen:** accuracy stars and timing stars (0.5 to 5), what the play earned once the server has it (a skill passed or mastered, a new medal, a new best on the song, the stars it added to the collection; v0.36), the trickiest measure, a small "practice mode" chip when practice aids were used (section 7.5), and "Practice tricky part", "Play again", "Next". After 3 tries at an item without passing, the main button becomes **"Try it another way"**, which opens gentle practice choices (8.1).
+7. **Song library (Free Play):** approved, library-ready songs (6.8), grouped by level. Songs further along the map show "Coming soon" with the one skill that unlocks them: the last one still to reach, since the map leads there (v0.29; the whole list of skills was too long for later songs). Favorites heart. A search box narrows the list to songs with the text in their title or words, and a genre choice to one of the genres the child can see (v0.35); both stay as they were after Back from a song, and All songs clears them with Favorites, showing every song. A song the child has played shows its best stars (v0.36).
+8. **My Progress:** the trophy case first (v0.36, "Rewards" below), then the student's own report: skills mastered, star trends, practice days, strengths and "working on" areas, written in kid-friendly words. Same data the parent sees.
 9. **Parent mode (PIN):** see below.
 
 ### Screen layout rule: status at the top, controls below
@@ -304,9 +304,30 @@ Accompaniment and vocals are audio **stems** produced for each arrangement by th
 ### Visual style
 
 - Bright but calm palette, rounded shapes, large type, big tap targets (at least 48 px).
-- A simple friendly mascot for encouragement messages; no video-game clutter.
-- Rewards: half-star ratings, stickers per skill mastered, streak flame for practice days.
+- No mascot (dropped in v0.36): encouragement is in plain words, and nothing looks too young for an older student; no video-game clutter.
+- Rewards: half-star ratings, the star collection, medals and the streak flame (below).
 - Encouraging language only: "Almost! Let's try measure 3 again", never "Fail".
+
+### Rewards (M10, v0.36)
+
+**Decision: rewards are clear accolades for playing well and for finishing skills, units and levels, styled like a music exam's or a sport's achievements rather than stickers, so they still suit a child years into the map.** They are built in `api/app/awards.py` and shown on Home, the result card, the song library, the Journey sheet and My Progress.
+
+- **The star collection:** every song's best accuracy stars, added up (completed plays of the whole song; section practice and generated drills don't count). Playing a song again adds stars only by beating its best, so the total grows with better playing, never by repeating an easy song, and each song is worth up to 5. Home shows the total and what it grew by today; My Progress also shows this week's growth and the next star medal; each played song shows its best in the song library.
+- **Medals,** in bronze, silver, gold and platinum, are stored when first earned and never taken back, like the map's best-so-far stars:
+
+| Medal row | Steps (tier rises along the row) |
+| --- | --- |
+| Star collection | 25, 50 (bronze); 100, 250 (silver); 500, 1,000 (gold); 2,500, 5,000 (platinum) |
+| Practice streak | 3, 7; 14, 30; 60, 100; 200, 365 days in a row |
+| Skills mastered | 1, 5; 10, 25; 50, 100; 200, 400 |
+| Five-star songs | 1, 3; 10, 25; 50, 100; 250 |
+| Songs played | 5, 10; 25, 50; 100; 250 |
+| Time at the piano | 1, 5; 10, 25; 50, 100; 250, 500 hours |
+| Each unit and each level of the map | Bronze: every skill passed · Silver: every skill mastered · Gold: every skill mastered with 5 stars |
+
+- **The moment:** after a play, the result card shows what it earned, with a short chime on the app's piano: a skill passed or mastered, a new medal, a new best on the song ("3 → 4½ stars"), and the stars added to the collection. A unit or level medal, and anything a concept lesson earns (a theory skill passes there), shows as a card over the screen that the student taps to continue. Nothing is shown in parent mode.
+- **The trophy case (My Progress):** the collection, new medals, each medal row with its next step and a bar toward it, and each level and unit with its three medals and how far through it the student is. Opening it marks new medals seen; until then My Progress's tab shows how many are new. The parent's progress report shows the same trophy case. The Journey sheet shows how far through its unit the student is.
+- **Medals earned before M10** are awarded the first time the student's state is loaded, and show as new.
 - A light theme, with high contrast for the staff at all times (a dark theme is a potential feature, section 14).
 
 ## 4. System architecture
@@ -434,16 +455,16 @@ Everything is stored in the server's SQLite database, except media files (in the
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
 | Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), noteResults\[\] (each written note of the scored pass: its timing, or missed; v0.21), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
-| SkillState | studentId, skillId, status (locked, current, passed, mastered), capabilityHold (true/false), **mastery** (0 to 1, stored running value, 8.2), **bestMastery**, bestAccuracyStars, bestTimingStars, attemptsWithoutPass (completed attempts while Current), **stuck** (true/false), stuckSince?, lastPracticed, reviewStep (0 to 7), nextReviewDate |
+| SkillState | studentId, skillId, status (locked, current, passed, mastered), capabilityHold (true/false), **mastery** (0 to 1, stored running value, 8.2), **bestMastery**, bestAccuracyStars, bestTimingStars, attemptsWithoutPass (completed attempts while Current), **stuck** (true/false), stuckSince?, lastPracticed, reviewStep (0 to 6), nextReviewDate, reviewDay, reviewBest and reviewBase (the day of the last Review item, that day's best stars on it, and the ladder as it stood before it; v0.37) |
 | ErrorPattern | id, studentId, kind (note confusion, rhythm, hands together, position shift, tempo ceiling), details, skillIds\[\], firstSeen, lastSeen, remediesTried\[\], status (active, improving, resolved, stuck) |
 | PracticeDay | studentId, date (local calendar day), guidedMinutes, freeMinutes, targetMinutes, sessionCompleted |
 | Session | studentId, date, queue\[\] (item, slot, reason), currentIndex, completedItems\[\], aiAdviceId? |
 | Favorite | studentId, songId, addedDate |
-| Reward | studentId, kind (sticker), skillId, earnedDate |
+| Award (v0.36; Reward until then) | studentId, id (e.g. `stars:100`, `unit:<level>\|<unit>:complete`), kind (stars, streak, mastered, fivestar, songs, hours, unit, level), tier (bronze, silver, gold, platinum), title, detail, earnedDate, seen |
 | AIAdvice (potential feature, 14) | id, studentId, date, kind, summarySent, response, applied (true/false), outcome |
 | ClientLog | time, deviceId, studentId?, level (info, warning, error), message, context |
 
-The streak and "stars this week" are calculated from PracticeDay and Attempt, not stored.
+The streak and the star collection (each song's best accuracy stars, with its growth today and this week) are calculated from PracticeDay and Attempt, not stored.
 
 **Import path:** songs arrive as MusicXML, MIDI, ABC or Humdrum files and are converted to this format by the song import skill (section 10). Songs written for the curriculum are authored the same way (section 6.9), and every song reaches the library the same way (10.7).
 
@@ -574,7 +595,7 @@ A song is visible in the library when at least one of its arrangements is librar
 
 For the earliest skills (for example three black keys, or five notes in C position), almost no existing songs fit, so songs written for the curriculum carry Prep A and Prep B. As skills accumulate, more library songs become ready and take over a growing share of practice.
 
-**5. How the session picks a piece.** For a skill's slot, the engine chooses a Guided-ready piece that features that skill and is allowed for the child, preferring one the student has not played recently, and favorites for the Reward slot (library-ready only). A skill's practice songs are allowed for every child, whatever their genre (until v0.27, songs written for the curriculum had their own "Lesson pieces" genre instead). If a parent blocks a piece, the engine picks another piece featuring the same skill or generates a drill, so progress never stalls.
+**5. How the session picks a piece.** For a skill's slot, the engine chooses a Guided-ready piece that features that skill and is allowed for the child, preferring one the student has not played recently, and favorites for the Reward slot (library-ready only). A skill's practice songs are allowed for every child, whatever their genre (until v0.27, songs written for the curriculum had their own "Lesson pieces" genre instead). If a parent blocks a piece, the engine picks another allowed piece featuring the same skill, including the pieces that replace a skill passed mid-session. When none is left, the session shows a **Song needed** note for the skill ("Song needed: Parent must submit or allow more songs") instead of an item to play (v0.37; a generated drill in its place is not built).
 
 **6. Coverage report.** Config › Content and analysis lists, for each skill, its practice songs and the other songs that feature it; the content build refuses a map where a skill has fewer than 2 practice songs (6.10). The song import skill can use the gaps to look for songs ("need songs using G position, left hand"). A per-child view, after each child's song rules, is a potential feature (section 14).
 
@@ -793,7 +814,7 @@ A skill stops being stuck as soon as it passes.
 
 ### 8.2 Mastery
 
-- **Mastery (0 to 1)** is a stored running value, updated after every completed attempt that exercises the skill: *new mastery = old mastery + 0.3 × (the attempt's practice-aid-scaled accuracy − old mastery)*. The first attempt sets it directly. Recent attempts count most and older ones fade gradually. Free Play updates use half the step (0.15, 8.7). The step size is a first version, tuned with the practice simulator (11.4).
+- **Mastery (0 to 1)** is a stored running value, updated after every completed attempt that exercises the skill: *new mastery = old mastery + 0.3 × (the attempt's practice-aid-scaled accuracy − old mastery)*. The first attempt sets it directly. Recent attempts count most and older ones fade gradually. Free Play updates use half the step (0.15, 8.7), except for a practice song's own skill: playing one of a skill's practice songs outside the session (from its Journey bubble or the song library) is deliberate practice of that skill, so it takes the full step (v0.37). The step size is a first version, tuned with the practice simulator (11.4).
 - **Best-so-far:** each skill also keeps its **best mastery** ever reached and its best accuracy and timing stars. Journey-map stars and reports show best-so-far, so they never drop; the running value drives mastery, review and polish decisions.
 - A skill is **Mastered** when mastery reaches **0.86 (4 stars)** on 2 separate days, and at least one of those attempts has 3 or more timing stars. (Skills with no play-along part, such as theory, need only the accuracy rule.)
 - Because of the practice-aid factor, mastery needs the 90% or 100% preset with few rewinds, while passing does not.
@@ -812,12 +833,14 @@ A skill stops being stuck as soon as it passes.
 
 | Skill | Polish cadence | Priority |
 | --- | --- | --- |
-| Passed, not yet mastered | A polish item about every 3 days, lowest mastery first | High |
-| Mastered, best accuracy under 5 stars | About every 10 days, when the Practice slot has room | Low |
+| Passed, not yet mastered | A polish item about every 3 days, the skill practised longest ago first (v0.37; lowest mastery first before) | High |
+| Mastered, best accuracy under 5 stars | About every 10 days, when the Practice slot has room, practised longest ago first | Low |
 
 At most 2 polish items per session, so polish never crowds out new material.
 
-**What a review or polish item is:** a short exercise, drill, or song section from that skill, chosen to differ from the last one used. It is not a repeat of the concept lesson.
+**What a review or polish item is:** a short exercise, drill, or song from that skill, chosen to differ from the last one used. It is not a repeat of the concept lesson.
+
+**Review items (v0.37):** a Review item opens at the 100% preset, where it can earn full credit (the student can still slow it down). Playing it again the same day is the same review: the ladder moves once that day, on the day's best play, so replays can't climb it (or knock it back) more than one step, and a weak warm-up followed by a good play is a good review. Every play still counts for the student's best stars.
 
 **Backlog after a break:** due skills are ranked by how overdue they are and by lowest mastery. The review slot stays at about 25% of the session, so a backlog after a vacation is worked off over several days instead of one long review session.
 
@@ -827,7 +850,7 @@ Any strong use of a skill counts as a review of it, so explicit review stays sma
 
 - **Featured skills** of the arrangement played (and the skill the item was assigned for): a completed attempt with 4 or more accuracy stars (after the practice-aid factor) counts as a good review and updates mastery, once at least half the current review interval has passed since the last review (v0.19).
 - **Other required skills:** count as a good review only if the measures that use that skill (from the analysis, 6.8) scored 4 stars or more on their own. They get review credit only; their mastery is not changed. This stops one good overall score from hiding a weak spot in a particular skill.
-- **Free Play:** the same review rules apply. Mastery updates for featured skills use half the step (8.2, 8.7).
+- **Free Play:** the same review rules apply. Mastery updates for featured skills use half the step, except a practice song's own skill, which takes the full step (8.2, 8.7).
 
 ### 8.5 How a Guided session runs
 
@@ -839,7 +862,7 @@ Any strong use of a skill counts as a review of it, so explicit review stays sma
 4. The Reward slot lets the student choose from library-ready, allowed songs.
 5. If the student leaves mid-session, the queue resumes where they stopped, the same day, on any device.
 
-The Journey map shows the same information visually: refresh badges on due skills and a "Today" marker on each Current skill. Tapping a due bubble on the map starts that review directly and counts toward today's session, but the map is never required to follow the plan.
+The Journey map shows the same information visually: refresh badges on due skills and a "Today" marker on each skill in today's session. Tapping a due bubble opens its sheet like any other: the concept lesson and the practice songs. A song played from there is Free Play, not today's Review item, which stays in the session: it counts as a review of the skill only when it is a strong play (4 stars or more, implicit review, 8.4). The map is never required to follow the plan (v0.37; until then this said a due bubble started the review and counted toward today's session, which was never built).
 
 **Session plan**
 
@@ -869,9 +892,9 @@ Today's target length starts at 15 minutes and adjusts automatically between 10 
 | --- | --- | --- |
 | Completes "Today's Practice" | Yes | No |
 | Counts as a practice day (streak, consistency) | Yes | Yes, if 5+ minutes |
-| Updates skill mastery | Full step | Half step, for the song's featured skills |
+| Updates skill mastery | Full step | Half step, for the song's featured skills; full step for a practice song's own skill (8.2) |
 | Counts as implicit review (8.4) | Yes | Yes |
-| Earns stars and song badges | Yes | Yes |
+| Adds to the star collection and medals (3 "Rewards") | Yes | Yes |
 | Counts toward session-length step up | Yes | Consistency only |
 | Shown in progress reports | Yes | Yes, as "Free Play minutes" |
 
@@ -974,7 +997,7 @@ One Parental Controls area (in parent mode) handles everything a parent approves
 
 - **Library:** a song exists in the app only if the parent approved it from the staging review list. Every song, including ones the parent supplies by hand, arrives through the song import skill (10.4). This is the base safeguard.
 - **Genre rules per child:** allow or block whole genres (for example Hymns, Folk, Classical, Christmas, Movie/TV, Pop) for each child. **Defaults:** every genre is **blocked** for each child until the parent allows it, including genres added later and children added later. The songs the Journey map uses for practice are allowed for every child whatever their genre (v0.27; before, songs written for the curriculum had an always-allowed "Lesson pieces" genre).
-- **Song rules per child:** allow or block individual songs; a song rule overrides the genre rule, and can block even a practice song (the engine then uses the skill's other songs or a drill).
+- **Song rules per child:** allow or block individual songs; a song rule overrides the genre rule, and can block even a practice song (the engine then uses the skill's other songs; with none left, the session shows a Song needed note, 6.8).
 - **Newly approved songs:** follow each child's genre rules automatically and show a "New" badge, with a play button to preview the song, including its vocal and accompaniment.
 - **Delete song:** takes the song and all its arrangements out of the library, which holds only approved songs (v0.23). They move back to the review area (10.7) as deleted songs, with their files and their record (title, composer, source ids, and melody fingerprint), so intake rejects them if they are ever offered again. The Review list's "Deleted songs" section lets the parent send one back to review (to approve again), send it for improvement with a note (to be corrected and resubmitted), or forget it (files and record removed; it may be offered again). Children's practice history for the song is kept, labeled "(removed song)".
 - **Change vocal style (potential feature, section 14):** the parent can pick a different vocal style for a song; this is saved as a work request that the media skill picks up through the Skill API, and the new media returns through staging as a media update (10.7). The song keeps its current media until the update is approved.
@@ -1044,7 +1067,7 @@ Contents:
 
 **Songs added by hand** go through the same skill: the parent gives it the file (MusicXML, MIDI, ABC, or a downloaded MuseScore file), directly on the dev box (uploading it in Parental Controls as a work request is a potential feature, section 14), and it is fixed, leveled, arranged, checked, and submitted like any other song.
 
-**Import package:** one JSON file per batch in the app's own format, plus per-song source, license evidence, estimated level, arrangements (with chord symbols and fingering), lyrics with verses, flags (for example "lyrics need review", "needs 88 keys", "low confidence", "no media"), and short notes from Claude on anything it changed ("fixed 3 wrong notes against a second edition"). Normally the package is passed to the media skill before upload; it can also be uploaded without media, in which case the song uses the chord pad and choir voice until a media update is approved.
+**Import package:** one JSON file per batch in the app's own format, plus per-song source, license evidence, estimated level, arrangements (with chord symbols and fingering), lyrics with verses, flags (for example "lyrics need review", "needs 88 keys", "low confidence", "no media"), and short notes from Claude on anything it changed ("fixed 3 wrong notes against a second edition"). Normally the package is passed to the media skill before upload; it can also be uploaded without media.
 
 **Batch size:** about 20 to 50 songs per skill run keeps each run reliable; several runs can feed one review. The target of about 100 per genre is reached over a few runs.
 
@@ -1112,14 +1135,14 @@ The media skill adds a sung vocal and an accompaniment to each arrangement befor
 | Genre | Genre style | Default vocal style | FluidSynth backing (v0.22, the default) | YuE2 accompaniment (fallback: no backing notes) |
 | --- | --- | --- | --- | --- |
 | Hymns | Traditional hymn | Warm clear solo voice | **Strings on the alto and tenor, cello on the bass**, from the four-part score (chosen by listening); church organ as the alternative | Soft pipe organ and warm string ensemble playing steady sustained chords, gentle, reverent |
-| Christmas (the Holiday genre until v0.35) | Traditional holiday carol | Warm clear solo voice | **Warm strings on the chords, a harp breaking each chord up and back in eighths (quarters in a fast song), a cello on the roots, and light sleigh bells on the beat** (`holiday`, built v0.33, to listen; `bells: false` leaves the bells out); a carol typed from a hymnal's four parts uses `hymn-strings` | Warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady |
+| Christmas (the Holiday genre until v0.35) | Traditional Christmas carol | Warm clear solo voice | **Warm strings on the chords, a harp breaking each chord up and back in eighths (quarters in a fast song), a cello on the roots, and light sleigh bells on the beat** (`Christmas`, built v0.33, to listen; `bells: false` leaves the bells out); a carol typed from a hymnal's four parts uses `hymn-strings` | Warm string ensemble and harp arpeggios, light sleigh bells, gentle, steady |
 | Folk | Gentle folk song | Clear natural solo folk singer | Guitar and bass from the chords (to test; General MIDI guitar is a weak spot, so this genre may keep YuE2's backing) | Fingerpicked acoustic guitar, soft upright bass, light brushed percussion, steady |
 | Nursery and kids' songs | Children's song | Bright friendly solo voice with very clear words | **Soft strings on the chords, a pizzicato bass on the strong beats, glockenspiel chimes between them** (`kids`, built v0.23, to listen); a round plays its own later entries on flute and clarinet (`round`) | Strummed acoustic guitar, soft glockenspiel, light hand percussion, steady |
 | Classical | Light classical art song, or the instrumental original | Light clear classical solo voice (songs with words) | **The score's own ensemble parts** (a canon's voices), else strings and cello from the chords or the left hand; a waltz as basses on 1 and horns and strings on 2 and 3 (tested) | Soft string quartet playing sustained chords, gentle, steady |
 | Movie/TV, Pop | Light pop song | Clean light solo voice | Bass and soft pad from the chords (to test) | Light brushed drums, warm bass guitar, soft synth pad chords, steady |
 | Curriculum songs (`studies`, the map's own songs) | Lesson piece | The Lesson pieces vocal style | **None (v0.30): the vocal alone**, with the app's own piano playing the music; whether these songs get backings is still to be decided (Next steps) | Not used |
 
-Hymns and Holiday YuE2 styles were tested by listening in v0.17. The FluidSynth styles were tested for hymns and classical in v0.22. The kids' style and the round were built in v0.23 with the kids' songs batch and wait for the parent's listen; the holiday style was built in v0.33 with the Christmas batch and waits for it too; the rest are checked with their first songs. A genre whose FluidSynth style doesn't pass the listen keeps YuE2's backing.
+Hymns and Christmas YuE2 styles were tested by listening in v0.17. The FluidSynth styles were tested for hymns and classical in v0.22. The kids' style and the round were built in v0.23 with the kids' songs batch and wait for the parent's listen; the Christmas style was built in v0.33 with the Christmas batch and waits for it too; the rest are checked with their first songs. A genre whose FluidSynth style doesn't pass the listen keeps YuE2's backing.
 
 **Steps**
 
@@ -1337,8 +1360,8 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles). **Built (Sep 28, 2026)** in `api/app/engine.py`; the practice simulator runs fast, slow, inconsistent and one-hard-skill learners for 8 weeks on a generated 60-skill branching map (`api/tests/test_simulator.py`); the 200-bubble render test is in Config and ran at 59 fps in desktop Chromium, and waits for the iPad | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
 | M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring. **Built (Sep 28, 2026)** in `api/app/diagnostics.py` and `api/app/drills.py`, with scale and arpeggio fingering tables, Check and Echo scoring in the concept lessons, and the planted-pattern simulator (`api/tests/test_planted.py`); tuning waits for real attempts from the keyboard | Errors planted in simulated data are detected and get the right remedy |
 | M7 | Parental Controls and song import | Genre and song rules with defaults, song deletion, intake, staging and review list, melody fingerprint, import tokens, song import skill v1, full progress reports. **Built (Sep 29, 2026):** the song import skill v1 and the melody fingerprint (Sep 28); intake, staging and the review list, the library on the server, the Skill API with its tokens, genre and song rules, song deletion and the deleted list (v0.23, 10.7); media updates for live songs through Needs improvement (v0.27, 10.7). **Done (Oct 6, 2026, v0.35):** closed by the parent, from the family's use | A blocked song never appears for that child; a staged batch can be reviewed, deselected, and approved, and nothing staged ever reaches a child; a deleted song is never offered again |
-| M8 | Media | Media skill v1: YuE2 vocals with all checks and tempo versions, and backing rendered from notation with FluidSynth (v0.22), with YuE2's backing as the fallback; stem playback (accompaniment-only stems work since v0.22, vocal-only stems since v0.30); chord pad and choir voice (replaced by the FluidSynth backing in v0.35). **Started (Sep 29, 2026):** media skill v1 (`.claude/skills/make-media/`, `tools/media/`), whose songs go to the review list (M7), tested on a batch of five kids' songs and a children's hymn; vocals for the curriculum songs started in v0.30 (a vocal alone, 43 songs at the parent's request); a Christmas batch of 15 songs in v0.33 (10 hymnal carols with their four-part backing, 5 songs with the new holiday style) is the third genre for the acceptance test; **Done (Oct 6, 2026, v0.35):** closed by the parent. The FluidSynth backing replaces the chord pad and choir voice; whether the songs written for the curriculum (no chord symbols) get backings stays an open Next steps item | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
-| M10 | Polish | Stickers, mascot, visual polish (streaks and favorites are built) | The children use it daily without help |
+| M8 | Media | Media skill v1: YuE2 vocals with all checks and tempo versions, and backing rendered from notation with FluidSynth (v0.22), with YuE2's backing as the fallback; stem playback (accompaniment-only stems work since v0.22, vocal-only stems since v0.30); chord pad and choir voice (replaced by the FluidSynth backing in v0.35). **Started (Sep 29, 2026):** media skill v1 (`.claude/skills/make-media/`, `tools/media/`), whose songs go to the review list (M7), tested on a batch of five kids' songs and a children's hymn; vocals for the curriculum songs started in v0.30 (a vocal alone, 43 songs at the parent's request); a Christmas batch of 15 songs in v0.33 (10 hymnal carols with their four-part backing, 5 songs with the new Christmas style) is the third genre for the acceptance test; **Done (Oct 6, 2026, v0.35):** closed by the parent. The FluidSynth backing replaces the chord pad and choir voice; whether the songs written for the curriculum (no chord symbols) get backings stays an open Next steps item | 3 test songs from different genres pass all media checks, stay on the beat at all four tempo presets, and are approved in one step |
+| M10 | Polish and rewards | The star collection, medals, the trophy case and the moments on the result card (3 "Rewards"; the mascot and stickers dropped in v0.36), visual polish (streaks and favorites are built). **Built (Oct 6, 2026, v0.36):** rewards, with API tests and the browser check (`tools/check_app.py`); the use with real playing waits for the MIDI keyboard | The children use it daily without help |
 | M11 | Phase 2: Levels 1 to 4 | Level 1 to 4 content (the Level 1 and 2 maps are a potential feature, section 14), tempo ramp, dynamics scoring, static-page cursor view, Intermediate map | Design section 13.1 written first; the children progress into Level 3 material |
 | M12 | Phase 3: Levels 5 to 8 | Pedal and articulation scoring, generated sight-reading and ear training at level, long pieces with sections, Advanced map | Design section 13.2 written first |
 | M13 | Phase 4: Levels 9 to 10 | Memory mode, record and play back for self-review | Design section 13.3 written first |
@@ -1356,20 +1379,20 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [ ] Buy a class-compliant USB MIDI keyboard with 88 velocity-sensitive keys and a sustain pedal (2.3); test it on a computer, then run the MIDI and latency checks on the iPad
 - [x] Serve the piano site over HTTPS on the home network (by IP address with the internal certificate authority, 2.5)
 - [ ] Run the no-internet check (router WAN unplugged) on the iPad
-- [ ] Check audio and speech with the iPad's silent mode on
+- [x] Check audio and speech with the iPad's silent mode on
 - [ ] Re-measure server download speed after the server Wi-Fi upgrade
 - [x] Record the M0-S decision on YuE2: proceed, with the alignment step built in (`feasibility/yue2-probe/RESULTS.md`)
 - [x] Prototype the MusicXML / ABC → notation and native ABC converter, the alignment and the media checks (`feasibility/sync-probe/`; M3 and M8 build the real ones)
 - [x] Settle the YuE2 input rules: one note per syllable (checked by the `generate-music` skill), chords kept, "Oh" lead-in, named backing instruments (10.5)
-- [ ] Listen to the untested genre defaults (Folk, kids' songs, Classical, Pop) with their first songs
+- [x] Listen to the untested genre defaults (Folk, kids' songs, Classical, Pop) with their first songs
 - [ ] Build a slow automatic backing level for YuE2's swings within a song (10.5 step 6; only for the YuE2 fallback since v0.22)
 - [x] Continue M0 (App API and SQLite skeleton, MIDI test page)
 - [ ] When the keyboard arrives: run `docs/keyboard-day.md`
 - [x] Feasibility test: backing rendered from notation with FluidSynth (`feasibility/fluid-probe/RESULTS.md`): adopted, with MuseScore General (v0.22)
 - [x] Build the FluidSynth backing into the media skill: parts from notation, genre styles, the timing and level steps (10.5): media skill v1 (v0.23)
-- [ ] Listen to the kids' songs batch in Config › Review list and approve or reject each song; allow the Kids' songs and Hymns genres for the children who should see them; tune the `kids` style and the bleed threshold from what's heard
+- [x] Listen to the kids' songs batch in Config › Review list and approve or reject each song; allow the Kids' songs and Hymns genres for the children who should see them; tune the `kids` style and the bleed threshold from what's heard
 - [x] Server: include the library's folders in the backup, and a restore test that brings back the library (`docs/server-brief-backup-restore.md`, v0.31; it replaces item 1 of `docs/server-brief-m7-library.md`). Passed Oct 5, 2026 (v0.32)
-- [ ] Listen to the untested FluidSynth genre styles (holiday, folk, kids' songs, pop) with their first songs
+- [x] Listen to the untested FluidSynth genre styles (Christmas, folk, kids' songs, pop) with their first songs
 - [ ] Put the classical batch (`content/incoming/classical/`) through the song import skill, with FluidSynth backings for its ensemble pieces
 - [x] Make the Staff draggable/movable by the student, so the student could drag the Staff backwards or forwards to the position that they want, and the app would start practice/listen (whichever mode it was already in) from that point. (v0.33; tried on the iPad when the keyboard arrives)
 - [x] Some of the songs have the note Letter written in the middle of the note head.  This makes the notes look strange and makes it difficult to distinguish a Whole Note from a Half Note, etc.  Can these Letter helpers be added just below the note heads, similar to how the finger numbers are added above the note heads?  If so, lets make that change, then the note heads will look the same whether or not those helpers are present.
@@ -1381,11 +1404,11 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [x] Add skill or define workflow to copy the current curriculum songs from the server database, and file them in the repo so they could be installed with the app during a fresh install. (v0.31: `tools/library_export.py`, `tools/fresh_install.sh`, `docs/fresh-install.md`; the first export is committed once the parent has approved the curriculum songs' vocals)
 - [x] In the Journey Map, there are double Bubbles at every Skill node, the first bubble is the lesson concept and the second bubble is the practice songs for that lesson.  But since there is always a lesson concept with every practice session, and we can already access the lesson from the main practice bubble anyway, why do we need that first 'light-bulb' concept bubble shown on the map?  It seems like this 'light-bulb' bubble should be removed to simplify the look of the map.
 - [x] On the Journey Map, can you add the ability so the user can tap anywhere on the non-popup area of the app to close the currently display Skill pop-up?
-- [ ] Add a set of standard traditional Christmas songs to the library. (v0.33: 15 songs with vocals and backings in the Review list; then allow the Christmas genre for the children, v0.35)
+- [x] Add a set of standard traditional Christmas songs to the library. (v0.33: 15 songs with vocals and backings in the Review list; then allow the Christmas genre for the children, v0.35)
 - [x] When browsing the Song Library, each song shows "Coming soon - learn" and then a list of the skills the student needs to learn to unlock that song.  But for the later songs, this list is very long which makes this song library look awkward.  Instead, have each song list the last remaining single skill that unlocks that song.  Obviously the student will have to work through the whole Journey Map to get to that skill to unlock it.  This means that each Song in the library should list a single skill for the unlock condition.
 - [x] Add feature so a tap outside the Gear icon 'Song Settings' pop-up will close that pop-up and go back to the Song play page.
 - [X] For the Play page, the vertical white space between the header bar and the Treble Staff seems to be more than it needs to be.  Can this vertical white space be cut in roughly half?  But if there is a good reason (e.g. sometimes an important musical symbol is shown there), then we don't need to do this. Update: Postpone this because the staff saves the same fixed headroom for every song (staff.ts:28). That room is for high notes with ledger lines, finger numbers, chord symbols and the "verse 2" label.
-- [ ] Add rewards and star focus to encourage more engagement (M10)
+- [x] Add rewards and star focus to encourage more engagement (M10; v0.36: the star collection, medals, the trophy case; check the medal steps against the children's real pace once the keyboard is in use)
 - [x] What options are there for improving the spoken audio when 'reading' the lessons? Currently this is very mechanistic and robotic. Can we add a part of the app that can do this better? (v0.34: the lesson voice, Kokoro's Heart at 80% speed, recorded ahead; Auto-read and Read it to me / Stop reading)
 - [x] Check the lesson voice on the iPad: the first lesson after opening the app reads its first card, and with the silent switch on [2026-10-06: Silent mode tested: card reading plays like normal in Silent mode]
 - [x] Add a search functionality in the Songs page, which narrows the visible list to songs which have that text somewhere (title, lyrics). The student can already narrow by 'Favorites' from 'All Songs'. As part of this work, also add a genre pulldown so the student can narrow to a specific genre. (v0.35)
@@ -1467,6 +1490,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Rewards (v0.36) | The star collection counts each song's best; medals in bronze, silver, gold and platinum for milestones and for each unit and level; no mascot or stickers; moments on the result card, a card over the screen for a unit or level | Rewards playing well over repeating easy songs; accolades that still suit an older student |
 | Backing without stems (v0.35) | The FluidSynth backing from the media skill replaces the planned chord pad and choir voice; a song without stems has the app's own piano | It follows the written harmony and the beat at every preset; a pad needs chord symbols, which the curriculum songs don't have |
 | Christmas genre (v0.35) | The Holiday genre is named Christmas; the backing style keeps the name `holiday` | The songs in it are Christmas songs; migration 011 carries the songs and each child's rule over |
 | Song search (v0.35) | Search by title or words, and a genre choice, in the song library; each index entry carries the song's words | Finding a song the child knows by a line of it |
@@ -1578,6 +1602,6 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Student reports (v0.2) | Students see their own progress report | Not sensitive; motivating |
 | Map stars (v0.2) | Best-earned stars, plus review badge when due | Stars never drop; review still visible |
 
-**Superseded:** "Accompaniment tags always include soft, sparse, background, no lead melody" and the v0.13 genre tag table (replaced by named instruments in v0.17); "Whisper transcribes the vocal to check the words" (replaced by lyric forced alignment in v0.17); "Onsets are time-warped to the beat grid" (replaced by windowed pitch alignment in v0.17); "Local DNS entry on the router, certificate possibly from a public issuer" (replaced by the IP-address site with the internal certificate authority in v0.16); "Top bar with pause, restart, tempo and mode buttons" (moved below the status strip in v0.16); "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15); "Chord pad and choir voice when a song has no stems" (v0.13; replaced by the FluidSynth backing in v0.35).
+**Superseded:** "Accompaniment tags always include soft, sparse, background, no lead melody" and the v0.13 genre tag table (replaced by named instruments in v0.17); "Whisper transcribes the vocal to check the words" (replaced by lyric forced alignment in v0.17); "Onsets are time-warped to the beat grid" (replaced by windowed pitch alignment in v0.17); "Local DNS entry on the router, certificate possibly from a public issuer" (replaced by the IP-address site with the internal certificate authority in v0.16); "Top bar with pause, restart, tempo and mode buttons" (moved below the status strip in v0.16); "Storage: local IndexedDB with backup file" (replaced by the server database in v0.13); "Vocals rendered by a polling worker and shown with a New vocal badge" (replaced by the media skill and single approval in v0.13); "Concept videos downloaded by the server" (replaced by the concept-video skill in v0.13); "Songs unlock by map point against a single frontier" (v0.13; replaced by required-skill unlocking on a branching map in v0.15); "Nobody gets stuck: offer an easier step after three low scores" (v0.13; replaced by gentle options and stuck handling in v0.15); "Mastery as a weighted average of the last 5 attempts" (v0.13; replaced by a stored running value with best-so-far in v0.15); "Chord pad and choir voice when a song has no stems" (v0.13; replaced by the FluidSynth backing in v0.35); "A simple friendly mascot" and "stickers per skill mastered" (replaced by the star collection and medals in v0.36).
 
 **Version history:** see the [change log](architecture-changelog.md).

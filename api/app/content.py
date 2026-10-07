@@ -45,6 +45,7 @@ class Skill:
     track: str
     prerequisites: list[str]
     level: str = ""
+    unit: str = ""                     # the map's own grouping within a level ("Unit 4 · Reading the Staff")
     capabilities: list[str] = field(default_factory=list)
     has_lesson: bool = True            # every skill has a concept lesson unless the map says not
     pieces: list[str] = field(default_factory=list)
@@ -137,7 +138,7 @@ class Content:
         for s in skillmap["skills"]:
             skills[s["id"]] = Skill(
                 id=s["id"], name=s["name"], sequence=int(s["sequence"]), track=s.get("track", "reading"),
-                prerequisites=list(s.get("prerequisites", [])), level=s.get("level", ""),
+                prerequisites=list(s.get("prerequisites", [])), level=s.get("level", ""), unit=s.get("unit") or "",
                 capabilities=list(s.get("requiredCapabilities", [])), has_lesson=s.get("conceptLesson", True) is not False,
                 pieces=list(s.get("pieces", [])), constraints=dict(s.get("constraints") or {}))
         pieces = {}

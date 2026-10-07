@@ -93,6 +93,10 @@ class SkillState:
     last_review_date: str | None = None
     weak_reviews: int = 0
     refresher: bool = False
+    # a Review item played again the same day is one review, judged on the day's best play (8.3)
+    review_day: str | None = None
+    review_best: float | None = None
+    review_base: dict | None = None       # the ladder as it stood before that day's review
 
     @property
     def passed(self) -> bool:
@@ -105,6 +109,7 @@ class SkillState:
 
 
 BOOL = {"concept_done", "capability_hold", "stuck", "high_timing", "refresher"}
+JSON = {"high_days": "[]", "review_base": "null"}
 COLUMNS = [f.name for f in fields(SkillState)]
 
 
@@ -119,7 +124,8 @@ def load_states(con: sqlite3.Connection, content: Content, student_id: str) -> d
         kw = {c: r[c] for c in COLUMNS}
         for c in BOOL:
             kw[c] = bool(kw[c])
-        kw["high_days"] = json.loads(kw["high_days"] or "[]")
+        for c, empty in JSON.items():
+            kw[c] = json.loads(kw[c] or empty)
         out[s.id] = SkillState(**kw)
     return out
 
@@ -130,7 +136,8 @@ def save_states(con: sqlite3.Connection, student_id: str, states: dict[str, Skil
     rows = []
     for st in states.values():
         v = asdict(st)
-        v["high_days"] = json.dumps(v["high_days"])
+        for c in JSON:
+            v[c] = json.dumps(v[c])
         rows.append((student_id, *[int(v[c]) if c in BOOL else v[c] for c in COLUMNS]))
     con.executemany(f"INSERT OR REPLACE INTO skill_states (student_id, {cols}) VALUES (?, {marks})", rows)
 
@@ -214,9 +221,11 @@ def passes(skill: Skill, a: AttemptInfo) -> bool:
 
 
 def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a: AttemptInfo,
-                   caps: dict[str, bool] | None = None) -> dict[str, Any]:
+                   caps: dict[str, bool] | None = None, plan: Content | None = None) -> dict[str, Any]:
     """Update practice time, skill states and today's session after one attempt. Returns what
-    changed, for the client: skills passed or mastered, and the session item's new state."""
+    changed, for the client: skills passed or mastered, and the session item's new state.
+    `plan` is the content the child may be offered (their song rules, §10.1): the items that
+    replace a skill passed mid-session come from it. The attempt itself counts on any song."""
     add_practice(con, student_id, a.day, a.duration_sec, a.context == "guided")
     effects: dict[str, Any] = {"passed": [], "mastered": [], "reviewed": [], "item": None}
     piece = content.pieces.get(a.piece_id)
@@ -231,6 +240,9 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
             st, skill = states[sid], content.skills[sid]
             if st.status == "locked":
                 continue                      # not reachable yet (a map change); nothing to learn from it
+            explicit = item is not None and item.get("reason") == "Review" and item.get("skillId") == sid
+            if explicit and a.mode == "play" and st.review_day == iso(a.day) and st.review_base:
+                restore_review(st)            # played again today: the day's review is judged again, below
             st.last_piece_id = piece.id
             st.last_preset = a.preset
             st.last_practiced = iso(a.day)
@@ -270,9 +282,8 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
                     st.weak_reviews = 0
                     effects["mastered"].append(sid)
             elif st.status == "mastered" and sid not in effects["mastered"]:
-                explicit = item is not None and item.get("reason") == "Review" and item.get("skillId") == sid
                 if explicit:
-                    review(st, a.accuracy_stars, a.day)
+                    daily_review(st, a.accuracy_stars, a.day)
                     effects["reviewed"].append(sid)
                 elif a.accuracy_stars >= GOOD_REVIEW and implicit_review_due(st, a.day):
                     review(st, a.accuracy_stars, a.day)      # implicit review (8.4): only ever a good one
@@ -289,7 +300,7 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
         refresh(content, states, caps)
         save_states(con, student_id, states)
         if effects["passed"]:
-            continue_new_slot(con, content, student_id, a.day, states, set(effects["passed"]), keep=a.item_id)
+            continue_new_slot(con, plan or content, student_id, a.day, states, set(effects["passed"]), keep=a.item_id)
 
     if item is not None:
         effects["item"] = update_item(con, content, student_id, a, item, states)
@@ -308,8 +319,33 @@ def bars_accuracy(piece: Piece, skill_id: str, a: AttemptInfo) -> float:
     return max(0.0, 1 - (missed + wrong / 2) / expected) * a.factor
 
 
-def review(st: SkillState, stars: float, today: date) -> None:
-    """The review ladder (8.3)."""
+REVIEW_BASE = ("status", "review_step", "next_review_date", "last_review_date", "weak_reviews", "refresher",
+               "high_days", "high_timing", "mastered_date")
+
+
+def daily_review(st: SkillState, stars: float, today: date) -> None:
+    """A Review item's play (8.3). Playing it again the same day is the same review, judged on the
+    day's best play, so replays can't climb the ladder (or knock a skill back) more than once a
+    day. record_attempt has put the ladder back as it stood before the day's first play."""
+    t = iso(today)
+    cut = True
+    if st.review_day == t and st.review_base:
+        cut = (st.review_best or 0) >= WEAK_REVIEW      # a weak play today already lowered mastery
+        stars = max(stars, st.review_best or 0)
+    else:
+        st.review_base = {k: list(getattr(st, k)) if k == "high_days" else getattr(st, k) for k in REVIEW_BASE}
+    st.review_day, st.review_best = t, stars
+    review(st, stars, today, cut=cut)
+
+
+def restore_review(st: SkillState) -> None:
+    """Back to how the ladder stood before today's review, to judge it again with another play."""
+    for k, v in (st.review_base or {}).items():
+        setattr(st, k, list(v) if k == "high_days" else v)
+
+
+def review(st: SkillState, stars: float, today: date, cut: bool = True) -> None:
+    """The review ladder (8.3). `cut`: a weak review lowers the running mastery by 10%."""
     step = st.review_step or 0
     if stars >= GOOD_REVIEW:
         step = min(step + 1, len(REVIEW_DAYS) - 1)
@@ -319,7 +355,7 @@ def review(st: SkillState, stars: float, today: date) -> None:
     else:
         step = 0
         st.weak_reviews += 1
-        if st.mastery is not None:
+        if st.mastery is not None and cut:
             st.mastery *= 0.9
         if st.weak_reviews >= 2:
             # back to Passed until it meets the mastery rule again; the concept lesson is offered
@@ -483,8 +519,7 @@ class Planner:
     def piece_for(self, s: Skill, *, library: bool = False) -> Piece | None:
         """A piece for the skill, different from the last one used when there is a choice."""
         st = self.states[s.id]
-        ok = [p for p in self.c.pieces_of(s.id) if p.id not in self.used
-              and (library_ready(p, self.states) if library else guided_ready(p, self.states, learning=s.id))]
+        ok = [p for p in self.c.pieces_of(s.id) if p.id not in self.used and self.ready(p, s, library)]
         if not ok:
             return None
         fresh = [p for p in ok if p.id != st.last_piece_id]
@@ -523,7 +558,10 @@ class Planner:
                 break
             p = self.piece_for(s)
             if p:
-                spent += self.add_piece("Review", s, p)
+                # at full speed, where a review can earn full credit; the student can still slow it down
+                spent += self.add_piece("Review", s, p, preset="100")
+            else:
+                self.song_needed("Review", s)
 
         # new: Current skills and open lightbulbs, lowest sequence first; a stuck skill waits in Practice
         budget = share["new"] * self.total + max(0.0, share["review"] * self.total - spent)
@@ -574,7 +612,7 @@ class Planner:
         # with nothing new to learn, the New slot's time goes to polish (8.10)
         cap = 10 ** 6 if nothing_new else MAX_POLISH
         polish = sorted((s for s in order if states[s.id].status == "passed" and self.polish_due(s, POLISH_PASSED_DAYS)),
-                        key=lambda s: states[s.id].mastery or 0)
+                        key=self.longest_unpractised)
         for s in polish:
             if spent >= budget or self.polish >= cap:
                 break
@@ -592,7 +630,7 @@ class Planner:
                     spent += self.add(new_item("piece", "Tricky spot", skill=s, piece=p, section=st.last_tricky_phrase,
                                                est=SECTION_SEC))
         mastered = sorted((s for s in order if states[s.id].status == "mastered" and (states[s.id].best_accuracy_stars or 0) < 5
-                           and self.polish_due(s, POLISH_MASTERED_DAYS)), key=lambda s: states[s.id].mastery or 0)
+                           and self.polish_due(s, POLISH_MASTERED_DAYS)), key=self.longest_unpractised)
         for s in mastered:
             if spent >= budget or self.polish >= cap:
                 break
@@ -625,7 +663,27 @@ class Planner:
         p = self.piece_for(s)
         if p:
             spent += self.add_piece("New", s, p)
+        else:
+            self.song_needed("New", s)
         return spent
+
+    def song_needed(self, reason: str, s: Skill) -> None:
+        """No song this child may play practises the skill (the parent blocked them, or none is
+        approved yet): a note in the session, not something to play. It is done from the start, so
+        it never holds up the day's session. Not when a song is only taken by another item today."""
+        if any(self.ready(p, s) for p in self.c.pieces_of(s.id)):
+            return
+        it = new_item("needed", reason, skill=s, title="Song needed: Parent must submit or allow more songs")
+        it["done"] = True
+        self.add(it)
+
+    def ready(self, p: Piece, s: Skill, library: bool = False) -> bool:
+        return library_ready(p, self.states) if library else guided_ready(p, self.states, learning=s.id)
+
+    def longest_unpractised(self, s: Skill) -> tuple[str, float]:
+        """Polish order (8.3): the skill practised longest ago first, then the lowest mastery."""
+        st = self.states[s.id]
+        return st.last_practiced or "", st.mastery or 0
 
     def polish_due(self, s: Skill, every: int) -> bool:
         if any(i["skillId"] == s.id for i in self.items):
@@ -774,8 +832,8 @@ def continue_new_slot(con: sqlite3.Connection, content: Content, student_id: str
     # no longer than what it replaces, so a quick learner's session still ends near its target
     room, fresh = sum(items[i]["est"] for i in stale), []
     for it in p.items:
-        if fresh and sum(x["est"] for x in fresh) + it["est"] > room * 1.25:
-            break
+        if it["est"] and fresh and sum(x["est"] for x in fresh) + it["est"] > room * 1.25:
+            break                             # (a "Song needed" note takes no time)
         fresh.append(it)
     at = stale[0]
     rest = [it for i, it in enumerate(items) if i not in stale]

@@ -9,6 +9,7 @@
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
+  import { starText } from "../lib/awards";
   import { loadContent, type Content } from "../lib/content";
   import type { SessionItem, SessionReason } from "../lib/progress";
   import { keepView } from "../lib/keep";
@@ -32,8 +33,13 @@
   const target = $derived(app.day?.targetMinutes ?? 15);
   const minutes = $derived(Math.floor(((app.day?.guidedSec ?? 0) + (app.day?.freeSec ?? 0)) / 60));
   const ring = $derived(Math.min(1, minutes / target));
-  const doneCount = $derived(s ? s.items.filter((i) => i.done).length : 0);
-  const starsToday = $derived((s?.items ?? []).reduce((n, i) => n + (i.result?.accuracyStars ?? 0), 0));
+  // a "Song needed" note (no song this child may play practises its skill) is shown on the path
+  // but is nothing to play: it is left out of the counts
+  const toPlay = $derived(s ? s.items.filter((i) => i.kind !== "needed") : []);
+  const doneCount = $derived(toPlay.filter((i) => i.done).length);
+  // the star collection (M10): each song's best stars added up, and what it grew by today
+  const stars = $derived(app.rewards?.stars ?? null);
+  const starsToday = $derived(app.rewards?.starsToday ?? 0);
   const pos = (i: number) => ({ x: X0 + i * STEP, y: Y0 + (i % 2 ? WAVE : 0) });
   const width = $derived(X0 * 2 + Math.max(0, (s?.items.length ?? 1) - 1) * STEP + 170);
 
@@ -49,7 +55,8 @@
     "Your pick": "You choose! Pick any song you've unlocked.",
     Focus: "A short game aimed at one thing that keeps slipping.",
   };
-  const label = (it: SessionItem) => (it.kind === "lesson" ? `💡 ${it.title}` : it.title);
+  const skillName = (id: string | null) => (id && content?.map.skills.find((k) => k.id === id)?.name) || "";
+  const label = (it: SessionItem) => (it.kind === "lesson" ? `💡 ${it.title}` : it.kind === "needed" ? skillName(it.skillId) || "A new skill" : it.title);
   const refresher = $derived(item?.kind === "lesson" && item.reason === "Review");
 
   function curve(i: number): string {
@@ -68,8 +75,8 @@
 
 <div class="screen">
   <Status title="Today's Practice">
-    {#if s}<span class="muted">{doneCount} of {s.items.length} done</span>{/if}
-    <span>★ {starsToday} today</span>
+    {#if s}<span class="muted">{doneCount} of {toPlay.length} done</span>{/if}
+    {#if stars !== null}<span class="collection">★ {starText(stars)}{starsToday > 0 ? ` · +${starText(starsToday)} today` : ""}</span>{/if}
     {#if app.day}<span>🔥 {app.day.streak} day{app.day.streak === 1 ? "" : "s"}</span>{/if}
   </Status>
 
@@ -93,15 +100,17 @@
             {#each s.items as it, i (it.id)}
               {@const p = pos(i)}
               {@const r = it.result}
-              {@const st = it.done ? "done" : it === item ? "next" : "later"}
+              {@const st = it.kind === "needed" ? "needed" : it.done ? "done" : it === item ? "next" : "later"}
               <div class="node" style:left="{p.x}px" style:top="{p.y}px">
                 <button class="bubble {st}" disabled={st !== "next"} onclick={start}
-                        aria-label="{i + 1}. {label(it)}: {st === 'done' ? 'done' : st === 'next' ? 'up next' : 'later'}">
-                  {st === "done" ? "✓" : reasonIcon[it.reason]}
+                        aria-label="{i + 1}. {label(it)}: {st === 'needed' ? it.title : st === 'done' ? 'done' : st === 'next' ? 'up next' : 'later'}">
+                  {st === "needed" ? "!" : st === "done" ? "✓" : reasonIcon[it.reason]}
                 </button>
                 {#if st === "next"}<span class="tag">Up next</span>{/if}
                 <div class="name">{label(it)}</div>
-                {#if st === "done" && r?.accuracyStars != null}
+                {#if st === "needed"}
+                  <div class="needed-note">{it.title}</div>
+                {:else if st === "done" && r?.accuracyStars != null}
                   {#if r.title}<div class="picked">{r.title}</div>{/if}
                   <Stars compact size={15} label="♪" value={r.accuracyStars} />
                   <Stars compact size={15} label="⏱" value={r.timingStars} />
@@ -135,7 +144,7 @@
         <div class="upnext done">
           <div class="upnext-text">
             <p class="label">🎉 Today's Practice Complete!</p>
-            <h1>You played {s.items.length} things and earned {starsToday} stars.</h1>
+            <h1>You played {toPlay.length} things{starsToday > 0 ? ` and added ${starText(starsToday)} stars to your collection` : ""}.</h1>
             <p class="why">{s.endOfContent ? "New lessons coming soon! " : ""}See you tomorrow! You can keep playing any song you like.</p>
           </div>
           <div class="upnext-actions"><button class="start" onclick={() => go("library")}>Songs</button></div>
@@ -166,6 +175,8 @@
   .bubble.done { background: var(--ok); color: #fff; }
   .bubble.next { background: var(--accent); color: #fff; box-shadow: 0 0 0 7px rgba(47, 111, 219, 0.25), 0 6px 16px rgba(0, 0, 0, 0.15); }
   .bubble.later { background: #fff; color: var(--fg); border-color: #e2dfd7; }
+  .bubble.needed { background: #fff4d6; color: #8a6200; border-color: #f0c96a; }
+  .needed-note { width: 180px; text-align: center; font-size: 13px; font-weight: 700; color: #8a6200; line-height: 1.25; }
   .tag { position: absolute; top: -14px; right: -38px; background: #ffe7a3; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; white-space: nowrap; }
   .name { width: 180px; text-align: center; font-weight: 700; font-size: 15px; margin-top: 6px; line-height: 1.2; }
   .reason, .picked { font-size: 13px; color: var(--muted); font-weight: 650; }
@@ -189,4 +200,5 @@
   .upnext-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
   .start { font-size: 24px; min-width: 240px; min-height: 72px; border-radius: 18px; }
   .soon { margin-top: 12px; }
+  .collection { font-weight: 750; color: #8a6200; }
 </style>
