@@ -400,7 +400,33 @@ def heard(folder: Path, words: list[str]) -> dict:
                            check=True, capture_output=True)
             f.write_text(of.read_text())
     text = json.loads(f.read_text())["heard"]
-    return {"heard": text, "share": heard_share(words, text)}
+    return {"heard": text, "share": heard_share(words, text), "wrongLetters": wrong_letters(words, text)}
+
+
+# how Whisper writes a sung letter name, besides the letter itself ("middle sea", "bee")
+LETTER_SOUNDS = {"bee": "b", "be": "b", "see": "c", "sea": "c", "dee": "d", "ee": "e", "eff": "f", "gee": "g", "jee": "g"}
+
+
+def wrong_letters(words: list[str], text: str) -> list[tuple[str, str]]:
+    """Letter names Whisper heard as another letter name: (written, heard). "C and G" sung as "E and G"
+    (B and C) and "to D" as "to E" (Bunny Hops) were sent back by the parent, and the letters' share
+    can't see them: one letter in a song's worth. Only a letter heard in a letter name's place counts;
+    a word Whisper made something else of is left to the share."""
+    def toks(t, sounds):
+        out = []
+        for w in re.findall(r"[a-z0-9']+", t.lower().replace("-", " ")):
+            out.append(LETTER_SOUNDS.get(w, w) if sounds else w)
+        return out
+    want = toks(" ".join(words), False)
+    got = toks(text, True)
+    letter = lambda w: len(w) == 1 and w in "bcdefg"          # not "a": it's nearly always the word
+    bad = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, want, got, autojunk=False).get_opcodes():
+        if op == "replace":
+            for w, g in zip(want[i1:i2], got[j1:j2]):
+                if letter(w) and letter(g) and w != g:
+                    bad.append((w.upper(), g.upper()))
+    return bad
 
 
 def heard_share(words: list[str], text: str) -> float:
@@ -583,7 +609,7 @@ def verdict(r) -> dict:
         "pitch": (r["pitch"]["share"] or 0) >= PASS["pitch"],
         "firstWord": r["firstWordSung"],
         "words": bool((w["shareOver300ms"] <= PASS["wordsOff"] or (clear and not drift)) and not early),
-        "heard": h is None or h["share"] >= PASS["heardFail"],
+        "heard": h is None or (h["share"] >= PASS["heardFail"] and not h.get("wrongLetters")),
         "melody": not long_mel,
         "tuning": bool(abs(r["tuningCents"]) <= PASS["tuningCents"]),
         "bleed": bool(r["bleed"]["db"] <= PASS["bleedDb"]),
@@ -600,7 +626,9 @@ def verdict(r) -> dict:
         reasons.append(f"words off the staff: {w['shareOver300ms']:.0%}" + (", in the first 15 s" if early else ""))
     elif w["stretches"]:
         flags.append("words off the staff at " + "; ".join(w["stretches"]))
-    if not checks["heard"]:
+    if h is not None and h.get("wrongLetters"):
+        reasons.append("Whisper heard the wrong letter name: " + ", ".join(f"{g} for {w}" for w, g in h["wrongLetters"]))
+    if h is not None and h["share"] < PASS["heardFail"]:
         reasons.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")
     elif h is not None and not clear:
         flags.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")

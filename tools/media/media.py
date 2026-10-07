@@ -113,7 +113,7 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
             if a.get("error"):
                 print(f"  take {take} ({mode}): {a['error']}", flush=True)
                 continue
-            a["heard"] = {"heard": h["heard"], "share": h["share"]}
+            a["heard"] = {"heard": h["heard"], "share": h["share"], "wrongLetters": h["wrongLetters"]}
             a["checks"] = align.verdict(a)                     # judged by the current rules
             a["score"] = align.score(a)
             f.write_text(json.dumps(a, indent=1) + "\n")
@@ -134,7 +134,10 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
         run(t)
     if not results:
         raise RuntimeError(f"{piece.pid}: no usable YuE2 take")
-    best = max(results, key=lambda r: (r["checks"]["pass"], r["score"]))
+    # passing first, then the fewest failed checks (B and C: one take's two alignments, one only over
+    # on bleed and one 81 ms off the beat too, a hundredth apart on score), then the score
+    failed = lambda r: sum(1 for k, v in r["checks"].items() if isinstance(v, bool) and k != "pass" and not v)
+    best = max(results, key=lambda r: (r["checks"]["pass"], -failed(r), r["score"]))
     choice = {"take": best["take"], "mode": best["mode"], "pass": best["checks"]["pass"], "score": best["score"],
               "padBeats": abcmap.get("songPadBeats", abcmap["padBeats"]), "bpm": piece.bpm, "songStartS": best["songStartS"],
               "candidates": [{"take": r["take"], "mode": r["mode"], "score": r["score"], "pass": r["checks"]["pass"],

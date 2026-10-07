@@ -281,6 +281,41 @@ sheets used only to check them (arch §10.2).
       60-80% of words off), more than the repeated notes do. Alignments now record the word list
       they were made with (`wordsIn`), and `vocal` aligns a take again when the words change.
 
+31. **The parent's listen to the 43 (Oct 7): 34 approved, 9 sent back.**
+    - *New words asked for:* big dinosaurs stomping (Middle C Stomp: "some vocals didn't come
+      through"), two girls on a seesaw (C and G Seesaw, garbled), three frog friends croaking high and
+      low (Three Friends: "bass" was sung like the fish), a hungry kangaroo hopping home to dinner
+      (Kangaroo Skips: the letters and "space to space" mixed up), and the brother still in bed in
+      place of Are You Sleeping's "ding, dang, dong", which garbled. Four of the five had been flagged
+      by the checks; the words the parent heard as wrong were the ones the checks pointed at.
+    - *A wrong letter name, heard by Whisper and let through.* B and C sang "E and G" for "C and G",
+      Bunny Hops "to E" for "to D". Whisper had written exactly that, but the letters' share counted
+      each as one letter off in a song's worth. Now a letter name Whisper hears as another letter name
+      fails the take ("Whisper heard the wrong letter name: E for C"), with Whisper's spellings of
+      sung letters ("middle sea", "bee") counted as the letters they are.
+    - *Twinkle Twinkle's backing stopped whenever the left hand did.* The parent guessed YuE2 was
+      taking the bass notes for the backing; it was ours. Without chord symbols the `kids` backing
+      takes its chords from the left hand, and this arrangement shares the tune between the hands,
+      so every right-hand half bar had no chord. It has chord symbols now (G, C, D), and the
+      notation builder reads them from every part: it had read only the first, so symbols written
+      over the left hand's bars were dropped without a word.
+    - *The First Noel, "some vocals didn't sing to lyrics": would a FluidSynth backing let YuE2 focus
+      on the vocal?* It has one already (the hymnal's own parts on strings and cello); YuE2 always
+      sings over an accompaniment of its own, which is separated out and thrown away. What can be
+      changed is what that accompaniment is: its style now asks for "a very soft sustained string
+      pad, sparse and quiet in the background" and "very clear words", to see whether a thinner
+      arrangement gives a cleaner separated vocal. A render now counts as stale when the piece asks
+      for a style it wasn't sung in (only the score and lyrics counted before).
+      The result: take 8 passed every check (98% of notes on pitch, 8% of words off, every word
+      heard), the first take of this carol to pass in 18; one song isn't proof, but it's the first
+      thing to try on a long song that keeps drifting.
+    - *Choosing between failing alignments.* Bunny Hops and B and C each kept a take's worse
+      alignment (85% on pitch with the first word missing; 81 ms off the beat) over its better one,
+      on a score a hundredth higher. Takes are now ranked by passing, then the fewest failed checks,
+      then the score.
+    - *Result:* all nine re-rendered; eight pass, and B and C's take (the letters right, on the
+      beat) is over only on bleed, by under 1 dB.
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

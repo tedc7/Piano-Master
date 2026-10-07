@@ -408,14 +408,18 @@ def write_inputs(piece: Piece) -> Path:
     return out
 
 
-def stale(folder: Path, inputs: Path) -> bool:
-    """A render folder made from another score or other lyrics than the current inputs."""
+def stale(folder: Path, inputs: Path, request: dict | None = None) -> bool:
+    """A render folder made from another score, other lyrics or another style than the current inputs
+    (a piece's own `vocal_style` or `accompaniment_style` missing from the style it was sung in)."""
     job = folder / "job.json"
     if not (folder / "score.abc").exists() or not job.exists():
         return True
-    lyrics = json.loads(job.read_text()).get("lyrics", "")
+    j = json.loads(job.read_text())
+    lyrics = j.get("lyrics", "")
+    styles = [request[k] for k in ("vocal_style", "accompaniment_style") if request and request.get(k)]
     return (folder / "score.abc").read_text().strip() != (inputs / "score.abc").read_text().strip() or \
-        (isinstance(lyrics, str) and lyrics.strip() and lyrics.strip() != (inputs / "lyrics.txt").read_text().strip())
+        (isinstance(lyrics, str) and lyrics.strip() and lyrics.strip() != (inputs / "lyrics.txt").read_text().strip()) or \
+        any(x not in j.get("style", "") for x in styles)
 
 
 def render(piece: Piece, take: int, dry_run: bool = False) -> dict:
@@ -423,7 +427,8 @@ def render(piece: Piece, take: int, dry_run: bool = False) -> dict:
     req = piece.work / "yue2" / f"request-s{take}.json"
     renders = piece.work / "renders"
     folder = renders / f"{piece.pid}-s{take}"
-    if folder.exists() and (stale(folder, piece.work / "yue2") or not (folder / "report.json").exists()):
+    if folder.exists() and (stale(folder, piece.work / "yue2", json.loads(req.read_text()) if req.exists() else None)
+                            or not (folder / "report.json").exists()):
         shutil.rmtree(folder)          # made from other inputs (the piece changed), or cut off: render again
     if (folder / "report.json").exists() and not dry_run:
         return json.loads((folder / "report.json").read_text())

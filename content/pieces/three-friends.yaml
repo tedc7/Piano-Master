@@ -1,4 +1,6 @@
-# Curriculum song (Prep A, prep-a.hands-at-once). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.hands-at-once). Original music and words for this app. The words are
+# three frog friends croaking high and low (at the parent's request, Oct 7, 2026: the vocal said "bass"
+# like the fish); Middle C, Treble G and Bass F are still the notes they sit on.
 title: "Three Friends"
 composer: Piano-Master
 genre: studies
@@ -22,6 +24,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !1!C C C C | C4 | !5!G G G G | G4 | z4 | z4 | !1!C2 !5!G2 | !1!C4 |]
-  w: Mid-dle C is home. Tre-ble G is high. Three friends sing!
+  w: First frog on the pad. Sec-ond frog croaks high. Three frogs sing!
   [V:LH] z4 | z4 | z4 | z4 | !5!F, F, F, F, | F,4 | z4 | F,4 |]
-  w: Bass F is so low.
+  w: Big frog croaks so low.

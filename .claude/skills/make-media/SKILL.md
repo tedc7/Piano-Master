@@ -75,7 +75,8 @@ flagged):
   1.5 s anywhere: a stretch is a real drift (a syllable behind for seconds), which Whisper can't
   hear because every word is still sung;
 - heard: Whisper (`hear.py`) hears 80% or more of the words' letters, in order (under 92% is a
-  flag, with what it heard: read it, it's what a listener would hear);
+  flag, with what it heard: read it, it's what a listener would hear), and no letter name sung as
+  another ("E and G" for "C and G": in a song that teaches the notes, that's wrong, not unclear);
 - melody: no run of 4+ notes sung on other pitches lasting 1.5 s or more (a shorter slip is a flag);
 - octave: no held note (0.8 s or more) sung in another octave from the rest of the take;
 - tuning: within 10 cents of A440 (the FluidSynth backing is exact);

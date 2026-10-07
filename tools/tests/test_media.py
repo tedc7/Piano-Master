@@ -259,3 +259,16 @@ def test_a_vocal_ends_with_the_song():
     assert out[int(5.5 * sr)].tolist() == [1.0, 1.0]                 # the last note's release is kept
     assert 0 < out[int(5.8 * sr), 0] < 1                             # then faded
     assert not out[int(6.1 * sr):].any() and y.all()                 # then silent; the take untouched
+
+
+def test_a_wrong_letter_name_fails_the_heard_check():
+    align = pytest.importorskip("align")
+    # B and C and Bunny Hops, sent back: Whisper had heard "E and G" for "C and G", "to E" for "to D"
+    words = "B and C are neighbors, C and G say hi! step down, step up, home.".split()
+    assert align.wrong_letters(words, "B and C our neighbors, E and G say hi Step down, step up home") == [("C", "E")]
+    assert align.wrong_letters(words, "BNC our neighbors, phi and g, say hi Step down, step up home") == []
+    assert align.wrong_letters("Middle C, march with me".split(), "Oh, middle sea, march with me") == []
+    r = take(0.05, heard=0.95)
+    r["heard"]["wrongLetters"] = [("C", "E")]
+    v = align.verdict(r)
+    assert not v["pass"] and any("E for C" in x for x in v["reasons"])

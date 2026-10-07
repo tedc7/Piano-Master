@@ -126,6 +126,15 @@ def test_the_tune_passes_to_a_left_hand_with_words():
     assert words == ["I", "sing", "high,", "you", "sing", "low,"]      # "hum" is under a held right-hand note
 
 
+def test_chord_symbols_come_from_the_hand_that_plays():
+    # Twinkle Twinkle shares the tune between the hands; the left hand's chord symbols were dropped,
+    # and the backing stopped in its bars
+    abc = ("X:1\nM:4/4\nL:1/4\n%%score {RH LH}\nK:C\nV:RH clef=treble\nV:LH clef=bass\n"
+           "[V:RH] \"C\"E E \"G\"D2 | z4 |]\n[V:LH] \"F\"C,4 | \"D\"A, A, \"G\"G,2 |]\n")
+    nota, _ = nt.build_notation(nt.parse_abc(abc))
+    assert [(c["beat"], c["symbol"]) for c in nota["chordSymbols"]] == [(0, "C"), (2, "G"), (4, "D"), (6, "G")]
+
+
 def test_a_letters_piece_is_marked_in_the_header():
     meta = {"title": "t", "hands": "R", "letters": True, "abc": "X:1\nM:4/4\nL:1/4\nK:C\nC D E2 |]\n"}
     nota, _, _ = bc.build_piece("t", meta)
