@@ -4,6 +4,8 @@
 // (§2.1). iPadOS may clear local storage when space is low; the device then registers again as a
 // new device (§5), and practice never waits on the network.
 
+import type { AttemptRewards } from "./awards";
+
 const API = "/api";
 const DEVICE_KEY = "pm.device.v1";
 const OUTBOX_KEY = "pm.outbox.v1";
@@ -56,7 +58,7 @@ async function send(path: string, method: string, body: unknown, headers: Record
 interface LogEntry { time: string; level: "info" | "warning" | "error"; message: string; context?: unknown }
 
 /** What the lesson engine changed after a stored attempt (api students.after_attempt). */
-export interface AttemptEffects { passed: string[]; mastered: string[]; reviewed: string[]; item: unknown }
+export interface AttemptEffects extends Partial<AttemptRewards> { passed: string[]; mastered: string[]; reviewed: string[]; item: unknown }
 
 class ApiClient {
   readonly deviceId: string;

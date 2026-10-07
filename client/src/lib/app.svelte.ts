@@ -1,12 +1,14 @@
 // App-wide state shared by the screens: this device's settings, the audio engine, the MIDI input,
 // who is playing (a student, or the parent after the PIN), and the student's state from the lesson
-// engine on the piano server (skills, today's session, today's practice time, favorites).
+// engine on the piano server (skills, today's session, today's practice time, favorites, and the
+// rewards: the star collection and medals, M10).
 //
 // The server decides; the client keeps a copy of each student's last state in this browser and
 // updates it straight away when an item is finished, so a Wi-Fi drop never stops practice. The
 // copy is replaced by the server's as soon as every attempt in the outbox has been sent.
 import { api, ApiError } from "./api";
 import { AudioEngine } from "./audio";
+import { groupHeadline, type Award, type AwardKind, type Rewards, type Tier } from "./awards";
 import { MidiInput, type MidiStatus } from "./midi";
 import type { ItemResult, Progress, Session, SessionItem, SkillProgress, StudentState } from "./progress";
 import { go } from "./route";
@@ -19,6 +21,10 @@ import type { Preset } from "./types";
 /** Full-screen reminder threshold (arch §2.2): 87 px of app bars on the iPad A16, 0 in full
  *  screen. */
 export const FULL_SCREEN_GAP_PX = 40;
+
+/** A moment shown over any screen (Celebration.svelte): a unit or level medal, or what a concept
+ *  lesson earned (it has no result screen of its own). */
+export interface Celebration { headline: string; title: string; detail: string; kind: AwardKind | null; tier: Tier | null }
 
 export interface Student { id: string; name: string; avatar: string; status?: string; settings: StudentSettings; targetMinutes?: number }
 
@@ -59,6 +65,8 @@ class AppState {
   session = $state<Session | null>(null);
   day = $state<StudentState["day"] | null>(null);
   favorites = $state<string[]>([]);
+  rewards = $state<Rewards | null>(null);
+  celebrations = $state<Celebration[]>([]);
   stateStatus = $state<"none" | "loading" | "ok" | "offline">("none");
   stateError = $state("");
   /** Where the Play screen's Back button goes: the screen that opened the song. */
@@ -231,6 +239,8 @@ class AppState {
     this.session = null;
     this.day = null;
     this.favorites = this.parentMode ? read<string[]>(FAV_KEY, []) : [];
+    this.rewards = null;
+    this.celebrations = [];
     this.stateStatus = "none";
     this.stateError = "";
   }
@@ -240,6 +250,7 @@ class AppState {
     this.session = st.session;
     this.day = st.day;
     this.favorites = st.favorites;
+    this.rewards = st.rewards ?? null;
     this.stateStatus = fresh ? "ok" : "offline";
     if (fresh) this.cache();
   }
@@ -252,6 +263,7 @@ class AppState {
       skills: [...this.progress.values()].map((p) => $state.snapshot(p) as SkillProgress),
       session: $state.snapshot(this.session) as Session, day: $state.snapshot(this.day) as StudentState["day"],
       favorites: [...this.favorites],
+      rewards: this.rewards ? ($state.snapshot(this.rewards) as Rewards) : undefined,
     };
     write(STATE_KEY, all);
   }
@@ -316,7 +328,8 @@ class AppState {
   /** A concept lesson gone through: its skill becomes Current (§8.1). Parent reviews record nothing. */
   /** `check`: the lesson's Check and Echo cards (arch §7.8), kept on the server; a theory skill
    *  passes on them. */
-  lessonDone(skillId: string, itemId: string | null, seconds: number, check?: { questions: number; points: number }): void {
+  lessonDone(skillId: string, itemId: string | null, seconds: number, check?: { questions: number; points: number },
+             skillName?: string): void {
     if (!this.student) return;
     if (itemId) this.completeItem(itemId, null);
     const p = this.progress.get(skillId);
@@ -326,9 +339,37 @@ class AppState {
     }
     this.addPractice(seconds, !!itemId);
     const sid = this.student.id;
-    api.request(`/students/${sid}/lessons/${encodeURIComponent(skillId)}/done`, "POST",
+    const was = p?.status;
+    api.request<{ status: string; awards?: Award[] }>(`/students/${sid}/lessons/${encodeURIComponent(skillId)}/done`, "POST",
       { itemId, seconds: Math.round(seconds), deviceId: api.deviceId, ...(check ? { check } : {}) })
-      .then(() => this.refresh()).catch(() => {});
+      .then((r) => {
+        // a theory skill passes (or is mastered) by its lesson's questions (arch §7.8)
+        const name = skillName ?? skillId;
+        const moved = r.status !== was && (r.status === "passed" || r.status === "mastered");
+        const skill: Celebration[] = moved
+          ? [{ headline: r.status === "mastered" ? "Skill mastered" : "Skill passed", title: name, detail: "", kind: null, tier: null }]
+          : [];
+        this.celebrate([...skill, ...(r.awards ?? []).map(awardMoment)]);
+        return this.refresh();
+      }).catch(() => {});
+  }
+
+  /** Show these moments over the screen, one after another, with a short chime. */
+  celebrate(moments: Celebration[]): void {
+    if (!moments.length || this.parentMode) return;
+    this.celebrations = [...this.celebrations, ...moments];
+    this.chime();
+  }
+
+  /** A soft rising arpeggio on the app's piano: the sound of something earned. */
+  chime(): void {
+    const a = this.audio;
+    const notes = [72, 76, 79, 84];
+    void a.loadPiano(notes).then(() => {
+      if (!a.ctx || a.ctx.state !== "running") return;
+      const t = a.ctx.currentTime + 0.05;
+      notes.forEach((n, i) => a.piano(n, t + i * 0.09, 1.2 - i * 0.1, 0.32));
+    });
   }
 
   /** Practice time today, shown straight away (the server adds it when the attempt arrives). */
@@ -423,3 +464,9 @@ export function pianoLabel(status: MidiStatus, name: string | null): string {
 }
 
 export const AVATARS = ["🦊", "🐢", "🐼", "🦁", "🐸", "🦉", "🐙", "🦄", "🐝", "🐬", "🐯", "🐨"];
+
+/** A medal as a moment to show. */
+export function awardMoment(a: Award): Celebration {
+  const group = a.kind === "unit" || a.kind === "level";
+  return { headline: group ? groupHeadline(a) : "New medal", title: a.title, detail: group ? "" : a.detail, kind: a.kind, tier: a.tier };
+}

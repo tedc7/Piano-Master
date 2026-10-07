@@ -6,6 +6,8 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.37 | Oct 7, 2026 | From a review of spaced repetition against the code: a Review item replayed the same day is one review, on the day's best play; Review items open at 100%; polish goes to the skill practised longest ago; replacement items come only from the child's allowed songs; a Song needed note when a skill has no song the child may play |
+| v0.36 | Oct 6, 2026 | M10 rewards: the star collection (each song's best), medals in four tiers for milestones and for each unit and level, the trophy case on My Progress, moments on the result card; the mascot and stickers dropped |
 | v0.35 | Oct 6, 2026 | M0, M7 and M8 closed; the FluidSynth backing replaces the chord pad and choir voice; the Holiday genre renamed Christmas; the song library's search and genre choice; the Chords button, one choice per student |
 | v0.34 | Oct 6, 2026 | The lesson voice: every lesson line recorded ahead with Kokoro's Heart at 80% speed, checked by Whisper, kept in Git LFS; a card read a moment after it shows; Auto-read (the student's choice for every lesson) beside Read it to me / Stop reading; the `lesson-voice` skill |
 | v0.33 | Oct 5, 2026 | Dragging the staff to play or listen from any bar (a drag back is a rewind; ahead, practice of part of the song); a Christmas batch of 15 public-domain songs; the holiday backing style (strings, harp arpeggios, cello, sleigh bells) |
@@ -30,6 +32,28 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.37 (Oct 7, 2026)
+
+From a review of the code against this document, focused on spaced review (8.3), with a simulated year of practice on the real Prep A map:
+- **One review a day (8.3, 5):** a Review item played again the same day moved the skill up the ladder on every good play (three plays took a 1-day interval to 14 days), and two weak plays put it back to Passed. Now the day's plays are one review, judged on the day's best play; each skill state keeps that day's best and the ladder as it stood before it (migration 014). Every play still counts for the student's best stars.
+- **Review items at 100% (8.3):** they opened at the song's remembered tempo, where a slow preset's factor made a good review impossible (50%: 3 stars at most). They now open at full speed; the student can still slow down.
+- **Polish order (8.3):** the skill practised longest ago comes first, then the lowest mastery. Lowest mastery first left some passed skills unpractised for over two months in the simulation.
+- **Only allowed songs (6.8, 10.1):** when a skill passed mid-session, the items replacing it were chosen from the whole library, so a blocked song could be queued (and the next load then planned the whole day again, losing the items already done). They now come from the child's allowed songs.
+- **Song needed (6.8, 10.1):** a skill with no song the child may play gets a "Song needed: Parent must submit or allow more songs" note in the session instead of nothing; it is done from the start, so it never holds up the day. A generated drill in its place, as the document said, is not built.
+- **Corrections, to match the app:**
+  - (8.5) the Journey's "Today" marker is on the skills in today's session;
+  - (8.5) a due bubble on the Journey opens its sheet like any other, and a song played from there is Free Play: it counts as a review only when it is a strong play (8.4), and today's Review item stays in the session. Starting the review from the map was never built;
+  - (8.2, 8.4, 8.7) Free Play's half mastery step is for a song's featured skills; a practice song's own skill takes the full step, since playing it from its Journey bubble or the song library is deliberate practice of that skill.
+
+## v0.36 (Oct 6, 2026)
+
+M10's rewards, from the parent's "clear rewards and accolades for accomplishing skills and levels", not too young for older children:
+- **Rewards (3 "Rewards", new):** the star collection is every song's best accuracy stars added up, so it grows only by playing a song better; medals in bronze, silver, gold and platinum for six milestone rows (star collection, practice streak, skills mastered, five-star songs, songs played, time at the piano) and for each unit and level of the map (every skill passed, mastered, mastered with 5 stars). Medals are never taken back.
+- **Where they show (3):** Home shows the collection and today's growth instead of the stars of today's items; the result card shows a skill passed or mastered, a new medal, a new best and the stars added, with a chime; a unit or level medal, and what a concept lesson earns, show as a card over the screen; the song library shows each played song's best; My Progress opens with the trophy case, and its tab counts new medals; the Journey sheet shows the unit's progress; the parent's progress report shows the trophy case too.
+- **No mascot or stickers (3):** encouragement stays in plain words.
+- **Data (5):** the Reward entity becomes Award (migration 013, `awards`); "stars this week" in the progress report is now the collection's growth this week. The attempt's effects carry the new medals, the stars gained and a new best; a concept lesson's result carries its medals.
+- **Milestones (12):** M10 is built for rewards; the use with real playing waits for the keyboard.
 
 ## v0.35 (Oct 6, 2026)
 

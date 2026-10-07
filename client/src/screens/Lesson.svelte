@@ -392,7 +392,7 @@
   function finish(): void {
     const questions = lesson!.cards.reduce((n, c) => n + (c.kind === "check" ? c.questions?.length ?? 0 : c.kind === "echo" ? 1 : 0), 0);
     const got = Object.values(points).reduce((a, b) => a + b, 0);
-    app.lessonDone(skillId, itemId, (performance.now() - opened) / 1000, questions ? { questions, points: got } : undefined);
+    app.lessonDone(skillId, itemId, (performance.now() - opened) / 1000, questions ? { questions, points: got } : undefined, skill?.name);
     if (inSession) go("session"); else leave();
   }
 

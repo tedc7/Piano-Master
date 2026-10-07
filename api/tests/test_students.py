@@ -189,3 +189,25 @@ def test_a_guided_session_through_the_api(client, parent):
     p = client.get(f"/api/students/{sid}/progress").json()
     assert p["counts"]["passed"] == 1 and p["days"][-1]["practiced"] and p["recent"][0]["context"] == "guided"
     assert p["runway"]["remaining"] == 4 and p["runway"]["alert"]
+
+
+def test_a_skill_passed_mid_session_is_replaced_only_with_allowed_songs(client, parent):
+    """§10.1: a song the parent blocked never reaches the child, even as one of the items that
+    replace a skill passed mid-session; with no song left for the next skill, the session says so."""
+    sid = client.post("/api/students", json={"name": "Ada", "avatar": "🦊"}, headers=parent).json()["id"]
+    for song in ("pb1", "pc1"):           # the practice songs of the skills that open after t.a
+        client.put(f"/api/students/{sid}/rules/songs/{song}", json={"allowed": False}, headers=parent)
+    items = client.get(f"/api/students/{sid}/state").json()["session"]["items"]
+    client.post(f"/api/students/{sid}/lessons/t.a/done", json={"itemId": items[0]["id"], "seconds": 120})
+    client.post(f"/api/students/{sid}/lessons/t.b/done", json={})    # seen already: t.b's replacement is a song
+    first = next(i for i in items if i["kind"] == "piece")
+    assert any(i["reason"] == "New" and i["kind"] == "piece" and i["id"] != first["id"] for i in items)   # one to replace
+    a = attempt(studentId=sid, pieceId=first["pieceId"], skillId="t.a", itemId=first["id"], context="guided",
+                startedAt=datetime.now(timezone.utc).isoformat())
+    assert client.post("/api/attempts", json=a).json()["effects"]["passed"] == ["t.a"]
+    items = client.get(f"/api/students/{sid}/state").json()["session"]["items"]
+    # today's session carries on (a blocked song in it once made the next load plan the day again)
+    assert next(i for i in items if i["id"] == first["id"])["done"]
+    assert not {"pb1", "pc1"} & {i["pieceId"] for i in items}
+    needed = [i for i in items if i["kind"] == "needed"]
+    assert needed and needed[0]["skillId"] == "t.b" and needed[0]["done"] and needed[0]["title"].startswith("Song needed")

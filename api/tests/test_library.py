@@ -427,7 +427,7 @@ def test_the_holiday_genre_becomes_christmas(client, parent, skill, tmp_path):
     con = db.connect()
     con.execute("PRAGMA user_version = 10")
     con.close()
-    assert db.migrate() == 12
+    assert db.migrate() >= 12          # and any later migrations
     con = db.connect()
     try:
         assert {r["genre"] for r in con.execute("SELECT genre FROM library WHERE piece_id = 'carol'")} == {"christmas"}
@@ -460,4 +460,4 @@ def test_each_song_lists_its_words_for_the_library_search(client, parent, skill)
         con.execute("PRAGMA user_version = 11")
     finally:
         con.close()
-    assert db.migrate() == 12 and words() == "Twinkle little star"
+    assert db.migrate() >= 12 and words() == "Twinkle little star"

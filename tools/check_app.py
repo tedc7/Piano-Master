@@ -142,6 +142,25 @@ def plant_rushed_quarters() -> str:
     return sid
 
 
+def plant_blocked_first_skill() -> tuple[str, str]:
+    """A new student whose parent blocked every song that practises the map's first skill, written
+    straight into the check's throwaway database: their session has nothing to play for it."""
+    import sqlite3
+    from datetime import date, datetime
+    skills = json.loads((DIST / "content" / "skillmap.json").read_text())["skills"]
+    first = min(skills, key=lambda s: s["sequence"])["id"]
+    songs = {p.get("song") or p["id"] for p in json.loads((SONGS / "index.json").read_text())["pieces"]
+             if first in (p.get("featuredSkills") or [])}
+    con = sqlite3.connect(os.environ["PIANO_DB"])
+    sid, now = str(uuid.uuid4()), datetime.now().astimezone()
+    con.execute("INSERT INTO students (id, name, avatar, start_date, sort, created_at) VALUES (?, 'Dev', '🦉', ?, 10, ?)",
+                (sid, date.today().isoformat(), now.isoformat()))
+    con.executemany("INSERT INTO song_rules (student_id, song, allowed) VALUES (?, ?, 0)", [(sid, s) for s in songs])
+    con.commit()
+    con.close()
+    return sid, first
+
+
 def serve():
     """The App API plus the built client at /, on a free local port, with a throwaway database. The
     API plans from the built skill map, and its library starts with every built song, as a deploy's
@@ -525,6 +544,14 @@ def main():
         check(r["state"] == "finished", f"practice: the song is played to the end ({r['state']})")
         page.wait_for_selector(".result")
         check(page.get_by_role("button", name="Next ›").count() == 1, "practice: the result card offers Next")
+        # M10: what the play earned shows on the result card once the server has the attempt
+        page.wait_for_selector(".result .earned", timeout=15000)
+        earned = page.locator(".result .earned").inner_text()
+        check("Skill passed" in earned and "Sitting at the piano" in earned, f"rewards: the result card says the skill passed ({earned!r})")
+        check("New medal" in earned and "Five-star songs" in earned and "+5 ★ to your collection" in earned,
+              f"rewards: a first five-star song earns a medal and adds 5 stars to the collection ({earned!r})")
+        page.wait_for_timeout(500)          # the strip fades in
+        page.screenshot(path=str(OUT / "reward-result.png"))
         page.get_by_role("button", name="‹ Back").click()   # leaving by Back still checks the item off
         page.wait_for_selector(".bubble.done >> nth=1")
         check(page.locator(".bubble.done").count() == 2 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
@@ -534,6 +561,9 @@ def main():
         check(stored["context"] == "guided" and stored["itemId"] and stored["skillId"] == "prep-a.sitting",
               f"practice: the attempt is stored for Ada's session item ({stored['context']}, {stored['skillId']})")
         page.wait_for_timeout(600)          # the state refresh after the attempt reached the server
+        stars = page.locator(".status .collection").inner_text()
+        check(stars.startswith("★ 5") and "+5 today" in stars, f"rewards: Home shows the star collection and today's stars ({stars!r})")
+        check(page.locator(".tab .new").inner_text() == "1", "rewards: My Progress shows one new medal")
         page.screenshot(path=str(OUT / "nav-session-progress.png"))
 
         tab("Journey").click()
@@ -596,6 +626,9 @@ def main():
         check(all_sel(), "songs: All songs is highlighted when every song shows")
         check(page.locator(".song").count() == songs and search.input_value() == "" and page.get_by_label("Genre").input_value() == "",
               "songs: All songs clears the favorites, the search and the genre")
+        played = page.locator(".song", has=page.locator(".best"))
+        check(played.count() == 1 and played.locator('[aria-label="Best: 5 of 5 stars"]').count() == 1,
+              f"rewards: the song played shows its best stars ({played.count()} with stars)")
         page.screenshot(path=str(OUT / "nav-songs.png"))
         search.fill(word)
         page.locator(".song .card:not([disabled])").first.click()
@@ -630,7 +663,17 @@ def main():
         page.wait_for_selector(".counts")
         counts = page.locator(".counts div").all_inner_texts()
         check(any(c.startswith("1") and "passed" in c for c in counts), f"my progress: one skill passed ({counts})")
+        page.wait_for_selector(".trophy")
+        check(page.locator(".trophy .total b").inner_text() == "5" and "Five-star songs" in page.locator(".trophy .fresh").inner_text(),
+              "rewards: the trophy case shows the collection and the new medal")
+        units = page.locator(".trophy .group:not(.level)").count()
+        check(units == 9 and "1 of 6 passed" in page.locator(".trophy .group", has_text="Getting Started").inner_text(),
+              f"rewards: each Prep A unit shows how far through it the student is ({units} units)")
+        page.wait_for_timeout(300)
+        check(page.locator(".tab .new").count() == 0, "rewards: opening My Progress marks the new medals seen")
         page.screenshot(path=str(OUT / "nav-progress.png"))
+        page.locator(".trophy .group").last.scroll_into_view_if_needed()
+        page.screenshot(path=str(OUT / "trophy-case.png"))
 
         # Ben: his own progress, and "Try it another way" after 3 tries without passing
         page.get_by_role("button", name="Switch player").click()
@@ -1139,6 +1182,21 @@ def main():
         wait_api(page, f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items.find(i => i.id === '{focus[0]['id']}').done)", timeout=10000)
         page.screenshot(path=str(OUT / "drill-rhythm.png"))
         check(True, "diagnostics: playing the drill checks the Focus item off")
+
+        # 8. no song this child may play practises a skill (the parent blocked them): the session
+        # shows a "Song needed" note on the path, which is nothing to play and holds nothing up
+        sid, first = plant_blocked_first_skill()
+        page.goto(url)
+        page.wait_for_selector(".student")
+        page.locator(".student", has_text="Dev").click()
+        page.wait_for_selector(".path .bubble.needed", timeout=10000)
+        note = page.locator(".needed-note").first.inner_text()
+        items = page.evaluate(f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items)")
+        needed = [i for i in items if i["kind"] == "needed"]
+        page.screenshot(path=str(OUT / "session-song-needed.png"))
+        check(note.startswith("Song needed") and [i["skillId"] for i in needed] == [first] and needed[0]["done"]
+              and page.locator(".upnext").count() == 1,
+              f"song needed: a skill with no song the child may play shows a note in the session ({note!r})")
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
         browser.close()
