@@ -64,6 +64,30 @@ def test_yue2_lyrics_sing_each_note_of_a_vowel_run_and_never_break_inside_a_word
     assert "itsy bitsy" in plain                                      # other words join as before
 
 
+def test_yue2_lyrics_keep_a_sung_ed_on_its_own_note(tmp_path):
+    yue2 = pytest.importorskip("yue2")
+    # The First Noel's "look-ed": joined as "looked", YuE2 sang one note and ran a syllable early
+    old = {**SONG, "abc": "X:1\nM:4/4\nL:1/4\nQ:1/4=90\nK:C\n"
+           "\"C\"E C E G | c B A G | \"G\"F E D2 |]\nw: They look- ed up and saw a star, want- ed to fol- low\n"}
+    _, lyrics, amap = yue2.export(piece(tmp_path, old).nota)
+    assert "They look-ed up" in lyrics and "wanted" in lyrics        # "want-ed" is two syllables anyway
+    assert [w["word"] for w in amap["words"]][2] == "looked"          # the aligner's word stays plain
+
+
+def test_a_songs_own_oh_stays_on_its_note(tmp_path):
+    yue2 = pytest.importorskip("yue2")
+    # When the Saints starts with its own "Oh,": leaving it out with the lead-in's paired every
+    # later word with the beat of the one before
+    saints = {**SONG, "abc": "X:1\nM:4/4\nL:1/4\nQ:1/4=100\nK:C\n"
+              "\"C\"C2 E F | G4 | C2 E F | \"G7\"G4 |]\nw: Oh, when the saints, oh, when the saints\n"}
+    _, lyrics, amap = yue2.export(piece(tmp_path, saints).nota)
+    assert lyrics.splitlines()[1].startswith("Oh, Oh, when")           # the lead-in, then the song's own
+    words = amap["words"]
+    assert [w["word"] for w in words] == ["Oh,", "Oh,", "when", "the", "saints,", "oh,", "when", "the", "saints"]
+    pad = Fraction(amap["padBeats"])
+    assert [Fraction(w["beat"]) - pad for w in words[1:4]] == [0, 2, 3]   # each word on its own note
+
+
 def test_kids_backing_follows_the_bar_lines_through_a_pickup(tmp_path):
     p = piece(tmp_path, SONG)
     name, parts = bk.parts_for(p)
@@ -195,3 +219,43 @@ def test_submit_packages_each_piece_with_its_stems_and_what_the_parent_reads(tmp
     assert set(it["files"]) == {f"accompaniment_{k}.mp3" for k in common.PRESETS} and all(f.exists() for f in it["files"].values())
     assert it["info"]["tempoSource"] == "a recording at 60" and it["info"]["notes"] == ["A test song, retyped."]
     assert it["info"]["lyrics"].startswith("1. The itsy bitsy spider") and "\n2. A little tiny robin" in it["info"]["lyrics"]
+
+
+def take(words_off, stretches=(), heard=None):
+    """A take's alignment as verdict() reads it: on pitch and on the beat, only its words vary."""
+    return {"phrases": [{"medianMs": 8.0}], "pitch": {"share": 1.0}, "firstWordSung": True, "melodyStretches": [],
+            "words": {"shareOver300ms": words_off, "stretches": list(stretches), "firstStretchS": None},
+            "tuningCents": 1.0, "bleed": {"db": -35.0}, "octaveJumps": [], "songStartS": 2.0,
+            **({"heard": {"heard": "…", "share": heard}} if heard is not None else {})}
+
+
+def test_whisper_hearing_the_words_clears_the_aligners_scattered_misses_but_not_a_drift():
+    align = pytest.importorskip("align")
+    # Mary Had a Little Lamb: 30% "off", single words the aligner couldn't place, every word heard
+    assert not align.verdict(take(0.30))["pass"]
+    assert align.verdict(take(0.30, heard=1.0))["pass"]
+    # The First Noel's verse 2: a syllable behind for seconds is a drift, however clearly it's sung
+    drift = take(0.30, ["the (62.7 s) .. Noel, (91.4 s)"], heard=0.98)
+    assert not align.verdict(drift)["pass"]
+    # a take Whisper can't make out fails even when the aligner placed its words, and a take it half
+    # hears is flagged for the listen
+    v = align.verdict(take(0.05, heard=0.6))
+    assert not v["pass"] and any("Whisper heard 60%" in x for x in v["reasons"])
+    assert any("Whisper heard 80%" in x for x in align.verdict(take(0.05, heard=0.8))["flags"])
+    # and between takes, the one Whisper hears better wins
+    a, b = take(0.2, heard=1.0), take(0.15, heard=0.8)
+    for r in (a, b):
+        r["checks"] = align.verdict(r)
+    assert align.score(a) > align.score(b)
+
+
+def test_a_vocal_ends_with_the_song():
+    media = pytest.importorskip("media")
+    import numpy as np
+    sr = 1000
+    y = np.ones((10 * sr, 2))                       # a take still singing at 10 s; the song ends at 5 s
+    out = media.song_only(y, sr, 5.0)
+    assert len(out) == len(y)                        # the length stays, so the presets line up
+    assert out[int(5.5 * sr)].tolist() == [1.0, 1.0]                 # the last note's release is kept
+    assert 0 < out[int(5.8 * sr), 0] < 1                             # then faded
+    assert not out[int(6.1 * sr):].any() and y.all()                 # then silent; the take untouched

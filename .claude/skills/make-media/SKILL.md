@@ -58,9 +58,9 @@ tools/.venv/bin/python -u tools/media/media.py make content/incoming/BATCH     #
 ```
 
 For each piece: YuE2 inputs (one note per syllable, chords kept, the sung "Oh" lead-in), two takes
-(a third if neither passes), each aligned in two ways and checked, the best kept; the FluidSynth
-backing at each tempo; then levels, MP3s and `media.json`. About a minute of GPU and five minutes of
-alignment per take. Steps can be run alone (`vocal`, `backing`, `package`); finished renders and
+(a third if neither passes), each aligned in two ways, heard by Whisper and checked, the best kept;
+the FluidSynth backing at each tempo; then levels, the vocal ended with the song (YuE2 often sings
+on after it), MP3s and `media.json`. About a minute of GPU and five minutes of alignment per take. Steps can be run alone (`vocal`, `backing`, `package`); finished renders and
 alignments are reused.
 
 **The checks** (a take must pass all of them; the best passing take is kept, else the best one,
@@ -68,8 +68,14 @@ flagged):
 - timing: no phrase more than 50 ms off the beat;
 - pitch: 90% of notes on the right pitch;
 - words: the first word sung; words more than 0.3 s off their notes, or that the aligner can't
-  place (a garbled word), under 10%, and no stretch of them lasting 1.5 s or more in the first 15 s
-  (anything shorter, or later, is a *flag*: point the parent to it);
+  place, under 10%, and no stretch of them lasting 1.5 s or more in the first 15 s
+  (anything shorter, or later, is a *flag*: point the parent to it). The aligner misses short
+  words ("a", "the") and same-note neighbours in takes that sing them clearly, so a take whose
+  words Whisper hears (92% or more) passes with scattered misses, as long as no stretch lasts
+  1.5 s anywhere: a stretch is a real drift (a syllable behind for seconds), which Whisper can't
+  hear because every word is still sung;
+- heard: Whisper (`hear.py`) hears 80% or more of the words' letters, in order (under 92% is a
+  flag, with what it heard: read it, it's what a listener would hear);
 - melody: no run of 4+ notes sung on other pitches lasting 1.5 s or more (a shorter slip is a flag);
 - octave: no held note (0.8 s or more) sung in another octave from the rest of the take;
 - tuning: within 10 cents of A440 (the FluidSynth backing is exact);
@@ -78,8 +84,8 @@ flagged):
 
 A song whose takes all fail: package the best, say so, and let the parent decide (the Vocals
 button turns a poor vocal off). Fast songs fail more often; `--max-takes 6` (up to 12) renders more
-seeds, stopping at the first take that passes. Don't submit a take with a quarter or more of its
-words off: the parent hears that every time (v0.30). A curriculum song (`genre: studies`) gets the
+seeds, stopping at the first take that passes. Don't submit a take that fails the words check
+with a quarter or more of its words off: the parent hears that every time (v0.30). A curriculum song (`genre: studies`) gets the
 vocal alone, with no backing (style `none`).
 
 ## 4. Hand the parent one review, in the app

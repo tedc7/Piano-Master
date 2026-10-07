@@ -1,4 +1,6 @@
-# Curriculum song (Prep A, prep-a.bass-a). Original music and words for this app.
+# Curriculum song (Prep A, prep-a.bass-a). Original music and words for this app. The right hand's
+# words were "Trot, trot, trot, go! Trot, trot, trot, whoa!"; the vocal (Oct 7, 2026) couldn't keep three
+# of one word apart in 12 takes, so they're a pony's hooves instead: "Clip-pe-ty clop! Gal-lop-ing, whoa!".
 title: "Pony Trot"
 composer: Piano-Master
 genre: studies
@@ -22,6 +24,6 @@ abc: |
   V:RH clef=treble
   V:LH clef=bass
   [V:RH] !1!C D E | F3 | E D C | D3 | z3 | z3 | z3 | z3 |]
-  w: Trot, trot, trot, go! Trot, trot, trot, whoa!
+  w: Clip-pe-ty clop! Gal-lop-ing, whoa!
   [V:LH] z3 | z3 | z3 | z3 | !1!C !2!B, !3!A, | B,3 | A, B, C | C3 |]
   w: Po-ny goes down, then back up home.

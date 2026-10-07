@@ -27,6 +27,7 @@ Prototype: feasibility/sync-probe/align.py.
 """
 from __future__ import annotations
 
+import difflib
 import json
 import re
 import subprocess
@@ -52,7 +53,7 @@ WIN = 3.0             # seconds of score per alignment window
 MAX_SHIFT = 0.35      # the windows search +-0.35 s around the rough map
 MODES = ("dtw", "words")
 PASS = {"phraseOffsetMs": 50, "pitch": 0.9, "wordsOff": 0.1, "tuningCents": 10, "bleedDb": -25, "stretchS": 1.5,
-        "octaveHeldS": 0.8}
+        "octaveHeldS": 0.8, "heard": 0.92, "heardFail": 0.8}
 
 
 # ---------------------------------------------------------------- score and pitch
@@ -388,6 +389,31 @@ def lyric_words_by_phrase(audio, words, bounds, margin=0.6):
         return json.loads(of.read_text())
 
 
+def heard(folder: Path, words: list[str]) -> dict:
+    """Whisper's hearing of a take (hear.py): {"heard": transcript, "share": 0-1}. The transcript
+    is kept in folder/heard.json, one per take whatever the alignment mode."""
+    f = folder / "heard.json"
+    if not f.exists():
+        with tempfile.TemporaryDirectory() as tmp:
+            of = Path(tmp) / "o.json"
+            subprocess.run([str(FA_PYTHON), str(HERE / "hear.py"), str(folder / "vocals.flac"), str(of)],
+                           check=True, capture_output=True)
+            f.write_text(of.read_text())
+    text = json.loads(f.read_text())["heard"]
+    return {"heard": text, "share": heard_share(words, text)}
+
+
+def heard_share(words: list[str], text: str) -> float:
+    """The share of the words' letters Whisper heard, in order. Letters, not whole words, as the
+    lesson voice's check compares: "drop and list" for "drop and lift" is one letter off, not a
+    missing word, and a sung "B and C" comes back as "BNC". In order, so a take that sings the song
+    again after the end (YuE2 sometimes does) loses nothing."""
+    want = re.sub(r"[^a-z0-9]", "", " ".join(words).lower())
+    got = re.sub(r"[^a-z0-9]", "", text.lower())
+    blocks = difflib.SequenceMatcher(None, want, got, autojunk=False).get_matching_blocks()
+    return round(sum(b.size for b in blocks) / max(1, len(want)), 3)
+
+
 def check_words(aligned: Path, words, song_start, phrase_s=None):
     real = [w for w in words if w["score_s"] >= song_start - 1e-6]
     lw = lyric_words_by_phrase(aligned, real, phrase_s) if phrase_s else lyric_words(aligned, real)
@@ -545,11 +571,19 @@ def verdict(r) -> dict:
     long_mel = [x for x in r["melodyStretches"] if span_s(x) >= PASS["stretchS"]]
     early_words = [x for x in w["stretches"] if stretch_times(x)[0] < r["songStartS"] + 15]
     early = any(span_s(x) >= PASS["stretchS"] for x in early_words)
+    # what Whisper heard (heard_share, Oct 7, 2026): scattered words the aligner can't place are its
+    # own misses when Whisper hears the words, so they pass a take; a lasting stretch is a real drift
+    # (The First Noel's syllable behind) wherever it is; and a take Whisper can't make out fails,
+    # however its words were placed
+    h = r.get("heard")
+    clear = h is not None and h["share"] >= PASS["heard"]
+    drift = any(span_s(x) >= PASS["stretchS"] for x in w["stretches"])
     checks = {
         "timing": bool(worst <= PASS["phraseOffsetMs"]),
         "pitch": (r["pitch"]["share"] or 0) >= PASS["pitch"],
         "firstWord": r["firstWordSung"],
-        "words": bool(w["shareOver300ms"] <= PASS["wordsOff"] and not early),
+        "words": bool((w["shareOver300ms"] <= PASS["wordsOff"] or (clear and not drift)) and not early),
+        "heard": h is None or h["share"] >= PASS["heardFail"],
         "melody": not long_mel,
         "tuning": bool(abs(r["tuningCents"]) <= PASS["tuningCents"]),
         "bleed": bool(r["bleed"]["db"] <= PASS["bleedDb"]),
@@ -566,6 +600,10 @@ def verdict(r) -> dict:
         reasons.append(f"words off the staff: {w['shareOver300ms']:.0%}" + (", in the first 15 s" if early else ""))
     elif w["stretches"]:
         flags.append("words off the staff at " + "; ".join(w["stretches"]))
+    if not checks["heard"]:
+        reasons.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")
+    elif h is not None and not clear:
+        flags.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")
     if not checks["melody"]:
         reasons.append("the sung melody doesn't match the notes at " + "; ".join(long_mel))
     elif r["melodyStretches"]:
@@ -599,10 +637,12 @@ def span_s(label: str) -> float:
 
 
 def score(r) -> float:
-    """For choosing between takes: notes on pitch, less words off the staff, less 0.1 for a missing
-    first word and 0.1 for words off the staff in the first 15 s (the most noticeable place)."""
+    """For choosing between takes: notes on pitch, less words off the staff and words Whisper didn't
+    hear, less 0.1 for a missing first word and 0.1 for words off the staff in the first 15 s (the
+    most noticeable place)."""
     early = r["words"]["firstStretchS"] is not None and r["words"]["firstStretchS"] < r["songStartS"] + 15
-    return round((r["pitch"]["share"] or 0) - r["words"]["shareOver300ms"] - (0 if r["firstWordSung"] else 0.1)
+    missed = 1 - r["heard"]["share"] if r.get("heard") else 0
+    return round((r["pitch"]["share"] or 0) - r["words"]["shareOver300ms"] - missed - (0 if r["firstWordSung"] else 0.1)
                  - (0.1 if early else 0) - (0.05 if not r["checks"]["timing"] else 0), 3)
 
 
