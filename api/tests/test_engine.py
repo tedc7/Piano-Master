@@ -157,6 +157,67 @@ def test_the_review_ladder(con, content):
     assert s["items"][0]["kind"] == "lesson" and s["items"][0]["reason"] == "Review" and s["items"][0]["skillId"] == "t.a"
 
 
+def test_a_review_played_again_the_same_day_is_one_review(con, content):
+    """8.3: replays of the day's Review item count once on the ladder, judged on the day's best
+    play; the best play still counts for the student's personal best."""
+    d = master(con, content) + timedelta(days=1)
+    it = review_item(con, content, d, "t.a")
+    assert it["preset"] == "100"                   # opens at full speed, where it can earn full credit
+    for stars in (4.5, 5, 4.5):
+        play(con, content, it["pieceId"], d, stars=stars, item=it, skill="t.a")
+    st = states(con, content)["t.a"]
+    assert st.review_step == 1 and st.next_review_date == (d + timedelta(days=3)).isoformat()
+    assert st.best_accuracy_stars == 5
+    # a weak warm-up, then a good play: the day's review is a good one
+    d += timedelta(days=3)
+    it = review_item(con, content, d, "t.a")
+    play(con, content, it["pieceId"], d, stars=2.5, item=it, skill="t.a")
+    assert states(con, content)["t.a"].review_step == 0
+    play(con, content, it["pieceId"], d, stars=4, item=it, skill="t.a")
+    st = states(con, content)["t.a"]
+    assert st.review_step == 2 and st.weak_reviews == 0 and st.next_review_date == (d + timedelta(days=7)).isoformat()
+    # two weak plays on one day are one weak review: no refresher yet, and mastery lowered once
+    d += timedelta(days=7)
+    it = review_item(con, content, d, "t.a")
+    m = states(con, content)["t.a"].mastery
+    play(con, content, it["pieceId"], d, stars=2.5, acc=m, item=it, skill="t.a")
+    play(con, content, it["pieceId"], d, stars=2, acc=m * 0.9, item=it, skill="t.a")
+    st = states(con, content)["t.a"]
+    assert st.status == "mastered" and st.weak_reviews == 1 and st.review_step == 0 and not st.refresher
+    assert st.mastery == pytest.approx(m * 0.9)
+    # the next day's weak review is the second in a row
+    d += timedelta(days=1)
+    it = review_item(con, content, d, "t.a")
+    play(con, content, it["pieceId"], d, stars=2, acc=0.5, item=it, skill="t.a")
+    st = states(con, content)["t.a"]
+    assert st.status == "passed" and st.refresher
+    # a good replay that day takes the skill back to Mastered: the day's best play counts
+    play(con, content, it["pieceId"], d, stars=4.5, item=it, skill="t.a")
+    st = states(con, content)["t.a"]
+    assert st.status == "mastered" and not st.refresher and st.review_step == 1
+
+
+def test_polish_goes_to_the_skill_practised_longest_ago(con, content):
+    st = states(con, content)
+    for sid, mastery, ago in (("t.a", 0.84, 9), ("t.b", 0.5, 4)):
+        st[sid].status, st[sid].concept_done, st[sid].mastery = "passed", True, mastery
+        st[sid].last_practiced = (D0 - timedelta(days=ago)).isoformat()
+    items, _ = engine.Planner(content, st, D0, 30).build()
+    assert [i["skillId"] for i in items if i["reason"] == "Polish"][:2] == ["t.a", "t.b"]
+
+
+def test_a_skill_with_no_song_the_child_may_play_says_a_song_is_needed(con, content):
+    learn(con, content, "t.a", D0)
+    play(con, content, "pa1", D0, stars=4)                       # t.b and t.c open
+    blocked = content.only(lambda pid: pid != "pb1")             # the parent blocked t.b's song
+    s = engine.get_session(con, blocked, "s1", D0 + timedelta(days=1))
+    needed = [i for i in s["items"] if i["kind"] == "needed"]
+    assert [i["skillId"] for i in needed] == ["t.b"] and needed[0]["done"] and needed[0]["reason"] == "New"
+    assert needed[0]["title"] == "Song needed: Parent must submit or allow more songs"
+    assert not any(i["pieceId"] == "pb1" for i in s["items"])
+    assert not any(i["kind"] == "needed" and i["skillId"] == "t.c" for i in s["items"])   # t.c has its song
+
+
 def test_a_strong_play_counts_as_an_implicit_review(con, content):
     d = master(con, content)
     play(con, content, "pa2", d, stars=5, context="free")                    # the same day: too soon

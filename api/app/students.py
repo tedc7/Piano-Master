@@ -1,5 +1,6 @@
 """Students, their settings and favorites (M4), and the lesson engine's view of each student:
-skill states, today's session, practice days and the progress report (M5). Arch §5, §8.
+skill states, today's session, practice days and the progress report (M5), and the rewards: the
+star collection and medals (M10, awards.py). Arch §3, §5, §8.
 
 Student functions need no login (§11.1): choosing a student is enough. Adding, editing,
 archiving and deleting students, and the settings a parent sets, need a parent session.
@@ -15,7 +16,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 from . import content as content_mod
-from . import db, diagnostics, engine, library
+from . import awards, db, diagnostics, engine, library
 from .parent import is_parent, require_parent
 
 router = APIRouter()
@@ -263,9 +264,11 @@ def student_state(student_id: str, device_id: str | None = Query(None, pattern=U
             session = engine.get_session(con, c, student_id, t, caps)
             states = engine.load_states(con, c, student_id)
             engine.refresh(c, states, caps)
+            awards.check(con, c, student_id, t, states)     # medals earned before M10, or since a map change
             return {"student": student_out(r), "contentVersion": c.version,
                     "skills": engine.skills_out(c, states, t, session), "session": session,
-                    "day": engine.day_out(con, student_id, t, session), "favorites": favorites(con, student_id)}
+                    "day": engine.day_out(con, student_id, t, session), "favorites": favorites(con, student_id),
+                    "rewards": awards.summary(con, student_id, t)}
     finally:
         con.close()
 
@@ -279,11 +282,13 @@ def lesson_done(student_id: str, skill_id: str, body: LessonDoneIn):
         with db.transaction(con):
             get_student(con, student_id)
             try:
-                return engine.lesson_done(con, c, student_id, skill_id, today(), body.itemId, body.seconds,
-                                          caps_for(con, body.deviceId),
-                                          (body.check.questions, body.check.points) if body.check else None)
+                out = engine.lesson_done(con, c, student_id, skill_id, today(), body.itemId, body.seconds,
+                                         caps_for(con, body.deviceId),
+                                         (body.check.questions, body.check.points) if body.check else None)
             except KeyError:
                 raise HTTPException(404, "no such skill")
+            out["awards"] = awards.check(con, c, student_id, today())    # a theory skill passes here
+            return out
     finally:
         con.close()
 
@@ -311,6 +316,35 @@ def get_drill(student_id: str, drill_id: str = Path(pattern=SLUG)):
         if not r:
             raise HTTPException(404, "no such drill")
         return json.loads(r["piece"])
+    finally:
+        con.close()
+
+
+@router.get("/api/students/{student_id}/awards")
+def get_awards(student_id: str):
+    """The trophy case (M10): the star collection, the milestone medals with the next step of
+    each, and every level and unit with its medals."""
+    c = need_content()
+    con = db.connect()
+    try:
+        get_student(con, student_id)
+        t = today()
+        with db.transaction(con):
+            awards.check(con, c, student_id, t)
+        return awards.report(con, c, student_id, t)
+    finally:
+        con.close()
+
+
+@router.post("/api/students/{student_id}/awards/seen")
+def awards_seen(student_id: str):
+    """The student has looked at their new medals (My Progress)."""
+    con = db.connect()
+    try:
+        with db.transaction(con):
+            get_student(con, student_id)
+            awards.mark_seen(con, student_id)
+        return {"unseen": 0}
     finally:
         con.close()
 
@@ -352,8 +386,7 @@ def progress(student_id: str):
             weeks.insert(0, {"from": lo.isoformat(), "plays": len(xs), "accuracyStars": sum(acc) / len(acc) if acc else None,
                              "timingStars": sum(tim) / len(tim) if tim else None})
         week_ago = t - timedelta(days=6)
-        stars_week = sum(a["accuracy_stars"] for a in attempts if a["completed"] and a["mode"] == "play"
-                         and local_day(datetime.fromisoformat(a["started_at"])) >= week_ago)
+        stars = awards.collection(con, student_id, t)
         tracks: dict[str, list[float]] = {}
         for s in c.order:
             m = states[s.id].best_mastery
@@ -370,7 +403,8 @@ def progress(student_id: str):
         counts = {k: sum(1 for st in states.values() if st.status == k) for k in ("locked", "current", "passed", "mastered")}
         return {
             "student": student_out(r), "skills": engine.skills_out(c, states, t), "counts": counts,
-            "days": days, "streak": engine.streak(con, student_id, t), "starsThisWeek": stars_week,
+            "days": days, "streak": engine.streak(con, student_id, t),
+            "stars": stars["total"], "starsThisWeek": stars["week"],
             "weeks": weeks, "tracks": by_track, "greatAt": great, "workingOn": working, "stuck": stuck_skills,
             "masteredThisWeek": mastered_week, "targetMinutes": r["target_minutes"],
             "guidedMinutes28": round(sum(d["guidedSec"] for d in days) / 60, 1),
@@ -396,4 +430,9 @@ def after_attempt(con, student_id: str, a, content: content_mod.Content | None) 
         preset=a.conditions.tempoPreset, skill_id=a.skillId, item_id=a.itemId,
         tricky_phrase=(a.tricky or {}).get("phrase"), factor=e.factor,
         note_errors=[{"kind": x.get("kind"), "bar": x.get("bar")} for x in a.noteErrors])
-    return engine.record_attempt(con, content, student_id, info, caps_for(con, a.deviceId))
+    # the attempt counts on whatever song was played; the items that replace a skill passed
+    # mid-session come only from the songs this child may play (§10.1)
+    fx = engine.record_attempt(con, content, student_id, info, caps_for(con, a.deviceId),
+                               plan=library.content_for(con, student_id, content))
+    fx.update(awards.after_attempt(con, content, student_id, a.id, a.pieceId, today()))
+    return fx

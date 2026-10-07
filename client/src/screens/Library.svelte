@@ -8,8 +8,10 @@
   // placed where its easiest version opens, with a button for each version; the card opens the
   // most advanced version that is ready. Parent mode opens every song for review. A search narrows
   // the list to songs with the text in their title or words, and a genre choice to one genre
-  // (v0.35); both stay with Back from a song, as the filter does. All songs clears them all.
+  // (v0.35); both stay with Back from a song, as the filter does. All songs clears them all. A song
+  // the student has played shows its best stars (M10: the star collection counts each song's best).
   import { onMount } from "svelte";
+  import Stars from "../components/Stars.svelte";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -36,6 +38,11 @@
   });
 
   const mine = $derived(new Set(app.favorites));
+  /** A song's best stars over its versions, or null when it hasn't been played to the end. */
+  function bestOf(vs: { p: PieceSummary }[]): number | null {
+    const got = vs.map((v) => app.rewards?.songStars[v.p.id]).filter((x): x is number => x !== undefined);
+    return got.length ? Math.max(...got) : null;
+  }
   const progress = $derived(app.progress);
   const allowedPieces = $derived(content ? content.pieces.filter((p) => allowed(p, rules)) : []);
   const rows = $derived.by(() => {
@@ -110,6 +117,9 @@
               <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(b.p.id, "library")}>
                 <span class="card-title">{r.title}{#if r.vs.some((v) => v.p.new)} <span class="new">New</span>{/if}</span>
                 <span class="card-meta">{b.p.version ? `${b.p.version} · ` : ""}{handsLabel(b.p.hands)} · {b.p.timeSig}{b.p.hasMedia ? " · with singing" : ""}</span>
+                {#if bestOf(r.vs) !== null}
+                  <span class="best"><Stars compact size={16} label="Best" value={bestOf(r.vs)} /></span>
+                {/if}
                 {#if !r.ready && r.easiest.beyond.length}
                   <span class="soon">Coming later{app.parentMode ? ` · beyond the map: ${r.easiest.beyond.join(", ")}` : ""}</span>
                 {:else if !r.ready}
@@ -149,6 +159,8 @@
   .song { position: relative; }
   .song .card { width: 100%; min-height: 96px; padding-right: 64px; }
   .card:disabled { opacity: 1; }
+  .best { display: flex; }
+  .best :global(.label) { font-size: 13px; }
   .soon { font-size: 14px; font-weight: 650; color: #8a5a00; }
   .new { font-size: 13px; font-weight: 700; color: #fff; background: #2f7d4f; border-radius: 999px; padding: 1px 8px; vertical-align: middle; }
   .versions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
