@@ -5,12 +5,15 @@
 The API runs in-process with a temporary database, and serves client/dist at / like Caddy does.
 
 Web MIDI is replaced by a scripted keyboard here, in the test only (arch §11.4: "real screens
-with scripted playing"); the app itself only ever reads a real piano through Web MIDI.
+with scripted playing"); the app itself only ever reads a real piano through Web MIDI. The
+microphone input (v0.38) is checked with Chromium's fake microphone playing a recording of piano
+tones made here.
 Screenshots go to tests-output/.
 """
 from __future__ import annotations
 
 import json
+import math
 import os
 import socket
 import sys
@@ -19,6 +22,7 @@ import threading
 import time
 import urllib.request
 import uuid
+import wave
 from pathlib import Path
 
 import uvicorn
@@ -184,6 +188,27 @@ def serve():
     while not server.started:
         time.sleep(0.05)
     return server, f"http://127.0.0.1:{port}/"
+
+
+MIC_KEYS = [60, 64, 67, 72, 62]
+
+
+def mic_recording(path: Path) -> None:
+    """Piano-like tones (C4 E4 G4 C5 D4, then a rest) at 48 kHz, for Chromium's fake microphone,
+    which plays it over and over."""
+    sr, out = 48000, []
+    for pitch in MIC_KEYS:
+        f = 440 * 2 ** ((pitch - 69) / 12)
+        for i in range(int(0.6 * sr)):
+            t = i / sr
+            env = min(1, t / 0.005) * math.exp(-t / 1.0) * (1 if t < 0.45 else max(0, 1 - (t - 0.45) / 0.05))
+            out.append(0.25 * env * sum(math.sin(2 * math.pi * f * h * t) / h for h in range(1, 9) if f * h < sr / 2))
+    out += [0.0] * sr
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sr)
+        w.writeframes(b"".join(int(max(-1, min(1, x)) * 32767).to_bytes(2, "little", signed=True) for x in out))
 
 
 def main():
@@ -1199,6 +1224,69 @@ def main():
               f"song needed: a skill with no song the child may play shows a note in the session ({note!r})")
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
+        browser.close()
+
+        # 9. the microphone as the piano input (v0.38): the parent picks it in Device settings, and
+        # the piano check hears the keys of a recording played into Chromium's fake microphone
+        wav = Path(tempfile.mkdtemp()) / "keys.wav"
+        mic_recording(wav)
+        browser = p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream",
+                                          "--use-fake-device-for-media-stream", f"--use-file-for-fake-audio-capture={wav}"])
+        ctx = browser.new_context(**ipad)
+        page = ctx.new_page()
+        mic_errors = []
+        page.on("pageerror", lambda e: mic_errors.append(str(e)))
+        page.goto(url)
+        page.wait_for_selector(".student")
+        page.locator(".student.parent").click()
+        page.wait_for_selector(".pad")
+        for d in "2468":
+            page.locator(".pad").get_by_role("button", name=d, exact=True).click()
+        page.get_by_role("button", name="OK").click()
+        page.wait_for_selector(".tile")
+        page.locator(".tile").filter(has=page.locator(".tile-name", has_text="Device settings")).click()
+        page.wait_for_selector("text=Listen to the piano with")
+        modes = page.locator("[role=radiogroup] label").all_inner_texts()
+        check([m.strip() for m in modes] == ["MIDI Input", "Microphone Input (external noise sensitive)"],
+              f"microphone: Device settings offers MIDI Input and Microphone Input ({modes})")
+        page.get_by_role("radio", name="Microphone Input (external noise sensitive)").check()
+        page.mouse.click(5, 400)    # a tap starts the audio, as on the iPad
+        page.wait_for_selector(".status >> text=Microphone", timeout=10000)
+        check(page.get_by_text("Microphone sensitivity").count() == 1 and page.get_by_text("Voice processing").count() == 1,
+              "microphone: chosen, it shows its own settings and the status strip says so")
+        page.wait_for_timeout(1500)
+        meter = page.locator(".meter-row").inner_text()
+        page.screenshot(path=str(OUT / "config-device-microphone.png"))
+        check("room -" in meter and "now -" in meter, f"microphone: the level meter reads the microphone ({meter!r})")
+        page.get_by_role("button", name="‹ Config").click()
+        page.locator(".tile").filter(has=page.locator(".tile-name", has_text="Piano check")).click()
+        page.wait_for_function("() => /([3-9]|[1-9][0-9]) of 88 keys heard/.test(document.body.innerText)", timeout=15000)
+        heard = page.evaluate("[...document.querySelectorAll('.kb-heard')].length")
+        text = page.locator("main").inner_text()
+        page.screenshot(path=str(OUT / "config-piano-check-microphone.png"))
+        names = {60: "C4", 62: "D4", 64: "E4", 67: "G4", 72: "C5"}
+        logged = {n for n in names.values() if f"on  {n}" in text}
+        check(len(logged) >= 3 and "keys heard" in text,
+              f"microphone: the piano check hears the recording's keys ({sorted(logged)}, {heard} marked)")
+        page.get_by_role("button", name="Record and send").click()
+        page.wait_for_selector("text=Sent (recording", timeout=90000)
+        with urllib.request.urlopen(url + "api/logs?limit=1000") as r:
+            parts = [l["context"] for l in json.loads(r.read())["logs"] if l["message"] == "mic recording"]
+        import base64
+        audio = sum(len(base64.b64decode(c["pcm16"])) for c in parts)
+        first = next((c for c in parts if c["part"] == 0), {})
+        check(parts and len(parts) == parts[0]["parts"] and abs(audio / 2 / parts[0]["rate"] - 60) < 1.5
+              and any(k["type"] == "on" for k in first.get("keys", [])) and "echoCancellation" in first.get("settings", {}),
+              f"microphone: a recording for tuning reaches the server whole, with the keys heard ({len(parts)} parts, {audio / 2 / max(1, first.get('rate', 1)):.1f} s)")
+        open_piece(page, "mary-had-a-little-lamb")
+        check(not page.locator(".modes button").nth(0).is_disabled(), "microphone: Play is open with the microphone as the piano")
+        page.goto(url + "#/config/device")
+        page.wait_for_selector("text=Listen to the piano with")
+        page.get_by_role("radio", name="MIDI Input").check()
+        page.wait_for_timeout(300)
+        check(page.get_by_text("Microphone sensitivity").count() == 0 and page.locator(".status >> text=Microphone").count() == 0,
+              "microphone: back to MIDI Input, the microphone is let go")
+        check(not mic_errors, "microphone: no page errors" + (": " + "; ".join(mic_errors[:5]) if mic_errors else ""))
         browser.close()
     server.should_exit = True
     (OUT / "report.json").write_text(json.dumps(report, indent=1))

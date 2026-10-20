@@ -4,7 +4,9 @@
   // the same clock the Play screen scores with (the heard audio time of the MIDI event), so the
   // average of tap minus click is exactly the offset the evaluator subtracts from every note (§7).
   // The spread (standard deviation) says whether the setup is steady: under about 20 ms passes.
-  // Needs the piano: there is no on-screen tapping, as it would not measure the MIDI input.
+  // Needs the piano: there is no on-screen tapping, as it would not measure the MIDI input. With
+  // the microphone as the input (v0.38) it measures the microphone, and the offset is kept apart
+  // from the MIDI piano's.
   import { onMount } from "svelte";
   import { app } from "../../lib/app.svelte.js";
   import type { MidiNote, MidiPedal } from "../../lib/midi";
@@ -23,7 +25,7 @@
   let raf = 0;
 
   onMount(() => {
-    const off = app.midi.onEvent(onEvent);
+    const off = app.input.onEvent(onEvent);
     (window as unknown as { __calib: unknown }).__calib = {
       get clicks() { return clicks; }, get state() { return phase; }, get result() { return result; },
       heardNow: () => app.audio.outputTimeAt(performance.now()),    // for the browser check's scripted taps
@@ -75,7 +77,7 @@
 
   function apply(): void {
     if (!result?.ok) return;
-    app.setDevice({ latencyOffsetMs: result.offsetMs, latencySpreadMs: result.spreadMs, latencyCheckedAt: new Date().toISOString() });
+    app.setLatency(result.offsetMs, { spreadMs: result.spreadMs, checkedAt: new Date().toISOString() });
     applied = true;
   }
 
@@ -88,13 +90,15 @@
     <p>Sit at the piano as a child would. The app counts in <b>4 clicks</b>, then plays <b>24</b>: tap any one key
       with each of the 24, as evenly as you can. The average gap between the clicks and your taps becomes this device's
       latency offset, which the app takes off every note before it scores timing.</p>
-    <p class="muted small">Now: {app.device.latencyOffsetMs} ms{app.device.latencyCheckedAt
-      ? `, calibrated ${new Date(app.device.latencyCheckedAt).toLocaleDateString()} (spread ${app.device.latencySpreadMs} ms)`
+    <p class="muted small">{app.micMode ? "Microphone" : "MIDI piano"} now: {app.latency.offsetMs} ms{app.latency.checkedAt
+      ? `, calibrated ${new Date(app.latency.checkedAt).toLocaleDateString()} (spread ${app.latency.spreadMs} ms)`
       : " (the default, not calibrated yet)"}.</p>
   </section>
 
-  {#if app.midiStatus !== "connected"}
-    <p class="notice">No piano connected. Plug the piano in with the USB cable; calibration measures its keys, so it needs the piano.</p>
+  {#if app.inputStatus !== "connected"}
+    <p class="notice">{app.micMode
+      ? "The microphone isn't on (Config › Device settings). Calibration measures the keys as the microphone hears them, so it needs it."
+      : "No piano connected. Plug the piano in with the USB cable; calibration measures its keys, so it needs the piano."}</p>
   {:else}
     <div class="stage panel">
       <div class="dots">

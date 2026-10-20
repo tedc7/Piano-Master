@@ -10,6 +10,8 @@ export interface MidiNote {
   velocity: number;
   timeMs: number;      // performance.now() time of the key press
   delayMs: number;     // delivery delay: handling time minus the event's own time stamp
+  sure?: boolean;      // the microphone input only (lib/mic.ts): false when a key-down is too
+                       // unclear to count as a wrong note; it can still match the note expected
 }
 
 export interface MidiPedal { type: "pedal"; value: number; timeMs: number }

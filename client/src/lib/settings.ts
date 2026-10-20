@@ -1,6 +1,6 @@
 // Settings by owner (arch §5, v0.18):
 //  - Device (DeviceProfile; Config > Device settings, parent only): the offsets, the piano input
-//    and the keyboard size. Kept in this browser, which is where they are measured, and copied to
+//    (MIDI or, for now, the microphone, v0.38) and the keyboard size. Kept in this browser, which is where they are measured, and copied to
 //    the piano server's DeviceProfile when the parent changes them.
 //  - Each student (Student.settings on the piano server; Config > Students): auto-rewind, rewind
 //    bars, backing volume and the app playing the other hand, set by the parent, and the Play screen's choices, remembered as
@@ -9,6 +9,8 @@
 //    and the lesson screen's reading aloud, for every lesson (v0.34).
 //  - The parent playing: the same student-style settings, kept in this browser.
 // Storage can be missing or cleared on iPadOS, so defaults always work.
+import type { InputMode } from "./input";
+import type { Sensitivity } from "./mic";
 import type { Preset } from "./types";
 
 export interface DeviceSettings {
@@ -16,7 +18,15 @@ export interface DeviceSettings {
   latencyOffsetMs: number;   // subtracted from played-note times before matching (tap-along calibration)
   latencySpreadMs: number | null;    // the calibration's spread; under about 20 ms passes (§2.6)
   latencyCheckedAt: string | null;   // when it was last calibrated
+  inputMode: InputMode;      // listen to the MIDI piano, or for now the microphone (v0.38)
   pianoName: string | null;  // the MIDI input to use; null = the first real (non-virtual) input
+  micSensitivity: Sensitivity;       // 1 quiet room needed ... 3 hears soft playing (and more noise)
+  micVoiceProcessing: boolean;       // the device's own voice processing (echo cancellation) on the microphone
+  micQuietMusic: boolean;            // in Play, no vocals or backing while the child plays: a fallback, if the
+                                     //   microphone takes the app's music for keys in this room
+  micLatencyOffsetMs: number;        // the latency offset and calibration for the microphone, kept
+  micLatencySpreadMs: number | null; //   apart from the MIDI piano's, which differ
+  micLatencyCheckedAt: string | null;
   keyboardSize: 61 | 88 | null;   // parent-set (arch §5)
   hasPedal: boolean | null;          // from the piano check, or set by the parent (§2.4); null = not checked
   velocitySensitive: boolean | null;
@@ -48,7 +58,16 @@ export const DEVICE_DEFAULTS: DeviceSettings = {
   latencyOffsetMs: 80,
   latencySpreadMs: null,
   latencyCheckedAt: null,
+  inputMode: "midi",
   pianoName: null,
+  micSensitivity: 2,
+  micVoiceProcessing: true,
+  micQuietMusic: false,              // the vocals and backing play, as with MIDI
+  // the microphone hears a key later than MIDI reports it: the detector needs about 40 ms of the
+  // note, on top of the device's own input delay. Calibration measures it.
+  micLatencyOffsetMs: 140,
+  micLatencySpreadMs: null,
+  micLatencyCheckedAt: null,
   keyboardSize: null,
   hasPedal: null,
   velocitySensitive: null,

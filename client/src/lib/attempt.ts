@@ -104,7 +104,7 @@ export class Attempt {
     this.rawEvents.push({ ...ev, pass: this.pass });
   }
 
-  noteOn(pitch: number, beat: number, velocity: number, spb: number, timeMs: number): Verdict {
+  noteOn(pitch: number, beat: number, velocity: number, spb: number, timeMs: number, unsure = false): Verdict {
     const w = this.matcher.windows.matchMs / 1000 / spb;
     if (beat < this.range.start - w || beat >= this.range.end + w) return { kind: "ignored", reason: "outside" };
     // carrying on past the end of a section (or the piece) is not a wrong note, unless it is a
@@ -118,7 +118,7 @@ export class Attempt {
       return { kind: "ignored", reason: "otherHand" };
     }
     this.policy.played(beat);
-    return this.matcher.noteOn(pitch, beat, velocity, spb, timeMs);
+    return this.matcher.noteOn(pitch, beat, velocity, spb, timeMs, unsure);
   }
 
   noteOff(pitch: number, timeMs: number): void {

@@ -15,7 +15,7 @@ describe("Matcher", () => {
   it("matches the nearest expected note of the same pitch and grades on-time vs late", () => {
     const { m } = matcherFor();
     const a = m.noteOn(60, 0.1, 80, SPB, 1000);            // 50 ms late
-    expect(a).toEqual({ kind: "hit", noteId: 0, deltaMs: expect.closeTo(50, 6), onTime: true });
+    expect(a).toEqual({ kind: "hit", noteId: 0, deltaMs: expect.closeTo(50, 6), onTime: true, beat: 0.1 });
     const b = m.noteOn(62, 1.4, 80, SPB, 1700);            // 200 ms late: matched, off time
     expect(b.kind).toBe("hit");
     expect(b.kind === "hit" && b.onTime).toBe(false);
@@ -26,6 +26,13 @@ describe("Matcher", () => {
     expect(m.noteOn(60, 1.0, 80, SPB, 1000).kind).toBe("wrong");   // 500 ms after C: beyond 450 ms
     expect(m.noteOn(61, 0, 80, SPB, 1000).kind).toBe("wrong");
     expect(m.summary().wrong).toBe(2);
+  });
+
+  it("lets an unsure microphone note match the note expected, but never count as wrong", () => {
+    const { m } = matcherFor();
+    expect(m.noteOn(60, 0.1, 80, SPB, 1000, true).kind).toBe("hit");
+    expect(m.noteOn(61, 1.0, 80, SPB, 1500, true)).toEqual({ kind: "ignored", reason: "unsure" });
+    expect(m.summary().wrong).toBe(0);
   });
 
   it("caps the window at half the gap to the next note of the same pitch", () => {

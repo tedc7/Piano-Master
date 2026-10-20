@@ -171,6 +171,17 @@ class ApiClient {
     }
   }
 
+  /** Send one log entry now, not in a batch (a large one: a microphone recording for tuning). */
+  async logNow(message: string, context: unknown): Promise<boolean> {
+    try {
+      const r = await send("/logs", "POST", { deviceId: this.deviceId, studentId: this.studentId,
+                                             entries: [{ time: new Date().toISOString(), level: "info", message, context }] });
+      return r.ok;
+    } catch {
+      return false;
+    }
+  }
+
   /** Client events and errors for the parent's "Recent problems" list (§11.3); sent in batches. */
   log(level: LogEntry["level"], message: string, context?: unknown): void {
     this.logs.push({ time: new Date().toISOString(), level, message, context });

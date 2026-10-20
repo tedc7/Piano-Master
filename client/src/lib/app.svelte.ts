@@ -1,4 +1,5 @@
-// App-wide state shared by the screens: this device's settings, the audio engine, the MIDI input,
+// App-wide state shared by the screens: this device's settings, the audio engine, the piano input
+// (MIDI, or for now the microphone),
 // who is playing (a student, or the parent after the PIN), and the student's state from the lesson
 // engine on the piano server (skills, today's session, today's practice time, favorites, and the
 // rewards: the star collection and medals, M10).
@@ -9,6 +10,8 @@
 import { api, ApiError } from "./api";
 import { AudioEngine } from "./audio";
 import { groupHeadline, type Award, type AwardKind, type Rewards, type Tier } from "./awards";
+import { PianoInput, type InputMode } from "./input";
+import { MicInput } from "./mic";
 import { MidiInput, type MidiStatus } from "./midi";
 import type { ItemResult, Progress, Session, SessionItem, SkillProgress, StudentState } from "./progress";
 import { go } from "./route";
@@ -50,7 +53,7 @@ class AppState {
   device = $state<DeviceSettings>(loadDevice());
   /** The current player's settings: the student's, from the server, or the parent's own. */
   prefs = $state<StudentSettings>(loadParentSettings());
-  midiStatus = $state<MidiStatus>("starting");
+  inputStatus = $state<MidiStatus>("starting");
   pianoName = $state<string | null>(null);
   midiNames = $state<string[]>([]);
   screenGap = $state(0);
@@ -79,15 +82,22 @@ class AppState {
   readonly isIPad = /iPad|iPhone|Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1;
   readonly audio = new AudioEngine();
   readonly midi: MidiInput;
+  readonly mic: MicInput;
+  /** Where the screens hear the piano: the MIDI input or the microphone, as the parent chose. */
+  readonly input: PianoInput;
 
   constructor() {
     this.midi = new MidiInput(() => this.device.pianoName);
-    this.midi.onChange(() => {
-      if (this.midi.status !== this.midiStatus || this.midi.inputName !== this.pianoName) {
-        api.log("info", `MIDI ${this.midi.status}`, { input: this.midi.inputName, inputs: this.midi.names });
+    this.mic = new MicInput(this.audio, () => this.device.micSensitivity, () => this.device.micVoiceProcessing,
+                            () => this.device.keyboardSize);
+    this.input = new PianoInput(this.midi, this.mic, () => this.device.inputMode);
+    this.input.onChange(() => {
+      if (this.input.status !== this.inputStatus || this.input.inputName !== this.pianoName) {
+        api.log("info", `${this.device.inputMode === "mic" ? "Microphone" : "MIDI"} ${this.input.status}`,
+                { input: this.input.inputName, inputs: this.midi.names });
       }
-      this.midiStatus = this.midi.status;
-      this.pianoName = this.midi.inputName;
+      this.inputStatus = this.input.status;
+      this.pianoName = this.input.inputName;
       this.midiNames = [...this.midi.names];
     });
     const measure = () => {
@@ -114,9 +124,20 @@ class AppState {
     this.applyMix();
   }
 
-  /** This device's settings and the player's, as the Play screen and the player read them. */
+  /** This device's settings and the player's, as the Play screen and the player read them. The
+   *  latency offset is the chosen input's. */
   get settings(): Settings {
-    return { ...this.device, ...this.prefs };
+    const mic = this.device.inputMode === "mic";
+    return { ...this.device, ...this.prefs, latencyOffsetMs: mic ? this.device.micLatencyOffsetMs : this.device.latencyOffsetMs };
+  }
+
+  get micMode(): boolean {
+    return this.device.inputMode === "mic";
+  }
+
+  /** In Play mode with the microphone, the vocals and backing stay quiet while the child plays. */
+  get quietMusic(): boolean {
+    return this.micMode && this.device.micQuietMusic;
   }
 
   // ------------------------------------------------------------------ players
@@ -441,6 +462,38 @@ class AppState {
     this.midi.select();
   }
 
+  /** Listen to the MIDI piano or the microphone. */
+  chooseInput(mode: InputMode): void {
+    this.setDevice({ inputMode: mode });
+    void this.input.apply();
+  }
+
+  setMicVoiceProcessing(on: boolean): void {
+    this.setDevice({ micVoiceProcessing: on });
+    void this.mic.restart();
+  }
+
+  setMicSensitivity(s: 1 | 2 | 3): void {
+    this.setDevice({ micSensitivity: s });
+    this.mic.select();
+  }
+
+  /** The chosen input's latency offset (the tap-along calibration, or the parent's nudges). */
+  get latency(): { offsetMs: number; spreadMs: number | null; checkedAt: string | null } {
+    const d = this.device;
+    return this.micMode
+      ? { offsetMs: d.micLatencyOffsetMs, spreadMs: d.micLatencySpreadMs, checkedAt: d.micLatencyCheckedAt }
+      : { offsetMs: d.latencyOffsetMs, spreadMs: d.latencySpreadMs, checkedAt: d.latencyCheckedAt };
+  }
+
+  setLatency(offsetMs: number, calibrated?: { spreadMs: number; checkedAt: string }): void {
+    if (this.micMode) {
+      this.setDevice({ micLatencyOffsetMs: offsetMs, ...(calibrated && { micLatencySpreadMs: calibrated.spreadMs, micLatencyCheckedAt: calibrated.checkedAt }) });
+    } else {
+      this.setDevice({ latencyOffsetMs: offsetMs, ...(calibrated && { latencySpreadMs: calibrated.spreadMs, latencyCheckedAt: calibrated.checkedAt }) });
+    }
+  }
+
   applyMix(): void {
     this.audio.mix.backingVolume = this.prefs.backingVolume;
     this.audio.applyMix();
@@ -453,7 +506,16 @@ class AppState {
 
 export const app = new AppState();
 
-export function pianoLabel(status: MidiStatus, name: string | null): string {
+export function pianoLabel(status: MidiStatus, name: string | null, mic = false): string {
+  if (mic) {
+    switch (status) {
+      case "connected": return "🎤 Microphone";
+      case "starting": return "Starting the microphone…";
+      case "unsupported": return "No microphone in this browser";
+      case "denied": return "Microphone not allowed";
+      default: return "No microphone found";
+    }
+  }
   switch (status) {
     case "connected": return name ?? "Piano";
     case "starting": return "Looking for the piano…";

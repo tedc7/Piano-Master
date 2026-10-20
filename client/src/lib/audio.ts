@@ -15,6 +15,7 @@ interface Voice extends Playing { end: number }
 const SAMPLE_LOW = 21, SAMPLE_HIGH = 108, SAMPLE_STEP = 3;
 const SAMPLE_NAMES: Record<number, string> = { 0: "C", 3: "Ds", 6: "Fs", 9: "A" };
 const PIANO_RELEASE_S = 0.25;      // the damper: how fast a note dies away when it ends
+const SELF_TAIL_S = 0.3;           // the room's echo of the app's own notes, for the microphone
 export const sampleFor = (pitch: number) =>
   Math.max(SAMPLE_LOW, Math.min(SAMPLE_HIGH, SAMPLE_LOW + SAMPLE_STEP * Math.round((pitch - SAMPLE_LOW) / SAMPLE_STEP)));
 const sampleUrl = (m: number) => `audio/piano/${SAMPLE_NAMES[m % 12]}${Math.floor(m / 12) - 1}.mp3`;
@@ -34,6 +35,8 @@ export class AudioEngine {
   private voices: Voice[] = [];
   /** The last notes the app's piano played, for the browser check. */
   readonly pianoLog: { pitch: number; sampled: boolean }[] = [];
+  /** The keys the app is sounding itself (its piano and tones), for the microphone input. */
+  private selfNotes: { pitch: number; start: number; end: number }[] = [];
   private stems = new Map<string, StemBuffers>();
   private loading = new Map<string, Promise<StemBuffers>>();
   private playing: Playing[] = [];
@@ -203,6 +206,7 @@ export class AudioEngine {
     g.connect(this.clickBus);
     o.start(when);
     o.stop(when + 0.05);
+    this.sounding(accent ? 93 : 88, when, when + 0.05);   // a pure tone at A6 or E6, as the microphone hears it
   }
 
   /** A soft piano-like tone for Listen mode (not a piano sample; the choir voice and chord pad
@@ -218,6 +222,7 @@ export class AudioEngine {
     g.gain.setValueAtTime(0.25 * level, Math.max(when + 0.25, end - 0.08));
     g.gain.exponentialRampToValueAtTime(0.0001, end);
     g.connect(this.toneBus);
+    this.sounding(pitch, when, end);
     for (const [type, mult, amp] of [["triangle", 1, 1], ["sine", 2, 0.3]] as const) {
       const o = ctx.createOscillator();
       const og = ctx.createGain();
@@ -314,6 +319,31 @@ export class AudioEngine {
     const now = ctx.currentTime;
     this.voices = this.voices.filter((v) => v.end > now);
     this.voices.push({ src, gain, end });
+    this.sounding(pitch, when, end);
+  }
+
+  /** Feed everything the app plays to `node` too (the microphone compares it with what it hears). */
+  tapOutput(node: AudioNode): void {
+    this.create();
+    this.master.connect(node);
+  }
+
+  untapOutput(node: AudioNode): void {
+    try { this.master?.disconnect(node); } catch { /* not connected */ }
+  }
+
+  private sounding(pitch: number, start: number, end: number): void {
+    const now = this.ctx!.currentTime;
+    this.selfNotes = this.selfNotes.filter((n) => n.end + SELF_TAIL_S > now);
+    this.selfNotes.push({ pitch, start, end });
+  }
+
+  /** What the app is sounding itself at this context time, which the microphone should not take
+   *  for the child's playing: its piano's and tones' keys, with the room's echo. */
+  selfSound(now: number): { pitches: Set<number> } {
+    const pitches = new Set<number>();
+    for (const n of this.selfNotes) if (n.start - 0.05 <= now && now <= n.end + SELF_TAIL_S) pitches.add(n.pitch);
+    return { pitches };
   }
 
   /** Damp every piano note still sounding or scheduled (a pause, rewind or stop). */
@@ -331,5 +361,6 @@ export class AudioEngine {
       } catch { /* already stopped */ }
     }
     this.voices = [];
+    for (const n of this.selfNotes) n.end = Math.min(n.end, now + fade);
   }
 }

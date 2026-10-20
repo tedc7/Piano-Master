@@ -614,7 +614,7 @@ export class Player {
       this.hooks.keyDown(ev.pitch);
       return;
     }
-    const v = this.attempt.noteOn(ev.pitch, beat!, ev.velocity, this.spb, ev.timeMs);
+    const v = this.attempt.noteOn(ev.pitch, beat!, ev.velocity, this.spb, ev.timeMs, ev.sure === false);
     if (v.kind === "ignored") this.hooks.keyDown(ev.pitch);
     else this.hooks.verdict(v, ev.pitch);
   }

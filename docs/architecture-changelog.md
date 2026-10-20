@@ -6,6 +6,8 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.39 | Oct 20, 2026 | From the first practice sessions: wrong keys, and right keys off time, drawn on the staff where they were played (wrong keys instead of their note name); held-note feedback to potential features; the chosen Play or Listen button flashes a dashed outline while it waits to start, solid blue only while playing; the result card's buttons always in sight |
+| v0.38 | Oct 19, 2026 | The microphone input, an interim stand-in for the MIDI piano (whose purchase was delayed): chosen in Device settings, the same note events, screens and music as MIDI; noise, echo and voice rejection; unsure keys never count as wrong; its own latency offset |
 | v0.37 | Oct 7, 2026 | From a review of spaced repetition against the code: a Review item replayed the same day is one review, on the day's best play; Review items open at 100%; polish goes to the skill practised longest ago; replacement items come only from the child's allowed songs; a Song needed note when a skill has no song the child may play |
 | v0.36 | Oct 6, 2026 | M10 rewards: the star collection (each song's best), medals in four tiers for milestones and for each unit and level, the trophy case on My Progress, moments on the result card; the mascot and stickers dropped |
 | v0.35 | Oct 6, 2026 | M0, M7 and M8 closed; the FluidSynth backing replaces the chord pad and choir voice; the Holiday genre renamed Christmas; the song library's search and genre choice; the Chords button, one choice per student |
@@ -32,6 +34,25 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.39 (Oct 20, 2026)
+
+From the children's first practice sessions on the Play screen (3):
+- **Wrong keys on the staff (3 "Play screen elements"):** a wrong key is drawn as a red note head on the staff where it was played, with ledger lines and a sharp, flat or natural, over the notes and the played-notes fade, and moves off with the music; the note name under the staff is gone. It shows how far above or below the written note the key was. On a grand staff it goes on the staff of the nearest written note in pitch; all the marks clear whenever the music starts, resumes, rewinds, loops or stops.
+- **Early and late keys on the staff (3 "Play screen elements"):** a right key outside the on-time window (the one that already turns the note amber) is drawn the same way in amber where it was played, with a dashed line back to the written note: early or late, and by how much.
+- **Held-note feedback (14):** showing how long a note was held is a potential feature, for MIDI input only (the microphone hears the sound fade, not the key come up, so it stays hidden in microphone mode), and from Level 3, where held length starts to count.
+- **Play and Listen buttons (3):** the chosen mode is solid blue only while it plays. Waiting for a tap (paused, stopped or at the end) it is pale blue with a flashing dashed outline; before, it was solid blue whether or not it was playing.
+- **Result card (3, screen 6):** wider; its buttons always show at the bottom (only the middle scrolls on a short screen, where they used to be cut off); under the two star rows, how it went and the note counts share a line, and the practice-mode chip and its hint share the next; the rewinds count shows only in the chip.
+
+## v0.38 (Oct 19, 2026)
+
+The MIDI keyboard's purchase was delayed, so the children had not used the app. An interim microphone input lets them practise on the keyboard on hand (the JK-825, which has no MIDI):
+- **Microphone input (4, 2.1, 2.7):** Config > Device settings has a choice of **MIDI Input** or **Microphone Input (external noise sensitive)**. The microphone input gives the same note events as MIDI, so every screen (Play, lessons, the piano check, the latency calibration) works unchanged, and for the student nothing looks or sounds different. The non-goal "microphone listening" now reads: not as the way the app hears the piano.
+- **Hearing keys (4):** a note detector for up to 4 keys at once, with room-noise subtraction, checks that a sound is a struck, steady piano tone (not a bang, a fan or a voice), and the app's own output as a reference: it learns how loud the app's music comes back and counts only keys well above it, so the vocals and backing keep playing.
+- **Sure and unsure keys (7.2):** an unsure microphone key can match the note expected but never counts as a wrong note; lesson cards ignore unsure keys they are not waiting for.
+- **Settings (5, 2.6.1):** the DeviceProfile gains the input, the microphone's sensitivity, a "No vocals or backing in Play mode" fallback (off), and the microphone's own latency offset and calibration, kept apart from MIDI's.
+- **Tuning (4):** a "Voice processing" setting (the device's echo cancellation, which on iPadOS may be tuned for speech), and **Record and send** in the piano check: 60 seconds of what the microphone hears, sent to the server's log for `tools/mic_recording.py` and `tools/mic_replay.ts`. The first iPad test heard only E3 to A♯5; a recording of all 88 keys showed the iPad hears the keyboard strongest around 550 Hz, low keys only by their overtones and the top keys as quiet pure tones. Retuned on it: low keys by their overtones (stretched like piano strings), one partial enough from E5 up, the whole keyboard's range; C2 to B5 all heard, 6 wrong key-downs in 81 keys (from 33 heard and 48 wrong).
+- **Checked:** MIDIWeb Browser offers microphone access. **Not yet:** the full keyboard range on the iPad.
 
 ## v0.37 (Oct 7, 2026)
 

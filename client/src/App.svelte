@@ -38,7 +38,7 @@
     };
     onHash();
     window.addEventListener("hashchange", onHash);
-    void app.midi.start();
+    void app.input.start();
     void api.start();
     // client errors go to the server's client log (arch §11.3)
     window.addEventListener("error", (e) => api.log("error", e.message, { source: e.filename, line: e.lineno }));
