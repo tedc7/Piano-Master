@@ -55,7 +55,6 @@
   let showMsg = $state("");
   let another = $state(false);          // the "Try it another way" choices (arch §8.1)
   let countIn = $state<{ total: number; current: number } | null>(null);
-  let wrongText = $state("");
   let recent = $state<{ text: string; key: number }[]>([]);
   let stats = $state({ fps: 0, worst: 0, over25: 0, renderMs: 0, problems: 0, measures: 0 });
   // dragging the staff (v0.33): where the touch began, and the bar at the play line while it moves
@@ -64,6 +63,7 @@
 
   let stageEl: HTMLDivElement;
   let stripEl: HTMLDivElement;
+  let marksEl: HTMLDivElement;          // keys as played (wrong, or off time), over the fade, moving with the staff
   let kbHost: HTMLDivElement;
   let progressEl: HTMLDivElement;
 
@@ -73,7 +73,6 @@
   let kb: KeyboardView | null = null;
   let litLyric: SVGTextElement | null = null;
   let glowing: Element[] = [];
-  let wrongTimer = 0;
   let lastStageH = 0;
   let recentKey = 0;
   let loopTimer = 0;
@@ -90,7 +89,7 @@
   const hasChords = $derived(!!piece?.notation.chordSymbols?.length);
   const chordsOn = $derived(app.prefs.chords ?? false);
   const running = $derived(uiState === "countin" || uiState === "playing" || uiState === "gliding");
-  const needPiano = $derived(mode !== "listen" && app.midiStatus !== "connected");
+  const needPiano = $derived(mode !== "listen" && app.inputStatus !== "connected");
   const sectionLabel = $derived(section && tl && piece ? barsOf(section[0], section[1]) : "All bars");
   const flats = $derived((piece?.notation.header.keySig ?? 0) < 0);
   // In a Guided session, "Next" moves on after the result (arch §8.5); a reward pick counts too.
@@ -113,7 +112,7 @@
     let lastFrame = 0;
     const frames: number[] = [];
     let alive = true;
-    const offMidi = app.midi.onEvent(onMidi);
+    const offMidi = app.input.onEvent(onMidi);
     const offApi = api.onChange(() => { pending = api.pending; });
     const offStored = api.onStored((aid, fx) => {
       if (aid !== savedId || !fx || !fx.stars || app.parentMode) return;
@@ -167,14 +166,18 @@
         state: (s) => {
           uiState = s;
           if (s === "playing") clearGlow();
+          // a stop, a start, a resume after a pause, a rewind or a loop: the marks of keys as played
+          // go (a pause and the end keep them, to look at)
+          if (s === "idle" || s === "gliding" || s === "countin") clearMarks();
         },
         verdict: (v, pitch) => {
           if (v.kind === "hit") {
             layout?.noteEls[v.noteId]?.classList.add(v.onTime ? "pm-ok" : "pm-late");
             kb?.press(pitch, v.onTime ? "ok" : "late");
+            if (!v.onTime) showOffTime(v.noteId, v.beat);
           } else if (v.kind === "wrong") {
             kb?.press(pitch, "wrong");
-            showWrong(pitch);
+            showWrong(pitch, v.beat);
           }
         },
         keyDown: (pitch) => kb?.press(pitch, "neutral"),
@@ -182,6 +185,7 @@
         missed: () => {},
         pass: (from, phrase) => {
           for (const n of tl.notes) if (n.beat >= from - 1e-6) layout?.noteEls[n.id]?.classList.remove("pm-ok", "pm-late");
+          clearMarks();
           clearGlow();
           if (phrase !== null && layout) {
             // the first note of the phrase glows softly through the glide and count-in
@@ -286,7 +290,8 @@
     if (!piece) return;
     lastStageH = stageEl.clientHeight;
     layout = renderStaff(stripEl, tl, piece.notation, stageEl.clientHeight, show);
-    stripEl.style.top = `${Math.max(0, (stageEl.clientHeight - layout.height) / 2)}px`;
+    marksEl.replaceChildren(layout.svg.cloneNode(false));
+    stripEl.style.top = marksEl.style.top = `${Math.max(0, (stageEl.clientHeight - layout.height) / 2)}px`;
     stats.renderMs = Math.round(layout.renderMs);
     stats.problems = layout.problems.length;
     stats.measures = tl.entries.length;
@@ -372,7 +377,7 @@
     if (!layout) return;
     const lineX = stageEl.clientWidth * LINE_FRAC;
     const x = xAt(layout.map, beat) * layout.scale;
-    stripEl.style.transform = `translate3d(${(lineX - x).toFixed(2)}px,0,0)`;
+    stripEl.style.transform = marksEl.style.transform = `translate3d(${(lineX - x).toFixed(2)}px,0,0)`;
   }
 
   // ------------------------------------------------------------------ dragging the staff
@@ -450,10 +455,38 @@
     glowing = [];
   }
 
-  function showWrong(pitch: number): void {
-    wrongText = noteName(pitch, flats);
-    clearTimeout(wrongTimer);
-    wrongTimer = window.setTimeout(() => { wrongText = ""; }, 700);
+  /** A wrong key: its note head on the staff where it was played, moving off with the music, so
+   *  the student sees how far it was from the right note. On a grand staff it goes on the staff of
+   *  the note it was most likely meant for (the nearest in pitch about then). */
+  function showWrong(pitch: number, beat: number): void {
+    if (!layout || !piece) return;
+    let staff = 0;
+    if (piece.notation.header.staves.length > 1) {
+      staff = pitch >= 60 ? 0 : 1;
+      let best = Infinity;
+      for (const n of tl.notes) {
+        if (Math.abs(n.beat - beat) > 1 || (hands !== "both" && n.hand !== hands)) continue;
+        const far = Math.abs(n.pitch - pitch) + Math.abs(n.beat - beat);
+        if (far < best) { best = far; staff = n.staff; }
+      }
+    }
+    addMark(layout.playedNote(pitch, beat, staff));
+  }
+
+  /** A right key outside the on-time window (the same one that turns its note amber): its note head
+   *  where it was played, with a line back to the written note, so the student sees early or late
+   *  and by how much. */
+  function showOffTime(noteId: number, beat: number): void {
+    const n = tl.notes[noteId];
+    if (layout) addMark(layout.playedNote(n.pitch, beat, n.staff, { written: n.beat }));
+  }
+
+  function addMark(el: SVGGElement | null): void {
+    if (el) marksEl.firstElementChild?.appendChild(el);
+  }
+
+  function clearMarks(): void {
+    marksEl?.firstElementChild?.replaceChildren();
   }
 
   function onMidi(ev: MidiNote | MidiPedal): void {
@@ -468,8 +501,10 @@
 
   function applyMix(): void {
     if (!piece) return;
-    app.audio.mix.vocals = vocalsOn;
-    app.audio.mix.backing = true;
+    // listening by microphone, the vocals and backing would be heard as keys: quiet in Play mode
+    const quiet = app.quietMusic && mode === "play";
+    app.audio.mix.vocals = vocalsOn && !quiet;
+    app.audio.mix.backing = !quiet;
     app.audio.mix.backingVolume = app.prefs.backingVolume;
     app.audio.applyMix();
   }
@@ -486,6 +521,7 @@
     mode = m;
     result = null;
     loopNote = null;
+    applyMix();
     player.setMode(m);
     void player.play();
   }
@@ -512,6 +548,7 @@
     const phrase = result.tricky.phrase;
     result = null;
     mode = "play";
+    applyMix();
     section = [phrase, phrase];
     preset = await player.practiceTricky(phrase);
   }
@@ -565,11 +602,14 @@
     go("session");
   }
   function delayStats(): string {
-    const d = [...app.midi.delays].sort((a, b) => a - b);
+    const d = [...app.input.delays].sort((a, b) => a - b);
     if (!d.length) return "no notes yet";
     return `median ${d[d.length >> 1].toFixed(1)} ms, worst ${d[d.length - 1].toFixed(1)} ms (${d.length} notes)`;
   }
 
+  /** The chosen mode, paused or stopped, waiting for a tap to start: its button flashes (solid
+   *  blue only while it plays). */
+  const ready = (m: Mode) => m === mode && !running && uiState !== "loading" && !needPiano;
   const modeLabel = (m: Mode) => m !== mode ? (m === "play" ? "Play" : "Listen") :
     uiState === "loading" ? `Loading ${Math.round(loadingFrac * 100)}%` :
     running ? "Pause" : m === "play" ? "Play" : "Listen";
@@ -586,6 +626,7 @@
        onpointerdown={dragStart} onpointermove={dragMove} onpointerup={dragEnd} onpointercancel={dragEnd}>
     <div class="strip" class:no-chords={!chordsOn} bind:this={stripEl}></div>
     <div class="fade" style:width="{LINE_FRAC * 100}%"></div>
+    <div class="strip marks" bind:this={marksEl}></div>
     <div class="playline" style:left="{LINE_FRAC * 100}%"></div>
     {#if countIn}
       <div class="countin" style:left="{LINE_FRAC * 100}%">
@@ -594,16 +635,13 @@
         {/each}
       </div>
     {/if}
-    {#if wrongText}
-      <div class="wrong" style:left="{LINE_FRAC * 100}%">{wrongText}</div>
-    {/if}
     {#if dragBar}
       <div class="dragbar" style:left="{LINE_FRAC * 100}%">{dragBar}</div>
     {/if}
     {#if error}
       <div class="message error">{error}</div>
     {:else if needPiano && !running && !result}
-      <div class="message">Connect the piano to play along, or choose Listen.</div>
+      <div class="message">{app.micMode ? "The microphone isn't on: see Config › Device settings, or choose Listen." : "Connect the piano to play along, or choose Listen."}</div>
     {/if}
     {#if loopNote}
       <div class="loopnote">{loopNote.text} · {"★".repeat(Math.floor(loopNote.stars))}{loopNote.stars % 1 ? "½" : ""}</div>
@@ -612,30 +650,34 @@
       {@const e = result.evaluation}
       {@const tapping = piece?.drill?.anyKey !== undefined}
       {@const main = tapping ? e.timingStars ?? 0 : e.accuracyStars}
+      <!-- the buttons stay in sight; on a short stage only the card's middle scrolls -->
       <div class="result">
-        <h2>{main >= 4.5 ? "Beautiful!" : main >= 3 ? "Well played!" : "Nice work, keep going!"}</h2>
-        <!-- rhythm tapping scores timing only (§7.8) -->
-        {#if !tapping}<Stars label="Notes" value={e.accuracyStars} />{/if}
-        <Stars label="Timing" value={e.timingStars} />
-        <p class="meaning">{STAR_MEANING[main]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</p>
-        {#if earned}
-          {@const rw = earned.rewards}
-          {@const medals = rw.awards.filter((a) => a.kind !== "unit" && a.kind !== "level").slice(0, 3)}
-          <div class="earned">
-            {#each earned.mastered as n (n)}<div class="win"><span class="mark mastered">🏆</span><b>Skill mastered</b><span>{n}</span></div>{/each}
-            {#each earned.passed as n (n)}<div class="win"><span class="mark passed">✓</span><b>Skill passed</b><span>{n}</span></div>{/each}
-            {#each medals as a (a.id)}<div class="win"><Medal kind={a.kind} tier={a.tier} size={34} /><b>New medal</b><span>{a.title}: {a.detail}</span></div>{/each}
-            {#if rw.best}<div class="win"><span class="mark best">★</span><b>New best</b><span>{starText(rw.best.previous)} → {starText(rw.best.now)} stars</span></div>{/if}
-            {#if rw.stars.gained > 0}<p class="added">+{starText(rw.stars.gained)} ★ to your collection · {starText(rw.stars.total)} ★ in all</p>{/if}
-          </div>
-        {/if}
-        <p class="detail">{e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.conditions.rewinds ? ` · ${result.conditions.rewinds} rewind${result.conditions.rewinds > 1 ? "s" : ""}` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</p>
-        {#if e.aids.length}
-          <p class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</p>
-          <p class="hint">{e.hint}</p>
-        {/if}
+        <div class="result-body">
+          <h2>{main >= 4.5 ? "Beautiful!" : main >= 3 ? "Well played!" : "Nice work, keep going!"}</h2>
+          <!-- rhythm tapping scores timing only (§7.8) -->
+          {#if !tapping}<Stars label="Notes" value={e.accuracyStars} />{/if}
+          <Stars label="Timing" value={e.timingStars} />
+          <!-- under the stars, two lines: how it went and the counts (rewinds are in the practice mode), then
+               any practice mode and its hint -->
+          <p><b class="meaning">{STAR_MEANING[main]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</b>
+            <span class="detail"> · {e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</span></p>
+          {#if e.aids.length}
+            <p class="aids"><span class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</span>{#if e.hint}<span class="hint">{e.hint}</span>{/if}</p>
+          {/if}
+          {#if earned}
+            {@const rw = earned.rewards}
+            {@const medals = rw.awards.filter((a) => a.kind !== "unit" && a.kind !== "level").slice(0, 3)}
+            <div class="earned">
+              {#each earned.mastered as n (n)}<div class="win"><span class="mark mastered">🏆</span><b>Skill mastered</b><span>{n}</span></div>{/each}
+              {#each earned.passed as n (n)}<div class="win"><span class="mark passed">✓</span><b>Skill passed</b><span>{n}</span></div>{/each}
+              {#each medals as a (a.id)}<div class="win"><Medal kind={a.kind} tier={a.tier} size={34} /><b>New medal</b><span>{a.title}: {a.detail}</span></div>{/each}
+              {#if rw.best}<div class="win"><span class="mark best">★</span><b>New best</b><span>{starText(rw.best.previous)} → {starText(rw.best.now)} stars</span></div>{/if}
+              {#if rw.stars.gained > 0}<p class="added">+{starText(rw.stars.gained)} ★ to your collection · {starText(rw.stars.total)} ★ in all</p>{/if}
+            </div>
+          {/if}
+          {#if another}<p class="meaning">This one's tricky! Want to try it another way?</p>{/if}
+        </div>
         {#if another}
-          <p class="meaning">This one's tricky! Want to try it another way?</p>
           <div class="choices">
             <button class="quiet" onclick={listenFirst}>👂 Listen first</button>
             {#if result.tricky}<button class="quiet" onclick={practiceTricky}>🎯 Practice the tricky part</button>{/if}
@@ -667,9 +709,9 @@
   <div class="controls">
     <button class="quiet" onclick={back}>‹ Back</button>
     <div class="seg modes">
-      <button class:sel={mode === "play"} onclick={() => tapMode("play")}
+      <button class:sel={mode === "play" && !ready("play")} class:ready={ready("play")} onclick={() => tapMode("play")}
               disabled={!piece || (uiState === "loading" && mode !== "play") || (needPiano && !(mode === "play" && running))}>{modeLabel("play")}</button>
-      <button class:sel={mode === "listen"} onclick={() => tapMode("listen")}
+      <button class:sel={mode === "listen" && !ready("listen")} class:ready={ready("listen")} onclick={() => tapMode("listen")}
               disabled={!piece || (uiState === "loading" && mode !== "listen")}>{modeLabel("listen")}</button>
     </div>
     <button class="quiet" onclick={rewind} disabled={!piece || uiState === "idle" || uiState === "loading"} aria-label="Rewind">
@@ -763,19 +805,30 @@
   .countin { position: absolute; top: 14px; transform: translateX(-50%); display: flex; gap: 10px; pointer-events: none; }
   .dot { width: 18px; height: 18px; border-radius: 50%; background: #dfe6f5; }
   .dot.on { background: var(--accent); }
-  .wrong { position: absolute; bottom: 14px; transform: translateX(-50%); color: var(--wrong); font-weight: 800; font-size: 30px; pointer-events: none; }
+  .marks { pointer-events: none; }
+  /* keys as played: wrong (red, with its accidental) or right but off time (amber, with a line back to the written note) */
+  .strip :global(.pm-wrong) { fill: var(--wrong); stroke: var(--wrong); }
+  .strip :global(.pm-timing) { fill: var(--late); stroke: var(--late); }
+  .strip :global(:is(.pm-wrong, .pm-timing)) { animation: mark-in 0.15s ease-out; pointer-events: none; }
+  .strip :global(:is(.pm-wrong, .pm-timing) line) { stroke-width: 1.6; }
+  .strip :global(:is(.pm-wrong, .pm-timing) ellipse) { stroke: #fff; stroke-width: 1.2; }
+  .strip :global(.pm-wrong text) { stroke: none; font-weight: 700; }
+  .strip :global(.pm-timing .pm-offset) { stroke-width: 2.5; stroke-dasharray: 3 2; }
+  @keyframes mark-in { from { opacity: 0; } }
   .message { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: #fff4d6; border: 1px solid #efd58a; border-radius: 12px; padding: 10px 16px; }
   .message.error { background: #fde8e6; border-color: #f0b3ac; }
   .result {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    max-height: calc(100% - 16px); overflow: auto; touch-action: pan-y;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px 26px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); text-align: center; min-width: 420px;
+    display: flex; flex-direction: column; max-height: calc(100% - 16px); width: min(720px, calc(100% - 24px));
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px 24px 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); text-align: center;
   }
-  .result h2 { margin: 0 0 8px; }
-  .result p { margin: 6px 0; }
+  .result-body { flex: 1 1 auto; min-height: 0; overflow: auto; touch-action: pan-y; }
+  .result h2 { margin: 0 0 6px; }
+  .result p { margin: 5px 0; }
   .meaning { font-weight: 650; }
-  .earned { display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin: 10px 0 4px; animation: earn 0.4s ease-out; }
+  .earned { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 6px; margin: 8px 0 4px; animation: earn 0.4s ease-out; }
+  .earned .added { grid-column: 1 / -1; }
   .win { display: flex; align-items: center; gap: 10px; background: #f6f4ee; border-radius: 12px; padding: 5px 12px; text-align: left; }
   .win b { white-space: nowrap; }
   .win span:last-child { color: var(--muted); font-weight: 650; }
@@ -786,8 +839,9 @@
   .added { color: #8a6200; font-weight: 700; }
   @keyframes earn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .detail { color: var(--muted); }
-  .chip { display: inline-block; background: #eef3fd; border: 1px solid #cfdcf6; border-radius: 999px; padding: 3px 12px; font-size: 15px; }
+  .chip { display: inline-block; background: #eef3fd; border: 1px solid #cfdcf6; border-radius: 999px; padding: 2px 12px; font-size: 15px; }
   .hint { color: var(--muted); font-size: 15px; }
+  .aids { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 10px; }
   .loopnote {
     position: absolute; right: 18px; bottom: 16px; background: var(--panel); border: 1px solid var(--line);
     border-radius: 12px; padding: 8px 14px; font-weight: 650; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); pointer-events: none;
@@ -795,14 +849,19 @@
   .loopbars { background: #ecebe6; display: flex; align-items: center; padding: 0 8px; font-weight: 650; min-width: 104px; justify-content: center; }
   .hands { min-width: 118px; }
   .muted { color: var(--muted); }
-  .row { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
-  .choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+  .row { flex: 0 0 auto; display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+  .choices { flex: 0 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
   .small { font-size: 14px; margin: 4px 0 0; }
   .controls {
     flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
     padding: 10px 10px; background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
   }
   .modes button { min-width: 100px; }
+  .modes button.ready {
+    background: #dde8fb; color: var(--accent); outline: 3px dashed var(--accent); outline-offset: -6px;
+    animation: ready 1.2s ease-in-out infinite;
+  }
+  @keyframes ready { 50% { outline-color: transparent; } }
   .controls > button { padding: 8px 13px; }
   .restart { width: 34px; height: 34px; display: block; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
   .seg { display: flex; border-radius: 12px; overflow: hidden; }

@@ -39,7 +39,7 @@
     { name: "This device", tiles: [
       { id: "midi", icon: "🎹", name: "Piano check", what: "Keys, chords, velocity, pedal and MIDI delay (the device qualification test)." },
       { id: "calibrate", icon: "⏱", name: "Latency calibration", what: "The app plays 24 clicks and you tap one key in time; it sets the latency offset from the average and checks the spread is under about 20 ms." },
-      { id: "device", icon: "⚙️", name: "Device settings", what: "Display and latency offsets, keyboard size and the piano input." },
+      { id: "device", icon: "⚙️", name: "Device settings", what: "How the app hears the piano (MIDI, or the microphone until the MIDI piano arrives), display and latency offsets, and keyboard size." },
       { id: "journey-test", icon: "🗺️", name: "Journey render test", what: "A 200-bubble Journey map that scrolls by itself and reports its frame times (M5)." },
       { id: "status", icon: "🩺", name: "App status", what: "Versions, the piano server, plays waiting to send, and recent problems." },
     ] },

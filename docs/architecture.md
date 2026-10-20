@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.37** · Oct 7, 2026
+**Version 0.39** · Oct 20, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -23,14 +23,14 @@ A private, family-only piano tutor for kids that teaches like Simply Piano but p
 
 **Non-goals (v1)**
 
-- Microphone or acoustic-piano listening.
+- Microphone or acoustic-piano listening as the way the app hears the piano. The microphone is an interim stand-in until the MIDI piano arrives (4, "Microphone input", v0.38).
 - Selling or publishing the app; multi-family accounts; access from outside the home network.
 - Flashy game graphics or animation-heavy rewards.
 - Bluetooth MIDI and headphone use (see potential features, section 14).
 
 **Guiding principles**
 
-- The app decides right and wrong from MIDI data; AI only advises.
+- The app decides right and wrong from the piano's notes (MIDI, or for now the microphone); AI only advises.
 - **Home-network only:** the app needs the family's piano server on the local network, but never the internet. Practice, progress and parental controls work with the internet down. Only the Claude skills (run by the parent) and the optional AI advisor need internet.
 - **One source of truth:** app files, the database, the song library and media all live on the piano server. Any qualified device works for any child. The server is purely a server: Claude skills and GPU work run on the dev box.
 - Nothing reaches the student that the parent has not approved. Content the app generates by fixed rules from approved material (drills, sight-reading pieces, fingering) counts as approved, because the parent approved the rules and the material it is built from.
@@ -44,7 +44,7 @@ The app is a web client plus a small server on the home network. The server hold
 
 ### 2.1 Client device requirements
 
-- **Browser features:** Web MIDI, Web Audio and Screen Wake Lock, on a page served over HTTPS; storage that survives an app relaunch.
+- **Browser features:** Web MIDI, Web Audio and Screen Wake Lock, on a page served over HTTPS; storage that survives an app relaunch. With the interim microphone input (4), microphone access (`getUserMedia`, with echo cancellation) instead of Web MIDI; whether MIDIWeb Browser offers it is not yet checked (Safari on the iPad does).
 - **Network:** Wi-Fi access to the piano server on the home network. No internet needed.
 - **Screen:** about 10 inches or larger, landscape. Touch is recommended; mouse or trackpad also works.
 - **Performance:** smooth 60 fps staff scrolling; any recent mid-range tablet or laptop.
@@ -135,7 +135,7 @@ Three measurements, all recorded in the DeviceProfile:
 | --- | --- | --- |
 | Browser delivery delay (automatic) | The MIDI test page logs, for every note, the gap between the MIDI event's timestamp and the moment the app handles it, plus the audio latency the browser reports. It shows median and worst case. | Delay inside the device, and any jitter |
 | Key-to-screen and key-to-sound (slow-motion video) | Film the keyboard and screen together with a phone in slow motion (240 fps, about 4 ms per frame). Press a key 10 times; count frames from key-down to the on-screen key lighting, and to the app's click sound in the audio track. | True end-to-end delay a child experiences |
-| Tap-along offset (calibration) | The app counts in 4 clicks, then plays 24 more; the parent taps one key in time with them. The app records the average and spread (standard deviation) of tap time minus click time, leaving out stray taps more than 80 ms from the median; 16 of the 24 are needed. Built in Config > Latency calibration (v0.21). | The combined audio-output and MIDI-input offset. This offset is subtracted from every note time before timing is scored (section 7), and can be re-run from settings. |
+| Tap-along offset (calibration) | The app counts in 4 clicks, then plays 24 more; the parent taps one key in time with them. The app records the average and spread (standard deviation) of tap time minus click time, leaving out stray taps more than 80 ms from the median; 16 of the 24 are needed. Built in Config > Latency calibration (v0.21). | The combined audio-output and MIDI-input offset. This offset is subtracted from every note time before timing is scored (section 7), and can be re-run from settings. The microphone input keeps its own offset, measured the same way with the microphone chosen (v0.38). |
 
 ### 2.7 Current family deployment (September 2026)
 
@@ -144,7 +144,7 @@ Three measurements, all recorded in the DeviceProfile:
 | Student device | iPad A16 (USB-C) with MIDIWeb Browser (by 5of12) | HTTPS, storage, wake lock, audio, speech, video and rendering passed on Sep 24, 2026 (`feasibility/RESULTS.md`); MIDI and latency checks wait for a MIDI keyboard. Android tablet with Chrome is the planned fallback |
 | Child lockdown (iPad) | MIDIWeb Browser full-screen mode, set by hand, plus the in-app reminder (2.2) | Full screen is lost when the app relaunches; Guided Access if the reminder proves insufficient |
 | Development device | Chromebook (no touchscreen) |  |
-| Piano | To be bought: class-compliant USB MIDI keyboard with 88 velocity-sensitive keys and a sustain pedal (2.3; decided in v0.26) | The Jikada JK-825 on hand has no MIDI (its USB port only plays music files). USB-C cable to the iPad; no headphones |
+| Piano | To be bought: class-compliant USB MIDI keyboard with 88 velocity-sensitive keys and a sustain pedal (2.3; decided in v0.26) | The Jikada JK-825 on hand has no MIDI (its USB port only plays music files). USB-C cable to the iPad; no headphones. Until the MIDI keyboard arrives (its purchase was delayed), the children practise on the JK-825 with the microphone input (4, v0.38) |
 | Piano server | The family's existing Linux home server | Piano site at `https://<piano-server>/`, behind the same Caddy, with the same internal certificate authority; bound to the home-network address only, no port 80. Server Wi-Fi measured 0.93 MB/s to the iPad; a Wi-Fi upgrade is planned |
 | Dev box (Claude workstation) | Linux dev box, NVIDIA RTX 5070 Ti, 16 GB | Runs Claude Code, all three Claude skills, and the vocal and accompaniment engine YuE2 (confirmed by the M0-S spike; peaks at about 8 GB); talks to the server through the Skill API |
 | AI provider (optional) | Claude API, via the AI proxy on the piano server |  |
@@ -235,11 +235,11 @@ On the Journey map, a skill's concept lesson opens from its bubble: the bubble's
 - **Staff area** (top 55%): notes scroll right-to-left toward the play line. Upcoming notes clear; played notes fade.
 - **Play-now line:** vertical bar; the target note glows as it arrives.
 - **Lyrics line:** words shown under the staff, each syllable lighting up with its note (karaoke style). Songs with several verses show the current verse.
-- **Note feedback:** green for correct, amber for right note but off-time, red flash plus the note name for wrong keys. No harsh sounds. (A color-blind option is a potential feature, section 14.)
+- **Note feedback:** green for correct, amber for right note but off-time. A wrong key is drawn on the staff as a red note head where it was played (with its ledger lines and sharp, flat or natural), over the other notes and the played-notes fade, and it scrolls off with the music; so the student sees how far above or below the written note it was (v0.39; until then the key's note name showed under the staff). On a grand staff it goes on the staff of the note it was most likely meant for (the nearest in pitch about then); they all clear whenever the music starts, resumes, rewinds, loops or stops (a pause and the end keep them, to look at). The on-screen key still flashes red. A right key outside the on-time window (the one that turns the note amber, 7.1) is drawn the same way in amber where it was played, with a dashed line back to the written note, so the student sees whether it was early or late and by how much (v0.39). How long a note is held isn't shown (section 14). No harsh sounds. (A color-blind option is a potential feature, section 14.)
 - **On-screen keyboard** (bottom 30%): 2 to 4 octaves around the song's range. Target key highlighted; pressed keys light up live from MIDI. Hints fade out as levels rise.
 - **Hand and finger hints:** left/right hand colors and finger numbers (imported or generated, section 8.9). Finger numbers and letter names (under the heads) are switched on or off for each song by the parent, for every child, in Song and settings (v0.29). By default Prep A songs show finger numbers and later levels don't, and letter names show on the pre-staff songs (Prep A Units 1 to 3), on white keys only: the early units teach black keys by their groups. When the parent switches letter names on for a song, its black keys are named too (C♯, B♭), so the switch also works on a song played only on black keys; such a song starts with letter names off. Which helps children more is still being learned, so each song can be changed.
 - **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
-- **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song, as it was left: the same scroll position and the same pop-up open, v0.29; the tab bar still opens every screen fresh), the two mode buttons (each starts and pauses its mode), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, **chords on/off** (on songs with chord symbols, v0.35), metronome on/off (v0.18).
+- **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song, as it was left: the same scroll position and the same pop-up open, v0.29; the tab bar still opens every screen fresh), the two mode buttons (each starts and pauses its mode; the chosen mode is solid blue only while it plays, and while it waits for a tap to start, paused or stopped, it is pale blue with a flashing dashed outline, v0.39), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, **chords on/off** (on songs with chord symbols, v0.35), metronome on/off (v0.18).
 - **Song and settings (the gear, parent mode only):** Needs improvement (10.7), the song's finger numbers and letter names, and the device and parent settings. A tap outside closes it and does nothing else (v0.29).
 - **Modes:** Play (the default: play-along with smooth automatic rewind, below) and Listen (the app plays it, with accompaniment and vocals). Either runs over all bars or a chosen section, which then repeats (the section loop; v0.18). The screen opens paused in Play mode.
 - **Rewind button:** while playing, glides back a set number of bars (2 by default, from the start of the current bar; never before the section start) and plays on after the count-in; while paused, moves the resume point back; after the end, returns to the start. In Play mode it counts as a rewind for the practice-aid factor (7.5). Wait mode is a potential feature (section 14).
@@ -386,6 +386,8 @@ flowchart TD
 | Module | Responsibility | Key interfaces |
 | --- | --- | --- |
 | MIDI Input | Connect to the piano (chosen by name, ignoring virtual ports), emit note-on/off and pedal events with timestamps, handle reconnects, detect capabilities (pedal, velocity, range). Has a replay adapter that feeds recorded events for tests. | `onNote(pitch, velocity, time)`, `onPedal(value, time)`, `getCapabilities()` |
+| Microphone input (interim, v0.38) | Hear the keys of a piano without MIDI through the device's microphone and emit the same note-on/off events as MIDI Input, each key-down marked sure or unsure. Below. | the same events as MIDI Input |
+| Piano input (v0.38) | Pass on the notes of the input the parent chose (MIDI or microphone) to every screen; start the microphone when it is chosen and let it go otherwise | `onEvent`, `status` |
 | Performance Evaluator | Match played notes to expected notes in real time; decide when to rewind; run the scorers enabled for the level and device; apply the latency offset and practice-aid factor (section 7) | `start(arrangement, mode, conditions)`, emits `NoteResult`, returns `AttemptResult` |
 | Audio Engine | Demo playback on a sampled piano, the other hand in one-hand practice, stems, metronome, count-in; resumes audio when the page is shown again after a lock or app switch | `play(arrangement, tempo)`, `metronome(bpm)` |
 | API client | Load the student's session, songs and media; post attempts (with an outbox for Wi-Fi drops); post client logs | `getSession()`, `postAttempt()`, `log()` |
@@ -407,7 +409,28 @@ flowchart TD
 | Media store | Audio stems and concept videos as files |
 | AI proxy (optional) | Holds the AI API key; daily call limit; provider is swappable |
 
-**Timing note:** MIDI events carry high-resolution timestamps. The evaluator converts them to the song clock using one fixed mapping between the MIDI clock and the audio clock, taken when playback starts, then subtracts the device's measured latency offset (2.6.1). Scoring stays accurate even if the display stutters.
+### Microphone input (interim, v0.38)
+
+The MIDI keyboard's purchase was delayed, so the children could not use the app. Until it arrives, the parent can choose **Microphone Input (external noise sensitive)** instead of **MIDI Input** in Config > Device settings. For the student nothing changes: the same screens, the same vocals and backing, the same scoring. Only how the app hears the keys differs, and the microphone is less accurate and is confused by other sounds in the room. It is built so it can be removed when the MIDI piano is in use: everything it needs is in `client/src/lib/mic.ts`, `pitch.ts` and `input.ts`, and the screens only see note events.
+
+**From microphone to keys** (`lib/pitch.ts`, every 10 ms on the latest 85 ms of sound):
+
+1. **The browser's clean-up:** echo cancellation on (it takes most of the app's own sound out of the microphone), noise suppression and automatic gain off (tuned for speech, they fade a held note and move the levels). A 55 Hz to 5 kHz band-pass drops rumble and hiss.
+2. **Room noise:** each frequency keeps a running estimate of the steady background (fans, hum), which rises slowly and falls fast; twice that is taken off.
+3. **Keys:** each key of the keyboard (A0 to C8, or C2 to C7 on 61 keys) is scored by the energy at the partials the device can hear: from 150 Hz up, stretched sharp as piano strings make them, 8 harmonics for most keys and up to 16 overtones for a low key. The strongest clear key is taken, its partials removed, and the search repeats, up to 4 keys at once, so a key's own octaves and fifths are not reported. A key's own fundamental must sound, so C3 does not "explain" a C-E-G chord, except that a low key (under 250 Hz), whose fundamental a tablet barely hears, can be heard by its overtones instead: at least two odd ones, one of them its 5th, 7th, 11th or 13th, carrying at least 40% of its even ones' weight, with no strong peak among them that isn't one of its own (a chord is a few of a lower key's overtones, the octave above only its even ones).
+4. **Is it a piano?** The partials must stand well above the spectrum beside them (a bang, a clap or hiss fails); the pitch must be within 30 cents of the key and hold within 15 cents for 4 frames (a voice slides). From E5 up one clear partial is enough, as the top keys of a small keyboard are nearly pure tones, and from C6 up the threshold falls to a quarter, as they are quiet.
+5. **Struck:** a key goes down only when its own partials jumped within a few ms (timed from that, to 5 ms, and kept through a moment's wobble for 250 ms) and its level was low just before, which tells a new key from its ringing neighbour in legato. A key already down is struck again when its partials jump again; a key just let go comes down again only at half its last strength or more (a top key's after-ring swells back a little).
+6. **The app's own sound:** the detector is also given everything the app plays. It learns how loud that comes back through the microphone (at the delay where the two match best, and only while the child is not playing) and counts a key only when it is at least twice as loud as the app's own sound of it. So the vocals and backing play while the child does, as with MIDI. Keys the app's own piano is sounding are also set aside. Bluetooth speakers delay the app's sound too much for this.
+
+**Sure and unsure:** a key-down that is loud, clearly tonal and steady (within 10 cents) is *sure*. An unsure key can match the note the music expects, but never counts as a wrong note (7.2), and a lesson card ignores an unsure key it is not waiting for. So stray sounds can rarely cost a child a mistake; at worst they can rarely earn a note the child did not play.
+
+**Settings** (DeviceProfile, 5): the input, the microphone's sensitivity (low, for a noisy room; medium; high, for soft playing), "Voice processing" (the device's echo cancellation, on by default; on iPadOS it brings the device's whole voice processing, which may be tuned for speech, so it can be turned off), "No vocals or backing in Play mode" (off; a fallback if the app's music is heard as keys in this room), and the microphone's own latency offset, set by the tap-along calibration with the microphone chosen (it hears a key some 40 ms later than MIDI, plus the device's input delay; 140 ms until calibrated). The piano check and the calibration work with the microphone; the piano check does not save touch sensitivity measured by it.
+
+**Tuning to a real keyboard:** in microphone mode the piano check has **Record and send**: 60 seconds of what the microphone hears (as the browser gives it), the keys the app heard, and what the browser applied to the microphone, sent to the piano server's client log in 5-second parts. `tools/mic_recording.py` lists them and writes each as a WAV with its keys; `tools/mic_replay.ts` replays one through the detector and scores it against the keys played. The first test on the iPad with the family's keyboard (Oct 19, 2026) heard only E3 to A♯5, low keys an octave up. A recording of all 88 keys showed why: the iPad hears the keyboard strongest around 550 Hz, almost nothing under 200 Hz (C3's fundamental is gone; A0 is heard only by its 14th to 24th partials) and the top two octaves as quiet, nearly pure tones, where the detector wanted a fundamental and two harmonics. Retuned on that recording (step 3, 4 and 5 as above): C2 to B5 all heard, C6 to C8 15 of 18, the lowest octave still mostly missed (its overtones, 27 to 60 Hz apart, need a longer window than 85 ms to tell apart), and 6 wrong key-downs in 81 keys, all in that lowest octave; at first 33 of 81 with 48 wrong. `client/tests/pitch.test.ts` models the measured sound.
+
+**What it can't do:** the sustain pedal can't be heard; velocity is only a guess from loudness; very fast repeated notes (under about 90 ms apart) merge; talking or singing in the room can be taken for keys (in tests, at most 1 loud syllable in 6, and rarely as a sure key), so the parent's guidance asks for a quiet room. Tested with synthetic piano tones, chords, legato, noise, talking and the app's music coming back through the speakers (`client/tests/pitch.test.ts`), and in Chromium with a recorded microphone (`tools/check_app.py`); not yet on the iPad with the JK-825.
+
+**Timing note:** MIDI events carry high-resolution timestamps. The evaluator converts them to the song clock using one fixed mapping between the MIDI clock and the audio clock, taken when playback starts, then subtracts the device's measured latency offset (2.6.1). Scoring stays accurate even if the display stutters. Microphone keys are timed from the moment their harmonics jumped and use the microphone's own latency offset.
 
 ## 5. Data model
 
@@ -451,7 +474,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | --- | --- |
 | Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, the app playing the other hand in one-hand practice, vocals off for songs\[\], tempo preset per song, metronome on/off for every song (v0.29), chord symbols on/off for every song (v0.35)) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
-| DeviceProfile | deviceId, pianoName (the MIDI input to use), keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
+| DeviceProfile | deviceId, inputMode (`midi` or `mic`, v0.38), pianoName (the MIDI input to use), micSensitivity (1 to 3), micQuietMusic, micLatencyOffsetMs, micLatencySpreadMs, micLatencyCheckedAt, keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
 | Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), noteResults\[\] (each written note of the scored pass: its timing, or missed; v0.21), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
@@ -652,6 +675,7 @@ The match window is never more than half the gap to the next expected note of th
 - **Brushes:** a key pressed very softly (velocity under 15) or released within 40 ms.
 - **Re-strikes:** the same correct key pressed again within 150 ms.
 - **The other hand** when the item is for one hand only.
+- **Unsure microphone keys** (4, v0.38): a key the microphone input is not sure of counts when it matches an expected note, and is otherwise ignored.
 
 **Held notes:** before Level 3, how long a note is held is not scored. From Level 3, a note released before half of its written length earns 0.75 credit. The articulation scorer (7.7) refines this later.
 
@@ -1453,6 +1477,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Placement quiz and parent override | Start a child who already plays further along the map; parent marks skills as known |
 | Parent notifications | Email or push digest: stuck skills and patterns, content runway, new staged items |
 | Color-blind option | Shapes or icons alongside green/amber/red feedback |
+| Held-note feedback (v0.39) | **MIDI input only:** never shown with the microphone input, which hears a key's sound fade rather than the key coming up (a held note on a decaying piano tone reads as released early, and the sustain pedal hides the release); MIDI reports the exact moment each key comes up. Shown on the staff like the early/late marks: for example a thin bar from the note head to where the key was released, over a faint bar of the written length, amber when released before half of it. From Level 3, where held length starts to count (7.2), so the marks match the stars |
 | Skill id mapping | Carry progress across renamed, split or merged skills |
 | Content changes behind a student's progress | When the skill map changes (a new skill added among skills a child has already passed, new prerequisites, renumbered sequences) or re-analysis changes a song's required skills, decide how existing progress and unlocked songs are kept. Ideas: sparse sequence numbers (steps of 10 or 100); auto-pass or review-only for new skills behind a child's progress; songs already played stay unlocked; a dry run before a deploy that lists per-child effects. Until then, the parent deploys skill-map changes with care and checks the list of songs whose analysis changed (6.10) |
 | Remote access | Parent access from outside the home, for example over a VPN |
@@ -1490,6 +1515,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Microphone input (v0.38) | An interim microphone input, chosen by the parent in Device settings, giving the same note events as MIDI; the app's music keeps playing, its own sound learned and set aside; unsure keys never count as wrong | The MIDI keyboard's purchase was delayed and the children couldn't use the app; for the student it should look and sound the same as MIDI, only less accurate |
 | Rewards (v0.36) | The star collection counts each song's best; medals in bronze, silver, gold and platinum for milestones and for each unit and level; no mascot or stickers; moments on the result card, a card over the screen for a unit or level | Rewards playing well over repeating easy songs; accolades that still suit an older student |
 | Backing without stems (v0.35) | The FluidSynth backing from the media skill replaces the planned chord pad and choir voice; a song without stems has the app's own piano | It follows the written harmony and the beat at every preset; a pad needs chord symbols, which the curriculum songs don't have |
 | Christmas genre (v0.35) | The Holiday genre is named Christmas; the backing style keeps the name `holiday` | The songs in it are Christmas songs; migration 011 carries the songs and each child's rule over |

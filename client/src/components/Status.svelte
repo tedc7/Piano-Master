@@ -17,7 +17,7 @@
   {:else if app.student}
     <span class="player">{app.student.avatar} {app.student.name}</span>
   {/if}
-  <span class="muted"><span class="piano-dot" class:on={app.midiStatus === "connected"}></span>{pianoLabel(app.midiStatus, app.pianoName)}</span>
+  <span class="muted"><span class="piano-dot" class:on={app.inputStatus === "connected"}></span>{pianoLabel(app.inputStatus, app.pianoName, app.micMode)}</span>
 </header>
 
 <style>

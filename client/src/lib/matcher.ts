@@ -17,9 +17,9 @@ export const RESTRIKE_MS = 150;       // the same correct key again this soon: a
 export interface Expected { id: number; pitch: number; beat: number; phrase: number }
 
 export type Verdict =
-  | { kind: "hit"; noteId: number; deltaMs: number; onTime: boolean }
+  | { kind: "hit"; noteId: number; deltaMs: number; onTime: boolean; beat: number }
   | { kind: "wrong"; pitch: number; beat: number }
-  | { kind: "ignored"; reason: "brush" | "restrike" | "otherHand" | "outside" };
+  | { kind: "ignored"; reason: "brush" | "restrike" | "otherHand" | "outside" | "unsure" };
 
 interface Hit { deltaMs: number; beat: number }
 interface Wrong { pitch: number; beat: number; phrase: number; timeMs: number; retracted: boolean }
@@ -54,7 +54,9 @@ export class Matcher {
     return w;
   }
 
-  noteOn(pitch: number, beat: number, velocity: number, spb: number, timeMs: number): Verdict {
+  /** `unsure`: a microphone key-down too unclear to count as a wrong note (lib/pitch.ts); it can
+   *  still match the note expected. */
+  noteOn(pitch: number, beat: number, velocity: number, spb: number, timeMs: number, unsure = false): Verdict {
     if (velocity < BRUSH_VELOCITY) return { kind: "ignored", reason: "brush" };
     let best: Expected | null = null;
     let bestDelta = Infinity;
@@ -70,10 +72,11 @@ export class Matcher {
       const deltaMs = bestDelta * spb * 1000;
       this.hits.set(best.id, { deltaMs, beat });
       this.lastHitAt.set(pitch, timeMs);
-      return { kind: "hit", noteId: best.id, deltaMs, onTime: Math.abs(deltaMs) <= this.windows.onTimeMs };
+      return { kind: "hit", noteId: best.id, deltaMs, onTime: Math.abs(deltaMs) <= this.windows.onTimeMs, beat };
     }
     const last = this.lastHitAt.get(pitch);
     if (last !== undefined && timeMs - last <= RESTRIKE_MS) return { kind: "ignored", reason: "restrike" };
+    if (unsure) return { kind: "ignored", reason: "unsure" };
     this.wrongs.push({ pitch, beat, phrase: this.phraseAt(beat), timeMs, retracted: false });
     return { kind: "wrong", pitch, beat };
   }

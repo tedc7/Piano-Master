@@ -91,7 +91,7 @@
   const opened = performance.now();
 
   onMount(() => {
-    const off = app.midi.onEvent(onMidi);
+    const off = app.input.onEvent(onMidi);
     (window as unknown as { __lesson: unknown }).__lesson = { get card() { return card; }, get progress() { return progress; },
                                                              get step() { return step; }, get done() { return done[step]; },
                                                              get echo() { return { played: echoPlayed, result: echoResult }; },
@@ -258,10 +258,24 @@
     if (ev.type === "pedal" || !card) return;
     if (ev.type === "off") { held.delete(ev.pitch); kb?.release(ev.pitch); return; }
     held.add(ev.pitch);
+    if (ev.sure === false && !wants(ev.pitch)) { kb?.press(ev.pitch, "neutral"); return; }
     if (card.kind === "try") tryKey(ev.pitch);
     else if (card.kind === "check") answer(ev.pitch);
     else if (card.kind === "echo") echoKey(ev.pitch);
     else kb?.press(ev.pitch, "neutral");
+  }
+
+  /** A key the card is waiting for now. A microphone key too unclear to be a mistake (lib/pitch.ts)
+   *  counts only if it is one of these. */
+  function wants(pitch: number): boolean {
+    const c = card!;
+    if (c.kind === "try") return !!c.notes?.[progress]?.pitches.includes(pitch);
+    if (c.kind === "check") {
+      const q = c.questions?.[progress];
+      return !!q && typeof q.answer !== "string" && q.answer.pitches.includes(pitch);
+    }
+    if (c.kind === "echo") return echoWant().includes(pitch);
+    return true;
   }
 
   function tryKey(pitch: number): void {
@@ -456,7 +470,7 @@
                 <button class="quiet" onclick={echoAgain}>🔁 Try again</button>
               {/if}
             {/if}
-            {#if (card.kind === "try" || card.kind === "echo") && app.midiStatus !== "connected"}<span class="muted">Connect the piano to try it.</span>{/if}
+            {#if (card.kind === "try" || card.kind === "echo") && app.inputStatus !== "connected"}<span class="muted">{app.micMode ? "Turn the microphone on to try it." : "Connect the piano to try it."}</span>{/if}
           </div>
         </div>
         {#if card.notes || card.play || card.questions}<div class="keys" bind:this={kbHost}></div>{/if}

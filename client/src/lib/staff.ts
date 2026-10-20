@@ -18,6 +18,9 @@ export interface StaffLayout {
   problems: string[];
   graces: number;                               // grace notes drawn
   renderMs: number;
+  /** A key played wrong, or a right key off time, drawn where it was played (see renderStaff), in
+   *  the staff's own units: for the caller to add to this SVG or to a copy of it over the staff. */
+  playedNote(pitch: number, beat: number, staff: number, timing?: { written: number }): SVGGElement | null;
 }
 
 const DUR: [number, string, number][] = [[6, "w", 1], [4, "w", 0], [3, "h", 1], [2, "h", 0], [1.5, "q", 1], [1, "q", 0],
@@ -104,6 +107,7 @@ interface MeasureDraw {
   fmt: Formatter;
   clefs: Clef[];
   clefChange: boolean[];
+  fifths: number;                               // the key signature in force
   all: Voice[];
   width: number;
   first: boolean;
@@ -163,6 +167,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     graceAt.set(k, [...(graceAt.get(k) ?? []), g]);
   }
   let drawnClefs: Clef[] = [...staves];
+  let fifths = h.keySig;
   let graceCount = 0;
 
   // pass 1: notes, voices and widths
@@ -171,6 +176,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     const clefs = clefAt[e.measure] ?? [...staves];
     const clefChange = clefs.map((c, i) => k > 0 && c !== drawnClefs[i]);
     drawnClefs = clefs;
+    if (e.m.keySig !== undefined) fifths = e.m.keySig;
     const perStaff = staves.map((_, s) => {
       const clef = clefs[s];
       const voices = new Map<number, TimelineNote[]>();
@@ -302,7 +308,7 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
     const change = !first && (e.m.keySig !== undefined || e.m.timeSig !== undefined);
     const extra = (first ? (grand ? 95 : 85) + Math.abs(h.keySig) * 10 : (change ? 50 : 0)) + (clefChange.some(Boolean) ? 40 : 0);
     const width = Math.max(minW * 1.35 + 40, lyricW + 20, 100) + extra;
-    measures.push({ e, perStaff, fmt, all, width, first, change, clefs, clefChange });
+    measures.push({ e, perStaff, fmt, all, width, first, change, clefs, clefChange, fifths });
   });
 
   // pass 2: draw
@@ -315,12 +321,14 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
   const ctx: RenderContext = renderer.getContext();
   ctx.scale(scale, scale);
   let x = PAD;
+  let topLines: number[] = [];                  // each staff's top line (y)
   let lastVerse: number | null = null;
   const verses = new Set(tl.entries.map((e) => e.verse)).size;
   for (const m of measures) {
     const treble = new Stave(x, TOP, m.width);
     const bass = grand ? new Stave(x, TOP + GAP, m.width) : null;
     const st = bass ? [treble, bass] : [treble];
+    if (m.first) topLines = st.map((s) => s.getYForLine(0));
     st.forEach((s, i) => {
       if (m.first) s.addClef(m.clefs[i]).addKeySignature(key).addTimeSignature(ts);
       else if (m.clefChange[i]) s.addClef(m.clefs[i]);
@@ -467,10 +475,44 @@ export function renderStaff(host: HTMLElement, tl: Timeline, nota: Notation, box
       }
     }
   }
+  // a key as played (the Play screen): a note head at the beat it was played, on the staff's clef
+  // there, with its ledger lines, drawn over the notes, so the student sees how far off it was. A
+  // wrong key (class pm-wrong) gets the accidental the key signature needs (sharps, or flats in a
+  // flat key). A right key off time (`timing`, class pm-timing) has a line back to its written note,
+  // showing early or late and by how much.
+  const playedNote = (pitch: number, beat: number, staff: number, timing?: { written: number }): SVGGElement | null => {
+    const m = measures.find((q) => beat < q.e.start + q.e.duration - 1e-6) ?? measures[measures.length - 1];
+    const top = topLines[staff];
+    if (!m || top === undefined) return null;
+    const pc = ((pitch % 12) + 12) % 12;
+    const flat = m.fifths < 0;
+    const step = (flat ? [0, 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6] : [0, 0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 6])[pc];
+    const alter = [1, 3, 6, 8, 10].includes(pc) ? (flat ? -1 : 1) : 0;
+    const d = (Math.floor(pitch / 12) - 1) * 7 + step;                // diatonic steps from C-1
+    const topD = m.clefs[staff] === "bass" ? 3 * 7 + 5 : 5 * 7 + 3;  // A3 or F5 on the top line
+    const y = (k: number) => top + (topD - k) * 5;
+    const nx = xAt(map, beat);
+    const g = document.createElementNS(SVG_NS, "g");
+    g.classList.add(timing ? "pm-timing" : "pm-wrong");
+    const add = (tag: string, attrs: Record<string, string | number>) => {
+      const el = document.createElementNS(SVG_NS, tag);
+      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, String(v));
+      g.appendChild(el);
+      return el;
+    };
+    for (let k = topD + 2; k <= d; k += 2) add("line", { x1: nx - 11, x2: nx + 11, y1: y(k), y2: y(k) });
+    for (let k = topD - 10; k >= d; k -= 2) add("line", { x1: nx - 11, x2: nx + 11, y1: y(k), y2: y(k) });
+    if (timing) add("line", { x1: xAt(map, timing.written), x2: nx, y1: y(d), y2: y(d), class: "pm-offset" });
+    add("ellipse", { cx: nx, cy: y(d), rx: 6.8, ry: 5, transform: `rotate(-20 ${nx} ${y(d)})` });
+    if (!timing && alter !== keyAlter(m.fifths, "CDEFGAB"[step])) {
+      add("text", { x: nx - 11, y: y(d) + 6, "font-size": 18, "text-anchor": "end" }).textContent = alter ? ACC_TEXT[String(alter)] : "♮";
+    }
+    return g;
+  };
   return {
     svg, scale, map, noteEls, lyrics, problems, graces: graceCount,
     width: Math.round(total * scale), height: Math.round(H * scale),
-    renderMs: performance.now() - t0,
+    renderMs: performance.now() - t0, playedNote,
   };
 }
 
