@@ -25,23 +25,127 @@
  "hands": "R",
  "id": "lines-and-spaces",
  "info": {
+  "checks": {
+   "bleedDb": -28.6,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at space, (4.4 s) .. line! (5.0 s); line, (9.4 s) .. space. (10.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 8.1,
+    "p95_ms": 26.7,
+    "share_over_50ms": 0.032,
+    "windows": 31
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 114.7,
+    "share_over_50ms": 0.267,
+    "windows": 30
+   },
+   "heard": "Ooh, line, space, line, space, line Space, line, space, line, space Up we climb the staff And back down again too",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "space, (4.4 s) .. line! (5.0 s)",
+    "line, (9.4 s) .. space. (10.0 s)"
+   ],
+   "wordsHeard": 0.963,
+   "wordsOff": 0.4,
+   "worstPhraseMs": 11.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Line, space, line, space, line! Space, line, space, line, space. Up we climb the staff, then back down again to",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.the-staff). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/lines-and-spaces.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 200,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -28.6,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at space, (4.4 s) .. line! (5.0 s); line, (9.4 s) .. space. (10.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 8.1,
+    "p95_ms": 26.7,
+    "share_over_50ms": 0.032,
+    "windows": 31
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 114.7,
+    "share_over_50ms": 0.267,
+    "windows": 30
+   },
+   "heard": "Ooh, line, space, line, space, line Space, line, space, line, space Up we climb the staff And back down again too",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "space, (4.4 s) .. line! (5.0 s)",
+    "line, (9.4 s) .. space. (10.0 s)"
+   ],
+   "wordsHeard": 0.963,
+   "wordsOff": 0.4,
+   "worstPhraseMs": 11.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 488640,
+     "url": "/api/library/media/lines-and-spaces/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 975840,
+     "url": "/api/library/media/lines-and-spaces/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 650880,
+     "url": "/api/library/media/lines-and-spaces/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 542400,
+     "url": "/api/library/media/lines-and-spaces/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "lines-and-spaces-s6 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

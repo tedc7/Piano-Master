@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-4b707dea3a",
+ "contentVersion": "lib-9d992c0c32",
  "display": {
   "fingers": false,
   "letters": true
@@ -22,40 +22,40 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "pointer-and-middle",
  "info": {
   "checks": {
-   "bleedDb": -31.9,
+   "bleedDb": -22.7,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 12.4,
-    "p95_ms": 69.6,
-    "share_over_50ms": 0.121,
-    "windows": 33
+    "median_ms": 21.8,
+    "p95_ms": 133.9,
+    "share_over_50ms": 0.321,
+    "windows": 28
    },
    "grid50": {
-    "median_ms": 31.9,
-    "p95_ms": 121.6,
-    "share_over_50ms": 0.324,
-    "windows": 34
+    "median_ms": 33.7,
+    "p95_ms": 278.9,
+    "share_over_50ms": 0.481,
+    "windows": 27
    },
+   "heard": "Oh, bunny, bunny, in the garden, nibbling on a crunchy carrot. Two long years go up to listen, hopping home in time for dinner. Three long years go up to listen, hopping home in time for dinner.",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
+   "notesOnPitch": 0.969,
    "pass": false,
    "reasons": [
-    "words off the staff: 13%"
+    "backing left in the vocal at -22.7 dB"
    ],
-   "tuningCents": 4.5,
-   "wordStretches": [
-    "on (8.8 s) .. a (9.4 s)"
-   ],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.13,
-   "worstPhraseMs": 18.5
+   "worstPhraseMs": 17.4
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -63,7 +63,7 @@
   },
   "lyrics": "1. Bunny, bunny, in the garden, nibbling on a crunchy carrot, two long ears go up to listen, hopping home in time for dinner!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app. The words are a rabbit's day (at the parent's request: the earlier finger-number words were hard to sing and dull); the finger numbers stay on the staff. Pointer and middle held up together make the bunny's ears."
+   "Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app. The words are a rabbit's day (at the parent's request: the earlier finger-number words were hard to sing and dull); the finger numbers stay on the staff. Pointer and middle held up together make the bunny's ears. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -76,35 +76,35 @@
  "level": "Prep A",
  "mapPoint": 30,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -31.9,
+   "bleedDb": -22.7,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 12.4,
-    "p95_ms": 69.6,
-    "share_over_50ms": 0.121,
-    "windows": 33
+    "median_ms": 21.8,
+    "p95_ms": 133.9,
+    "share_over_50ms": 0.321,
+    "windows": 28
    },
    "grid50": {
-    "median_ms": 31.9,
-    "p95_ms": 121.6,
-    "share_over_50ms": 0.324,
-    "windows": 34
+    "median_ms": 33.7,
+    "p95_ms": 278.9,
+    "share_over_50ms": 0.481,
+    "windows": 27
    },
+   "heard": "Oh, bunny, bunny, in the garden, nibbling on a crunchy carrot. Two long years go up to listen, hopping home in time for dinner. Three long years go up to listen, hopping home in time for dinner.",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
+   "notesOnPitch": 0.969,
    "pass": false,
    "reasons": [
-    "words off the staff: 13%"
+    "backing left in the vocal at -22.7 dB"
    ],
-   "tuningCents": 4.5,
-   "wordStretches": [
-    "on (8.8 s) .. a (9.4 s)"
-   ],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.13,
-   "worstPhraseMs": 18.5
+   "worstPhraseMs": 17.4
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -112,33 +112,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 548160,
+     "bytes": 614880,
      "url": "/api/library/media/pointer-and-middle/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1094880,
+     "bytes": 1228800,
      "url": "/api/library/media/pointer-and-middle/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 730080,
+     "bytes": 819840,
      "url": "/api/library/media/pointer-and-middle/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 608640,
+     "bytes": 683040,
      "url": "/api/library/media/pointer-and-middle/vocals_90.mp3"
     }
    }
   },
-  "take": "pointer-and-middle-s10 (dtw)"
+  "take": "pointer-and-middle-s19 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -149,14 +149,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     63
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -210,54 +209,6 @@
     "verse": 1
    },
    {
-    "note": 16,
-    "syllabic": "single",
-    "text": "two",
-    "verse": 1
-   },
-   {
-    "note": 17,
-    "syllabic": "single",
-    "text": "long",
-    "verse": 1
-   },
-   {
-    "note": 18,
-    "syllabic": "single",
-    "text": "ears",
-    "verse": 1
-   },
-   {
-    "note": 19,
-    "syllabic": "single",
-    "text": "go",
-    "verse": 1
-   },
-   {
-    "note": 20,
-    "syllabic": "single",
-    "text": "up",
-    "verse": 1
-   },
-   {
-    "note": 21,
-    "syllabic": "single",
-    "text": "to",
-    "verse": 1
-   },
-   {
-    "note": 22,
-    "syllabic": "begin",
-    "text": "lis",
-    "verse": 1
-   },
-   {
-    "note": 23,
-    "syllabic": "end",
-    "text": "ten,",
-    "verse": 1
-   },
-   {
     "note": 8,
     "syllabic": "begin",
     "text": "nib",
@@ -303,6 +254,54 @@
     "note": 15,
     "syllabic": "end",
     "text": "rot,",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "long",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "ears",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "go",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "begin",
+    "text": "lis",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "end",
+    "text": "ten,",
     "verse": 1
    },
    {
@@ -519,121 +518,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    },
@@ -759,121 +758,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 25.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 27.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 29.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 31.0,
     "voice": 1
    }

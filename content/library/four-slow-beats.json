@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-e1500e06cc",
+ "contentVersion": "lib-bb20d762c9",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,32 +25,36 @@
  "id": "four-slow-beats",
  "info": {
   "checks": {
-   "bleedDb": -39.1,
+   "bleedDb": -40.6,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at and (5.0 s) .. hold. (5.7 s); long (15.7 s) .. note. (17.1 s)"
+   ],
    "grid100": {
-    "median_ms": 17.4,
-    "p95_ms": 104.5,
-    "share_over_50ms": 0.238,
-    "windows": 21
+    "median_ms": 11.2,
+    "p95_ms": 31.0,
+    "share_over_50ms": 0.0,
+    "windows": 20
    },
    "grid50": {
-    "median_ms": 35.4,
-    "p95_ms": 214.8,
-    "share_over_50ms": 0.476,
-    "windows": 21
+    "median_ms": 23.9,
+    "p95_ms": 78.4,
+    "share_over_50ms": 0.15,
+    "windows": 20
    },
+   "heard": "Ho, count to four and hold, count to four and hold, long, long, no. To low, low sound.",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
-   "pass": false,
-   "reasons": [
-    "a phrase sits 103 ms off the beat",
-    "words off the staff: 12%"
+   "notesOnPitch": 0.938,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "and (5.0 s) .. hold. (5.7 s)",
+    "long (15.7 s) .. note. (17.1 s)"
    ],
-   "tuningCents": 1.0,
-   "wordStretches": [],
-   "wordsOff": 0.125,
-   "worstPhraseMs": 102.6
+   "wordsHeard": 0.983,
+   "wordsOff": 0.375,
+   "worstPhraseMs": 17.9
   },
   "engine": "YuE2 vocal",
   "hands": "RL",
@@ -61,7 +65,7 @@
   },
   "lyrics": "1. Count to four and hold. Count to four and hold. Long, long note. Low, low sound.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app. v0.40: at 84 (was 96), like the rest of Unit 2."
   ],
   "source": {
    "site": "Piano-Master",
@@ -74,34 +78,38 @@
  "level": "Prep A",
  "mapPoint": 100,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -39.1,
+   "bleedDb": -40.6,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at and (5.0 s) .. hold. (5.7 s); long (15.7 s) .. note. (17.1 s)"
+   ],
    "grid100": {
-    "median_ms": 17.4,
-    "p95_ms": 104.5,
-    "share_over_50ms": 0.238,
-    "windows": 21
+    "median_ms": 11.2,
+    "p95_ms": 31.0,
+    "share_over_50ms": 0.0,
+    "windows": 20
    },
    "grid50": {
-    "median_ms": 35.4,
-    "p95_ms": 214.8,
-    "share_over_50ms": 0.476,
-    "windows": 21
+    "median_ms": 23.9,
+    "p95_ms": 78.4,
+    "share_over_50ms": 0.15,
+    "windows": 20
    },
+   "heard": "Ho, count to four and hold, count to four and hold, long, long, no. To low, low sound.",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
-   "pass": false,
-   "reasons": [
-    "a phrase sits 103 ms off the beat",
-    "words off the staff: 12%"
+   "notesOnPitch": 0.938,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "and (5.0 s) .. hold. (5.7 s)",
+    "long (15.7 s) .. note. (17.1 s)"
    ],
-   "tuningCents": 1.0,
-   "wordStretches": [],
-   "wordsOff": 0.125,
-   "worstPhraseMs": 102.6
+   "wordsHeard": 0.983,
+   "wordsOff": 0.375,
+   "worstPhraseMs": 17.9
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -109,33 +117,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 496800,
+     "bytes": 534720,
      "url": "/api/library/media/four-slow-beats/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 992640,
+     "bytes": 1068480,
      "url": "/api/library/media/four-slow-beats/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 661920,
+     "bytes": 712800,
      "url": "/api/library/media/four-slow-beats/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 552000,
+     "bytes": 594240,
      "url": "/api/library/media/four-slow-beats/vocals_90.mp3"
     }
    }
   },
-  "take": "four-slow-beats-s5 (words)"
+  "take": "four-slow-beats-s2 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -153,7 +161,7 @@
     "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,

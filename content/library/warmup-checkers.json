@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-9f2ec52a2f",
+ "contentVersion": "lib-aea7aecd3c",
  "display": {
   "fingers": null,
   "letters": null
@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "warmup-checkers",
  "info": {
+  "checks": {
+   "bleedDb": -40.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.2,
+    "p95_ms": 17.7,
+    "share_over_50ms": 0.0,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 32.3,
+    "p95_ms": 53.0,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "heard": "Oh, redjacker jumps, hop, hopping, crowned a king. Black jumps too at once, checkmate game is won.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.946,
+   "wordsOff": 0.176,
+   "worstPhraseMs": 1.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Red checker jumps, hop! Hopping, crowned a king! Black jumps two at once! Checkmate! Game is won!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.skips). Warm-up in our own music. Fingers 1 and 3 skipping back and forth, the pattern moving to the next key. The words are a game of checkers, red in the right hand and black in the left, ending in checkmate (at the parent's request, Oct 6, 2026), for the vocal."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-checkers.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 360,
- "media": null,
+ "media": {
+  "bpm": 92.0,
+  "check": {
+   "bleedDb": -40.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.2,
+    "p95_ms": 17.7,
+    "share_over_50ms": 0.0,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 32.3,
+    "p95_ms": 53.0,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "heard": "Oh, redjacker jumps, hop, hopping, crowned a king. Black jumps too at once, checkmate game is won.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.946,
+   "wordsOff": 0.176,
+   "worstPhraseMs": 1.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 496800,
+     "url": "/api/library/media/warmup-checkers/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 992640,
+     "url": "/api/library/media/warmup-checkers/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 661920,
+     "url": "/api/library/media/warmup-checkers/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 552000,
+     "url": "/api/library/media/warmup-checkers/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-checkers-s2 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -60,7 +154,128 @@
    "timeSig": "4/4"
   },
   "length": 32.0,
-  "lyrics": [],
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Red",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "begin",
+    "text": "check",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "end",
+    "text": "er",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "jumps,",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "hop!",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "begin",
+    "text": "Hop",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "end",
+    "text": "ping,",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "crowned",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "king!",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "Black",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "jumps",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "two",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "at",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "once!",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "begin",
+    "text": "Check",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "end",
+    "text": "mate!",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "Game",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "is",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "won!",
+    "verse": 1
+   }
+  ],
   "measures": [
    {
     "duration": 4.0,
@@ -258,6 +473,7 @@
     "duration": 1.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 60,
     "spelled": {
      "alter": 0,
@@ -272,6 +488,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 57,
     "spelled": {
      "alter": 0,
@@ -286,6 +503,7 @@
     "duration": 1.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 60,
     "spelled": {
      "alter": 0,
@@ -300,6 +518,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 57,
     "spelled": {
      "alter": 0,
@@ -314,6 +533,7 @@
     "duration": 4.0,
     "finger": 2,
     "hand": "L",
+    "isMelody": true,
     "pitch": 60,
     "spelled": {
      "alter": 0,
@@ -328,6 +548,7 @@
     "duration": 1.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 59,
     "spelled": {
      "alter": 0,
@@ -342,6 +563,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 55,
     "spelled": {
      "alter": 0,
@@ -356,6 +578,7 @@
     "duration": 1.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 59,
     "spelled": {
      "alter": 0,
@@ -370,6 +593,7 @@
     "duration": 1.0,
     "finger": 2,
     "hand": "L",
+    "isMelody": true,
     "pitch": 55,
     "spelled": {
      "alter": 0,
@@ -384,6 +608,7 @@
     "duration": 4.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 59,
     "spelled": {
      "alter": 0,

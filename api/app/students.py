@@ -429,6 +429,7 @@ def after_attempt(con, student_id: str, a, content: content_mod.Content | None) 
         accuracy=e.accuracy, accuracy_stars=e.accuracyStars, timing_stars=e.timingStars, duration_sec=a.durationSec or 0,
         preset=a.conditions.tempoPreset, skill_id=a.skillId, item_id=a.itemId,
         tricky_phrase=(a.tricky or {}).get("phrase"), factor=e.factor,
+        hand_step=a.conditions.hands != "both" and a.conditions.handsWritten == a.conditions.hands,
         note_errors=[{"kind": x.get("kind"), "bar": x.get("bar")} for x in a.noteErrors])
     # the attempt counts on whatever song was played; the items that replace a skill passed
     # mid-session come only from the songs this child may play (§10.1)

@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-51443fc891",
+ "contentVersion": "lib-9cde2daa7e",
  "display": {
   "fingers": null,
   "letters": null
@@ -21,23 +21,117 @@
  "hands": "L",
  "id": "down-to-bass-c",
  "info": {
+  "checks": {
+   "bleedDb": -26.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 45.9,
+    "share_over_50ms": 0.053,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 26.0,
+    "p95_ms": 168.9,
+    "share_over_50ms": 0.263,
+    "windows": 19
+   },
+   "heard": "Oh, walking down the valley, Climbing up the big green hill. Oh, walking down the valley, Climbing up the big green hill. Oh, walking down the valley, Climbing up the big green hill.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 14.2
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Walking down the valley, climbing up the big green hill.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-c). Original music and words for this app. The words go down to the valley and up to the hill with the notes (at the parent's request, Oct 7, 2026), for the vocal."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/down-to-bass-c.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 410,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -26.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 45.9,
+    "share_over_50ms": 0.053,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 26.0,
+    "p95_ms": 168.9,
+    "share_over_50ms": 0.263,
+    "windows": 19
+   },
+   "heard": "Oh, walking down the valley, Climbing up the big green hill. Oh, walking down the valley, Climbing up the big green hill. Oh, walking down the valley, Climbing up the big green hill.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 14.2
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 272640,
+     "url": "/api/library/media/down-to-bass-c/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 544320,
+     "url": "/api/library/media/down-to-bass-c/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 363360,
+     "url": "/api/library/media/down-to-bass-c/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 302880,
+     "url": "/api/library/media/down-to-bass-c/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "down-to-bass-c-s5 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -59,14 +153,14 @@
   "lyrics": [
    {
     "note": 0,
-    "syllabic": "single",
-    "text": "Down,",
+    "syllabic": "begin",
+    "text": "Walk",
     "verse": 1
    },
    {
     "note": 1,
-    "syllabic": "single",
-    "text": "down,",
+    "syllabic": "end",
+    "text": "ing",
     "verse": 1
    },
    {
@@ -78,61 +172,61 @@
    {
     "note": 3,
     "syllabic": "single",
-    "text": "to",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 4,
-    "syllabic": "single",
-    "text": "Bass",
+    "syllabic": "begin",
+    "text": "val",
     "verse": 1
    },
    {
     "note": 5,
-    "syllabic": "single",
-    "text": "C,",
+    "syllabic": "end",
+    "text": "ley,",
     "verse": 1
    },
    {
     "note": 6,
-    "syllabic": "single",
-    "text": "up",
+    "syllabic": "begin",
+    "text": "climb",
     "verse": 1
    },
    {
     "note": 7,
-    "syllabic": "single",
-    "text": "and",
+    "syllabic": "end",
+    "text": "ing",
     "verse": 1
    },
    {
     "note": 8,
     "syllabic": "single",
-    "text": "down",
+    "text": "up",
     "verse": 1
    },
    {
     "note": 9,
-    "syllabic": "begin",
-    "text": "a",
+    "syllabic": "single",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 10,
-    "syllabic": "end",
-    "text": "gain",
+    "syllabic": "single",
+    "text": "big",
     "verse": 1
    },
    {
     "note": 11,
     "syllabic": "single",
-    "text": "to",
+    "text": "green",
     "verse": 1
    },
    {
     "note": 12,
     "syllabic": "single",
-    "text": "C.",
+    "text": "hill.",
     "verse": 1
    }
   ],

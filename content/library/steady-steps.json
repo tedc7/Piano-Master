@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-4379083664",
+ "contentVersion": "lib-92d2469307",
  "display": {
   "fingers": null,
   "letters": null
@@ -18,29 +18,36 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "L",
  "id": "steady-steps",
  "info": {
   "checks": {
-   "bleedDb": -40.0,
+   "bleedDb": -31.0,
    "firstWordSung": true,
    "flags": [
-    "a short note sung in another octave at 10.6 s",
+    "a short note sung in another octave at 12.1 s",
     "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
    ],
    "grid100": null,
-   "grid50": {},
+   "grid50": {
+    "median_ms": 97.5,
+    "p95_ms": 97.5,
+    "share_over_50ms": 1.0,
+    "windows": 1
+   },
+   "heard": "walk, walk, walk, walk, walk, step, step, step, step, big bear marches stomping feet, boom",
    "melodyStretches": [],
-   "notesOnPitch": 0.938,
+   "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 3.5,
+   "tuningCents": -0.5,
    "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.0,
    "worstPhraseMs": 0.0
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -48,7 +55,7 @@
   },
   "lyrics": "1. Walk, walk, walk, walk, step, step, step, step. Big bear marches, stomping feet, boom!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.quarter-note). Original music and words for this app. The left hand's words changed at the parent's request (Oct 4): four \"stomp\"s in a row made the vocal stutter; now a big bear marches."
+   "Curriculum song (Prep A, prep-a.quarter-note). Original music and words for this app. The left hand's words changed at the parent's request (Oct 4): four \"stomp\"s in a row made the vocal stutter; now a big bear marches. v0.40: the left hand alone, at 84 (it took turns with the right hand before)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -61,22 +68,29 @@
  "level": "Prep A",
  "mapPoint": 70,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -40.0,
+   "bleedDb": -31.0,
    "firstWordSung": true,
    "flags": [
-    "a short note sung in another octave at 10.6 s",
+    "a short note sung in another octave at 12.1 s",
     "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
    ],
    "grid100": null,
-   "grid50": {},
+   "grid50": {
+    "median_ms": 97.5,
+    "p95_ms": 97.5,
+    "share_over_50ms": 1.0,
+    "windows": 1
+   },
+   "heard": "walk, walk, walk, walk, walk, step, step, step, step, big bear marches stomping feet, boom",
    "melodyStretches": [],
-   "notesOnPitch": 0.938,
+   "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 3.5,
+   "tuningCents": -0.5,
    "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.0,
    "worstPhraseMs": 0.0
   },
@@ -86,33 +100,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 345600,
+     "bytes": 340800,
      "url": "/api/library/media/steady-steps/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 689760,
+     "bytes": 680160,
      "url": "/api/library/media/steady-steps/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 460320,
+     "bytes": 453600,
      "url": "/api/library/media/steady-steps/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 383520,
+     "bytes": 378240,
      "url": "/api/library/media/steady-steps/vocals_90.mp3"
     }
    }
   },
-  "take": "steady-steps-s9 (words)"
+  "take": "steady-steps-s4 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -124,13 +138,12 @@
    "pickupBeats": 0.0,
    "range": [
     37,
-    63
+    51
    ],
    "staves": [
-    "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 16.0,
@@ -257,13 +270,13 @@
   "notes": [
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -272,13 +285,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -287,13 +300,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -302,13 +315,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -317,13 +330,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -332,13 +345,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -347,13 +360,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 1,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -363,12 +376,12 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "R",
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -386,7 +399,7 @@
      "octave": 2,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
@@ -401,7 +414,7 @@
      "octave": 2,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
@@ -416,7 +429,7 @@
      "octave": 2,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
@@ -431,7 +444,7 @@
      "octave": 2,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
@@ -446,7 +459,7 @@
      "octave": 2,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
@@ -461,7 +474,7 @@
      "octave": 2,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
@@ -476,7 +489,7 @@
      "octave": 2,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
@@ -491,7 +504,7 @@
      "octave": 2,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    }

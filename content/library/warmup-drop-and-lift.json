@@ -25,6 +25,34 @@
  "hands": "RL",
  "id": "warmup-drop-and-lift",
  "info": {
+  "checks": {
+   "bleedDb": -39.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.9,
+    "p95_ms": 10.3,
+    "share_over_50ms": 0.0,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 13.3,
+    "p95_ms": 41.1,
+    "share_over_50ms": 0.0,
+    "windows": 21
+   },
+   "heard": "Oh, drop and list, drop and list, drop, drop, drop, drop list, drop and list, drop and list, drop, drop, drop, drop list.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.929,
+   "wordsOff": 0.091,
+   "worstPhraseMs": 7.9
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
@@ -45,7 +73,69 @@
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 250,
- "media": null,
+ "media": {
+  "bpm": 88.0,
+  "check": {
+   "bleedDb": -39.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.9,
+    "p95_ms": 10.3,
+    "share_over_50ms": 0.0,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 13.3,
+    "p95_ms": 41.1,
+    "share_over_50ms": 0.0,
+    "windows": 21
+   },
+   "heard": "Oh, drop and list, drop and list, drop, drop, drop, drop list, drop and list, drop and list, drop, drop, drop, drop list.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.929,
+   "wordsOff": 0.091,
+   "worstPhraseMs": 7.9
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 567840,
+     "url": "/api/library/media/warmup-drop-and-lift/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1134720,
+     "url": "/api/library/media/warmup-drop-and-lift/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 756960,
+     "url": "/api/library/media/warmup-drop-and-lift/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 630720,
+     "url": "/api/library/media/warmup-drop-and-lift/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-drop-and-lift-s1 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

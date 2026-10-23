@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-fd24456f77",
+ "contentVersion": "lib-265cacbf76",
  "display": {
   "fingers": null,
   "letters": null
@@ -22,46 +22,48 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "ding-dong-bells",
  "info": {
   "checks": {
-   "bleedDb": -24.9,
+   "bleedDb": -22.6,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 4.8,
-    "p95_ms": 39.9,
-    "share_over_50ms": 0.061,
-    "windows": 33
+    "median_ms": 2.8,
+    "p95_ms": 13.5,
+    "share_over_50ms": 0.0,
+    "windows": 44
    },
    "grid50": {
-    "median_ms": 28.2,
-    "p95_ms": 95.2,
-    "share_over_50ms": 0.206,
-    "windows": 34
+    "median_ms": 39.2,
+    "p95_ms": 74.5,
+    "share_over_50ms": 0.136,
+    "windows": 44
    },
+   "heard": "Oh, ding, dong, ding, ding, dong Bong, bong, bong, bong, bong Ding, dong, the bells ring Bong, bong, big bells sing",
    "melodyStretches": [],
-   "notesOnPitch": 0.9,
+   "notesOnPitch": 1.0,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -24.9 dB"
+    "backing left in the vocal at -22.6 dB"
    ],
-   "tuningCents": 3.0,
+   "tuningCents": 0.5,
    "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 17.4
+   "wordsHeard": 1.0,
+   "wordsOff": 0.1,
+   "worstPhraseMs": 3.4
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "lyrics": "1. Ding, dong, ding, ding, dong, Bong, bong, bong, bong, bong, ding, dong, the bells ring. bong, bong, big bells sing.",
+  "lyrics": "1. Ding, dong, ding, ding, dong, bong, bong, bong, bong, bong, ding, dong, the bells ring. Bong, bong, big bells sing.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.half-note). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.half-note). Original music and words for this app. v0.40: the right hand alone, at 84 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -74,33 +76,35 @@
  "level": "Prep A",
  "mapPoint": 80,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -24.9,
+   "bleedDb": -22.6,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 4.8,
-    "p95_ms": 39.9,
-    "share_over_50ms": 0.061,
-    "windows": 33
+    "median_ms": 2.8,
+    "p95_ms": 13.5,
+    "share_over_50ms": 0.0,
+    "windows": 44
    },
    "grid50": {
-    "median_ms": 28.2,
-    "p95_ms": 95.2,
-    "share_over_50ms": 0.206,
-    "windows": 34
+    "median_ms": 39.2,
+    "p95_ms": 74.5,
+    "share_over_50ms": 0.136,
+    "windows": 44
    },
+   "heard": "Oh, ding, dong, ding, ding, dong Bong, bong, bong, bong, bong Ding, dong, the bells ring Bong, bong, big bells sing",
    "melodyStretches": [],
-   "notesOnPitch": 0.9,
+   "notesOnPitch": 1.0,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -24.9 dB"
+    "backing left in the vocal at -22.6 dB"
    ],
-   "tuningCents": 3.0,
+   "tuningCents": 0.5,
    "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 17.4
+   "wordsHeard": 1.0,
+   "wordsOff": 0.1,
+   "worstPhraseMs": 3.4
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -108,33 +112,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 492480,
+     "bytes": 553440,
      "url": "/api/library/media/ding-dong-bells/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 983520,
+     "bytes": 1105920,
      "url": "/api/library/media/ding-dong-bells/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 656160,
+     "bytes": 737760,
      "url": "/api/library/media/ding-dong-bells/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 547200,
+     "bytes": 614880,
      "url": "/api/library/media/ding-dong-bells/vocals_90.mp3"
     }
    }
   },
-  "take": "ding-dong-bells-s5 (dtw)"
+  "take": "ding-dong-bells-s2 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -145,14 +149,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     75
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -188,6 +191,36 @@
     "verse": 1
    },
    {
+    "note": 5,
+    "syllabic": "single",
+    "text": "bong,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "bong,",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "bong,",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "bong,",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "bong,",
+    "verse": 1
+   },
+   {
     "note": 10,
     "syllabic": "single",
     "text": "ding,",
@@ -218,39 +251,9 @@
     "verse": 1
    },
    {
-    "note": 5,
-    "syllabic": "single",
-    "text": "Bong,",
-    "verse": 1
-   },
-   {
-    "note": 6,
-    "syllabic": "single",
-    "text": "bong,",
-    "verse": 1
-   },
-   {
-    "note": 7,
-    "syllabic": "single",
-    "text": "bong,",
-    "verse": 1
-   },
-   {
-    "note": 8,
-    "syllabic": "single",
-    "text": "bong,",
-    "verse": 1
-   },
-   {
-    "note": 9,
-    "syllabic": "single",
-    "text": "bong,",
-    "verse": 1
-   },
-   {
     "note": 15,
     "syllabic": "single",
-    "text": "bong,",
+    "text": "Bong,",
     "verse": 1
    },
    {
@@ -398,76 +401,76 @@
    },
    {
     "duration": 2.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 2.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 2.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
@@ -548,76 +551,76 @@
    },
    {
     "duration": 2.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
    {
     "duration": 2.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 29.0,
     "voice": 1
    },
    {
     "duration": 2.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    }

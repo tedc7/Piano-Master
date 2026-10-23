@@ -45,6 +45,9 @@ YUE2_BACKING_BELOW_DB = 10.0   # YuE2's backing under the vocal above 250 Hz; th
 END_TAIL_S, END_FADE_S = 0.6, 0.4   # what's kept after the last note's end (its release), then faded out
 TAKES = 2
 MAX_TAKES = 3             # arch §10.5: re-render up to 3 tries
+USABLE_WORDS_OFF = 0.25    # a take with a quarter of its words off is never chosen over one the parent could hear (v0.30)
+BLEED_PER_DB = 0.05         # rank: a take's score less this for each dB of bleed over the limit
+USABLE_HEARD = 0.95        # ...unless Whisper hears nearly every word: then it's the aligner that's lost
 
 
 def rel(p: Path) -> str:
@@ -113,7 +116,13 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
             if a.get("error"):
                 print(f"  take {take} ({mode}): {a['error']}", flush=True)
                 continue
-            a["heard"] = {"heard": h["heard"], "share": h["share"], "wrongLetters": h["wrongLetters"]}
+            if h:
+                a["heard"] = {"heard": h["heard"], "share": h["share"], "wrongLetters": h["wrongLetters"]}
+            sung = [w["word"] for w in abcmap["words"][1:]]
+            s = align.heard_in_song(folder, mode, sung, align.score_notes(folder / "score.abc")[0][-1][1])
+            if s:
+                a["songHeard"] = {**s, "words": align.words_in(" ".join(sung))}
+            a["lastWordS"] = float(Fraction(abcmap["words"][-1]["beat"])) * 60.0 / float(abcmap["bpm"])
             a["checks"] = align.verdict(a)                     # judged by the current rules
             a["score"] = align.score(a)
             f.write_text(json.dumps(a, indent=1) + "\n")
@@ -121,7 +130,7 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
             c = a["checks"]
             print(f"  take {take} ({mode}): score {a['score']:+.2f}, on pitch {a['pitch']['share']:.0%}, "
                   f"words off {a['words']['shareOver300ms']:.0%}, worst phrase {c['worstPhraseMs']:.0f} ms, "
-                  f"heard {h['share']:.0%}, tuning {a['tuningCents']:+} c, bleed {a['bleed']['db']} dB: {'PASS' if c['pass'] else 'FAIL: ' + '; '.join(c['reasons'])}"
+                  f"heard {f"{h['share']:.0%}" if h else '?'}, tuning {a['tuningCents']:+} c, bleed {a['bleed']['db']} dB: {'PASS' if c['pass'] else 'FAIL: ' + '; '.join(c['reasons'])}"
                   + (f" (flag: {'; '.join(c['flags'])})" if c["flags"] else ""),
                   flush=True)
 
@@ -134,10 +143,7 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
         run(t)
     if not results:
         raise RuntimeError(f"{piece.pid}: no usable YuE2 take")
-    # passing first, then the fewest failed checks (B and C: one take's two alignments, one only over
-    # on bleed and one 81 ms off the beat too, a hundredth apart on score), then the score
-    failed = lambda r: sum(1 for k, v in r["checks"].items() if isinstance(v, bool) and k != "pass" and not v)
-    best = max(results, key=lambda r: (r["checks"]["pass"], -failed(r), r["score"]))
+    best = max(results, key=rank)
     choice = {"take": best["take"], "mode": best["mode"], "pass": best["checks"]["pass"], "score": best["score"],
               "padBeats": abcmap.get("songPadBeats", abcmap["padBeats"]), "bpm": piece.bpm, "songStartS": best["songStartS"],
               "candidates": [{"take": r["take"], "mode": r["mode"], "score": r["score"], "pass": r["checks"]["pass"],
@@ -145,6 +151,21 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
     (piece.work / "choice.json").write_text(json.dumps(choice, indent=1) + "\n")
     print(f"  chosen: {best['take']} ({best['mode']}), {'passes' if best['checks']['pass'] else 'FAILS: ' + '; '.join(best['checks']['reasons'])}", flush=True)
     return choice
+
+
+def rank(r: dict) -> tuple:
+    """A take's place among the candidates: passing first; then one the parent could use: under a
+    quarter of its words off (God Rest Ye's Beginner chose 82% off, one failed check, over 10% off
+    and an octave slip, two), or nearly every word heard by Whisper, where the aligner lost its place
+    in repeated syllables (The Holly and the Ivy's take 2: 99% heard, 93% on pitch, "42% off");
+    then the fewest failed checks (B and C: one take's two alignments, one only over on bleed and
+    one 81 ms off the beat too, a hundredth apart on score); then the score, less a little for each
+    dB of bleed over the limit (Two-Key Hops, Oct 23, 2026: a take at -12 dB, the backing plainly
+    heard, chosen over one at -23 dB, as both failed on bleed alone)."""
+    failed = sum(1 for k, v in r["checks"].items() if isinstance(v, bool) and k != "pass" and not v)
+    usable = r["words"]["shareOver300ms"] < USABLE_WORDS_OFF or (r.get("heard") or {}).get("share", 0) >= USABLE_HEARD
+    over = max(0.0, (r.get("bleed") or {}).get("db", align.PASS["bleedDb"]) - align.PASS["bleedDb"])
+    return r["checks"]["pass"], usable, -failed, r["score"] - BLEED_PER_DB * over
 
 
 # ------------------------------------------------------------------------------ backing

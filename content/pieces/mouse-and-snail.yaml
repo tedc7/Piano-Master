@@ -1,4 +1,5 @@
 # Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app.
+# v0.40: at 84 (was 96), like the rest of Unit 2.
 title: "Mouse and Snail"
 composer: Piano-Master
 genre: studies
@@ -18,7 +19,7 @@ abc: |
   T:Mouse and Snail
   M:4/4
   L:1/4
-  Q:1/4=96
+  Q:1/4=84
   %%score {RH LH}
   K:C
   V:RH clef=treble

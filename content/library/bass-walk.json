@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-f8727aa41e",
+ "contentVersion": "lib-210d05928f",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,23 +25,117 @@
  "hands": "L",
  "id": "bass-walk",
  "info": {
+  "checks": {
+   "bleedDb": -34.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.6,
+    "p95_ms": 45.9,
+    "share_over_50ms": 0.029,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 24.8,
+    "p95_ms": 93.5,
+    "share_over_50ms": 0.257,
+    "windows": 35
+   },
+   "heard": "Oh, climbing up the hilltop, valleys far below. Peaceful meadow views around, resting on the hill.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.133,
+   "worstPhraseMs": 9.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Climbing up the hilltop, valleys far below. Peaceful meadow views around, resting on the hill.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-c-scale). Original music and words for this app. The words climb a hill to peaceful meadow views and the valleys below (at the parent's request, Oct 20, 2026)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bass-walk.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 420,
- "media": null,
+ "media": {
+  "bpm": 90.0,
+  "check": {
+   "bleedDb": -34.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.6,
+    "p95_ms": 45.9,
+    "share_over_50ms": 0.029,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 24.8,
+    "p95_ms": 93.5,
+    "share_over_50ms": 0.257,
+    "windows": 35
+   },
+   "heard": "Oh, climbing up the hilltop, valleys far below. Peaceful meadow views around, resting on the hill.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.133,
+   "worstPhraseMs": 9.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 601440,
+     "url": "/api/library/media/bass-walk/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1201920,
+     "url": "/api/library/media/bass-walk/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 801600,
+     "url": "/api/library/media/bass-walk/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 668160,
+     "url": "/api/library/media/bass-walk/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "bass-walk-s10 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -87,116 +181,116 @@
    },
    {
     "note": 4,
-    "syllabic": "single",
-    "text": "hill,",
+    "syllabic": "begin",
+    "text": "hill",
     "verse": 1
    },
    {
     "note": 5,
-    "syllabic": "single",
-    "text": "hill,",
+    "syllabic": "end",
+    "text": "top,",
     "verse": 1
    },
    {
     "note": 6,
     "syllabic": "begin",
-    "text": "roll",
+    "text": "val",
     "verse": 1
    },
    {
     "note": 7,
     "syllabic": "end",
-    "text": "ing",
+    "text": "leys",
     "verse": 1
    },
    {
     "note": 8,
     "syllabic": "single",
-    "text": "down",
+    "text": "far",
     "verse": 1
    },
    {
     "note": 9,
     "syllabic": "begin",
-    "text": "a",
+    "text": "be",
     "verse": 1
    },
    {
     "note": 10,
     "syllabic": "end",
-    "text": "gain.",
+    "text": "low.",
     "verse": 1
    },
    {
     "note": 11,
-    "syllabic": "single",
-    "text": "Left",
+    "syllabic": "begin",
+    "text": "Peace",
     "verse": 1
    },
    {
     "note": 12,
-    "syllabic": "single",
-    "text": "hand",
+    "syllabic": "end",
+    "text": "ful",
     "verse": 1
    },
    {
     "note": 13,
-    "syllabic": "single",
-    "text": "plays",
+    "syllabic": "begin",
+    "text": "mead",
     "verse": 1
    },
    {
     "note": 14,
-    "syllabic": "single",
-    "text": "the",
+    "syllabic": "end",
+    "text": "ow",
     "verse": 1
    },
    {
     "note": 15,
     "syllabic": "single",
-    "text": "low",
+    "text": "views",
     "verse": 1
    },
    {
     "note": 16,
-    "syllabic": "single",
-    "text": "notes",
+    "syllabic": "begin",
+    "text": "a",
     "verse": 1
    },
    {
     "note": 17,
-    "syllabic": "single",
-    "text": "too,",
+    "syllabic": "end",
+    "text": "round,",
     "verse": 1
    },
    {
     "note": 18,
-    "syllabic": "single",
-    "text": "down",
+    "syllabic": "begin",
+    "text": "rest",
     "verse": 1
    },
    {
     "note": 19,
-    "syllabic": "single",
-    "text": "and",
+    "syllabic": "end",
+    "text": "ing",
     "verse": 1
    },
    {
     "note": 20,
     "syllabic": "single",
-    "text": "down",
+    "text": "on",
     "verse": 1
    },
    {
     "note": 21,
     "syllabic": "single",
-    "text": "and",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 22,
     "syllabic": "single",
-    "text": "home.",
+    "text": "hill.",
     "verse": 1
    }
   ],

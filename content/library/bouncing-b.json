@@ -21,23 +21,121 @@
  "hands": "L",
  "id": "bouncing-b",
  "info": {
+  "checks": {
+   "bleedDb": -26.7,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 6.6,
+    "p95_ms": 164.6,
+    "share_over_50ms": 0.267,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 48.9,
+    "p95_ms": 140.1,
+    "share_over_50ms": 0.5,
+    "windows": 14
+   },
+   "heard": "Oh, bouncing ball goes down to E. Bouncing, bouncing C.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.975,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 36.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Bouncing ball goes down to B, bouncing, bouncing, C!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-b). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bouncing-b.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 310,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -26.7,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 6.6,
+    "p95_ms": 164.6,
+    "share_over_50ms": 0.267,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 48.9,
+    "p95_ms": 140.1,
+    "share_over_50ms": 0.5,
+    "windows": 14
+   },
+   "heard": "Oh, bouncing ball goes down to E. Bouncing, bouncing C.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.975,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 36.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 280800,
+     "url": "/api/library/media/bouncing-b/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 560640,
+     "url": "/api/library/media/bouncing-b/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 373920,
+     "url": "/api/library/media/bouncing-b/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 312000,
+     "url": "/api/library/media/bouncing-b/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "bouncing-b-s2 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

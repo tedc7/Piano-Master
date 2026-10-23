@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-0f868ed6d6",
+ "contentVersion": "lib-acb1fabf46",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,23 +25,125 @@
  "hands": "R",
  "id": "warmup-hop-to-the-next-key",
  "info": {
+  "checks": {
+   "bleedDb": -32.4,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (15.0 s) .. leaf, (15.7 s)"
+   ],
+   "grid100": {
+    "median_ms": 8.6,
+    "p95_ms": 60.0,
+    "share_over_50ms": 0.182,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 130.7,
+    "share_over_50ms": 0.391,
+    "windows": 23
+   },
+   "heard": "Oh, lazy turtle yawns, takes one tiny step, nibbles on a leaf, then goes back to bed.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.95,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [
+    "a (15.0 s) .. leaf, (15.7 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 36.4
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Lazy turtle yawns, takes one tiny step, nibbles on a leaf, then goes back to bed.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.hand-shift). Warm-up in our own music. The same finger pattern, the hand hopping up one key each time (a hand shift). The words are a lazy turtle taking one tiny step at a time (at the parent's request, Oct 6, 2026), for the vocal."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-hop-to-the-next-key.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 300,
- "media": null,
+ "media": {
+  "bpm": 92.0,
+  "check": {
+   "bleedDb": -32.4,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (15.0 s) .. leaf, (15.7 s)"
+   ],
+   "grid100": {
+    "median_ms": 8.6,
+    "p95_ms": 60.0,
+    "share_over_50ms": 0.182,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 130.7,
+    "share_over_50ms": 0.391,
+    "windows": 23
+   },
+   "heard": "Oh, lazy turtle yawns, takes one tiny step, nibbles on a leaf, then goes back to bed.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.95,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [
+    "a (15.0 s) .. leaf, (15.7 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 36.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 527040,
+     "url": "/api/library/media/warmup-hop-to-the-next-key/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1053120,
+     "url": "/api/library/media/warmup-hop-to-the-next-key/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 702240,
+     "url": "/api/library/media/warmup-hop-to-the-next-key/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 585600,
+     "url": "/api/library/media/warmup-hop-to-the-next-key/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-hop-to-the-next-key-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -60,7 +162,128 @@
    "timeSig": "4/4"
   },
   "length": 32.0,
-  "lyrics": [],
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "La",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "zy",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "begin",
+    "text": "tur",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "end",
+    "text": "tle",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "yawns,",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "takes",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "one",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "begin",
+    "text": "ti",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "end",
+    "text": "ny",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "step,",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "begin",
+    "text": "nib",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "end",
+    "text": "bles",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "leaf,",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "then",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "goes",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "back",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "bed.",
+    "verse": 1
+   }
+  ],
   "measures": [
    {
     "duration": 4.0,

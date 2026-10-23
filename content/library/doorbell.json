@@ -25,23 +25,117 @@
  "hands": "RL",
  "id": "doorbell",
  "info": {
+  "checks": {
+   "bleedDb": -39.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.6,
+    "p95_ms": 32.9,
+    "share_over_50ms": 0.0,
+    "windows": 13
+   },
+   "grid50": {
+    "median_ms": 47.6,
+    "p95_ms": 86.8,
+    "share_over_50ms": 0.308,
+    "windows": 13
+   },
+   "heard": "Oh, ding dong, doorbell rings Bong, bong, low bell sings Ding dong, ding dong Bong, bong, bong, bong",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.176,
+   "worstPhraseMs": 32.1
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Ding, dong, doorbell rings, Bong, bong, low bell sings, ding, dong, ding, dong! bong, bong, bong, bong!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.two-notes-together). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/doorbell.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 250,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -39.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 9.6,
+    "p95_ms": 32.9,
+    "share_over_50ms": 0.0,
+    "windows": 13
+   },
+   "grid50": {
+    "median_ms": 47.6,
+    "p95_ms": 86.8,
+    "share_over_50ms": 0.308,
+    "windows": 13
+   },
+   "heard": "Oh, ding dong, doorbell rings Bong, bong, low bell sings Ding dong, ding dong Bong, bong, bong, bong",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.176,
+   "worstPhraseMs": 32.1
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 541920,
+     "url": "/api/library/media/doorbell/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1082400,
+     "url": "/api/library/media/doorbell/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 721920,
+     "url": "/api/library/media/doorbell/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 601920,
+     "url": "/api/library/media/doorbell/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "doorbell-s1 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

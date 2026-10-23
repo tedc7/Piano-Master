@@ -272,3 +272,66 @@ def test_a_wrong_letter_name_fails_the_heard_check():
     r["heard"]["wrongLetters"] = [("C", "E")]
     v = align.verdict(r)
     assert not v["pass"] and any("E for C" in x for x in v["reasons"])
+
+
+def test_a_tune_shared_between_the_hands_is_sung_as_one_line(tmp_path):
+    yue2 = pytest.importorskip("yue2")
+    # Twinkle Twinkle: the left hand's G3s sit just under the singing range; moved hand by hand, only
+    # they went up an octave and the vocal leapt every time the tune changed hands
+    shared = {**SONG, "abc": "X:1\nM:4/4\nL:1/4\nQ:1/4=100\n%%score {RH LH}\nK:C\nV:RH clef=treble\nV:LH clef=bass\n"
+              "[V:RH] z2 D D | E E D2 |]\nw: twin-kle lit-tle star,\n[V:LH] G, G, z2 | z4 |]\nw: Twin-kle,\n"}
+    p = piece(tmp_path, shared)
+    sung = lambda amap: [s["pitch"] for s in amap["syllables"]]
+    assert sung(yue2.export(p.nota)[2])[:3] == [67, 67, 62]                    # hand by hand: G4 down to D4
+    assert sung(yue2.export(p.nota, line="as-written")[2]) == [67, 67, 74, 74, 76, 76, 74]   # G4 up to D5, as written
+
+
+def test_words_off_on_the_last_word_fail_a_take():
+    align = pytest.importorskip("align")
+    # Middle C Stomp, sent back "great until the last 3 words": a short stretch at the end was only flagged
+    r = take(0.25, ["stomp (18.8 s) .. home! (20.0 s)"], heard=1.0)
+    assert align.verdict(r)["pass"]                                   # without the last word's time: as before
+    r["lastWordS"] = 20.0
+    v = align.verdict(r)
+    assert not v["pass"] and any("at the end" in x for x in v["reasons"])
+    r["words"]["stretches"] = ["high, (13.8 s) .. roar! (15.0 s)"]  # a short stretch earlier: still a flag
+    assert align.verdict(r)["pass"]
+
+
+def test_a_take_with_most_words_off_is_not_chosen_for_failing_fewer_checks():
+    import media
+    take = lambda off, failed, score, heard=0.9: {"words": {"shareOver300ms": off}, "score": score, "heard": {"share": heard},
+                                                  "checks": {"pass": False, **{f"c{i}": False for i in range(failed)}}}
+    drifted, close = take(0.82, 1, -0.02, 0.927), take(0.10, 2, 0.89)
+    assert max([drifted, close], key=media.rank) is close
+    # the aligner lost in repeated syllables, Whisper hearing every word: usable, and fewer failures win
+    lost, off_pitch = take(0.42, 1, 0.41, 0.99), take(0.24, 4, 0.40)
+    assert max([lost, off_pitch], key=media.rank) is lost
+    # among takes the parent could hear, fewer failed checks still come first
+    assert max([take(0.10, 2, 0.9), take(0.12, 1, 0.5)], key=media.rank)["score"] == 0.5
+
+
+def test_the_words_heard_in_the_song_are_counted_like_the_lyric():
+    # v0.40 (Oct 22, 2026): a take that sings words again inside the song fails; Whisper's digits and
+    # its sign-offs on silence don't count
+    import align
+    assert align.words_in("Bun-ny, bun-ny, in the gar-den") == 5 and align.words_in("fa-la-la-la, it's 3") == 3
+    assert align.heard_share(["three", "black", "keys"], "3 black keys") == 1.0
+    assert align.SIGN_OFF.sub("", "hopping home in time for dinner. Thanks for watching!").strip() == "hopping home in time for dinner"
+    base = {"phrases": [], "words": {"shareOver300ms": 0.0, "stretches": []}, "pitch": {"share": 1.0}, "firstWordSung": True,
+            "melodyStretches": [], "tuningCents": 0, "bleed": {"db": -40}, "songStartS": 0}
+    ok = align.verdict({**base, "songHeard": {"heard": "x", "share": 1.0, "extra": 1, "words": 14}})
+    twice = align.verdict({**base, "songHeard": {"heard": "float up and rest, float up and rest", "share": 1.0, "extra": 4, "words": 14}})
+    garbled = align.verdict({**base, "songHeard": {"heard": "thank you", "share": 0.2, "extra": -12, "words": 14}})
+    assert ok["inSong"] and not twice["inSong"] and "more words than the song has" in twice["reasons"][0]
+    assert not garbled["inSong"] and "Whisper heard 20%" in garbled["reasons"][0]
+
+
+def test_a_take_far_over_on_bleed_ranks_below_one_just_over():
+    # Oct 23, 2026: both fail on bleed alone; the score had chosen the one with the backing plainly heard
+    import media
+    def take(score, db):
+        checks = {"timing": True, "pitch": True, "bleed": False, "pass": False}
+        return {"checks": checks, "words": {"shareOver300ms": 0.07}, "heard": {"share": 1.0}, "bleed": {"db": db}, "score": score}
+    loud, slight = take(0.79, -12.0), take(0.70, -23.0)
+    assert max([loud, slight], key=media.rank) is slight

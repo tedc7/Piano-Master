@@ -12,12 +12,14 @@
   // A song stays here until the parent decides. Nothing on this list reaches a child. Below the
   // waiting list: songs sent back for changes, and the deleted songs (never allowed here, or deleted
   // from the library in Songs and genres), which can go back to review, be sent for improvement
-  // (to be corrected), or be forgotten (the skills may then offer them again).
+  // (to be corrected), or be forgotten (the skills may then offer them again). Last (v0.40): ask for
+  // updates to several live songs at once, by skill, with one note (a change across the curriculum).
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
   import { handsLabel, loadContent, reloadContent } from "../../lib/content";
   import { keepView } from "../../lib/keep";
+  import type { Skill } from "../../lib/types";
 
   interface Checks {
     notesOnPitch?: number; wordsOff?: number; pass?: boolean; reasons?: string[]; flags?: string[];
@@ -50,11 +52,20 @@
   let feedback = $state("");
   let busy = $state(false);
   let skillNames = $state<Record<string, string>>({});
+  let mapSkills = $state<Skill[]>([]);
+  let songTitles = $state<Record<string, string>>({});
+  let chosen = $state<string[]>([]);              // skills whose songs to ask updates for
+  let bulkNote = $state("");
+  let bulkOpen = $state(false);
   keepView("config/review", () => document.querySelector<HTMLElement>("main.body"));   // back from a song: where it was
 
   onMount(() => {
     void load();
-    loadContent().then((c) => { skillNames = Object.fromEntries(c.map.skills.map((s) => [s.id, s.name])); }).catch(() => {});
+    loadContent().then((c) => {
+      skillNames = Object.fromEntries(c.map.skills.map((s) => [s.id, s.name]));
+      mapSkills = c.map.skills.filter((s) => s.pieces?.length);
+      songTitles = Object.fromEntries(c.pieces.map((p) => [p.id, p.title]));
+    }).catch(() => {});
   });
 
   async function load(): Promise<void> {
@@ -95,6 +106,28 @@
   }
 
   let forgetting = $state<string | null>(null);
+
+  const units = $derived([...new Set(mapSkills.map((s) => s.unit ?? ""))].map((u) => ({ unit: u, skills: mapSkills.filter((s) => (s.unit ?? "") === u) })));
+  const bulkSongs = $derived([...new Set(mapSkills.filter((s) => chosen.includes(s.id)).flatMap((s) => s.pieces ?? []))]);
+  const toggle = (id: string) => { chosen = chosen.includes(id) ? chosen.filter((x) => x !== id) : [...chosen, id]; };
+
+  /** Needs improvement for every song of the chosen skills, with one note (v0.40). */
+  async function askForUpdates(): Promise<void> {
+    busy = true;
+    try {
+      const r = await api.request<{ asked: string[]; skipped: { pieceId: string; why: string }[] }>("/library/improve", "POST",
+                                                                                                 { pieces: bulkSongs, feedback: bulkNote.trim() });
+      const title = (id: string) => songTitles[id] ?? id;
+      done = `${r.asked.length} song${r.asked.length === 1 ? "" : "s"} asked for an update with your note; each comes back to this list to approve.`
+        + (r.skipped.length ? ` Left out: ${r.skipped.map((x) => `${title(x.pieceId)} (${x.why})`).join(", ")}.` : "");
+      chosen = [];
+      bulkNote = "";
+      await load();
+    } catch (e) {
+      if (!app.parentRefused(e)) error = (e as Error).message;
+    }
+    busy = false;
+  }
 
   function start(it: Item, kind: "improve" | "never"): void {
     open = { id: it.id, kind };
@@ -280,6 +313,35 @@
   </section>
 {/if}
 
+{#if mapSkills.length}
+  <section class="panel">
+    <details bind:open={bulkOpen}>
+      <summary><b>Ask for updates to several songs</b></summary>
+      {#if bulkOpen}
+      <p class="muted">For a change across the curriculum: choose skills, say what should change, and every song in their
+        Journey bubbles is asked for an update at once. Each update comes back to the list above for you to approve; until
+        then the children keep playing the live song.</p>
+      {#each units as u (u.unit)}
+        <h3>{u.unit}</h3>
+        {#each u.skills as s (s.id)}
+          <label class="pick"><input type="checkbox" checked={chosen.includes(s.id)} onchange={() => toggle(s.id)} />
+            {s.name} <span class="muted">· {(s.pieces ?? []).map((id) => songTitles[id] ?? id).join(", ")}</span></label>
+        {/each}
+      {/each}
+      <div class="write">
+        <label for="bulk-note">What should change in these songs?</label>
+        <textarea id="bulk-note" bind:value={bulkNote} rows="2" maxlength="4000"
+                  placeholder="For example: the right hand alone, then the left, then both."></textarea>
+        <div class="buttons">
+          <button onclick={askForUpdates} disabled={busy || !bulkSongs.length || bulkNote.trim().length < 3}>
+            Ask for updates ({bulkSongs.length} song{bulkSongs.length === 1 ? "" : "s"})</button>
+        </div>
+      </div>
+      {/if}
+    </details>
+  </section>
+{/if}
+
 <style>
   .item { display: flex; gap: 16px; padding: 14px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
   .what { flex: 1 1 420px; min-width: 0; }
@@ -301,4 +363,6 @@
   .write label { display: block; font-weight: 650; margin-bottom: 6px; }
   .write textarea { width: 100%; box-sizing: border-box; font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); }
   .buttons { display: flex; gap: 10px; margin-top: 8px; }
+  h3 { margin: 14px 0 4px; font-size: 16px; }
+  .pick { display: block; padding: 4px 0; }
 </style>

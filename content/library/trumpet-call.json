@@ -25,23 +25,125 @@
  "hands": "R",
  "id": "trumpet-call",
  "info": {
+  "checks": {
+   "bleedDb": -36.9,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (10.6 s) .. land, (11.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 14.8,
+    "p95_ms": 118.8,
+    "share_over_50ms": 0.182,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 51.2,
+    "p95_ms": 209.0,
+    "share_over_50ms": 0.524,
+    "windows": 21
+   },
+   "heard": "Oh, hear the trumpets call All across the land Hear them playin' loud",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "the (10.6 s) .. land, (11.1 s)"
+   ],
+   "wordsHeard": 0.981,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 26.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Hear the trumpets call all across the land, hear them playing loud!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.tie). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/trumpet-call.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 450,
- "media": null,
+ "media": {
+  "bpm": 108.0,
+  "check": {
+   "bleedDb": -36.9,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (10.6 s) .. land, (11.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 14.8,
+    "p95_ms": 118.8,
+    "share_over_50ms": 0.182,
+    "windows": 22
+   },
+   "grid50": {
+    "median_ms": 51.2,
+    "p95_ms": 209.0,
+    "share_over_50ms": 0.524,
+    "windows": 21
+   },
+   "heard": "Oh, hear the trumpets call All across the land Hear them playin' loud",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "the (10.6 s) .. land, (11.1 s)"
+   ],
+   "wordsHeard": 0.981,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 26.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 504960,
+     "url": "/api/library/media/trumpet-call/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1008960,
+     "url": "/api/library/media/trumpet-call/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 672960,
+     "url": "/api/library/media/trumpet-call/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 561120,
+     "url": "/api/library/media/trumpet-call/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "trumpet-call-s6 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

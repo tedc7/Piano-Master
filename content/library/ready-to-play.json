@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-8295b3c368",
+ "contentVersion": "lib-fb222bacc7",
  "display": {
   "fingers": null,
   "letters": null
@@ -21,38 +21,38 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "ready-to-play",
  "info": {
   "checks": {
-   "bleedDb": -27.8,
+   "bleedDb": -28.6,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 41.1,
-    "p95_ms": 177.6,
-    "share_over_50ms": 0.462,
-    "windows": 26
+    "median_ms": 20.6,
+    "p95_ms": 83.2,
+    "share_over_50ms": 0.111,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 42.7,
-    "p95_ms": 328.4,
-    "share_over_50ms": 0.423,
-    "windows": 26
+    "median_ms": 43.9,
+    "p95_ms": 224.7,
+    "share_over_50ms": 0.481,
+    "windows": 27
    },
+   "heard": "Ooh, not too near and not too far. Good, arms are level, hands are ready. Sit on the front part of the bench. Now I'm ready, ready to play.",
    "melodyStretches": [],
    "notesOnPitch": 0.938,
-   "pass": false,
-   "reasons": [
-    "a phrase sits 126 ms off the beat"
-   ],
-   "tuningCents": 5.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
    "wordStretches": [],
-   "wordsOff": 0.036,
-   "worstPhraseMs": 125.8
+   "wordsHeard": 1.0,
+   "wordsOff": 0.071,
+   "worstPhraseMs": 21.6
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -60,7 +60,7 @@
   },
   "lyrics": "1. Not too near and not too far, good! Arms are level, hands are ready. Sit on the front part of the bench. Now I'm ready, ready to play!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.sitting). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.sitting). Original music and words for this app. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -73,33 +73,33 @@
  "level": "Prep A",
  "mapPoint": 10,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -27.8,
+   "bleedDb": -28.6,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 41.1,
-    "p95_ms": 177.6,
-    "share_over_50ms": 0.462,
-    "windows": 26
+    "median_ms": 20.6,
+    "p95_ms": 83.2,
+    "share_over_50ms": 0.111,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 42.7,
-    "p95_ms": 328.4,
-    "share_over_50ms": 0.423,
-    "windows": 26
+    "median_ms": 43.9,
+    "p95_ms": 224.7,
+    "share_over_50ms": 0.481,
+    "windows": 27
    },
+   "heard": "Ooh, not too near and not too far. Good, arms are level, hands are ready. Sit on the front part of the bench. Now I'm ready, ready to play.",
    "melodyStretches": [],
    "notesOnPitch": 0.938,
-   "pass": false,
-   "reasons": [
-    "a phrase sits 126 ms off the beat"
-   ],
-   "tuningCents": 5.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
    "wordStretches": [],
-   "wordsOff": 0.036,
-   "worstPhraseMs": 125.8
+   "wordsHeard": 1.0,
+   "wordsOff": 0.071,
+   "worstPhraseMs": 21.6
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -107,33 +107,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 693120,
+     "bytes": 676800,
      "url": "/api/library/media/ready-to-play/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1385280,
+     "bytes": 1352160,
      "url": "/api/library/media/ready-to-play/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 924000,
+     "bytes": 901920,
      "url": "/api/library/media/ready-to-play/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 769920,
+     "bytes": 751680,
      "url": "/api/library/media/ready-to-play/vocals_90.mp3"
     }
    }
   },
-  "take": "ready-to-play-s1 (words)"
+  "take": "ready-to-play-s8 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -144,14 +144,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     63
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -205,54 +204,6 @@
     "verse": 1
    },
    {
-    "note": 16,
-    "syllabic": "single",
-    "text": "Sit",
-    "verse": 1
-   },
-   {
-    "note": 17,
-    "syllabic": "single",
-    "text": "on",
-    "verse": 1
-   },
-   {
-    "note": 18,
-    "syllabic": "single",
-    "text": "the",
-    "verse": 1
-   },
-   {
-    "note": 19,
-    "syllabic": "single",
-    "text": "front",
-    "verse": 1
-   },
-   {
-    "note": 20,
-    "syllabic": "single",
-    "text": "part",
-    "verse": 1
-   },
-   {
-    "note": 21,
-    "syllabic": "single",
-    "text": "of",
-    "verse": 1
-   },
-   {
-    "note": 22,
-    "syllabic": "single",
-    "text": "the",
-    "verse": 1
-   },
-   {
-    "note": 23,
-    "syllabic": "single",
-    "text": "bench.",
-    "verse": 1
-   },
-   {
     "note": 8,
     "syllabic": "single",
     "text": "Arms",
@@ -298,6 +249,54 @@
     "note": 15,
     "syllabic": "end",
     "text": "y.",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "Sit",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "front",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "part",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "of",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "bench.",
     "verse": 1
    },
    {
@@ -514,121 +513,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    },
@@ -754,121 +753,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 25.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 27.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 29.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 31.0,
     "voice": 1
    }

@@ -1,0 +1,55 @@
+# Concept lesson (arch §3 "Teaching concepts", §6.9) for prep-a.hands-take-turns, in our own words: one concept, one Explain.
+# Type: Technique. Notes: C4, F#3; ":2" makes a note 2 beats;
+# [C4,E4] is two notes at once; `level` on a Hear card is how hard the app's piano plays it (0 to 1).
+skill: prep-a.hands-take-turns
+title: The hands take turns
+cards:
+- kind: explain
+  text: Now one song uses both hands. They take turns. While one hand plays, the other waits on its own keys, ready.
+    The hands swap at a long note, so hold it and get the other hand ready.
+- kind: show
+  text: The right hand plays and holds the long note. Then the left hand plays.
+  notes: C#4 D#4:2 C#3 D#3:2
+  fingers:
+  - 2
+  - 3
+  - 3
+  - 2
+  hand: RL
+  clef: grand
+- kind: hear
+  text: 'Listen: the right hand, then the left hand, taking turns.'
+  play: C#4 D#4 C#4:2 C#3 D#3 C#3:2
+  tempo: 84
+- kind: try
+  text: Put both hands on their two black keys. Play with the right hand, hold the long note, then play with the left.
+  notes: C#4 D#4:2 C#3 D#3:2
+  fingers:
+  - 2
+  - 3
+  - 3
+  - 2
+  hand: RL
+  clef: grand
+- kind: try
+  text: Now the left hand starts, and the right hand answers.
+  notes: C#3 D#3:2 C#4 D#4:2
+  fingers:
+  - 3
+  - 2
+  - 2
+  - 3
+  hand: RL
+  clef: grand
+- kind: check
+  questions:
+  - text: When the hands take turns, what does the waiting hand do?
+    choices:
+    - Gets ready on its keys
+    - Plays too
+    answer: Gets ready on its keys
+  - text: When do the hands swap?
+    choices:
+    - After a long note
+    - In the middle of a word
+    answer: After a long note

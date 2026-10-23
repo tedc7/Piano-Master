@@ -25,23 +25,123 @@
  "hands": "RL",
  "id": "hello-treble-g",
  "info": {
+  "checks": {
+   "bleedDb": -32.8,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 12.5 s",
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 30.9,
+    "share_over_50ms": 0.0,
+    "windows": 11
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 81.3,
+    "share_over_50ms": 0.182,
+    "windows": 11
+   },
+   "heard": "Oh, hello treble G You're on the second line Left thumb keeps the beat on middle seat",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.954,
+   "wordsOff": 0.267,
+   "worstPhraseMs": 27.9
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Hello, Treble G, you're on the second line! Left thumb keeps the beat on Middle C too.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.treble-g). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/hello-treble-g.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 230,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.8,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 12.5 s",
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 30.9,
+    "share_over_50ms": 0.0,
+    "windows": 11
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 81.3,
+    "share_over_50ms": 0.182,
+    "windows": 11
+   },
+   "heard": "Oh, hello treble G You're on the second line Left thumb keeps the beat on middle seat",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.954,
+   "wordsOff": 0.267,
+   "worstPhraseMs": 27.9
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 465600,
+     "url": "/api/library/media/hello-treble-g/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 929760,
+     "url": "/api/library/media/hello-treble-g/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 620160,
+     "url": "/api/library/media/hello-treble-g/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 516960,
+     "url": "/api/library/media/hello-treble-g/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "hello-treble-g-s8 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -902,6 +902,21 @@ def song_update(pid: str):
         con.close()
 
 
+def request_updates(con, rows: list, feedback: str, name: str) -> None:
+    """The parent's update requests for live songs (`rows` from the library), in one package: each
+    waits with the other feedback for the skills, and its live song stays as it is until the fix is
+    approved."""
+    pkg, t = uuid.uuid4().hex[:12], now()
+    with db.transaction(con):
+        con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at, reviewed_at) "
+                    "VALUES (?, ?, 'parent', NULL, 'done', ?, ?, ?)", (pkg, name, t, t, t))
+        for row in rows:
+            con.execute("INSERT INTO staged_items (id, package_id, piece_id, song, title, composer, genre, info, report, fingerprint, "
+                        "media, status, feedback, decided_at, live) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '{}', ?, '[]', 'needs-work', ?, ?, ?)",
+                        (uuid.uuid4().hex[:12], pkg, row["piece_id"], row["song"], row["title"], row["composer"], row["genre"],
+                         row["info"], row["fingerprint"], feedback.strip(), t, row["piece_id"]))
+
+
 @router.post("/api/library/pieces/{pid}/improve", status_code=201, dependencies=[Depends(require_parent)])
 def ask_for_update(pid: str, body: FeedbackIn):
     """Needs improvement, for a song in the library: the request waits with the other feedback for
@@ -913,15 +928,36 @@ def ask_for_update(pid: str, body: FeedbackIn):
             raise HTTPException(404, "no such song in the library")
         if open_update(con, pid):
             raise HTTPException(409, "this song already has an update waiting: see the Review list")
-        pkg, iid, t = uuid.uuid4().hex[:12], uuid.uuid4().hex[:12], now()
-        with db.transaction(con):
-            con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at, reviewed_at) "
-                        "VALUES (?, ?, 'parent', NULL, 'done', ?, ?, ?)", (pkg, f"Needs improvement: {row['title']}", t, t, t))
-            con.execute("INSERT INTO staged_items (id, package_id, piece_id, song, title, composer, genre, info, report, fingerprint, "
-                        "media, status, feedback, decided_at, live) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '{}', ?, '[]', 'needs-work', ?, ?, ?)",
-                        (iid, pkg, pid, row["song"], row["title"], row["composer"], row["genre"], row["info"], row["fingerprint"],
-                         body.feedback.strip(), t, pid))
+        request_updates(con, [row], body.feedback, f"Needs improvement: {row['title']}")
         return {"update": update_out(open_update(con, pid))}
+    finally:
+        con.close()
+
+
+class UpdatesIn(FeedbackIn):
+    pieces: list[str] = Field(min_length=1, max_length=500)
+
+
+@router.post("/api/library/improve", status_code=201, dependencies=[Depends(require_parent)])
+def ask_for_updates(body: UpdatesIn):
+    """Needs improvement for several live songs at once, with one note (v0.40: a change to the
+    curriculum across a unit, which the parent asked for, needs a request for each song before the
+    skills can send its update). Songs not in the library, or with an update already waiting, are
+    left out and named."""
+    con = db.connect()
+    try:
+        rows, skipped = [], []
+        for pid in dict.fromkeys(body.pieces):
+            row = con.execute("SELECT * FROM library WHERE piece_id = ?", (pid,)).fetchone()
+            if not row:
+                skipped.append({"pieceId": pid, "why": "not in the library"})
+            elif open_update(con, pid):
+                skipped.append({"pieceId": pid, "why": "an update is already waiting"})
+            else:
+                rows.append(row)
+        if rows:
+            request_updates(con, rows, body.feedback, f"Needs improvement: {len(rows)} song{'s' if len(rows) > 1 else ''}")
+        return {"asked": [r["piece_id"] for r in rows], "skipped": skipped}
     finally:
         con.close()
 

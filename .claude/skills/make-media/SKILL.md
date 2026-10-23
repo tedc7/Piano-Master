@@ -46,6 +46,10 @@ media:
   vocal: yue2                # or none
   backing: {style: round, entryBars: [2, 4]}   # or just `backing: kids`
   vocal_style: warm clear solo voice            # optional: a parent's style change for this song
+  accompaniment_style: a very soft sustained string pad, sparse and quiet   # YuE2's own (thrown away): sparser can help the vocal
+  vocal_line: as-written     # sing the hands where they're written against each other (a tune shared
+                             # between the hands; an echo an octave below), not each moved into range alone
+  vocal_octave: -1           # the whole vocal an octave lower (or higher), leaps kept
 ```
 
 For a hymn, type all four parts (`%%score (S A) (T B)`) and set `play: melody`: the backing then
@@ -64,12 +68,13 @@ on after it), MP3s and `media.json`. About a minute of GPU and five minutes of a
 alignments are reused.
 
 **The checks** (a take must pass all of them; the best passing take is kept, else the best one,
-flagged):
+flagged: a take with a quarter or more of its words off comes last, then the fewest failed checks):
 - timing: no phrase more than 50 ms off the beat;
 - pitch: 90% of notes on the right pitch;
 - words: the first word sung; words more than 0.3 s off their notes, or that the aligner can't
-  place, under 10%, and no stretch of them lasting 1.5 s or more in the first 15 s
-  (anything shorter, or later, is a *flag*: point the parent to it). The aligner misses short
+  place, under 10%, no stretch of them lasting 1.5 s or more in the first 15 s, and none on the
+  song's last word, however short: the ending is heard last (anything else shorter, or later, is a
+  *flag*: point the parent to it). The aligner misses short
   words ("a", "the") and same-note neighbours in takes that sing them clearly, so a take whose
   words Whisper hears (92% or more) passes with scattered misses, as long as no stretch lasts
   1.5 s anywhere: a stretch is a real drift (a syllable behind for seconds), which Whisper can't

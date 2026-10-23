@@ -24,15 +24,14 @@ cards:
   - 3
   hand: R
 - kind: try
-  text: 'Left hand: play the two black keys down low.'
-  notes: C#2 D#2 C#2 D#2
+  text: 'Right hand again: come back down to the two black keys in the middle. Lower!'
+  notes: C#4 D#4 C#4 D#4
   fingers:
-  - 3
   - 2
   - 3
   - 2
-  hand: L
-  clef: bass
+  - 3
+  hand: R
 - kind: check
   questions:
   - text: Going to the right on the keyboard, the sounds get...

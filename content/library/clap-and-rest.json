@@ -24,23 +24,117 @@
  "hands": "R",
  "id": "clap-and-rest",
  "info": {
+  "checks": {
+   "bleedDb": -30.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.4,
+    "p95_ms": 16.5,
+    "share_over_50ms": 0.0,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 20.0,
+    "p95_ms": 80.7,
+    "share_over_50ms": 0.188,
+    "windows": 16
+   },
+   "heard": "Oh, clap, clap, clap, tap, tap, tap, rest between the beats. One, two, three, rest on four, resting keeps the time.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 8.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Clap, clap, clap, tap, tap, tap, rest between the beats, one, two, three, rest on four, resting keeps the time.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.quarter-rest). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/clap-and-rest.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 460,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -30.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.4,
+    "p95_ms": 16.5,
+    "share_over_50ms": 0.0,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 20.0,
+    "p95_ms": 80.7,
+    "share_over_50ms": 0.188,
+    "windows": 16
+   },
+   "heard": "Oh, clap, clap, clap, tap, tap, tap, rest between the beats. One, two, three, rest on four, resting keeps the time.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 8.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 517440,
+     "url": "/api/library/media/clap-and-rest/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1033440,
+     "url": "/api/library/media/clap-and-rest/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 689280,
+     "url": "/api/library/media/clap-and-rest/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 574560,
+     "url": "/api/library/media/clap-and-rest/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "clap-and-rest-s5 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

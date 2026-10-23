@@ -25,23 +25,117 @@
  "hands": "R",
  "id": "waltzing-bear",
  "info": {
+  "checks": {
+   "bleedDb": -32.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 13.1,
+    "p95_ms": 98.7,
+    "share_over_50ms": 0.429,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 20.3,
+    "p95_ms": 187.7,
+    "share_over_50ms": 0.381,
+    "windows": 21
+   },
+   "heard": "Oh, one, two, three, dance with me Round and round, go Twirl around, light as air, now we bow down",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.986,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 46.4
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. One, two, three, dance with me, round and round, go. Twirl around, light as air, now we bow, done.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.three-four). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/waltzing-bear.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 320,
- "media": null,
+ "media": {
+  "bpm": 120.0,
+  "check": {
+   "bleedDb": -32.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 13.1,
+    "p95_ms": 98.7,
+    "share_over_50ms": 0.429,
+    "windows": 21
+   },
+   "grid50": {
+    "median_ms": 20.3,
+    "p95_ms": 187.7,
+    "share_over_50ms": 0.381,
+    "windows": 21
+   },
+   "heard": "Oh, one, two, three, dance with me Round and round, go Twirl around, light as air, now we bow down",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.986,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 46.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 3.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 291360,
+     "url": "/api/library/media/waltzing-bear/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 581760,
+     "url": "/api/library/media/waltzing-bear/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 388320,
+     "url": "/api/library/media/waltzing-bear/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 323520,
+     "url": "/api/library/media/waltzing-bear/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "waltzing-bear-s3 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

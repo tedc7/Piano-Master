@@ -378,3 +378,57 @@ def test_a_new_skill_map_replans_todays_session(con, content):
     s = engine.get_session(con, new, "s1", D0)
     assert s["items"][0]["id"] != old["items"][0]["id"]
     assert all(not i.get("skillId") or i["skillId"].startswith("n.") for i in s["items"])
+
+
+def two_hand_content():
+    """t.a's songs, the second one for both hands."""
+    pieces = [piece("pa1", "t.a"), {**piece("pa2", "t.a"), "hands": "RL"}, *PIECES[2:]]
+    skills = [{**s, "pieces": ["pa2", "pa1"]} if s["id"] == "t.a" else s for s in SKILLS]
+    return Content.from_json({"skills": skills}, {"contentVersion": "t", "pieces": pieces})
+
+
+def test_songs_come_in_the_skill_maps_order():
+    c = two_hand_content()
+    assert [p.id for p in c.pieces_of("t.a")] == ["pa2", "pa1"]
+
+
+def test_a_new_song_for_both_hands_comes_one_hand_at_a_time_first(con):
+    # v0.40: right hand, left hand, then both, each step not played yet
+    c = two_hand_content()
+    st = engine.load_states(con, c, "s1")
+    items, _ = engine.Planner(c, st, D0, 30).build()
+    steps = [(i["pieceId"], i.get("hands")) for i in items if i["reason"] == "New" and i["kind"] == "piece"]
+    assert steps[:3] == [("pa2", "R"), ("pa2", "L"), ("pa2", None)]
+    items, _ = engine.Planner(c, st, D0, 30, played={"pa2": {"R"}}).build()
+    assert [(i["pieceId"], i.get("hands")) for i in items if i["kind"] == "piece"][:2] == [("pa2", "L"), ("pa2", None)]
+    items, _ = engine.Planner(c, st, D0, 30, played={"pa2": {"both"}}).build()
+    assert not any(i.get("hands") for i in items)
+    # a song for one hand is never split
+    items, _ = engine.Planner(Content.from_json({"skills": SKILLS}, {"contentVersion": "t", "pieces": PIECES}), st, D0, 30).build()
+    assert not any(i.get("hands") for i in items)
+
+
+def test_the_hands_played_come_from_finished_plays(con):
+    import json
+    con.execute("INSERT INTO devices (id, created_at, last_seen) VALUES ('dev', ?, ?)", (D0.isoformat(),) * 2)
+    for n, (hands, mode, done) in enumerate([("R", "play", 1), ("L", "loop", 1), ("both", "play", 0), (None, "play", 1)]):
+        con.execute(
+            "INSERT INTO attempts (id, device_id, student_id, piece_id, arrangement_id, context, mode, completed, started_at, received_at, "
+            "tempo_preset, conditions, conditions_factor, raw_accuracy, accuracy, accuracy_stars, per_phrase_errors, note_errors, "
+            "evaluation, raw_events, passes) VALUES (?, 'dev', 's1', ?, ?, 'guided', ?, ?, ?, ?, '100', ?, 1, 1, 1, 5, '[]', '[]', '{}', '[]', '[]')",
+            (f"a{n}", "pa2" if hands else "pa1", "pa2" if hands else "pa1", mode, done, D0.isoformat(), D0.isoformat(),
+             json.dumps({"hands": hands} if hands else {})))
+    assert engine.hands_played(con, "s1") == {"pa2": {"R"}, "pa1": {"both"}}
+
+
+def test_a_planned_one_hand_step_is_practice_and_the_song_passes_with_both_hands(con):
+    # v0.40: the step is played as the session asked (no one-hand aid), so it can't pass the skill
+    c = two_hand_content()
+    learn(con, c, "t.a", D0)
+    a = AttemptInfo(piece_id="pa2", day=D0, context="guided", accuracy=0.99, accuracy_stars=5, timing_stars=5,
+                    skill_id="t.a", hand_step=True)
+    assert engine.record_attempt(con, c, "s1", a)["passed"] == []
+    st = engine.load_states(con, c, "s1")["t.a"]
+    assert st.status == "current" and st.mastery is None and st.last_piece_id == "pa2"
+    both = AttemptInfo(piece_id="pa2", day=D0, context="guided", accuracy=0.99, accuracy_stars=5, timing_stars=5, skill_id="t.a")
+    assert engine.record_attempt(con, c, "s1", both)["passed"] == ["t.a"]

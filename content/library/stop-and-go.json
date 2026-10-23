@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "stop-and-go",
  "info": {
+  "checks": {
+   "bleedDb": -32.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.5,
+    "p95_ms": 44.4,
+    "share_over_50ms": 0.036,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 24.1,
+    "p95_ms": 96.8,
+    "share_over_50ms": 0.214,
+    "windows": 28
+   },
+   "heard": "Go, go, go, go, go, go, go Stop, stop, stop, stop Red light, stop, green light, go, look both ways, go",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -5.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.15,
+   "worstPhraseMs": 30.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Go, go, go! Go, go, go! Stop! Stop! Stop! Stop! Red light, stop! Green light, go! Look both ways, go!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.quarter-rest). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/stop-and-go.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 460,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.5,
+    "p95_ms": 44.4,
+    "share_over_50ms": 0.036,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 24.1,
+    "p95_ms": 96.8,
+    "share_over_50ms": 0.214,
+    "windows": 28
+   },
+   "heard": "Go, go, go, go, go, go, go Stop, stop, stop, stop Red light, stop, green light, go, look both ways, go",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -5.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.15,
+   "worstPhraseMs": 30.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 461760,
+     "url": "/api/library/media/stop-and-go/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 922080,
+     "url": "/api/library/media/stop-and-go/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 614880,
+     "url": "/api/library/media/stop-and-go/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 512640,
+     "url": "/api/library/media/stop-and-go/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "stop-and-go-s4 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -21,23 +21,123 @@
  "hands": "RL",
  "id": "c-d-f-dance",
  "info": {
+  "checks": {
+   "bleedDb": -25.5,
+   "firstWordSung": true,
+   "flags": [
+    "Whisper heard 82% of the words: \"O, B, C, B, D, F, D, C Now the right hand sings\"",
+    "5 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 3.4,
+    "p95_ms": 80.4,
+    "share_over_50ms": 0.111,
+    "windows": 18
+   },
+   "grid50": {
+    "median_ms": 24.5,
+    "p95_ms": 195.3,
+    "share_over_50ms": 0.222,
+    "windows": 18
+   },
+   "heard": "O, B, C, B, D, F, D, C Now the right hand sings",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.0,
+   "wordStretches": [],
+   "wordsHeard": 0.818,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 3.7
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Bass C, Bass D, F, D, C. Now the right hand sings!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-c). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/c-d-f-dance.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 410,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -25.5,
+   "firstWordSung": true,
+   "flags": [
+    "Whisper heard 82% of the words: \"O, B, C, B, D, F, D, C Now the right hand sings\"",
+    "5 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 3.4,
+    "p95_ms": 80.4,
+    "share_over_50ms": 0.111,
+    "windows": 18
+   },
+   "grid50": {
+    "median_ms": 24.5,
+    "p95_ms": 195.3,
+    "share_over_50ms": 0.222,
+    "windows": 18
+   },
+   "heard": "O, B, C, B, D, F, D, C Now the right hand sings",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.0,
+   "wordStretches": [],
+   "wordsHeard": 0.818,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 3.7
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 271680,
+     "url": "/api/library/media/c-d-f-dance/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 542400,
+     "url": "/api/library/media/c-d-f-dance/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 361920,
+     "url": "/api/library/media/c-d-f-dance/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 301920,
+     "url": "/api/library/media/c-d-f-dance/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "c-d-f-dance-s21 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

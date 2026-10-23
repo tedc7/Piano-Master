@@ -25,23 +25,125 @@
  "hands": "RL",
  "id": "two-clefs",
  "info": {
+  "checks": {
+   "bleedDb": -25.6,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at I (5.6 s) .. sing, (6.2 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 31.0,
+    "share_over_50ms": 0.0,
+    "windows": 38
+   },
+   "grid50": {
+    "median_ms": 24.5,
+    "p95_ms": 60.2,
+    "share_over_50ms": 0.158,
+    "windows": 38
+   },
+   "heard": "Oh, Trebla Cliff, up high I sing, bass clef down below I hum, right hand on the upper staff, left hand, lower staff",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "I (5.6 s) .. sing, (6.2 s)"
+   ],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.136,
+   "worstPhraseMs": 12.2
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Treble clef, up high, I sing, Bass clef, down below, I hum, right hand on the upper staff. left hand, lower staff.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.the-clefs). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/two-clefs.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 210,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -25.6,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at I (5.6 s) .. sing, (6.2 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 31.0,
+    "share_over_50ms": 0.0,
+    "windows": 38
+   },
+   "grid50": {
+    "median_ms": 24.5,
+    "p95_ms": 60.2,
+    "share_over_50ms": 0.158,
+    "windows": 38
+   },
+   "heard": "Oh, Trebla Cliff, up high I sing, bass clef down below I hum, right hand on the upper staff, left hand, lower staff",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "I (5.6 s) .. sing, (6.2 s)"
+   ],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.136,
+   "worstPhraseMs": 12.2
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 457440,
+     "url": "/api/library/media/two-clefs/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 913920,
+     "url": "/api/library/media/two-clefs/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 609600,
+     "url": "/api/library/media/two-clefs/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 508320,
+     "url": "/api/library/media/two-clefs/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "two-clefs-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

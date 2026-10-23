@@ -25,23 +25,117 @@
  "hands": "R",
  "id": "four-beat-band",
  "info": {
+  "checks": {
+   "bleedDb": -35.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 15.1,
+    "p95_ms": 172.0,
+    "share_over_50ms": 0.129,
+    "windows": 31
+   },
+   "grid50": {
+    "median_ms": 31.1,
+    "p95_ms": 244.1,
+    "share_over_50ms": 0.233,
+    "windows": 30
+   },
+   "heard": "Oh, four beats in each measure, that's what four four means. Quarter notes get one beat, count along with me.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.955,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.056,
+   "worstPhraseMs": 16.8
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Four beats in each measure, that's what fourfour means. Quarter notes get one beat, count along with me!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.four-four). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/four-beat-band.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 290,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -35.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 15.1,
+    "p95_ms": 172.0,
+    "share_over_50ms": 0.129,
+    "windows": 31
+   },
+   "grid50": {
+    "median_ms": 31.1,
+    "p95_ms": 244.1,
+    "share_over_50ms": 0.233,
+    "windows": 30
+   },
+   "heard": "Oh, four beats in each measure, that's what four four means. Quarter notes get one beat, count along with me.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.955,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.056,
+   "worstPhraseMs": 16.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 465120,
+     "url": "/api/library/media/four-beat-band/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 928800,
+     "url": "/api/library/media/four-beat-band/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 619680,
+     "url": "/api/library/media/four-beat-band/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 516480,
+     "url": "/api/library/media/four-beat-band/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "four-beat-band-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

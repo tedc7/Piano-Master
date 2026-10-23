@@ -11,55 +11,56 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-e85ed3c50e",
+ "contentVersion": "lib-05f65d176a",
  "display": {
   "fingers": null,
   "letters": null
  },
  "featuredSkills": [
-  "prep-a.three-black-keys",
-  "prep-a.sitting"
+  "prep-a.three-black-keys"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "L",
  "id": "three-black-keys",
  "info": {
   "checks": {
-   "bleedDb": -29.4,
+   "bleedDb": -31.2,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 16.4,
-    "p95_ms": 61.3,
-    "share_over_50ms": 0.135,
-    "windows": 37
+    "median_ms": 9.1,
+    "p95_ms": 81.1,
+    "share_over_50ms": 0.186,
+    "windows": 43
    },
    "grid50": {
-    "median_ms": 17.2,
-    "p95_ms": 130.0,
-    "share_over_50ms": 0.211,
-    "windows": 38
+    "median_ms": 41.8,
+    "p95_ms": 233.3,
+    "share_over_50ms": 0.349,
+    "windows": 43
    },
+   "heard": "Oh, three black keys up, three black keys down, three low keys down, three low keys up, three black keys up, three black keys down, three deep keys down, three deep keys up.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 1.0,
+   "tuningCents": 2.5,
    "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 27.4
+   "wordsHeard": 1.0,
+   "wordsOff": 0.062,
+   "worstPhraseMs": 11.4
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "lyrics": "1. Three black keys up, three black keys down. Three low keys down, three low keys up. Three high keys up, three high keys down. Three deep keys down, three deep keys up.",
+  "lyrics": "1. Three black keys up, three black keys down. Three low keys down, three low keys up. Three black keys up, three black keys down. Three deep keys down, three deep keys up.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.three-black-keys). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.three-black-keys). Original music and words for this app. v0.40: the left hand alone, at 76 (it took turns with the right hand before)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -72,31 +73,33 @@
  "level": "Prep A",
  "mapPoint": 60,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -29.4,
+   "bleedDb": -31.2,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 16.4,
-    "p95_ms": 61.3,
-    "share_over_50ms": 0.135,
-    "windows": 37
+    "median_ms": 9.1,
+    "p95_ms": 81.1,
+    "share_over_50ms": 0.186,
+    "windows": 43
    },
    "grid50": {
-    "median_ms": 17.2,
-    "p95_ms": 130.0,
-    "share_over_50ms": 0.211,
-    "windows": 38
+    "median_ms": 41.8,
+    "p95_ms": 233.3,
+    "share_over_50ms": 0.349,
+    "windows": 43
    },
+   "heard": "Oh, three black keys up, three black keys down, three low keys down, three low keys up, three black keys up, three black keys down, three deep keys down, three deep keys up.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 1.0,
+   "tuningCents": 2.5,
    "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 27.4
+   "wordsHeard": 1.0,
+   "wordsOff": 0.062,
+   "worstPhraseMs": 11.4
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -104,33 +107,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 507360,
+     "bytes": 594240,
      "url": "/api/library/media/three-black-keys/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1013760,
+     "bytes": 1187520,
      "url": "/api/library/media/three-black-keys/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 676320,
+     "bytes": 792000,
      "url": "/api/library/media/three-black-keys/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 564000,
+     "bytes": 660480,
      "url": "/api/library/media/three-black-keys/vocals_90.mp3"
     }
    }
   },
-  "take": "three-black-keys-s1 (words)"
+  "take": "three-black-keys-s5 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -142,13 +145,12 @@
    "pickupBeats": 0.0,
    "range": [
     42,
-    82
+    58
    ],
    "staves": [
-    "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -202,54 +204,6 @@
     "verse": 1
    },
    {
-    "note": 16,
-    "syllabic": "single",
-    "text": "Three",
-    "verse": 1
-   },
-   {
-    "note": 17,
-    "syllabic": "single",
-    "text": "high",
-    "verse": 1
-   },
-   {
-    "note": 18,
-    "syllabic": "single",
-    "text": "keys",
-    "verse": 1
-   },
-   {
-    "note": 19,
-    "syllabic": "single",
-    "text": "up,",
-    "verse": 1
-   },
-   {
-    "note": 20,
-    "syllabic": "single",
-    "text": "three",
-    "verse": 1
-   },
-   {
-    "note": 21,
-    "syllabic": "single",
-    "text": "high",
-    "verse": 1
-   },
-   {
-    "note": 22,
-    "syllabic": "single",
-    "text": "keys",
-    "verse": 1
-   },
-   {
-    "note": 23,
-    "syllabic": "single",
-    "text": "down.",
-    "verse": 1
-   },
-   {
     "note": 8,
     "syllabic": "single",
     "text": "Three",
@@ -295,6 +249,54 @@
     "note": 15,
     "syllabic": "single",
     "text": "up.",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "Three",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "black",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "keys",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "up,",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "three",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "black",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "keys",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "down.",
     "verse": 1
    },
    {
@@ -391,13 +393,13 @@
   "notes": [
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 4,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 66,
+    "pitch": 54,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "F"
     },
     "staff": 0,
@@ -407,12 +409,12 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "R",
+    "hand": "L",
     "isMelody": true,
-    "pitch": 68,
+    "pitch": 56,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "G"
     },
     "staff": 0,
@@ -421,13 +423,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 70,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -436,13 +438,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 70,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -451,13 +453,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 70,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -467,12 +469,12 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "R",
+    "hand": "L",
     "isMelody": true,
-    "pitch": 68,
+    "pitch": 56,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "G"
     },
     "staff": 0,
@@ -481,13 +483,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 4,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 66,
+    "pitch": 54,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "F"
     },
     "staff": 0,
@@ -496,13 +498,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 1,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 66,
+    "pitch": 54,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "F"
     },
     "staff": 0,
@@ -514,13 +516,13 @@
     "finger": 2,
     "hand": "L",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 46,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 2,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
@@ -529,13 +531,13 @@
     "finger": 3,
     "hand": "L",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 44,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 2,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
@@ -544,13 +546,13 @@
     "finger": 4,
     "hand": "L",
     "isMelody": true,
-    "pitch": 54,
+    "pitch": 42,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 2,
      "step": "F"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
@@ -559,14 +561,74 @@
     "finger": 4,
     "hand": "L",
     "isMelody": true,
-    "pitch": 54,
+    "pitch": 42,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 2,
      "step": "F"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 42,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 44,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 46,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "L",
+    "isMelody": true,
+    "pitch": 46,
+    "spelled": {
+     "alter": 1,
+     "octave": 2,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 15.0,
     "voice": 1
    },
    {
@@ -578,66 +640,6 @@
     "spelled": {
      "alter": 1,
      "octave": 3,
-     "step": "F"
-    },
-    "staff": 1,
-    "start": 12.0,
-    "voice": 1
-   },
-   {
-    "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
-    "isMelody": true,
-    "pitch": 56,
-    "spelled": {
-     "alter": 1,
-     "octave": 3,
-     "step": "G"
-    },
-    "staff": 1,
-    "start": 13.0,
-    "voice": 1
-   },
-   {
-    "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
-    "isMelody": true,
-    "pitch": 58,
-    "spelled": {
-     "alter": 1,
-     "octave": 3,
-     "step": "A"
-    },
-    "staff": 1,
-    "start": 14.0,
-    "voice": 1
-   },
-   {
-    "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
-    "isMelody": true,
-    "pitch": 58,
-    "spelled": {
-     "alter": 1,
-     "octave": 3,
-     "step": "A"
-    },
-    "staff": 1,
-    "start": 15.0,
-    "voice": 1
-   },
-   {
-    "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
-    "isMelody": true,
-    "pitch": 78,
-    "spelled": {
-     "alter": 1,
-     "octave": 5,
      "step": "F"
     },
     "staff": 0,
@@ -647,12 +649,12 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "R",
+    "hand": "L",
     "isMelody": true,
-    "pitch": 80,
+    "pitch": 56,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "G"
     },
     "staff": 0,
@@ -661,13 +663,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 82,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -676,13 +678,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 82,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -691,13 +693,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 4,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 82,
+    "pitch": 58,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "A"
     },
     "staff": 0,
@@ -707,12 +709,12 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "R",
+    "hand": "L",
     "isMelody": true,
-    "pitch": 80,
+    "pitch": 56,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "G"
     },
     "staff": 0,
@@ -721,13 +723,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 4,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 78,
+    "pitch": 54,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "F"
     },
     "staff": 0,
@@ -736,13 +738,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 1,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 78,
+    "pitch": 54,
     "spelled": {
      "alter": 1,
-     "octave": 5,
+     "octave": 3,
      "step": "F"
     },
     "staff": 0,
@@ -760,7 +762,7 @@
      "octave": 2,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
@@ -775,7 +777,7 @@
      "octave": 2,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 25.0,
     "voice": 1
    },
@@ -790,7 +792,7 @@
      "octave": 2,
      "step": "F"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
@@ -805,7 +807,7 @@
      "octave": 2,
      "step": "F"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 27.0,
     "voice": 1
    },
@@ -820,7 +822,7 @@
      "octave": 2,
      "step": "F"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
@@ -835,7 +837,7 @@
      "octave": 2,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 29.0,
     "voice": 1
    },
@@ -850,7 +852,7 @@
      "octave": 2,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    },
@@ -865,7 +867,7 @@
      "octave": 2,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 31.0,
     "voice": 1
    }

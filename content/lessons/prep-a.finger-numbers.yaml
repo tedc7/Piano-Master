@@ -24,15 +24,14 @@ cards:
   - 3
   hand: R
 - kind: try
-  text: 'Left hand: finger 3, then finger 2.'
-  notes: C#3 D#3 C#3 D#3
+  text: 'Now finger 3 first, then finger 2.'
+  notes: D#4 C#4 D#4 C#4
   fingers:
   - 3
   - 2
   - 3
   - 2
-  hand: L
-  clef: bass
+  hand: R
 - kind: check
   questions:
   - text: Which finger is number 1?

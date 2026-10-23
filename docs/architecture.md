@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.39** · Oct 20, 2026
+**Version 0.40** · Oct 21, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -577,13 +577,15 @@ Each skill has a track: **reading**, **rhythm**, **technique**, **theory**, **re
 
 | Step (Prep A unit) | Staff shown | What the student plays |
 | --- | --- | --- |
-| 1. Pre-staff (Units 1–3) | Grand staff, each white key's letter name printed just under its note head (`letters`; inside an enlarged head before v0.27) | Black-key groups, then C D E, F G A B, the C 5-finger scale and the left hand down from C, read by letter names; hands take turns |
+| 1. Pre-staff (Units 1–3) | Each white key's letter name printed just under its note head (`letters`; inside an enlarged head before v0.27); the treble staff alone for a right-hand song, the bass staff for a left-hand one, the grand staff once the hands take turns | Black-key groups, then C D E, F G A B, the C 5-finger scale and the left hand down from C, read by letter names. The right hand alone first, then the left hand alone, then the hands taking turns (v0.40, below) |
 | 2. Landmarks (Unit 4) | Grand staff | Middle C, Treble G and Bass F; two notes together; a note held in one hand while the other plays |
 | 3. Middle C position (Units 5–7) | Grand staff | Treble C to G and bass C down to F, hands taking turns; steps, then skips and two notes at once |
 | 4. C position (Unit 8) | Grand staff | The left hand down to Bass C |
 | 5. Hands together (Level 1) | Grand staff | Both hands moving at once |
 
-v0.9 planned a treble-only step and then a bass-only step. The spine instead reads the grand staff from the first staff unit, with the hands taking turns, and the map follows it. Left-hand practice still matters: the left hand is usually the weaker one, and reading bass notes is a separate skill from reading treble notes. Hands-separate practice also continues at every level: any hands-together piece or section can be practiced one hand at a time first, and the Repertoire track uses this routinely.
+v0.9 planned a treble-only step and then a bass-only step. The spine instead reads the grand staff from the first staff unit, with the hands taking turns, and the map follows it.
+
+**Decision (v0.40): the hands come in one at a time.** Until v0.40 every song of Prep A's first two units used both hands, the right for two bars and then the left, switching with no beat between them; the very first song did. The hands never played at once, but a beginner still had to manage both from the first day, and the family's first sessions showed it was too much. Now the right hand plays alone first (the first four skills: sitting, a round hand, finger numbers, low and high), then the left hand alone (the groups of two black keys), then songs for one hand or the other (three black keys, the quarter and half notes), then **The hands take turns**, a skill of its own (Unit 2, after the half note: each switch comes after a held note), and the hands at once only in Unit 4, as before. The song analysis enforces the order (6.8, `turns`). Unit 1's songs are at 76 a minute and Unit 2's at 84 (they were 84 to 96). Every new level's map is checked the same way for sudden jumps in what the hands must do. Left-hand practice still matters: the left hand is usually the weaker one, and reading bass notes is a separate skill from reading treble notes. Hands-separate practice also continues at every level: any hands-together piece or section can be practiced one hand at a time first, and the Repertoire track uses this routinely.
 
 ### 6.8 Songs in the curriculum
 
@@ -591,7 +593,7 @@ Method books teach through their own pieces, but those pieces and their arrangem
 
 **Decision: every arrangement is analyzed for the skills it requires, and it unlocks for a student by those skills. Nobody hand-assigns songs to lessons.**
 
-**1. Every skill defines its constraints.** Each skill lists what a piece may contain once that skill is learned: notes or hand positions, rhythms, keys, time signatures, hands, staff, and range. For example, "C position right hand" allows C to G in the right hand, quarter and half notes, 4/4, treble staff only. Since v0.24 a skill can also allow melodic intervals (steps, skips), two notes at once in one hand, hands together over a held note, ties and rests; a pre-staff skill (`letters`) counts only letter-named pieces. Each kind is checked only when some skill in the map names it, so a map that doesn't use it analyses as before.
+**1. Every skill defines its constraints.** Each skill lists what a piece may contain once that skill is learned: notes or hand positions, rhythms, keys, time signatures, hands, staff, and range. For example, "C position right hand" allows C to G in the right hand, quarter and half notes, 4/4, treble staff only. Since v0.24 a skill can also allow melodic intervals (steps, skips), two notes at once in one hand, hands together over a held note, ties and rests, and since v0.40 the hands taking turns (`turns`: without it, any skill naming both hands allows a song that uses both, one after the other); a pre-staff skill (`letters`) counts only letter-named pieces. Each kind is checked only when some skill in the map names it, so a map that doesn't use it analyses as before.
 
 **2. Every arrangement is analyzed.** A script reads each arrangement's notes and records:
 
@@ -725,7 +727,7 @@ Each aid multiplies the score by a factor before stars are given. Factors multip
 | Tempo preset below 100% | 90%: 0.92 · 75%: 0.86 · 50%: 0.78 | 4.5 at 90%, 4 at 75%, 3 at 50% |
 | Smooth rewinds in the attempt | 1 rewind: 0.95 · 2: 0.90 · 3 or more: 0.85 | 4.5, 4, 3.5 |
 | Wait mode (optional mode; no timing score) | 0.80 | 3.5 |
-| One hand when the item is hands together | 0.85 | 3.5 |
+| One hand when the item is hands together (not a step the session planned for one hand, v0.40) | 0.85 | 3.5 |
 | Section only (loop or tricky part) | 0.90 | 4 |
 | Extra hints beyond the level default | 0.95 | 4.5 |
 
@@ -734,6 +736,7 @@ Each aid multiplies the score by a factor before stars are given. Factors multip
 - Every aided attempt shows its stars and counts as practice (implicit review, Diagnostics, practice minutes).
 - **Passing (3 stars) needs near-normal conditions.** A single aid can still pass with accurate playing: for example about 87% accuracy with one hand only, or about 95% at the 50% preset. Stacked aids, such as the 50% preset with one hand (at most 66%), cannot reach 3 stars. This is deliberate, so a skill is never passed by practice-mode playing alone.
 - **Only attempts of the whole item can pass a skill.** Section loops and "Practice tricky part" are practice.
+- **The curriculum decides what is expected (v0.40).** A song written for one hand is played as written: no aid. When the session plans a song for both hands one hand at a time (8.5), each one-hand step is played as asked, with no aid either, and is practice: it passes nothing and isn't in the star collection. Once both hands are expected, one hand is the aid above.
 - **Mastery** (4 stars) in practice needs the 90% or 100% preset with few rewinds.
 - **5 stars** needs normal conditions.
 - Playing again or restarting is never penalized. An attempt stopped part-way is saved as not completed and does not count toward passing or mastery.
@@ -893,7 +896,7 @@ The Journey map shows the same information visually: refresh badges on due skill
 | Slot | Content | Share of target time |
 | --- | --- | --- |
 | Warm-up | Review items due today | About 25% |
-| New | Current skills, lowest sequence first: concept lesson plus exercises. When one passes, the next available skill follows, in no more time than the items it replaces (v0.19) | About 40% |
+| New | Current skills, lowest sequence first: concept lesson plus exercises, the songs in the skill map's order (songs for one hand first). A song for both hands that the student hasn't yet played with both comes one hand at a time first: the right hand, then the left (the app plays the other hand), then both (v0.40; the steps are played as asked, without the one-hand aid, and are practice: they don't pass the skill or count in the star collection). When one passes, the next available skill follows, in no more time than the items it replaces (v0.19) | About 40% |
 | Practice | In priority order: an active diagnostic remedy; support practice for a stuck skill (8.1); polish for passed-not-mastered skills; a tricky song section; polish for mastered skills under 5 stars | About 20% (about 30% while a skill is stuck) |
 | Reward | Student's choice from approved, library-ready songs; time the other slots leave unplanned adds more picks, up to 4 (v0.19) | About 15% |
 
@@ -1267,7 +1270,7 @@ Below the waiting list, **Deleted songs** holds the songs never allowed here and
 A song stays on the list until the parent decides on it. (The first version approved the selected songs of a batch and discarded the rest in one step; reviewing one song at a time, the parent lost four songs they hadn't listened to yet.)
 
 **Updating a live song (v0.27).** Songs in use keep turning up things to improve, so any library song can be updated without leaving the children:
-1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …") once the song has moved past its start (v0.29). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song.
+1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …") once the song has moved past its start (v0.29). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song. For a change across the curriculum (v0.40), the Review list's **Ask for updates to several songs** asks for every song of the chosen skills at once, with one note (`POST /api/library/improve`); songs with a request already open are left out and named.
 2. **Fix:** the skills read it with the other feedback (`GET /api/skill/feedback` marks it live; `import_song.py feedback` names the song's source and the submit command). Fixing it is manual for now, in a Claude Code session on the dev box.
 3. **Resubmit:** intake takes the fix under the same id while the request is open (otherwise an id in the library is refused). It replaces the request in the review list and keeps the link to the live song.
 4. **Review:** it waits as **Update to a live song**, with the note and what changed from the live song: the bars whose notes differ, the tempo, the words, new media, and a warning when the skills it needs changed (a child who hasn't reached them would lose the song). **▶ Live version** plays the live one to compare. The decisions are **Approve update**, **Needs more work** (another note; the live song still plays) and **Discard update** (the live song stays as it is). **Never allow** isn't offered: it would delete the live song.
@@ -1610,6 +1613,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Keyboard size (v0.9) | Parent sets 61 or 88 keys; out-of-range notes never used | Supports both common piano sizes |
 | Students (v0.9) | Any number; add, edit, archive, delete | Family can change over time |
 | Staff progression (v0.9, changed v0.24) | The method spine's order: letter names before the staff, then the grand staff with landmark notes, Middle C position with hands taking turns, C position, hands together | The first weeks follow one method's reading approach (6.1) |
+| Hands one at a time (v0.40) | The right hand alone, then the left alone, then the hands taking turns (a skill of its own, each switch after a held note), then the hands at once; a new song for both hands is met one hand at a time first; slower first songs | A song that needs both hands is hard for a beginner even when they never play at once; the first sessions showed it |
 | Prep A map (v0.24) | 16 skills in the method's 10 units, forked where units are independent; own lessons and pieces, book pages as references (private since v0.25) | The method's proven order, without copying its pieces |
 | One concept per bubble (v0.25) | 46 Prep A skills, one idea each, with one Explain and 2 to 4 practice songs; ideas the notes can't show are practised by the pieces written for them | Quicker, clearer progress for the child; stars that describe one or two songs; nothing required the grouping |
 | Pre-staff pieces (v0.24) | Note heads carry letter names; the analysis counts them only for pre-staff skills | Beginners read letters first, as in the books; staff reading is a separate skill |

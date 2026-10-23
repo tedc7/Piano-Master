@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-4b4f77ef28",
+ "contentVersion": "lib-4dbeccab36",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,23 +25,127 @@
  "hands": "L",
  "id": "warmup-thumb-walk",
  "info": {
+  "checks": {
+   "bleedDb": -38.0,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (4.8 s) .. pie, (5.5 s); the (10.2 s) .. shelf, (10.9 s)"
+   ],
+   "grid100": {
+    "median_ms": 21.8,
+    "p95_ms": 168.8,
+    "share_over_50ms": 0.242,
+    "windows": 33
+   },
+   "grid50": {
+    "median_ms": 80.1,
+    "p95_ms": 372.7,
+    "share_over_50ms": 0.833,
+    "windows": 30
+   },
+   "heard": "Oh, short pig wants a pie, way up on the shelf, standing on tiptoes, reaching got it young.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "a (4.8 s) .. pie, (5.5 s)",
+    "the (10.2 s) .. shelf, (10.9 s)"
+   ],
+   "wordsHeard": 0.985,
+   "wordsOff": 0.294,
+   "worstPhraseMs": 40.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Short pig wants a pie, way up on the shelf, standing on tiptoes, reaching, got it, yum!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.middle-c-position). Warm-up in our own music. A 1-2-3-2-1 pattern, the left thumb walking down one key each time. The words are a short pig reaching for a pie (at the parent's request, Oct 6, 2026); the last phrase climbs as it reaches."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-thumb-walk.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 350,
- "media": null,
+ "media": {
+  "bpm": 88.0,
+  "check": {
+   "bleedDb": -38.0,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (4.8 s) .. pie, (5.5 s); the (10.2 s) .. shelf, (10.9 s)"
+   ],
+   "grid100": {
+    "median_ms": 21.8,
+    "p95_ms": 168.8,
+    "share_over_50ms": 0.242,
+    "windows": 33
+   },
+   "grid50": {
+    "median_ms": 80.1,
+    "p95_ms": 372.7,
+    "share_over_50ms": 0.833,
+    "windows": 30
+   },
+   "heard": "Oh, short pig wants a pie, way up on the shelf, standing on tiptoes, reaching got it young.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "a (4.8 s) .. pie, (5.5 s)",
+    "the (10.2 s) .. shelf, (10.9 s)"
+   ],
+   "wordsHeard": 0.985,
+   "wordsOff": 0.294,
+   "worstPhraseMs": 40.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 540960,
+     "url": "/api/library/media/warmup-thumb-walk/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1080960,
+     "url": "/api/library/media/warmup-thumb-walk/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 720960,
+     "url": "/api/library/media/warmup-thumb-walk/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 600960,
+     "url": "/api/library/media/warmup-thumb-walk/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-thumb-walk-s4 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -60,7 +164,128 @@
    "timeSig": "4/4"
   },
   "length": 32.0,
-  "lyrics": [],
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Short",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "pig",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "wants",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "pie,",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "way",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "shelf,",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "begin",
+    "text": "stand",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "end",
+    "text": "ing",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "begin",
+    "text": "tip",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "end",
+    "text": "toes,",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "begin",
+    "text": "reach",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "end",
+    "text": "ing,",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "got",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "it,",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "yum!",
+    "verse": 1
+   }
+  ],
   "measures": [
    {
     "duration": 4.0,

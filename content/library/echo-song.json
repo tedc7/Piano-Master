@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-906878e4ee",
+ "contentVersion": "lib-9062d83384",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,23 +25,121 @@
  "hands": "RL",
  "id": "echo-song",
  "info": {
+  "checks": {
+   "bleedDb": -30.6,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 10.6,
+    "p95_ms": 131.2,
+    "share_over_50ms": 0.22,
+    "windows": 41
+   },
+   "grid50": {
+    "median_ms": 26.4,
+    "p95_ms": 231.6,
+    "share_over_50ms": 0.308,
+    "windows": 39
+   },
+   "heard": "Oh, I sing high, I sing low Up so high, deep and low Now I'm coming, humming softly Down to sea, down to sea",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [],
+   "wordsHeard": 0.973,
+   "wordsOff": 0.182,
+   "worstPhraseMs": 45.9
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. I sing high, I sing low, up so high, deep and low, now I'm coming humming softly down to C. down to C.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.question-answer). Original music and words for this app. The right hand sings a phrase and the left hand echoes it an octave lower. The echo has its own words (at the parent's request, Oct 7, 2026), and the vocal sings the hands as written, the echo an octave below (`vocal_line: as-written`)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/echo-song.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 440,
- "media": null,
+ "media": {
+  "bpm": 90.0,
+  "check": {
+   "bleedDb": -30.6,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 10.6,
+    "p95_ms": 131.2,
+    "share_over_50ms": 0.22,
+    "windows": 41
+   },
+   "grid50": {
+    "median_ms": 26.4,
+    "p95_ms": 231.6,
+    "share_over_50ms": 0.308,
+    "windows": 39
+   },
+   "heard": "Oh, I sing high, I sing low Up so high, deep and low Now I'm coming, humming softly Down to sea, down to sea",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [],
+   "wordsHeard": 0.973,
+   "wordsOff": 0.182,
+   "worstPhraseMs": 45.9
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 494400,
+     "url": "/api/library/media/echo-song/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 987840,
+     "url": "/api/library/media/echo-song/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 659040,
+     "url": "/api/library/media/echo-song/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 549120,
+     "url": "/api/library/media/echo-song/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "echo-song-s7 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -139,6 +237,84 @@
     "syllabic": "single",
     "text": "C.",
     "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "sing",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "low,",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "deep",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "low,",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "begin",
+    "text": "hum",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "end",
+    "text": "ming",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "begin",
+    "text": "soft",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "end",
+    "text": "ly",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "down",
+    "verse": 1
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 1
+   },
+   {
+    "note": 25,
+    "syllabic": "single",
+    "text": "C.",
+    "verse": 1
    }
   ],
   "measures": [
@@ -233,6 +409,7 @@
     "duration": 1.0,
     "finger": 5,
     "hand": "L",
+    "isMelody": true,
     "pitch": 48,
     "spelled": {
      "alter": 0,
@@ -247,6 +424,7 @@
     "duration": 1.0,
     "finger": 4,
     "hand": "L",
+    "isMelody": true,
     "pitch": 50,
     "spelled": {
      "alter": 0,
@@ -261,6 +439,7 @@
     "duration": 2.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 52,
     "spelled": {
      "alter": 0,
@@ -320,6 +499,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 52,
     "spelled": {
      "alter": 0,
@@ -334,6 +514,7 @@
     "duration": 1.0,
     "finger": 2,
     "hand": "L",
+    "isMelody": true,
     "pitch": 53,
     "spelled": {
      "alter": 0,
@@ -348,6 +529,7 @@
     "duration": 2.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 55,
     "spelled": {
      "alter": 0,
@@ -422,6 +604,7 @@
     "duration": 1.0,
     "finger": 1,
     "hand": "L",
+    "isMelody": true,
     "pitch": 55,
     "spelled": {
      "alter": 0,
@@ -436,6 +619,7 @@
     "duration": 1.0,
     "finger": 2,
     "hand": "L",
+    "isMelody": true,
     "pitch": 53,
     "spelled": {
      "alter": 0,
@@ -450,6 +634,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 52,
     "spelled": {
      "alter": 0,
@@ -464,6 +649,7 @@
     "duration": 1.0,
     "finger": 4,
     "hand": "L",
+    "isMelody": true,
     "pitch": 50,
     "spelled": {
      "alter": 0,
@@ -523,6 +709,7 @@
     "duration": 1.0,
     "finger": 3,
     "hand": "L",
+    "isMelody": true,
     "pitch": 52,
     "spelled": {
      "alter": 0,
@@ -537,6 +724,7 @@
     "duration": 1.0,
     "finger": 4,
     "hand": "L",
+    "isMelody": true,
     "pitch": 50,
     "spelled": {
      "alter": 0,
@@ -551,6 +739,7 @@
     "duration": 2.0,
     "finger": 5,
     "hand": "L",
+    "isMelody": true,
     "pitch": 48,
     "spelled": {
      "alter": 0,

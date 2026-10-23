@@ -1,6 +1,7 @@
 # Curriculum song (Prep A, prep-a.middle-c). Original music and words for this app. The words are big
 # dinosaurs stomping (at the parent's request, Oct 7, 2026: some of the Middle C words didn't come through
-# in the vocal); no word repeats on the repeated Cs.
+# in the vocal); no word repeats on the repeated Cs. The last line was "Big feet stomp home!": three takes
+# garbled it (four short closed words on one note), so it's "Big and so strong!" (Oct 20, 2026).
 title: "Middle C Stomp"
 composer: Piano-Master
 genre: studies
@@ -26,4 +27,4 @@ abc: |
   [V:RH] !1!C C C C | C2 C2 | z4 | z4 | C C C2 | C4 | z4 | z4 |]
   w: Big di-no-saurs stomp-ing, tails swing high, roar!
   [V:LH] z4 | z4 | !1!C C C C | C2 C2 | z4 | z4 | C C C2 | C4 |]
-  w: Shak-ing all the ground, boom! Big feet stomp home!
+  w: Shak-ing all the ground, boom! Big and so strong!

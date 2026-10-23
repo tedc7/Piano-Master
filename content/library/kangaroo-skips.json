@@ -9,7 +9,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-5b4d882cc9",
+ "contentVersion": "lib-e92fa71f05",
  "display": {
   "fingers": null,
   "letters": null
@@ -23,23 +23,117 @@
  "hands": "RL",
  "id": "kangaroo-skips",
  "info": {
+  "checks": {
+   "bleedDb": -25.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.1,
+    "p95_ms": 29.2,
+    "share_over_50ms": 0.0,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 35.0,
+    "p95_ms": 99.5,
+    "share_over_50ms": 0.25,
+    "windows": 28
+   },
+   "heard": "Oh, kangaroo is hungry, hopping over the hill, yummy dinnertime.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 22.2
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Kangaroo is hungry, hopping over the hill, yummy dinner time!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.more-skips). Original music and words for this app. The words are a hungry kangaroo hopping home to dinner (at the parent's request, Oct 7, 2026: the letter names and \"space to space\" came out mixed up in the vocal)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/kangaroo-skips.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 380,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -25.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.1,
+    "p95_ms": 29.2,
+    "share_over_50ms": 0.0,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 35.0,
+    "p95_ms": 99.5,
+    "share_over_50ms": 0.25,
+    "windows": 28
+   },
+   "heard": "Oh, kangaroo is hungry, hopping over the hill, yummy dinnertime.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 22.2
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 351840,
+     "url": "/api/library/media/kangaroo-skips/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 702720,
+     "url": "/api/library/media/kangaroo-skips/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 468960,
+     "url": "/api/library/media/kangaroo-skips/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 391200,
+     "url": "/api/library/media/kangaroo-skips/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "kangaroo-skips-s2 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -81,85 +175,85 @@
    {
     "note": 3,
     "syllabic": "single",
-    "text": "skips,",
+    "text": "is",
     "verse": 1
    },
    {
     "note": 4,
     "syllabic": "begin",
-    "text": "hop",
+    "text": "hun",
     "verse": 1
    },
    {
     "note": 5,
     "syllabic": "end",
-    "text": "ping,",
+    "text": "gry,",
     "verse": 1
    },
    {
     "note": 12,
-    "syllabic": "single",
-    "text": "space",
+    "syllabic": "begin",
+    "text": "yum",
     "verse": 1
    },
    {
     "note": 13,
-    "syllabic": "single",
-    "text": "to",
+    "syllabic": "end",
+    "text": "my",
     "verse": 1
    },
    {
     "note": 14,
-    "syllabic": "single",
-    "text": "space,",
+    "syllabic": "begin",
+    "text": "din",
     "verse": 1
    },
    {
     "note": 15,
-    "syllabic": "single",
-    "text": "then",
+    "syllabic": "end",
+    "text": "ner",
     "verse": 1
    },
    {
     "note": 16,
     "syllabic": "single",
-    "text": "home.",
+    "text": "time!",
     "verse": 1
    },
    {
     "note": 6,
-    "syllabic": "single",
-    "text": "G",
+    "syllabic": "begin",
+    "text": "hop",
     "verse": 1
    },
    {
     "note": 7,
-    "syllabic": "single",
-    "text": "and",
+    "syllabic": "end",
+    "text": "ping",
     "verse": 1
    },
    {
     "note": 8,
-    "syllabic": "single",
-    "text": "B,",
+    "syllabic": "begin",
+    "text": "o",
     "verse": 1
    },
    {
     "note": 9,
-    "syllabic": "single",
-    "text": "space",
+    "syllabic": "end",
+    "text": "ver",
     "verse": 1
    },
    {
     "note": 10,
     "syllabic": "single",
-    "text": "to",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 11,
     "syllabic": "single",
-    "text": "space.",
+    "text": "hill,",
     "verse": 1
    }
   ],

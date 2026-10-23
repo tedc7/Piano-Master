@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-8dc950c474",
+ "contentVersion": "lib-4b98f09215",
  "display": {
   "fingers": null,
   "letters": null
@@ -26,29 +26,35 @@
  "id": "shout-and-whisper",
  "info": {
   "checks": {
-   "bleedDb": -37.0,
+   "bleedDb": -29.9,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 18.6,
-    "p95_ms": 53.7,
-    "share_over_50ms": 0.094,
-    "windows": 32
+    "median_ms": 12.5,
+    "p95_ms": 118.0,
+    "share_over_50ms": 0.1,
+    "windows": 30
    },
    "grid50": {
-    "median_ms": 34.8,
-    "p95_ms": 129.1,
-    "share_over_50ms": 0.424,
-    "windows": 33
+    "median_ms": 46.1,
+    "p95_ms": 229.6,
+    "share_over_50ms": 0.367,
+    "windows": 30
    },
+   "heard": "Oh, shout it out loud and clear. Whisper back soft and low. Here's my voice strong and loud. Softly now quiet.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
-   "pass": true,
-   "reasons": [],
-   "tuningCents": -2.0,
-   "wordStretches": [],
-   "wordsOff": 0.095,
-   "worstPhraseMs": 22.6
+   "pass": false,
+   "reasons": [
+    "words off the staff: 24%, at the end"
+   ],
+   "tuningCents": -1.0,
+   "wordStretches": [
+    "quiet, (22.1 s) .. shh. (24.3 s)"
+   ],
+   "wordsHeard": 0.965,
+   "wordsOff": 0.238,
+   "worstPhraseMs": 8.9
   },
   "engine": "YuE2 vocal",
   "hands": "RL",
@@ -59,7 +65,7 @@
   },
   "lyrics": "1. Shout it out, loud and clear! Whisper back, soft and low. Here's my voice, strong and loud! Softly now, quiet, shh.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app. v0.40: at 84 (was 96), like the rest of Unit 2."
   ],
   "source": {
    "site": "Piano-Master",
@@ -72,31 +78,37 @@
  "level": "Prep A",
  "mapPoint": 90,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -37.0,
+   "bleedDb": -29.9,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 18.6,
-    "p95_ms": 53.7,
-    "share_over_50ms": 0.094,
-    "windows": 32
+    "median_ms": 12.5,
+    "p95_ms": 118.0,
+    "share_over_50ms": 0.1,
+    "windows": 30
    },
    "grid50": {
-    "median_ms": 34.8,
-    "p95_ms": 129.1,
-    "share_over_50ms": 0.424,
-    "windows": 33
+    "median_ms": 46.1,
+    "p95_ms": 229.6,
+    "share_over_50ms": 0.367,
+    "windows": 30
    },
+   "heard": "Oh, shout it out loud and clear. Whisper back soft and low. Here's my voice strong and loud. Softly now quiet.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
-   "pass": true,
-   "reasons": [],
-   "tuningCents": -2.0,
-   "wordStretches": [],
-   "wordsOff": 0.095,
-   "worstPhraseMs": 22.6
+   "pass": false,
+   "reasons": [
+    "words off the staff: 24%, at the end"
+   ],
+   "tuningCents": -1.0,
+   "wordStretches": [
+    "quiet, (22.1 s) .. shh. (24.3 s)"
+   ],
+   "wordsHeard": 0.965,
+   "wordsOff": 0.238,
+   "worstPhraseMs": 8.9
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -104,33 +116,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 448800,
+     "bytes": 523680,
      "url": "/api/library/media/shout-and-whisper/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 896640,
+     "bytes": 1045920,
      "url": "/api/library/media/shout-and-whisper/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 598080,
+     "bytes": 697920,
      "url": "/api/library/media/shout-and-whisper/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 498720,
+     "bytes": 581760,
      "url": "/api/library/media/shout-and-whisper/vocals_90.mp3"
     }
    }
   },
-  "take": "shout-and-whisper-s12 (dtw)"
+  "take": "shout-and-whisper-s7 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -166,7 +178,7 @@
     "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,

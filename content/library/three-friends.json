@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-c3f4c4ed89",
+ "contentVersion": "lib-d0a1f7d305",
  "display": {
   "fingers": null,
   "letters": null
@@ -24,23 +24,125 @@
  "hands": "RL",
  "id": "three-friends",
  "info": {
+  "checks": {
+   "bleedDb": -34.5,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (4.4 s) .. pad. (5.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 18.9,
+    "p95_ms": 34.5,
+    "share_over_50ms": 0.0,
+    "windows": 6
+   },
+   "grid50": {
+    "median_ms": 51.9,
+    "p95_ms": 79.9,
+    "share_over_50ms": 0.667,
+    "windows": 6
+   },
+   "heard": "Oh, oh. First frog on the pad. Second frog croaks high. Big frog croaks solo. Three frogs singing. Oh, oh, three.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "the (4.4 s) .. pad. (5.0 s)"
+   ],
+   "wordsHeard": 0.986,
+   "wordsOff": 0.235,
+   "worstPhraseMs": 16.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. First frog on the pad. Second frog croaks high. Big frog croaks so low. Three frogs sing!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.hands-at-once). Original music and words for this app. The words are three frog friends croaking high and low (at the parent's request, Oct 7, 2026: the vocal said \"bass\" like the fish); Middle C, Treble G and Bass F are still the notes they sit on."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/three-friends.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 260,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -34.5,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (4.4 s) .. pad. (5.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 18.9,
+    "p95_ms": 34.5,
+    "share_over_50ms": 0.0,
+    "windows": 6
+   },
+   "grid50": {
+    "median_ms": 51.9,
+    "p95_ms": 79.9,
+    "share_over_50ms": 0.667,
+    "windows": 6
+   },
+   "heard": "Oh, oh. First frog on the pad. Second frog croaks high. Big frog croaks solo. Three frogs singing. Oh, oh, three.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "the (4.4 s) .. pad. (5.0 s)"
+   ],
+   "wordsHeard": 0.986,
+   "wordsOff": 0.235,
+   "worstPhraseMs": 16.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 549120,
+     "url": "/api/library/media/three-friends/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1097280,
+     "url": "/api/library/media/three-friends/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 732000,
+     "url": "/api/library/media/three-friends/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 610080,
+     "url": "/api/library/media/three-friends/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "three-friends-s5 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -63,56 +165,56 @@
   "lyrics": [
    {
     "note": 0,
-    "syllabic": "begin",
-    "text": "Mid",
+    "syllabic": "single",
+    "text": "First",
     "verse": 1
    },
    {
     "note": 1,
-    "syllabic": "end",
-    "text": "dle",
+    "syllabic": "single",
+    "text": "frog",
     "verse": 1
    },
    {
     "note": 2,
     "syllabic": "single",
-    "text": "C",
+    "text": "on",
     "verse": 1
    },
    {
     "note": 3,
     "syllabic": "single",
-    "text": "is",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 4,
     "syllabic": "single",
-    "text": "home.",
+    "text": "pad.",
     "verse": 1
    },
    {
     "note": 5,
     "syllabic": "begin",
-    "text": "Tre",
+    "text": "Sec",
     "verse": 1
    },
    {
     "note": 6,
     "syllabic": "end",
-    "text": "ble",
+    "text": "ond",
     "verse": 1
    },
    {
     "note": 7,
     "syllabic": "single",
-    "text": "G",
+    "text": "frog",
     "verse": 1
    },
    {
     "note": 8,
     "syllabic": "single",
-    "text": "is",
+    "text": "croaks",
     "verse": 1
    },
    {
@@ -130,7 +232,7 @@
    {
     "note": 16,
     "syllabic": "single",
-    "text": "friends",
+    "text": "frogs",
     "verse": 1
    },
    {
@@ -142,19 +244,19 @@
    {
     "note": 10,
     "syllabic": "single",
-    "text": "Bass",
+    "text": "Big",
     "verse": 1
    },
    {
     "note": 11,
     "syllabic": "single",
-    "text": "F",
+    "text": "frog",
     "verse": 1
    },
    {
     "note": 12,
     "syllabic": "single",
-    "text": "is",
+    "text": "croaks",
     "verse": 1
    },
    {

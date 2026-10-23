@@ -27,6 +27,16 @@ cards:
   - 2
   - 3
   hand: R
+- kind: try
+  text: 'Now your left hand, for the first time: finger 3 and finger 2, on the group of two just below the middle.'
+  notes: C#3 D#3 C#3 D#3
+  fingers:
+  - 3
+  - 2
+  - 3
+  - 2
+  hand: L
+  clef: bass
 - kind: echo
   text: Listen, then play it back on the two black keys in the middle.
   play: C#4 D#4 D#4 C#4

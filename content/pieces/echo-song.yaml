@@ -1,5 +1,7 @@
 # Curriculum song (Prep A, prep-a.question-answer). Original music and words for this app.
-# The right hand sings a phrase and the left hand echoes it an octave lower.
+# The right hand sings a phrase and the left hand echoes it an octave lower. The echo has its own words
+# (at the parent's request, Oct 7, 2026), and the vocal sings the hands as written, the echo an octave
+# below (`vocal_line: as-written`).
 title: Echo Song
 composer: Piano-Master
 genre: studies
@@ -12,6 +14,8 @@ license:
   composition: original
   edition: original
 phraseBars: 2
+media:
+  vocal_line: as-written  # the echo sung an octave below the call, as written
 abc: |
   X:1
   T:Echo Song
@@ -25,3 +29,4 @@ abc: |
   [V:RH] !1!C !2!D !3!E2 | z4 | E !4!F !5!G2 | z4 | G F E D | z4 | E D C2 | z4 |]
   w: I sing high, up so high, now I'm com-ing down to C.
   [V:LH] z4 | !5!C, !4!D, !3!E,2 | z4 | E, !2!F, !1!G,2 | z4 | G, F, E, D, | z4 | E, D, C,2 |]
+  w: I sing low, deep and low, hum-ming soft-ly down to C.

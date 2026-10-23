@@ -28,7 +28,7 @@ export interface Conditions {
   mode: "play";
   tempoPreset: Preset;                   // the slowest preset used in the attempt
   hands: "both" | "R" | "L";             // what was played
-  handsWritten: "R" | "L" | "RL";        // what the item asks for
+  handsWritten: "R" | "L" | "RL";        // what the item asks for: the song's hands, or one hand of it (v0.40)
   sectionOnly: boolean;                  // a section loop or "Practice tricky part"
   extraHints: boolean;
   rewinds: number;
@@ -45,7 +45,8 @@ export function practiceAids(c: Conditions): Aid[] {
     const f = c.rewinds === 1 ? 0.95 : c.rewinds === 2 ? 0.9 : 0.85;
     aids.push({ id: "rewinds", label: c.rewinds === 1 ? "1 rewind" : `${c.rewinds} rewinds`, factor: f });
   }
-  if (c.handsWritten === "RL" && c.hands !== "both") {
+  // one hand of a song for both is an aid, unless the item asked for that hand (v0.40: a planned step)
+  if (c.hands !== "both" && c.hands !== c.handsWritten) {
     aids.push({ id: "hands", label: c.hands === "R" ? "right hand only" : "left hand only", factor: 0.85 });
   }
   if (c.sectionOnly) aids.push({ id: "section", label: "one section", factor: 0.9 });

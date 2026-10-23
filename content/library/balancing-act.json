@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-df42323ad9",
+ "contentVersion": "lib-3f4abe99bc",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,29 +25,33 @@
  "id": "balancing-act",
  "info": {
   "checks": {
-   "bleedDb": -27.2,
+   "bleedDb": -33.6,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "a short note sung in another octave at 22.1 s"
+   ],
    "grid100": {
-    "median_ms": 10.8,
-    "p95_ms": 92.9,
-    "share_over_50ms": 0.077,
-    "windows": 39
+    "median_ms": 12.8,
+    "p95_ms": 171.5,
+    "share_over_50ms": 0.146,
+    "windows": 48
    },
    "grid50": {
-    "median_ms": 37.7,
-    "p95_ms": 224.9,
-    "share_over_50ms": 0.308,
-    "windows": 39
+    "median_ms": 43.6,
+    "p95_ms": 228.6,
+    "share_over_50ms": 0.457,
+    "windows": 46
    },
+   "heard": "Oh, one step, two steps, three steps, balance, wobble, wobble, don't fall down now. High up in the circus, higher, higher, look down safe on the ground.",
    "melodyStretches": [],
-   "notesOnPitch": 0.969,
+   "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 3.0,
+   "tuningCents": -1.0,
    "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.038,
-   "worstPhraseMs": 14.3
+   "worstPhraseMs": 17.8
   },
   "engine": "YuE2 vocal",
   "hands": "R",
@@ -58,7 +62,7 @@
   },
   "lyrics": "1. One step, two steps, three steps, balance! Wobble, wobble, don't fall down now! High up in the circus, higher, higher, look down, safe on the ground!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.three-black-keys). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.three-black-keys). Original music and words for this app. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -71,31 +75,35 @@
  "level": "Prep A",
  "mapPoint": 60,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -27.2,
+   "bleedDb": -33.6,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "a short note sung in another octave at 22.1 s"
+   ],
    "grid100": {
-    "median_ms": 10.8,
-    "p95_ms": 92.9,
-    "share_over_50ms": 0.077,
-    "windows": 39
+    "median_ms": 12.8,
+    "p95_ms": 171.5,
+    "share_over_50ms": 0.146,
+    "windows": 48
    },
    "grid50": {
-    "median_ms": 37.7,
-    "p95_ms": 224.9,
-    "share_over_50ms": 0.308,
-    "windows": 39
+    "median_ms": 43.6,
+    "p95_ms": 228.6,
+    "share_over_50ms": 0.457,
+    "windows": 46
    },
+   "heard": "Oh, one step, two steps, three steps, balance, wobble, wobble, don't fall down now. High up in the circus, higher, higher, look down safe on the ground.",
    "melodyStretches": [],
-   "notesOnPitch": 0.969,
+   "notesOnPitch": 1.0,
    "pass": true,
    "reasons": [],
-   "tuningCents": 3.0,
+   "tuningCents": -1.0,
    "wordStretches": [],
+   "wordsHeard": 1.0,
    "wordsOff": 0.038,
-   "worstPhraseMs": 14.3
+   "worstPhraseMs": 17.8
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -103,33 +111,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 459360,
+     "bytes": 569280,
      "url": "/api/library/media/balancing-act/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 917280,
+     "bytes": 1137120,
      "url": "/api/library/media/balancing-act/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 612000,
+     "bytes": 758400,
      "url": "/api/library/media/balancing-act/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 510240,
+     "bytes": 632160,
      "url": "/api/library/media/balancing-act/vocals_90.mp3"
     }
    }
   },
-  "take": "balancing-act-s1 (dtw)"
+  "take": "balancing-act-s2 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -146,7 +154,7 @@
    "staves": [
     "treble"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 32.0,

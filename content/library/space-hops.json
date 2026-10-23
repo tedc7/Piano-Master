@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-9c0c161201",
+ "contentVersion": "lib-6a0b158f60",
  "display": {
   "fingers": null,
   "letters": null
@@ -21,23 +21,117 @@
  "hands": "R",
  "id": "space-hops",
  "info": {
+  "checks": {
+   "bleedDb": -35.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 4.0,
+    "p95_ms": 14.8,
+    "share_over_50ms": 0.0,
+    "windows": 18
+   },
+   "grid50": {
+    "median_ms": 27.8,
+    "p95_ms": 46.4,
+    "share_over_50ms": 0.0,
+    "windows": 18
+   },
+   "heard": "Oh, green alien's hopping, bouncing off to planet Zork!",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.5,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 2.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Green aliens hopping, bouncing, off to planet Zorg!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.more-skips). Original music and words for this app. The words are green aliens hopping off to another planet (at the parent's request, Oct 6, 2026: the earlier words were the letter names)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/space-hops.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 380,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -35.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 4.0,
+    "p95_ms": 14.8,
+    "share_over_50ms": 0.0,
+    "windows": 18
+   },
+   "grid50": {
+    "median_ms": 27.8,
+    "p95_ms": 46.4,
+    "share_over_50ms": 0.0,
+    "windows": 18
+   },
+   "heard": "Oh, green alien's hopping, bouncing off to planet Zork!",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -4.5,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 2.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 289920,
+     "url": "/api/library/media/space-hops/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 578400,
+     "url": "/api/library/media/space-hops/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 385920,
+     "url": "/api/library/media/space-hops/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 322080,
+     "url": "/api/library/media/space-hops/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "space-hops-s3 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -60,79 +154,79 @@
    {
     "note": 0,
     "syllabic": "single",
-    "text": "D,",
+    "text": "Green",
     "verse": 1
    },
    {
     "note": 1,
-    "syllabic": "single",
-    "text": "F,",
+    "syllabic": "begin",
+    "text": "a",
     "verse": 1
    },
    {
     "note": 2,
-    "syllabic": "single",
-    "text": "E,",
+    "syllabic": "middle",
+    "text": "li",
     "verse": 1
    },
    {
     "note": 3,
-    "syllabic": "single",
-    "text": "D,",
+    "syllabic": "end",
+    "text": "ens",
     "verse": 1
    },
    {
     "note": 4,
-    "syllabic": "single",
-    "text": "D,",
+    "syllabic": "begin",
+    "text": "hop",
     "verse": 1
    },
    {
     "note": 5,
-    "syllabic": "single",
-    "text": "F,",
+    "syllabic": "end",
+    "text": "ping,",
     "verse": 1
    },
    {
     "note": 6,
-    "syllabic": "single",
-    "text": "G,",
+    "syllabic": "begin",
+    "text": "bounc",
     "verse": 1
    },
    {
     "note": 7,
-    "syllabic": "single",
-    "text": "F,",
+    "syllabic": "end",
+    "text": "ing,",
     "verse": 1
    },
    {
     "note": 8,
     "syllabic": "single",
-    "text": "E,",
+    "text": "off",
     "verse": 1
    },
    {
     "note": 9,
     "syllabic": "single",
-    "text": "D,",
+    "text": "to",
     "verse": 1
    },
    {
     "note": 10,
-    "syllabic": "single",
-    "text": "F,",
+    "syllabic": "begin",
+    "text": "plan",
     "verse": 1
    },
    {
     "note": 11,
-    "syllabic": "single",
-    "text": "D,",
+    "syllabic": "end",
+    "text": "et",
     "verse": 1
    },
    {
     "note": 12,
     "syllabic": "single",
-    "text": "C.",
+    "text": "Zorg!",
     "verse": 1
    }
   ],

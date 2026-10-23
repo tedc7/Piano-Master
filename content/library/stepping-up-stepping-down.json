@@ -25,23 +25,117 @@
  "hands": "R",
  "id": "stepping-up-stepping-down",
  "info": {
+  "checks": {
+   "bleedDb": -33.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 5.1,
+    "p95_ms": 26.0,
+    "share_over_50ms": 0.0,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 29.7,
+    "p95_ms": 72.5,
+    "share_over_50ms": 0.2,
+    "windows": 35
+   },
+   "heard": "oh stepping up the stairs we go step by step and down we go up again to reach the top then we tiptoe home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.174,
+   "worstPhraseMs": 11.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Stepping up the stairs we go, step by step and down we go. Up again to reach the top, then we tiptoe home.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.steps-on-the-staff). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/stepping-up-stepping-down.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 280,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -33.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 5.1,
+    "p95_ms": 26.0,
+    "share_over_50ms": 0.0,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 29.7,
+    "p95_ms": 72.5,
+    "share_over_50ms": 0.2,
+    "windows": 35
+   },
+   "heard": "oh stepping up the stairs we go step by step and down we go up again to reach the top then we tiptoe home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.174,
+   "worstPhraseMs": 11.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 485280,
+     "url": "/api/library/media/stepping-up-stepping-down/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 969120,
+     "url": "/api/library/media/stepping-up-stepping-down/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 646560,
+     "url": "/api/library/media/stepping-up-stepping-down/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 539040,
+     "url": "/api/library/media/stepping-up-stepping-down/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "stepping-up-stepping-down-s3 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

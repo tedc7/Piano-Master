@@ -21,23 +21,123 @@
  "hands": "L",
  "id": "f-c-seesaw",
  "info": {
+  "checks": {
+   "bleedDb": -42.4,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 7.5 s",
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 3.5,
+    "p95_ms": 16.4,
+    "share_over_50ms": 0.0,
+    "windows": 14
+   },
+   "grid50": {
+    "median_ms": 26.9,
+    "p95_ms": 47.5,
+    "share_over_50ms": 0.0,
+    "windows": 14
+   },
+   "heard": "O base of middle C, back and forth we go to L.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
+   "wordStretches": [],
+   "wordsHeard": 0.935,
+   "wordsOff": 0.111,
+   "worstPhraseMs": 9.1
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Bass F, Middle C, back and forth we go to F.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-f). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/f-c-seesaw.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 240,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -42.4,
+   "firstWordSung": true,
+   "flags": [
+    "a short note sung in another octave at 7.5 s",
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 3.5,
+    "p95_ms": 16.4,
+    "share_over_50ms": 0.0,
+    "windows": 14
+   },
+   "grid50": {
+    "median_ms": 26.9,
+    "p95_ms": 47.5,
+    "share_over_50ms": 0.0,
+    "windows": 14
+   },
+   "heard": "O base of middle C, back and forth we go to L.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.0,
+   "wordStretches": [],
+   "wordsHeard": 0.935,
+   "wordsOff": 0.111,
+   "worstPhraseMs": 9.1
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 347040,
+     "url": "/api/library/media/f-c-seesaw/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 692640,
+     "url": "/api/library/media/f-c-seesaw/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 462240,
+     "url": "/api/library/media/f-c-seesaw/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 385440,
+     "url": "/api/library/media/f-c-seesaw/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "f-c-seesaw-s5 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

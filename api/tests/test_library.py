@@ -461,3 +461,20 @@ def test_each_song_lists_its_words_for_the_library_search(client, parent, skill)
     finally:
         con.close()
     assert db.migrate() >= 12 and words() == "Twinkle little star"
+
+
+def test_asking_for_updates_to_several_songs_at_once(client, parent, skill):
+    """v0.40: one note for several live songs (a curriculum change across a unit); each then takes
+    its update as if asked alone. Songs not in the library, or already asked, are left out."""
+    approve_all(client, parent, skill, item())
+    body = {"pieces": ["new-song", "nope", "new-song"], "feedback": "v0.40: one hand at a time"}
+    assert client.post("/api/library/improve", json=body).status_code == 401
+    r = client.post("/api/library/improve", json=body, headers=parent)
+    assert r.status_code == 201 and r.json() == {"asked": ["new-song"], "skipped": [{"pieceId": "nope", "why": "not in the library"}]}
+    again = client.post("/api/library/improve", json=body, headers=parent).json()
+    assert again["asked"] == [] and {"pieceId": "new-song", "why": "an update is already waiting"} in again["skipped"]
+    assert client.post("/api/library/improve", json={"pieces": [], "feedback": "nothing"}, headers=parent).status_code == 422
+    fb = client.get("/api/skill/feedback", headers=skill).json()["feedback"]
+    assert [(f["pieceId"], f["live"], f["feedback"]) for f in fb] == [("new-song", True, "v0.40: one hand at a time")]
+    _, sub = stage(client, skill, item(pitches=FIXED))
+    assert sub["staged"] == 1

@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-a002e2e2dd",
+ "contentVersion": "lib-0bfa5a2ade",
  "display": {
   "fingers": null,
   "letters": null
@@ -17,38 +17,44 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "sit-tall",
  "info": {
   "checks": {
-   "bleedDb": -22.4,
-   "firstWordSung": true,
-   "flags": [],
+   "bleedDb": -28.0,
+   "firstWordSung": false,
+   "flags": [
+    "words off the staff at Sit (3.2 s) .. up (3.9 s)"
+   ],
    "grid100": {
-    "median_ms": 6.9,
-    "p95_ms": 220.8,
-    "share_over_50ms": 0.125,
-    "windows": 16
+    "median_ms": 30.1,
+    "p95_ms": 316.1,
+    "share_over_50ms": 0.273,
+    "windows": 22
    },
    "grid50": {
-    "median_ms": 16.8,
-    "p95_ms": 452.4,
-    "share_over_50ms": 0.125,
-    "windows": 16
+    "median_ms": 117.0,
+    "p95_ms": 616.7,
+    "share_over_50ms": 0.652,
+    "windows": 23
    },
+   "heard": "Oh, oh, sit up tall and sit up straight, Yes, shoulders loose and feet are resting. Oh, oh, sit up tall and sit up straight, Yes, shoulders loose and feet are resting.",
    "melodyStretches": [],
-   "notesOnPitch": 0.938,
+   "notesOnPitch": 0.933,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -22.4 dB"
+    "the first word isn't sung"
    ],
-   "tuningCents": 1.5,
-   "wordStretches": [],
-   "wordsOff": 0.071,
-   "worstPhraseMs": 10.4
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "Sit (3.2 s) .. up (3.9 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.214,
+   "worstPhraseMs": 30.1
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -56,7 +62,7 @@
   },
   "lyrics": "1. Sit up tall and sit up straight, yes! Shoulders loose and feet are resting.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.sitting). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.sitting). Original music and words for this app. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -69,33 +75,39 @@
  "level": "Prep A",
  "mapPoint": 10,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -22.4,
-   "firstWordSung": true,
-   "flags": [],
+   "bleedDb": -28.0,
+   "firstWordSung": false,
+   "flags": [
+    "words off the staff at Sit (3.2 s) .. up (3.9 s)"
+   ],
    "grid100": {
-    "median_ms": 6.9,
-    "p95_ms": 220.8,
-    "share_over_50ms": 0.125,
-    "windows": 16
+    "median_ms": 30.1,
+    "p95_ms": 316.1,
+    "share_over_50ms": 0.273,
+    "windows": 22
    },
    "grid50": {
-    "median_ms": 16.8,
-    "p95_ms": 452.4,
-    "share_over_50ms": 0.125,
-    "windows": 16
+    "median_ms": 117.0,
+    "p95_ms": 616.7,
+    "share_over_50ms": 0.652,
+    "windows": 23
    },
+   "heard": "Oh, oh, sit up tall and sit up straight, Yes, shoulders loose and feet are resting. Oh, oh, sit up tall and sit up straight, Yes, shoulders loose and feet are resting.",
    "melodyStretches": [],
-   "notesOnPitch": 0.938,
+   "notesOnPitch": 0.933,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -22.4 dB"
+    "the first word isn't sung"
    ],
-   "tuningCents": 1.5,
-   "wordStretches": [],
-   "wordsOff": 0.071,
-   "worstPhraseMs": 10.4
+   "tuningCents": 2.0,
+   "wordStretches": [
+    "Sit (3.2 s) .. up (3.9 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.214,
+   "worstPhraseMs": 30.1
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -103,33 +115,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 282720,
+     "bytes": 341280,
      "url": "/api/library/media/sit-tall/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 564000,
+     "bytes": 681120,
      "url": "/api/library/media/sit-tall/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 376320,
+     "bytes": 454560,
      "url": "/api/library/media/sit-tall/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 313920,
+     "bytes": 378720,
      "url": "/api/library/media/sit-tall/vocals_90.mp3"
     }
    }
   },
-  "take": "sit-tall-s5 (dtw)"
+  "take": "sit-tall-s5 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -140,14 +152,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     63
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 16.0,
@@ -394,121 +405,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    }

@@ -15,7 +15,7 @@
  },
  "beyondMap": [],
  "composer": "Traditional",
- "contentVersion": "lib-bc3663715b",
+ "contentVersion": "lib-749941bcee",
  "display": {
   "fingers": null,
   "letters": null
@@ -28,26 +28,1192 @@
  "hands": "RL",
  "id": "twinkle-twinkle",
  "info": {
+  "backing": {
+   "leadMs": {
+    "Glockenspiel": 0,
+    "Pizzicato bass": 47,
+    "Strings, soft pad": 89
+   },
+   "parts": [
+    {
+     "name": "Strings, soft pad",
+     "notes": 66,
+     "program": 48
+    },
+    {
+     "name": "Pizzicato bass",
+     "notes": 24,
+     "program": 45
+    },
+    {
+     "name": "Glockenspiel",
+     "notes": 24,
+     "program": 9
+    }
+   ],
+   "style": "kids",
+   "timing": {
+    "pass": true,
+    "worstPartMedianMs": 6.2
+   }
+  },
+  "checks": {
+   "bleedDb": -40.2,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (17.4 s) .. diamond (18.0 s); the (19.8 s) .. sky. (20.4 s)"
+   ],
+   "grid100": {
+    "median_ms": 11.4,
+    "p95_ms": 53.2,
+    "share_over_50ms": 0.073,
+    "windows": 55
+   },
+   "grid50": {
+    "median_ms": 38.9,
+    "p95_ms": 127.8,
+    "share_over_50ms": 0.382,
+    "windows": 55
+   },
+   "heard": "Oh, twinkle, twinkle little star, how I wonder what you are. Up above the world so high, like a diamond in the sky. Twinkle, twinkle little star, how I wonder what you are.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 5.0,
+   "wordStretches": [
+    "a (17.4 s) .. diamond (18.0 s)",
+    "the (19.8 s) .. sky. (20.4 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.219,
+   "worstPhraseMs": 15.0
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "flags": [
+   "no `tempoSource`: say where the 100% tempo came from (a metronome mark or recordings)"
+  ],
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "public-domain",
    "edition": "original (our own arrangement)"
   },
-  "seeded": true,
+  "lyrics": "1. Twinkle, twinkle little star, how I wonder what you are! up above the world so high, like a diamond in the sky. Twinkle, twinkle little star, how I wonder what you are!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.skips). Words Jane Taylor (1806), traditional tune; public domain. Our own arrangement in Middle C position, the tune shared between the hands (in G, with no F sharp). The M1 test song (arch §12). Chord symbols (G, C, D) for the backing (Oct 7, 2026): without them it took its chords from the left hand alone, and stopped whenever the tune was in the right hand."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/twinkle-twinkle.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 360,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -40.2,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (17.4 s) .. diamond (18.0 s); the (19.8 s) .. sky. (20.4 s)"
+   ],
+   "grid100": {
+    "median_ms": 11.4,
+    "p95_ms": 53.2,
+    "share_over_50ms": 0.073,
+    "windows": 55
+   },
+   "grid50": {
+    "median_ms": 38.9,
+    "p95_ms": 127.8,
+    "share_over_50ms": 0.382,
+    "windows": 55
+   },
+   "heard": "Oh, twinkle, twinkle little star, how I wonder what you are. Up above the world so high, like a diamond in the sky. Twinkle, twinkle little star, how I wonder what you are.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 5.0,
+   "wordStretches": [
+    "a (17.4 s) .. diamond (18.0 s)",
+    "the (19.8 s) .. sky. (20.4 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.219,
+   "worstPhraseMs": 15.0
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "accompaniment": {
+     "bytes": 715200,
+     "url": "/api/library/media/twinkle-twinkle/accompaniment_100.mp3"
+    },
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 642240,
+     "url": "/api/library/media/twinkle-twinkle/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "accompaniment": {
+     "bytes": 1332960,
+     "url": "/api/library/media/twinkle-twinkle/accompaniment_50.mp3"
+    },
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1283520,
+     "url": "/api/library/media/twinkle-twinkle/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "accompaniment": {
+     "bytes": 921120,
+     "url": "/api/library/media/twinkle-twinkle/accompaniment_75.mp3"
+    },
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 856320,
+     "url": "/api/library/media/twinkle-twinkle/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "accompaniment": {
+     "bytes": 783840,
+     "url": "/api/library/media/twinkle-twinkle/accompaniment_90.mp3"
+    },
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 713760,
+     "url": "/api/library/media/twinkle-twinkle/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "twinkle-twinkle-s1 (words)"
+ },
  "notation": {
-  "chordSymbols": [],
-  "graces": [],
+  "chordSymbols": [
+   {
+    "beat": 0.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 4.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 6.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 8.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 10.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 12.0,
+    "symbol": "D"
+   },
+   {
+    "beat": 14.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 16.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 18.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 20.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 22.0,
+    "symbol": "D"
+   },
+   {
+    "beat": 24.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 26.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 28.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 30.0,
+    "symbol": "D"
+   },
+   {
+    "beat": 32.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 36.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 38.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 40.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 42.0,
+    "symbol": "G"
+   },
+   {
+    "beat": 44.0,
+    "symbol": "D"
+   },
+   {
+    "beat": 46.0,
+    "symbol": "G"
+   }
+  ],
+  "graces": [
+   {
+    "hand": "R",
+    "order": 0,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 1,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 2,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 3,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 4,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 5,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 6,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 7,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 8,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 9,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 10,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 11,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 12,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 13,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 14,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 15,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 16,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 17,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 18,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 19,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 20,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 21,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 22,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 23,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 24,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 38.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 25,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 38.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 26,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 38.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 27,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 28,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 29,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 30,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 31,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 32,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 33,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 34,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 35,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 36,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 37,
+    "pitch": 54,
+    "slash": false,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 38,
+    "pitch": 57,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 39,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 40,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 41,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 42,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 43,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 44,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 45,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 46,
+    "pitch": 54,
+    "slash": false,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 47,
+    "pitch": 57,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 48,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 49,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 50,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 51,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 30.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 52,
+    "pitch": 54,
+    "slash": false,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 30.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 53,
+    "pitch": 57,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 30.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 54,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 55,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 56,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 57,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 42.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 58,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 42.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 59,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 42.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 60,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 61,
+    "pitch": 54,
+    "slash": false,
+    "spelled": {
+     "alter": 1,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 1,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 62,
+    "pitch": 57,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "A"
+    },
+    "staff": 1,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 63,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 1,
+    "start": 46.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 64,
+    "pitch": 59,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "B"
+    },
+    "staff": 1,
+    "start": 46.0,
+    "voice": 1
+   },
+   {
+    "hand": "L",
+    "order": 65,
+    "pitch": 62,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 1,
+    "start": 46.0,
+    "voice": 1
+   }
+  ],
   "header": {
    "barLength": 4.0,
    "keySig": 0,

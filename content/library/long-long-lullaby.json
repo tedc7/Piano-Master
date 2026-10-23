@@ -24,23 +24,117 @@
  "hands": "R",
  "id": "long-long-lullaby",
  "info": {
+  "checks": {
+   "bleedDb": -33.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 16.8,
+    "p95_ms": 140.2,
+    "share_over_50ms": 0.2,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 75.5,
+    "p95_ms": 462.3,
+    "share_over_50ms": 0.588,
+    "windows": 17
+   },
+   "heard": "Oh, hush now, sleep tight Dream of stars bright Sleep till dawn light",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 43.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Hush now, sleep tight dream of stars bright, sleep till dawn light.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.tie). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/long-long-lullaby.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 450,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -33.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 16.8,
+    "p95_ms": 140.2,
+    "share_over_50ms": 0.2,
+    "windows": 15
+   },
+   "grid50": {
+    "median_ms": 75.5,
+    "p95_ms": 462.3,
+    "share_over_50ms": 0.588,
+    "windows": 17
+   },
+   "heard": "Oh, hush now, sleep tight Dream of stars bright Sleep till dawn light",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 43.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 3.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 504480,
+     "url": "/api/library/media/long-long-lullaby/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1008000,
+     "url": "/api/library/media/long-long-lullaby/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 672480,
+     "url": "/api/library/media/long-long-lullaby/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 560640,
+     "url": "/api/library/media/long-long-lullaby/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "long-long-lullaby-s4 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

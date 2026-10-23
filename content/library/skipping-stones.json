@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "skipping-stones",
  "info": {
+  "checks": {
+   "bleedDb": -32.8,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 4.1,
+    "p95_ms": 74.3,
+    "share_over_50ms": 0.062,
+    "windows": 32
+   },
+   "grid50": {
+    "median_ms": 33.1,
+    "p95_ms": 150.4,
+    "share_over_50ms": 0.25,
+    "windows": 32
+   },
+   "heard": "Oh, skip a stone across the lake Skip, skip, skip, skip splash Flip, plop, plop, plop, plop, plop, plop Ripple-spreading splash",
+   "melodyStretches": [],
+   "notesOnPitch": 0.905,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.964,
+   "wordsOff": 0.167,
+   "worstPhraseMs": 10.4
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Skip a stone across the lake, Skip, skip, skip, skip, splash! plip, plop, plip, plop, Ripples spreading splash!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.skips-together). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/skipping-stones.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 390,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.8,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 4.1,
+    "p95_ms": 74.3,
+    "share_over_50ms": 0.062,
+    "windows": 32
+   },
+   "grid50": {
+    "median_ms": 33.1,
+    "p95_ms": 150.4,
+    "share_over_50ms": 0.25,
+    "windows": 32
+   },
+   "heard": "Oh, skip a stone across the lake Skip, skip, skip, skip splash Flip, plop, plop, plop, plop, plop, plop Ripple-spreading splash",
+   "melodyStretches": [],
+   "notesOnPitch": 0.905,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.964,
+   "wordsOff": 0.167,
+   "worstPhraseMs": 10.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 499200,
+     "url": "/api/library/media/skipping-stones/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 997440,
+     "url": "/api/library/media/skipping-stones/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 665280,
+     "url": "/api/library/media/skipping-stones/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 554400,
+     "url": "/api/library/media/skipping-stones/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "skipping-stones-s7 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
