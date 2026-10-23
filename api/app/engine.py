@@ -207,6 +207,7 @@ class AttemptInfo:
     item_id: str | None = None
     tricky_phrase: int | None = None
     factor: float = 1.0                   # the practice-aid factor (7.5)
+    hand_step: bool = False               # one hand of a song for both, as its session item asked (v0.40)
     note_errors: list[dict] = field(default_factory=list)   # {kind: missed or wrong, bar}
 
 
@@ -248,8 +249,9 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
             st.last_practiced = iso(a.day)
             if a.tricky_phrase is not None and a.mode == "play":
                 st.last_tricky_phrase = a.tricky_phrase
-            if a.mode != "play":
-                continue                      # a section is practice: it neither passes nor moves mastery
+            if a.mode != "play" or a.hand_step:
+                continue                      # a section, or a planned one-hand step, is practice: it neither
+                                              # passes nor moves mastery (v0.40: the song is passed with both hands)
             step = MASTERY_STEP if (a.context == "guided" or sid == assigned) else FREE_STEP
             st.mastery = a.accuracy if st.mastery is None else st.mastery + step * (a.accuracy - st.mastery)
             st.best_mastery = max(st.best_mastery or 0, st.mastery)
@@ -508,9 +510,10 @@ class Planner:
     """Builds one day's queue in slot order: warm-up review, new, practice, reward (8.5)."""
 
     def __init__(self, content: Content, states: dict[str, SkillState], today: date, target_minutes: float,
-                 remedies: list[dict[str, Any]] | None = None):
+                 remedies: list[dict[str, Any]] | None = None, played: dict[str, set[str]] | None = None):
         self.c, self.states, self.today = content, states, today
         self.remedies = remedies or []
+        self.played = played or {}             # the hands each song has been played with (hands_played)
         self.total = target_minutes * 60
         self.items: list[dict[str, Any]] = []
         self.used: set[str] = set()
@@ -534,6 +537,19 @@ class Planner:
     def add_piece(self, reason: str, s: Skill, p: Piece, **kw) -> float:
         est = SECTION_SEC if kw.get("section") is not None else piece_seconds(p, kw.get("preset"))
         return self.add(new_item("piece", reason, skill=s, piece=p, est=est, **kw))
+
+    def add_song(self, reason: str, s: Skill, p: Piece) -> float:
+        """A song for a skill being learned (v0.40). A song for both hands that the student hasn't
+        yet played with both comes one hand at a time first: the right hand, then the left (the app
+        plays the other hand), then both, each step not played yet, in the same session. The
+        one-hand steps are practice, scored with the one-hand aid (7.5)."""
+        spent = 0.0
+        done = self.played.get(p.id, set())
+        if p.hands == "RL" and "both" not in done:
+            for h in ("R", "L"):
+                if h not in done:
+                    spent += self.add({**new_item("piece", reason, skill=s, piece=p, est=piece_seconds(p)), "hands": h})
+        return spent + self.add_piece(reason, s, p)
 
     def build(self) -> tuple[list[dict[str, Any]], bool]:
         c, states, today = self.c, self.states, self.today
@@ -585,7 +601,7 @@ class Planner:
                 if any(i["skillId"] == s.id for i in self.items):
                     p = self.piece_for(s)
                     if p:
-                        spent += self.add_piece("New", s, p)
+                        spent += self.add_song("New", s, p)
                         added = True
         left_over = max(0.0, budget - spent)
 
@@ -662,7 +678,7 @@ class Planner:
             spent += self.add(new_item("lesson", "New", skill=s, title=s.name, est=LESSON_SEC))
         p = self.piece_for(s)
         if p:
-            spent += self.add_piece("New", s, p)
+            spent += self.add_song("New", s, p)
         else:
             self.song_needed("New", s)
         return spent
@@ -744,7 +760,7 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
     save_states(con, student_id, states)
     diagnostics.run(con, content, student_id, today)       # after the last session, before this one (8.8)
     remedies = diagnostics.remedy_items(con, content, student_id, states, today, target, new_item, piece_seconds)
-    items, end = Planner(content, states, today, target, remedies).build()
+    items, end = Planner(content, states, today, target, remedies, hands_played(con, student_id)).build()
     con.execute("INSERT INTO sessions (student_id, date, target_minutes, queue, end_of_content, created_at, updated_at) "
                 "VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
                 (student_id, iso(today), target, json.dumps(items), int(end)))
@@ -752,6 +768,16 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
                 (student_id, iso(today), target))
     con.execute("UPDATE practice_days SET target_minutes = ? WHERE student_id = ? AND date = ?", (target, student_id, iso(today)))
     return load_session(con, student_id, today)
+
+
+def hands_played(con: sqlite3.Connection, student_id: str) -> dict[str, set[str]]:
+    """The hands the student has played each song to the end with, in Play mode: "R", "L" or "both"
+    (Planner.add_song)."""
+    out: dict[str, set[str]] = {}
+    for r in con.execute("SELECT piece_id, conditions FROM attempts WHERE student_id = ? AND completed = 1 AND mode = 'play'",
+                         (student_id,)):
+        out.setdefault(r["piece_id"], set()).add(json.loads(r["conditions"] or "{}").get("hands", "both"))
+    return out
 
 
 def find_item(con: sqlite3.Connection, student_id: str, item_id: str | None, d: date) -> dict[str, Any] | None:
@@ -820,7 +846,7 @@ def continue_new_slot(con: sqlite3.Connection, content: Content, student_id: str
     if not stale:
         return
     queued = {it["skillId"] for it in items}
-    p = Planner(content, states, d, s["targetMinutes"])
+    p = Planner(content, states, d, s["targetMinutes"], played=hands_played(con, student_id))
     p.used = {it["pieceId"] for it in items if it["pieceId"]}
     for s2 in content.order:
         st = states[s2.id]

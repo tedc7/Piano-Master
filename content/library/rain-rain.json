@@ -9,7 +9,7 @@
  },
  "beyondMap": [],
  "composer": "Traditional",
- "contentVersion": "lib-d0ee36dc29",
+ "contentVersion": "lib-26852a0b34",
  "display": {
   "fingers": null,
   "letters": null
@@ -22,26 +22,528 @@
  "hands": "R",
  "id": "rain-rain",
  "info": {
+  "backing": {
+   "leadMs": {
+    "Glockenspiel": 0,
+    "Pizzicato bass": 47,
+    "Strings, soft pad": 22
+   },
+   "parts": [
+    {
+     "name": "Strings, soft pad",
+     "notes": 24,
+     "program": 48
+    },
+    {
+     "name": "Pizzicato bass",
+     "notes": 12,
+     "program": 45
+    },
+    {
+     "name": "Glockenspiel",
+     "notes": 12,
+     "program": 9
+    }
+   ],
+   "style": "kids",
+   "timing": {
+    "pass": false,
+    "worstPartMedianMs": 30.3
+   }
+  },
+  "checks": {
+   "bleedDb": -32.1,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at day, (10.0 s) .. little (11.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 30.5,
+    "p95_ms": 120.5,
+    "share_over_50ms": 0.435,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 39.4,
+    "p95_ms": 235.4,
+    "share_over_50ms": 0.458,
+    "windows": 24
+   },
+   "heard": "rain rain go away come again another day little children want to play little children want to play",
+   "melodyStretches": [],
+   "notesOnPitch": 0.947,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "day, (10.0 s) .. little (11.1 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.231,
+   "worstPhraseMs": 22.0
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "flags": [
+   "no `tempoSource`: say where the 100% tempo came from (a metronome mark or recordings)"
+  ],
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "public-domain",
    "edition": "original (our own arrangement)"
   },
-  "seeded": true,
+  "lyrics": "1. Rain, rain, go away, come again another day, little children want to play.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.quarter-rest). Traditional nursery rhyme; public domain. Our own arrangement. Chord symbols (C, Am, G7) for a backing (at the parent's request, Oct 7, 2026: a popular song should have one)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/rain-rain.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 460,
- "media": null,
+ "media": {
+  "bpm": 108.0,
+  "check": {
+   "bleedDb": -32.1,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at day, (10.0 s) .. little (11.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 30.5,
+    "p95_ms": 120.5,
+    "share_over_50ms": 0.435,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 39.4,
+    "p95_ms": 235.4,
+    "share_over_50ms": 0.458,
+    "windows": 24
+   },
+   "heard": "rain rain go away come again another day little children want to play little children want to play",
+   "melodyStretches": [],
+   "notesOnPitch": 0.947,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "day, (10.0 s) .. little (11.1 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.231,
+   "worstPhraseMs": 22.0
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "accompaniment": {
+     "bytes": 402720,
+     "url": "/api/library/media/rain-rain/accompaniment_100.mp3"
+    },
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 402720,
+     "url": "/api/library/media/rain-rain/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "accompaniment": {
+     "bytes": 708000,
+     "url": "/api/library/media/rain-rain/accompaniment_50.mp3"
+    },
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 804480,
+     "url": "/api/library/media/rain-rain/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "accompaniment": {
+     "bytes": 504480,
+     "url": "/api/library/media/rain-rain/accompaniment_75.mp3"
+    },
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 536640,
+     "url": "/api/library/media/rain-rain/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "accompaniment": {
+     "bytes": 436800,
+     "url": "/api/library/media/rain-rain/accompaniment_90.mp3"
+    },
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 447360,
+     "url": "/api/library/media/rain-rain/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "rain-rain-s5 (dtw)"
+ },
  "notation": {
-  "chordSymbols": [],
-  "graces": [],
+  "chordSymbols": [
+   {
+    "beat": 0.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 8.0,
+    "symbol": "Am"
+   },
+   {
+    "beat": 12.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 14.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 16.0,
+    "symbol": "Am"
+   },
+   {
+    "beat": 20.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 22.0,
+    "symbol": "C"
+   }
+  ],
+  "graces": [
+   {
+    "hand": "R",
+    "order": 0,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 1,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 2,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 3,
+    "pitch": 45,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 4,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 5,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 6,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 7,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 8,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 9,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 10,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 11,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 12,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 13,
+    "pitch": 45,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 14,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 15,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 16,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 17,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 18,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 19,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 20,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 21,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 22,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "voice": 1
+   }
+  ],
   "header": {
    "barLength": 4.0,
    "keySig": 0,

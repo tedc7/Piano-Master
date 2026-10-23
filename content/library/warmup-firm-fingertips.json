@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-bc34b2433a",
+ "contentVersion": "lib-dfe8c13602",
  "display": {
   "fingers": null,
   "letters": null
@@ -22,36 +22,42 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "warmup-firm-fingertips",
  "info": {
   "checks": {
-   "bleedDb": -32.4,
+   "bleedDb": -34.0,
    "firstWordSung": true,
    "flags": [
     "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
    ],
    "grid100": null,
    "grid50": {},
+   "heard": "firm fingertips, tap, tap standing up tall, tap, tap strong fingertips, tap, tap standing up tall, tap, tap",
    "melodyStretches": [],
    "notesOnPitch": 0.958,
-   "pass": true,
-   "reasons": [],
+   "pass": false,
+   "reasons": [
+    "words off the staff: 17%, in the first 15 s"
+   ],
    "tuningCents": 2.5,
-   "wordStretches": [],
-   "wordsOff": 0.0,
+   "wordStretches": [
+    "tap, (17.1 s) .. tap, (18.6 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.167,
    "worstPhraseMs": 0.0
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "lyrics": "1. Firm fingertips, tap, tap, standing up tall, tap, tap! Left fingertips, tap, tap, standing up tall, tap, tap!",
+  "lyrics": "1. Firm fingertips, tap, tap, standing up tall, tap, tap! Strong fingertips, tap, tap, standing up tall, tap, tap!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.half-note). Warm-up in our own music and words (words added at the parent's request). Repeated notes on the three black keys, one firm finger at a time."
+   "Curriculum song (Prep A, prep-a.half-note). Warm-up in our own music and words (words added at the parent's request). Repeated notes on the three black keys, one firm finger at a time. v0.40: the right hand alone, at 84 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -64,22 +70,28 @@
  "level": "Prep A",
  "mapPoint": 80,
  "media": {
-  "bpm": 88.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -32.4,
+   "bleedDb": -34.0,
    "firstWordSung": true,
    "flags": [
     "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
    ],
    "grid100": null,
    "grid50": {},
+   "heard": "firm fingertips, tap, tap standing up tall, tap, tap strong fingertips, tap, tap standing up tall, tap, tap",
    "melodyStretches": [],
    "notesOnPitch": 0.958,
-   "pass": true,
-   "reasons": [],
+   "pass": false,
+   "reasons": [
+    "words off the staff: 17%, in the first 15 s"
+   ],
    "tuningCents": 2.5,
-   "wordStretches": [],
-   "wordsOff": 0.0,
+   "wordStretches": [
+    "tap, (17.1 s) .. tap, (18.6 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.167,
    "worstPhraseMs": 0.0
   },
   "engine": "YuE2 vocal",
@@ -88,33 +100,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 506880,
+     "bytes": 570240,
      "url": "/api/library/media/warmup-firm-fingertips/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1012320,
+     "bytes": 1139040,
      "url": "/api/library/media/warmup-firm-fingertips/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 675360,
+     "bytes": 759840,
      "url": "/api/library/media/warmup-firm-fingertips/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 563040,
+     "bytes": 633120,
      "url": "/api/library/media/warmup-firm-fingertips/vocals_90.mp3"
     }
    }
   },
-  "take": "warmup-firm-fingertips-s1 (words)"
+  "take": "warmup-firm-fingertips-s4 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -125,14 +137,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    56,
-    68
+    66,
+    70
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 88,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -212,7 +223,7 @@
    {
     "note": 12,
     "syllabic": "single",
-    "text": "Left",
+    "text": "Strong",
     "verse": 1
    },
    {
@@ -507,181 +518,181 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 16.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 17.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 18.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 19.0,
     "voice": 1
    },
    {
     "duration": 2.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 20.0,
     "voice": 1
    },
    {
     "duration": 2.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 4,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 58,
+    "pitch": 70,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "A"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 22.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 25.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 27.0,
     "voice": 1
    },
    {
     "duration": 2.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
    {
     "duration": 2.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 56,
+    "pitch": 68,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "G"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    }

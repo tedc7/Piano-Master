@@ -49,6 +49,11 @@ describe("practice aids (§7.5)", () => {
     expect(stars(f({ sectionOnly: true }))).toBe(4);
     expect(stars(f({ tempoPreset: "50", hands: "R" }))).toBeLessThan(3);   // stacked aids cannot pass
     expect(practiceAids({ ...NORMAL, handsWritten: "R", hands: "R" })).toEqual([]);   // a one-hand piece
+    // v0.40: a step the session planned, one hand of a song for both, is played as asked: no aid;
+    // the other hand instead is one
+    expect(practiceAids({ ...NORMAL, handsWritten: "L", hands: "L" })).toEqual([]);
+    expect(stars(f({ handsWritten: "R", hands: "L" }))).toBe(3.5);
+    expect(practiceAids({ ...NORMAL, handsWritten: "R", hands: "both" })).toEqual([]);
   });
 });
 

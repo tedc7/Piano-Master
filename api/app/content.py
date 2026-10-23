@@ -126,11 +126,12 @@ class Content:
                        versions=self.versions)
 
     def pieces_of(self, skill_id: str) -> list[Piece]:
-        """The songs that feature the skill (song analysis), its practice songs first."""
+        """The songs that feature the skill (song analysis), its practice songs first, in the skill
+        map's order (v0.40: the map decides which comes first, such as a song for one hand)."""
         s = self.skills.get(skill_id)
-        practice = set(s.pieces) if s else set()
+        practice = {pid: i for i, pid in enumerate(s.pieces)} if s else {}
         found = [p for p in self.pieces.values() if skill_id in p.featured and not p.beyond]
-        return sorted(found, key=lambda p: (p.id not in practice, p.map_point or 0, p.id))
+        return sorted(found, key=lambda p: (p.id not in practice, practice.get(p.id, 0), p.map_point or 0, p.id))
 
     @classmethod
     def from_json(cls, skillmap: dict, index: dict, folder: Path | None = None) -> "Content":

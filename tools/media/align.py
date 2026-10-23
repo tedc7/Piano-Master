@@ -53,7 +53,7 @@ WIN = 3.0             # seconds of score per alignment window
 MAX_SHIFT = 0.35      # the windows search +-0.35 s around the rough map
 MODES = ("dtw", "words")
 PASS = {"phraseOffsetMs": 50, "pitch": 0.9, "wordsOff": 0.1, "tuningCents": 10, "bleedDb": -25, "stretchS": 1.5,
-        "octaveHeldS": 0.8, "heard": 0.92, "heardFail": 0.8}
+        "octaveHeldS": 0.8, "heard": 0.92, "heardFail": 0.8, "extraWords": 2, "extraShare": 0.1}
 
 
 # ---------------------------------------------------------------- score and pitch
@@ -389,18 +389,71 @@ def lyric_words_by_phrase(audio, words, bounds, margin=0.6):
         return json.loads(of.read_text())
 
 
-def heard(folder: Path, words: list[str]) -> dict:
+def heard(folder: Path, words: list[str]) -> dict | None:
     """Whisper's hearing of a take (hear.py): {"heard": transcript, "share": 0-1}. The transcript
-    is kept in folder/heard.json, one per take whatever the alignment mode."""
+    is kept in folder/heard.json, one per take whatever the alignment mode. None when Whisper fails
+    twice: the take is judged without it (one transcription failing, likely short of memory beside
+    YuE2, had stopped a batch: Middle C Stomp, Oct 20, 2026)."""
     f = folder / "heard.json"
-    if not f.exists():
+    for _ in range(2):
+        if f.exists():
+            break
         with tempfile.TemporaryDirectory() as tmp:
             of = Path(tmp) / "o.json"
-            subprocess.run([str(FA_PYTHON), str(HERE / "hear.py"), str(folder / "vocals.flac"), str(of)],
-                           check=True, capture_output=True)
-            f.write_text(of.read_text())
+            done = subprocess.run([str(FA_PYTHON), str(HERE / "hear.py"), str(folder / "vocals.flac"), str(of)],
+                                  capture_output=True, text=True)
+            if done.returncode == 0:
+                f.write_text(of.read_text())
+            else:
+                print(f"  Whisper failed on {folder.name}: {(done.stderr or '').strip().splitlines()[-1:]}", flush=True)
+    if not f.exists():
+        return None
     text = json.loads(f.read_text())["heard"]
     return {"heard": text, "share": heard_share(words, text), "wrongLetters": wrong_letters(words, text)}
+
+
+def words_in(text: str) -> int:
+    """Words in a lyric or a transcript, counted alike: "Bun-ny" and "fa-la-la" are one each."""
+    return len(re.findall(r"[A-Za-z0-9']+(?:-[A-Za-z0-9']+)*", text))
+
+
+def heard_in_song(folder: Path, mode: str, words: list[str], end_s: float) -> dict | None:
+    """What Whisper hears in the vocal the parent would hear: the aligned take, cut where the
+    packaged vocal ends (media.song_only: the last note's end, its release and fade). `heard` runs
+    on the whole take, where the song sung again after its end (cut away anyway) is harmless; a
+    take that sings words again inside the song is not (Oct 22, 2026, sent back by the parent:
+    Heavy Arms sang "float up and rest" twice in its last bar, Pointer and Middle its second half
+    twice, and Two-Key Hops was heard as "Thank you very much"). {"heard", "share", "extra": words
+    heard beyond the song's}; kept in aligned-<mode>/heard-song.json. None when Whisper fails."""
+    out = folder / f"aligned-{mode}"
+    f = out / "heard-song.json"
+    if f.exists():
+        d = json.loads(f.read_text())
+        if abs(d.get("endS", -1) - end_s) > 1e-3 or d.get("cut") != "song-nocarry":
+            d = None
+    else:
+        d = None
+    if d is None:
+        y, sr = sf.read(out / "vocals_100.wav", always_2d=True)
+        # cut as media.song_only packages it (the release kept 0.6 s, faded over 0.4 s), without
+        # the silence after: Whisper invents lines in a long silence
+        a_, b_ = int((end_s + 0.6) * sr), int((end_s + 1.0) * sr)
+        y = y[:b_].copy()
+        y[a_:] *= np.linspace(1.0, 0.0, len(y[a_:]))[:, None]
+        with tempfile.TemporaryDirectory() as tmp:
+            cut, of = Path(tmp) / "song.wav", Path(tmp) / "o.json"
+            sf.write(cut, y, sr)
+            done = subprocess.run([str(FA_PYTHON), str(HERE / "hear.py"), str(cut), str(of), "song"], capture_output=True, text=True)
+            if done.returncode != 0:
+                return None
+            d = {"endS": end_s, "cut": "song-nocarry", "heard": json.loads(of.read_text())["heard"]}
+        f.write_text(json.dumps(d, indent=1) + "\n")
+    text = SIGN_OFF.sub("", d["heard"]).strip()
+    return {"heard": text, "share": heard_share(words, text), "extra": words_in(text) - words_in(" ".join(words)) - 1}   # less a sung "Oh"
+
+
+# what Whisper writes at the end of a recording that has none of it, from the videos it learned on
+SIGN_OFF = re.compile(r"[\s.,!]*\b(thanks for watching|thank you for watching|thank you( very much)?|ciao|cya|bye(-bye)?)[.!\s]*$", re.I)
 
 
 # how Whisper writes a sung letter name, besides the letter itself ("middle sea", "bee")
@@ -429,20 +482,33 @@ def wrong_letters(words: list[str], text: str) -> list[tuple[str, str]]:
     return bad
 
 
+NUMBERS = dict(enumerate("zero one two three four five six seven eight nine ten eleven twelve".split()))
+
+
+def spelled(text: str) -> str:
+    """Whisper's digits as the words a lyric has: "3 black keys" for "three black keys"."""
+    return re.sub(r"\b(\d{1,2})\b", lambda m: NUMBERS.get(int(m.group(1)), m.group(1)), text)
+
+
 def heard_share(words: list[str], text: str) -> float:
     """The share of the words' letters Whisper heard, in order. Letters, not whole words, as the
     lesson voice's check compares: "drop and list" for "drop and lift" is one letter off, not a
     missing word, and a sung "B and C" comes back as "BNC". In order, so a take that sings the song
     again after the end (YuE2 sometimes does) loses nothing."""
     want = re.sub(r"[^a-z0-9]", "", " ".join(words).lower())
-    got = re.sub(r"[^a-z0-9]", "", text.lower())
+    got = re.sub(r"[^a-z0-9]", "", spelled(text).lower())
     blocks = difflib.SequenceMatcher(None, want, got, autojunk=False).get_matching_blocks()
     return round(sum(b.size for b in blocks) / max(1, len(want)), 3)
 
 
 def check_words(aligned: Path, words, song_start, phrase_s=None):
     real = [w for w in words if w["score_s"] >= song_start - 1e-6]
-    lw = lyric_words_by_phrase(aligned, real, phrase_s) if phrase_s else lyric_words(aligned, real)
+    try:
+        lw = lyric_words_by_phrase(aligned, real, phrase_s) if phrase_s else lyric_words(aligned, real)
+    except subprocess.CalledProcessError:
+        # the aligner died on this take (std::bad_alloc on Three Black Keys' take 3, Oct 21, every
+        # time): no word placed, so the take fails the word check and the batch goes on
+        lw = [{**w, "start": w["score_s"], "end": w["score_s"], "conf": -9.0} for w in real]
     res = np.array([w["start"] - w["score_s"] for w in lw])
     fz = np.array([forced(w) for w in lw])
     typical = float(np.median(res[~fz])) if (~fz).any() else 0.0
@@ -597,23 +663,30 @@ def verdict(r) -> dict:
     long_mel = [x for x in r["melodyStretches"] if span_s(x) >= PASS["stretchS"]]
     early_words = [x for x in w["stretches"] if stretch_times(x)[0] < r["songStartS"] + 15]
     early = any(span_s(x) >= PASS["stretchS"] for x in early_words)
+    # words off the staff on the song's last word, however short: the ending is what's heard last
+    # (Middle C Stomp, Oct 7, 2026: "great until the last 3 words", a stretch the rule only flagged)
+    end = r.get("lastWordS") is not None and any(abs(stretch_times(x)[1] - r["lastWordS"]) < 0.05 for x in w["stretches"])
     # what Whisper heard (heard_share, Oct 7, 2026): scattered words the aligner can't place are its
     # own misses when Whisper hears the words, so they pass a take; a lasting stretch is a real drift
     # (The First Noel's syllable behind) wherever it is; and a take Whisper can't make out fails,
     # however its words were placed
     h = r.get("heard")
     clear = h is not None and h["share"] >= PASS["heard"]
+    # what Whisper hears in the song as the parent hears it (heard_in_song): its words, and no more
+    song = r.get("songHeard")
+    too_many = song is not None and song["extra"] > max(PASS["extraWords"], PASS["extraShare"] * song.get("words", 0))
     drift = any(span_s(x) >= PASS["stretchS"] for x in w["stretches"])
     checks = {
         "timing": bool(worst <= PASS["phraseOffsetMs"]),
         "pitch": (r["pitch"]["share"] or 0) >= PASS["pitch"],
         "firstWord": r["firstWordSung"],
-        "words": bool((w["shareOver300ms"] <= PASS["wordsOff"] or (clear and not drift)) and not early),
+        "words": bool((w["shareOver300ms"] <= PASS["wordsOff"] or (clear and not drift)) and not early and not end),
         "heard": h is None or (h["share"] >= PASS["heardFail"] and not h.get("wrongLetters")),
         "melody": not long_mel,
         "tuning": bool(abs(r["tuningCents"]) <= PASS["tuningCents"]),
         "bleed": bool(r["bleed"]["db"] <= PASS["bleedDb"]),
         "octave": not [j for j in r.get("octaveJumps", []) if j["seconds"] >= PASS["octaveHeldS"]],
+        "inSong": song is None or (song["share"] >= PASS["heardFail"] and not too_many),
     }
     reasons, flags = [], []
     if not checks["timing"]:
@@ -623,7 +696,8 @@ def verdict(r) -> dict:
     if not checks["firstWord"]:
         reasons.append("the first word isn't sung")
     if not checks["words"]:
-        reasons.append(f"words off the staff: {w['shareOver300ms']:.0%}" + (", in the first 15 s" if early else ""))
+        reasons.append(f"words off the staff: {w['shareOver300ms']:.0%}" + (", in the first 15 s" if early else "")
+                       + (", at the end" if end else ""))
     elif w["stretches"]:
         flags.append("words off the staff at " + "; ".join(w["stretches"]))
     if h is not None and h.get("wrongLetters"):
@@ -632,6 +706,10 @@ def verdict(r) -> dict:
         reasons.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")
     elif h is not None and not clear:
         flags.append(f"Whisper heard {h['share']:.0%} of the words: \"{h['heard'][:120]}\"")
+    if song is not None and too_many:
+        reasons.append(f"sings {song['extra']} more words than the song has, inside it: \"{song['heard'][:120]}\"")
+    elif song is not None and song["share"] < PASS["heardFail"]:
+        reasons.append(f"in the song as heard, Whisper heard {song['share']:.0%} of the words: \"{song['heard'][:120]}\"")
     if not checks["melody"]:
         reasons.append("the sung melody doesn't match the notes at " + "; ".join(long_mel))
     elif r["melodyStretches"]:

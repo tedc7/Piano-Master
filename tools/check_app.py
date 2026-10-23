@@ -375,6 +375,21 @@ def main():
         page.wait_for_selector("text=is waiting for you again")
         check(page.get_by_text("Waiting for you (1)").count() == 1 and page.get_by_text("Deleted songs (").count() == 0,
               "review list: a deleted song goes back to the waiting list")
+        # v0.40: updates asked for several live songs at once, by skill, with one note
+        bulk = page.locator("details", has_text="Ask for updates to several songs")
+        bulk.locator("summary").click()
+        bulk.locator("label.pick", has_text="Sitting at the piano").locator("input").check()
+        bulk.locator("#bulk-note").fill("The right hand alone, then the left, then both.")
+        bulk.get_by_role("button", name="Ask for updates (2 songs)").click()
+        page.wait_for_selector("text=2 songs asked for an update")
+        fb = {f["pieceId"]: f for f in call("GET", "api/skill/feedback")["feedback"]}
+        check(all(fb.get(p, {}).get("live") and fb[p]["feedback"].startswith("The right hand alone") for p in ("sit-tall", "ready-to-play")),
+              "review list: updates asked for a skill's songs at once reach the skills as live songs")
+        page.screenshot(path=str(OUT / "review-bulk-updates.png"))
+        for _ in range(2):                    # cancelled again, so the rest of the check starts as before
+            page.locator(".item", has_text="Live song: the children keep playing it").first.get_by_role("button", name="Cancel request").click()
+            page.wait_for_timeout(300)
+        check(page.get_by_text("Live song: the children keep playing it").count() == 0, "review list: a request can be cancelled")
 
     def navigation(page):
         """The screens around the Play screen (arch §3) on a new piano server, through M4 and M5:
@@ -595,7 +610,7 @@ def main():
         page.wait_for_selector(".map .bubble")
         page.wait_for_timeout(300)
         states = page.evaluate("[...document.querySelectorAll('.map .bubble')].map(b => [...b.classList].find(c => ['locked', 'open', 'current', 'passed', 'mastered'].includes(c)))")
-        check(states.count("passed") == 1 and states.count("open") == 2 and states.count("locked") == len(states) - 3 and len(states) == 46,
+        check(states.count("passed") == 1 and states.count("open") == 2 and states.count("locked") == len(states) - 3 and len(states) == 47,
               f"journey: the first skill passed, its two branches ready to learn, the rest locked ({states})")
         check(page.locator(".map .unit", has_text="Unit 9").count() == 2, "journey: each bubble shows its unit")
         page.screenshot(path=str(OUT / "nav-journey.png"))

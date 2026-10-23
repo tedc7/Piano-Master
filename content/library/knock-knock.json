@@ -9,7 +9,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-8bdd4fc607",
+ "contentVersion": "lib-cbe6bd42b7",
  "display": {
   "fingers": null,
   "letters": null
@@ -20,38 +20,45 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "L",
  "id": "knock-knock",
  "info": {
   "checks": {
-   "bleedDb": -24.7,
+   "bleedDb": -28.2,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at is (5.5 s) .. there? (6.3 s); who (11.1 s) .. is (11.8 s)"
+   ],
    "grid100": {
-    "median_ms": 32.8,
-    "p95_ms": 89.4,
-    "share_over_50ms": 0.364,
-    "windows": 22
+    "median_ms": 40.6,
+    "p95_ms": 162.5,
+    "share_over_50ms": 0.407,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 52.1,
-    "p95_ms": 181.2,
-    "share_over_50ms": 0.538,
+    "median_ms": 80.9,
+    "p95_ms": 338.0,
+    "share_over_50ms": 0.577,
     "windows": 26
    },
+   "heard": "Don't knock, knock, who is there, it's me, hi Knock, knock, who is there, it's me, hi Come in, come in, come in my friend No, knock, knock",
    "melodyStretches": [],
-   "notesOnPitch": 0.913,
+   "notesOnPitch": 0.833,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -24.7 dB"
+    "notes on pitch 83% (needs 90%)"
    ],
-   "tuningCents": -0.5,
-   "wordStretches": [],
-   "wordsOff": 0.083,
-   "worstPhraseMs": 14.5
+   "tuningCents": 4.0,
+   "wordStretches": [
+    "is (5.5 s) .. there? (6.3 s)",
+    "who (11.1 s) .. is (11.8 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.292,
+   "worstPhraseMs": 7.6
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -59,7 +66,7 @@
   },
   "lyrics": "1. Knock, knock, who is there? It's me, hi! Knock, knock, who is there? It's me, hi! Come in, come in, come in, my friend!",
   "notes": [
-   "Curriculum song (Prep A, prep-a.two-black-keys). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.two-black-keys). Original music and words for this app. v0.40: the left hand alone, at 76 (it took turns with the right hand before)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -72,33 +79,40 @@
  "level": "Prep A",
  "mapPoint": 50,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -24.7,
+   "bleedDb": -28.2,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at is (5.5 s) .. there? (6.3 s); who (11.1 s) .. is (11.8 s)"
+   ],
    "grid100": {
-    "median_ms": 32.8,
-    "p95_ms": 89.4,
-    "share_over_50ms": 0.364,
-    "windows": 22
+    "median_ms": 40.6,
+    "p95_ms": 162.5,
+    "share_over_50ms": 0.407,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 52.1,
-    "p95_ms": 181.2,
-    "share_over_50ms": 0.538,
+    "median_ms": 80.9,
+    "p95_ms": 338.0,
+    "share_over_50ms": 0.577,
     "windows": 26
    },
+   "heard": "Don't knock, knock, who is there, it's me, hi Knock, knock, who is there, it's me, hi Come in, come in, come in my friend No, knock, knock",
    "melodyStretches": [],
-   "notesOnPitch": 0.913,
+   "notesOnPitch": 0.833,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -24.7 dB"
+    "notes on pitch 83% (needs 90%)"
    ],
-   "tuningCents": -0.5,
-   "wordStretches": [],
-   "wordsOff": 0.083,
-   "worstPhraseMs": 14.5
+   "tuningCents": 4.0,
+   "wordStretches": [
+    "is (5.5 s) .. there? (6.3 s)",
+    "who (11.1 s) .. is (11.8 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.292,
+   "worstPhraseMs": 7.6
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -106,33 +120,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 423840,
+     "bytes": 518400,
      "url": "/api/library/media/knock-knock/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 846240,
+     "bytes": 1035840,
      "url": "/api/library/media/knock-knock/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 564480,
+     "bytes": 690720,
      "url": "/api/library/media/knock-knock/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 470880,
+     "bytes": 576000,
      "url": "/api/library/media/knock-knock/vocals_90.mp3"
     }
    }
   },
-  "take": "knock-knock-s3 (words)"
+  "take": "knock-knock-s10 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -144,13 +158,12 @@
    "pickupBeats": 0.0,
    "range": [
     49,
-    63
+    51
    ],
    "staves": [
-    "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 24.0,
@@ -204,54 +217,6 @@
     "verse": 1
    },
    {
-    "note": 16,
-    "syllabic": "single",
-    "text": "Come",
-    "verse": 1
-   },
-   {
-    "note": 17,
-    "syllabic": "single",
-    "text": "in,",
-    "verse": 1
-   },
-   {
-    "note": 18,
-    "syllabic": "single",
-    "text": "come",
-    "verse": 1
-   },
-   {
-    "note": 19,
-    "syllabic": "single",
-    "text": "in,",
-    "verse": 1
-   },
-   {
-    "note": 20,
-    "syllabic": "single",
-    "text": "come",
-    "verse": 1
-   },
-   {
-    "note": 21,
-    "syllabic": "single",
-    "text": "in,",
-    "verse": 1
-   },
-   {
-    "note": 22,
-    "syllabic": "single",
-    "text": "my",
-    "verse": 1
-   },
-   {
-    "note": 23,
-    "syllabic": "single",
-    "text": "friend!",
-    "verse": 1
-   },
-   {
     "note": 8,
     "syllabic": "single",
     "text": "Knock,",
@@ -298,6 +263,54 @@
     "syllabic": "single",
     "text": "hi!",
     "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "Come",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "in,",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "come",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "in,",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "come",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "in,",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "friend!",
+    "verse": 1
    }
   ],
   "measures": [
@@ -335,13 +348,13 @@
   "notes": [
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -350,13 +363,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -365,13 +378,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -380,13 +393,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -395,13 +408,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -410,13 +423,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -425,13 +438,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -440,13 +453,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -464,7 +477,7 @@
      "octave": 3,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
@@ -479,7 +492,7 @@
      "octave": 3,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
@@ -494,7 +507,7 @@
      "octave": 3,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
@@ -509,7 +522,7 @@
      "octave": 3,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
@@ -524,7 +537,7 @@
      "octave": 3,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
@@ -539,7 +552,7 @@
      "octave": 3,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
@@ -554,7 +567,7 @@
      "octave": 3,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
@@ -569,19 +582,19 @@
      "octave": 3,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -590,13 +603,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -605,13 +618,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -620,13 +633,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -635,13 +648,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -650,13 +663,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "R",
+    "finger": 2,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 63,
+    "pitch": 51,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "D"
     },
     "staff": 0,
@@ -665,13 +678,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,
@@ -680,13 +693,13 @@
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "R",
+    "finger": 3,
+    "hand": "L",
     "isMelody": true,
-    "pitch": 61,
+    "pitch": 49,
     "spelled": {
      "alter": 1,
-     "octave": 4,
+     "octave": 3,
      "step": "C"
     },
     "staff": 0,

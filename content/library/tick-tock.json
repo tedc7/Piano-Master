@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-da322b8ded",
+ "contentVersion": "lib-1d49722cad",
  "display": {
   "fingers": null,
   "letters": null
@@ -22,44 +22,51 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "tick-tock",
  "info": {
   "checks": {
-   "bleedDb": -35.1,
+   "bleedDb": -30.7,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at one (7.1 s) .. beat, (7.9 s); a (18.6 s) .. clock. (19.3 s)"
+   ],
    "grid100": {
-    "median_ms": 17.4,
-    "p95_ms": 111.5,
-    "share_over_50ms": 0.189,
-    "windows": 37
-   },
-   "grid50": {
-    "median_ms": 43.0,
-    "p95_ms": 184.9,
-    "share_over_50ms": 0.361,
+    "median_ms": 23.3,
+    "p95_ms": 168.8,
+    "share_over_50ms": 0.306,
     "windows": 36
    },
+   "grid50": {
+    "median_ms": 26.9,
+    "p95_ms": 505.0,
+    "share_over_50ms": 0.258,
+    "windows": 31
+   },
+   "heard": "Oh, tick, tock, tick, tock, one beat down ten. Tock, tick, tock, tick, quarter notes go. Keep a steady beat like a clock can. Every quarter note gets one beat. Tock, tick, tock, quarter notes go.",
    "melodyStretches": [],
-   "notesOnPitch": 0.969,
+   "notesOnPitch": 0.938,
    "pass": true,
    "reasons": [],
-   "tuningCents": 1.5,
-   "wordStretches": [],
-   "wordsOff": 0.036,
-   "worstPhraseMs": 14.5
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "one (7.1 s) .. beat, (7.9 s)",
+    "a (18.6 s) .. clock. (19.3 s)"
+   ],
+   "wordsHeard": 0.964,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 42.4
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "lyrics": "1. Tick, tock, tick, tock, one beat, one beat, Tock, tick, tock, tick, quarter notes, go! keep a steady beat like a clock. Every quarter note gets one beat.",
+  "lyrics": "1. Tick, tock, tick, tock, one beat, one beat, tock, tick, tock, tick, quarter notes, go! Keep a steady beat like a clock. Every quarter note gets one beat.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.quarter-note). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.quarter-note). Original music and words for this app. v0.40: the right hand alone, at 84 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -72,31 +79,38 @@
  "level": "Prep A",
  "mapPoint": 70,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -35.1,
+   "bleedDb": -30.7,
    "firstWordSung": true,
-   "flags": [],
+   "flags": [
+    "words off the staff at one (7.1 s) .. beat, (7.9 s); a (18.6 s) .. clock. (19.3 s)"
+   ],
    "grid100": {
-    "median_ms": 17.4,
-    "p95_ms": 111.5,
-    "share_over_50ms": 0.189,
-    "windows": 37
-   },
-   "grid50": {
-    "median_ms": 43.0,
-    "p95_ms": 184.9,
-    "share_over_50ms": 0.361,
+    "median_ms": 23.3,
+    "p95_ms": 168.8,
+    "share_over_50ms": 0.306,
     "windows": 36
    },
+   "grid50": {
+    "median_ms": 26.9,
+    "p95_ms": 505.0,
+    "share_over_50ms": 0.258,
+    "windows": 31
+   },
+   "heard": "Oh, tick, tock, tick, tock, one beat down ten. Tock, tick, tock, tick, quarter notes go. Keep a steady beat like a clock can. Every quarter note gets one beat. Tock, tick, tock, quarter notes go.",
    "melodyStretches": [],
-   "notesOnPitch": 0.969,
+   "notesOnPitch": 0.938,
    "pass": true,
    "reasons": [],
-   "tuningCents": 1.5,
-   "wordStretches": [],
-   "wordsOff": 0.036,
-   "worstPhraseMs": 14.5
+   "tuningCents": 0.5,
+   "wordStretches": [
+    "one (7.1 s) .. beat, (7.9 s)",
+    "a (18.6 s) .. clock. (19.3 s)"
+   ],
+   "wordsHeard": 0.964,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 42.4
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -104,33 +118,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 471360,
+     "bytes": 528000,
      "url": "/api/library/media/tick-tock/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 941280,
+     "bytes": 1054560,
      "url": "/api/library/media/tick-tock/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 627840,
+     "bytes": 703200,
      "url": "/api/library/media/tick-tock/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 523680,
+     "bytes": 586560,
      "url": "/api/library/media/tick-tock/vocals_90.mp3"
     }
    }
   },
-  "take": "tick-tock-s3 (words)"
+  "take": "tick-tock-s5 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -141,14 +155,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     75
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,
@@ -202,57 +215,9 @@
     "verse": 1
    },
    {
-    "note": 16,
-    "syllabic": "single",
-    "text": "keep",
-    "verse": 1
-   },
-   {
-    "note": 17,
-    "syllabic": "single",
-    "text": "a",
-    "verse": 1
-   },
-   {
-    "note": 18,
-    "syllabic": "begin",
-    "text": "stead",
-    "verse": 1
-   },
-   {
-    "note": 19,
-    "syllabic": "end",
-    "text": "y",
-    "verse": 1
-   },
-   {
-    "note": 20,
-    "syllabic": "single",
-    "text": "beat",
-    "verse": 1
-   },
-   {
-    "note": 21,
-    "syllabic": "single",
-    "text": "like",
-    "verse": 1
-   },
-   {
-    "note": 22,
-    "syllabic": "single",
-    "text": "a",
-    "verse": 1
-   },
-   {
-    "note": 23,
-    "syllabic": "single",
-    "text": "clock.",
-    "verse": 1
-   },
-   {
     "note": 8,
     "syllabic": "single",
-    "text": "Tock,",
+    "text": "tock,",
     "verse": 1
    },
    {
@@ -295,6 +260,54 @@
     "note": 15,
     "syllabic": "single",
     "text": "go!",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "Keep",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "begin",
+    "text": "stead",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "end",
+    "text": "y",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "beat",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "single",
+    "text": "like",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "clock.",
     "verse": 1
    },
    {
@@ -511,121 +524,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    },
@@ -751,121 +764,121 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 24.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 25.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 26.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 27.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 28.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 29.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 30.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 31.0,
     "voice": 1
    }

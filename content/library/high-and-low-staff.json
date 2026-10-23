@@ -25,23 +25,121 @@
  "hands": "RL",
  "id": "high-and-low-staff",
  "info": {
+  "checks": {
+   "bleedDb": -32.3,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.2,
+    "p95_ms": 69.3,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 26.1,
+    "p95_ms": 167.3,
+    "share_over_50ms": 0.162,
+    "windows": 37
+   },
+   "heard": "high up on the treble staff low down on the bass club staff middle C is in between left hand sings it lower too lower too",
+   "melodyStretches": [],
+   "notesOnPitch": 0.964,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.977,
+   "wordsOff": 0.043,
+   "worstPhraseMs": 15.3
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. High up on the treble staff, Low down on the bass clef staff, Middle C is in between, left hand sings it lower too.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.the-clefs). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/high-and-low-staff.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 210,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.3,
+   "firstWordSung": true,
+   "flags": [
+    "1 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.2,
+    "p95_ms": 69.3,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 26.1,
+    "p95_ms": 167.3,
+    "share_over_50ms": 0.162,
+    "windows": 37
+   },
+   "heard": "high up on the treble staff low down on the bass club staff middle C is in between left hand sings it lower too lower too",
+   "melodyStretches": [],
+   "notesOnPitch": 0.964,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.977,
+   "wordsOff": 0.043,
+   "worstPhraseMs": 15.3
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 511200,
+     "url": "/api/library/media/high-and-low-staff/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1021440,
+     "url": "/api/library/media/high-and-low-staff/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 681600,
+     "url": "/api/library/media/high-and-low-staff/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 567840,
+     "url": "/api/library/media/high-and-low-staff/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "high-and-low-staff-s5 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

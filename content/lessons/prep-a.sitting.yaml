@@ -25,15 +25,14 @@ cards:
   - 3
   hand: R
 - kind: try
-  text: 'Still sitting tall: now the left hand, on the two black keys just below.'
-  notes: C#3 D#3 C#3 D#3
+  text: 'Still sitting tall: play them the other way round, finger 3 first.'
+  notes: D#4 C#4 D#4 C#4
   fingers:
   - 3
   - 2
   - 3
   - 2
-  hand: L
-  clef: bass
+  hand: R
 - kind: echo
   text: Sitting tall, listen, then play it back on the two black keys in the middle.
   play: C#4 D#4 D#4 C#4

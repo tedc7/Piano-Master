@@ -28,6 +28,9 @@ def test_the_star_collection_counts_each_songs_best(client, parent):
     assert play(client, sid, "pa2", 5.0, mode="loop")["stars"]["total"] == 4.5
     assert play(client, sid, "pa2", 5.0, completed=False)["stars"]["total"] == 4.5
     assert play(client, sid, "drill-0a1b2c3d4e", 5.0)["stars"]["total"] == 4.5
+    # nor a planned one-hand step of a song for both (v0.40); one hand chosen by the child still is
+    step = {"mode": "play", "tempoPreset": "100", "hands": "R", "handsWritten": "R", "sectionOnly": False, "extraHints": False, "rewinds": 0}
+    assert play(client, sid, "pa2", 5.0, conditions=step)["stars"]["total"] == 4.5
     fx = play(client, sid, "pb1", 2.0)
     assert fx["stars"] == {"total": 6.5, "gained": 2.0}
     st = client.get(f"/api/students/{sid}/state").json()["rewards"]

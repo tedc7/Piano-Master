@@ -7,8 +7,9 @@ play at once (`handsTogether`: `held` when one hand holds a note of 2 beats or m
 other, `true` for any). Since the real Prep A map (v0.24) a skill can also allow melodic
 `intervals` (1 a repeat, 2 a step, 3 a skip...), `chords` (two or more notes at once in one hand:
 `true` for any, or the sizes allowed, `[5]` for C and G together, measured bottom note to top),
-`ties` and `rests` (a silence inside the piece); these are only read when some skill in the map
-names them, so an older map analyses as before. A skill with `letters: true` is a pre-staff skill
+`ties`, `rests` (a silence inside the piece) and `turns` (v0.40: the hands taking turns, one
+piece using both hands, which is otherwise allowed by any skill naming both hands); these are only
+read when some skill in the map names them, so an older map analyses as before. A skill with `letters: true` is a pre-staff skill
 (Prep A Units 1 to 3): its pitches count only in letter-named pieces (`letters` in the notation
 header), whose notes are read by their letter names, not from the staff. Each thing an arrangement uses is credited to
 the earliest skill (lowest sequence) whose constraints allow it; those skills are its **required
@@ -59,7 +60,8 @@ def dur_key(d: float) -> float:
 
 
 # constraint keys that switch on a kind of feature for the whole map (see the module docstring)
-OPTIONAL = {"intervals": "interval", "chords": "chord", "ties": "tie", "rests": "rest", "letters": "letters"}
+OPTIONAL = {"intervals": "interval", "chords": "chord", "ties": "tie", "rests": "rest", "letters": "letters",
+            "turns": "turns"}
 
 
 class Constraints:
@@ -82,6 +84,7 @@ class Constraints:
         self.chords: bool | set[int] = {int(i) for i in ch} if isinstance(ch, list) else bool(ch)
         self.ties = bool(c.get("ties"))
         self.rests = bool(c.get("rests"))
+        self.turns = bool(c.get("turns"))
         self.letters = bool(c.get("letters"))
         self.mentions = {kind for key, kind in OPTIONAL.items() if key in c}
         if together == "held":
@@ -99,7 +102,7 @@ class Constraints:
     def sees_nothing(self) -> bool:
         """An idea the notes can't show (see the module docstring): it allows no feature at all."""
         return not (self.hands or self.range or self.pitches or self.durations or self.time_sigs or self.key_sigs
-                    or self.hands_together or self.intervals or self.chords or self.ties or self.rests)
+                    or self.hands_together or self.intervals or self.chords or self.ties or self.rests or self.turns)
 
     def has_pitch(self, hand: str, p: int) -> bool:
         r = self.range.get(hand)
@@ -121,6 +124,8 @@ class Constraints:
             return self.ties
         if kind == "rest":
             return self.rests
+        if kind == "turns":                     # the map names `turns`: only those skills allow it
+            return self.turns
         if kind == "dur":
             return any(abs(feature[1] - d) < 1e-3 for d in self.durations)
         if kind == "time":
@@ -221,7 +226,7 @@ def features(nota: dict, kinds: set[str] | None = None) -> dict[tuple, set[int]]
         for b in together:
             add(("hands", "together"), b)
         for n in notes:
-            add(("hands", "turns"), bar_of(n["start"]))
+            add(("turns",) if "turns" in kinds else ("hands", "turns"), bar_of(n["start"]))
     return out
 
 
@@ -246,6 +251,7 @@ def describe(beyond: list[tuple]) -> list[str]:
     out += [f"{f[1]} time" for f in beyond if f[0] == "time"]
     out += [f"key signature {f[1]:+d}" for f in beyond if f[0] == "key"]
     out += [f"hands {HANDS_WORD[f[1]]}" for f in beyond if f[0] == "hands"]
+    out += ["hands taking turns" for f in beyond if f[0] == "turns"]
     return out
 
 
@@ -266,7 +272,7 @@ def analyze(nota: dict, skills: list[dict], parsed: dict[str, Constraints] | Non
             beyond.append(f)
         else:
             bars.setdefault(sid, set()).update(where)
-            if f[0] in ("pitch", "lpitch", "hands"):
+            if f[0] in ("pitch", "lpitch", "hands", "turns"):
                 note_bars.setdefault(sid, set()).update(where)
     seq = {s["id"]: s["sequence"] for s in order}
     required = sorted(bars, key=lambda k: seq[k])

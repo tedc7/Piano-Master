@@ -1,4 +1,5 @@
 # Curriculum song (Prep A, prep-a.quarter-rest). Traditional nursery rhyme; public domain. Our own arrangement.
+# Chord symbols (C, Am, G7) for a backing (at the parent's request, Oct 7, 2026: a popular song should have one).
 title: "Rain, Rain, Go Away"
 composer: Traditional
 genre: kids
@@ -18,5 +19,5 @@ abc: |
   L:1/4
   Q:1/4=108
   K:C
-  !5!G2 !3!E z | G G E z | G G E E | G G E z | G G E E | G G E z |]
+  "C"!5!G2 !3!E z | G G E z | "Am"G G E E | "G7"G G "C"E z | "Am"G G E E | "G7"G G "C"E z |]
   w: Rain, rain, go a-way, come a-gain an-oth-er day, lit-tle chil-dren want to play.

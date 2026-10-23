@@ -1,0 +1,2352 @@
+{
+ "barNotes": {
+  "1": 3,
+  "10": 3,
+  "11": 4,
+  "12": 3,
+  "13": 3,
+  "14": 3,
+  "15": 4,
+  "16": 1,
+  "2": 3,
+  "3": 4,
+  "4": 3,
+  "5": 3,
+  "6": 3,
+  "7": 4,
+  "8": 1,
+  "9": 4
+ },
+ "beyondMap": [],
+ "composer": "Traditional (German folk tune)",
+ "contentVersion": "lib-9d536b8a9e",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.allegro",
+  "prep-a.skips"
+ ],
+ "fingeringSource": "mixed",
+ "genre": "kids",
+ "hands": "R",
+ "id": "lightly-row",
+ "info": {
+  "backing": {
+   "leadMs": {
+    "Glockenspiel": 0,
+    "Pizzicato bass": 45,
+    "Strings, soft pad": 0
+   },
+   "parts": [
+    {
+     "name": "Strings, soft pad",
+     "notes": 48,
+     "program": 48
+    },
+    {
+     "name": "Pizzicato bass",
+     "notes": 32,
+     "program": 45
+    },
+    {
+     "name": "Glockenspiel",
+     "notes": 32,
+     "program": 9
+    }
+   ],
+   "style": "kids",
+   "timing": {
+    "pass": true,
+    "worstPartMedianMs": 6.9
+   }
+  },
+  "checks": {
+   "bleedDb": -32.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.7,
+    "p95_ms": 57.2,
+    "share_over_50ms": 0.091,
+    "windows": 55
+   },
+   "grid50": {
+    "median_ms": 43.7,
+    "p95_ms": 132.8,
+    "share_over_50ms": 0.393,
+    "windows": 56
+   },
+   "heard": "Oh, lightly row, lightly row O'er the glassy waves we go Smoothly glide, smoothly glide On the silent tide The winds and waters be mingled With our melody Sing and float, sing and float In our little boat",
+   "melodyStretches": [],
+   "notesOnPitch": 0.98,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.982,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 17.4
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "hands": "R",
+  "level": "Prep A",
+  "license": {
+   "composition": "public-domain",
+   "edition": "original (our own arrangement)",
+   "evidence": "tune traditional German (Hänschen klein, credited to Franz Wiedemann, 1821-1882); English words anonymous, printed in 1854 (Mason and Webb, The Song-book of the School-room) and in school songbooks of 1914-1915 (SingPraises.net lists the author as Unknown, no copyright)"
+  },
+  "lyrics": "1. Lightly row, lightly row, o'er the glassy waves we go; Smoothly glide, smoothly glide, on the silent tide. Let the winds and waters be mingled with our melody; Sing and float, sing and float, in our little boat.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.allegro). \"Lightly Row\": the German folk tune of \"Hänschen klein\" (credited to Franz Wiedemann, 1821-1882) with anonymous English words, printed in Lowell Mason and George Webb's \"The Song-book of the School-room\" (1854) and in many school songbooks since (Hollis Dann's \"First Year Music\", 1914; \"The Golden Book of Favorite Songs\", 1915); public domain. Our own arrangement, in C position for the right hand. It replaces When the Saints Go Marching In, deleted from the library (Oct 20, 2026): a quick, bright song made of skips (G-E, F-D) for Unit 7's Allegro."
+  ],
+  "source": {
+   "site": "Piano-Master",
+   "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/lightly-row.yaml"
+  },
+  "sourceIds": [],
+  "tempoSource": "Allegro, as the skill it practises asks: quarter = 116, the curriculum's quick tempo (When the Saints, which it replaces, was 112)"
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "Prep A",
+ "mapPoint": 370,
+ "media": {
+  "bpm": 116.0,
+  "check": {
+   "bleedDb": -32.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.7,
+    "p95_ms": 57.2,
+    "share_over_50ms": 0.091,
+    "windows": 55
+   },
+   "grid50": {
+    "median_ms": 43.7,
+    "p95_ms": 132.8,
+    "share_over_50ms": 0.393,
+    "windows": 56
+   },
+   "heard": "Oh, lightly row, lightly row O'er the glassy waves we go Smoothly glide, smoothly glide On the silent tide The winds and waters be mingled With our melody Sing and float, sing and float In our little boat",
+   "melodyStretches": [],
+   "notesOnPitch": 0.98,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.982,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 17.4
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "accompaniment": {
+     "bytes": 795360,
+     "url": "/api/library/media/lightly-row/accompaniment_100.mp3"
+    },
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 710880,
+     "url": "/api/library/media/lightly-row/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "accompaniment": {
+     "bytes": 1493760,
+     "url": "/api/library/media/lightly-row/accompaniment_50.mp3"
+    },
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1420800,
+     "url": "/api/library/media/lightly-row/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "accompaniment": {
+     "bytes": 1028160,
+     "url": "/api/library/media/lightly-row/accompaniment_75.mp3"
+    },
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 947520,
+     "url": "/api/library/media/lightly-row/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "accompaniment": {
+     "bytes": 873120,
+     "url": "/api/library/media/lightly-row/accompaniment_90.mp3"
+    },
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 789600,
+     "url": "/api/library/media/lightly-row/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "lightly-row-s1 (words)"
+ },
+ "notation": {
+  "chordSymbols": [
+   {
+    "beat": 0.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 4.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 8.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 12.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 16.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 20.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 24.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 28.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 32.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 36.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 40.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 44.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 48.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 52.0,
+    "symbol": "G7"
+   },
+   {
+    "beat": 56.0,
+    "symbol": "C"
+   },
+   {
+    "beat": 60.0,
+    "symbol": "C"
+   }
+  ],
+  "graces": [
+   {
+    "hand": "R",
+    "order": 0,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 1,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 2,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 3,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 4,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 5,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 6,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 7,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 8,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 9,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 10,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 11,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 12,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 13,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 14,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 15,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 16,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 17,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 18,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 19,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 20,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 21,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 22,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 23,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 24,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 25,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 26,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 27,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 28,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 29,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 30,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 31,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 32,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 33,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 34,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 35,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 36,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 37,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 38,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 39,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 40,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 48.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 41,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 48.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 42,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 48.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 43,
+    "pitch": 43,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 52.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 44,
+    "pitch": 47,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 2,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 52.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 45,
+    "pitch": 50,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 52.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 46,
+    "pitch": 53,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 52.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 47,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 56.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 48,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 56.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 49,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 56.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 50,
+    "pitch": 48,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 60.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 51,
+    "pitch": 52,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 60.0,
+    "voice": 1
+   },
+   {
+    "hand": "R",
+    "order": 52,
+    "pitch": 55,
+    "slash": false,
+    "spelled": {
+     "alter": 0,
+     "octave": 3,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 60.0,
+    "voice": 1
+   }
+  ],
+  "header": {
+   "barLength": 4.0,
+   "keySig": 0,
+   "pickupBeats": 0.0,
+   "range": [
+    60,
+    67
+   ],
+   "staves": [
+    "treble"
+   ],
+   "tempo": 116,
+   "timeSig": "4/4"
+  },
+  "length": 64.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "Light",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "ly",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "row,",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "begin",
+    "text": "light",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "end",
+    "text": "ly",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "row,",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "o'er",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "begin",
+    "text": "glass",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "end",
+    "text": "y",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "waves",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "we",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "single",
+    "text": "go;",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "begin",
+    "text": "Smooth",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "end",
+    "text": "ly",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "glide,",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "begin",
+    "text": "smooth",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "end",
+    "text": "ly",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "glide,",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "on",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 21,
+    "syllabic": "begin",
+    "text": "si",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "end",
+    "text": "lent",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "tide.",
+    "verse": 1
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "Let",
+    "verse": 1
+   },
+   {
+    "note": 25,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "winds",
+    "verse": 1
+   },
+   {
+    "note": 27,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 28,
+    "syllabic": "begin",
+    "text": "wa",
+    "verse": 1
+   },
+   {
+    "note": 29,
+    "syllabic": "end",
+    "text": "ters",
+    "verse": 1
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "be",
+    "verse": 1
+   },
+   {
+    "note": 31,
+    "syllabic": "begin",
+    "text": "min",
+    "verse": 1
+   },
+   {
+    "note": 32,
+    "syllabic": "end",
+    "text": "gled",
+    "verse": 1
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "with",
+    "verse": 1
+   },
+   {
+    "note": 34,
+    "syllabic": "single",
+    "text": "our",
+    "verse": 1
+   },
+   {
+    "note": 35,
+    "syllabic": "begin",
+    "text": "mel",
+    "verse": 1
+   },
+   {
+    "note": 36,
+    "syllabic": "middle",
+    "text": "o",
+    "verse": 1
+   },
+   {
+    "note": 37,
+    "syllabic": "end",
+    "text": "dy;",
+    "verse": 1
+   },
+   {
+    "note": 38,
+    "syllabic": "single",
+    "text": "Sing",
+    "verse": 1
+   },
+   {
+    "note": 39,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 40,
+    "syllabic": "single",
+    "text": "float,",
+    "verse": 1
+   },
+   {
+    "note": 41,
+    "syllabic": "single",
+    "text": "sing",
+    "verse": 1
+   },
+   {
+    "note": 42,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 43,
+    "syllabic": "single",
+    "text": "float,",
+    "verse": 1
+   },
+   {
+    "note": 44,
+    "syllabic": "single",
+    "text": "in",
+    "verse": 1
+   },
+   {
+    "note": 45,
+    "syllabic": "single",
+    "text": "our",
+    "verse": 1
+   },
+   {
+    "note": 46,
+    "syllabic": "begin",
+    "text": "lit",
+    "verse": 1
+   },
+   {
+    "note": 47,
+    "syllabic": "end",
+    "text": "tle",
+    "verse": 1
+   },
+   {
+    "note": 48,
+    "syllabic": "single",
+    "text": "boat.",
+    "verse": 1
+   }
+  ],
+  "measures": [
+   {
+    "duration": 4.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 4.0,
+    "number": 2,
+    "start": 4.0
+   },
+   {
+    "duration": 4.0,
+    "number": 3,
+    "start": 8.0
+   },
+   {
+    "duration": 4.0,
+    "number": 4,
+    "start": 12.0
+   },
+   {
+    "duration": 4.0,
+    "number": 5,
+    "start": 16.0
+   },
+   {
+    "duration": 4.0,
+    "number": 6,
+    "start": 20.0
+   },
+   {
+    "duration": 4.0,
+    "number": 7,
+    "start": 24.0
+   },
+   {
+    "duration": 4.0,
+    "number": 8,
+    "start": 28.0
+   },
+   {
+    "duration": 4.0,
+    "number": 9,
+    "start": 32.0
+   },
+   {
+    "duration": 4.0,
+    "number": 10,
+    "start": 36.0
+   },
+   {
+    "duration": 4.0,
+    "number": 11,
+    "start": 40.0
+   },
+   {
+    "duration": 4.0,
+    "number": 12,
+    "start": 44.0
+   },
+   {
+    "duration": 4.0,
+    "number": 13,
+    "start": 48.0
+   },
+   {
+    "duration": 4.0,
+    "number": 14,
+    "start": 52.0
+   },
+   {
+    "duration": 4.0,
+    "number": 15,
+    "start": 56.0
+   },
+   {
+    "duration": 4.0,
+    "number": 16,
+    "start": 60.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 2.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 5.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 8.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 11.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 14.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 17.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 20.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 21.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 25.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 26.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 27.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 32.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 33.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 34.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 35.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 37.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 38.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 41.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 42.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 43.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 44.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 45.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 46.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 48.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 49.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 50.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 65,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "F"
+    },
+    "staff": 0,
+    "start": 52.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 53.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 54.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 56.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 57.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 58.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 59.0,
+    "voice": 1
+   },
+   {
+    "duration": 4.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 60,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "C"
+    },
+    "staff": 0,
+    "start": 60.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   8.0,
+   16.0,
+   24.0,
+   32.0,
+   40.0,
+   48.0,
+   56.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 8,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 9,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 10,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 11,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 12,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 13,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 14,
+    "pass": 1,
+    "verse": 1
+   },
+   {
+    "measure": 15,
+    "pass": 1,
+    "verse": 1
+   }
+  ],
+  "units": "start and duration are in quarter notes, in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.whole-note",
+  "prep-a.middle-c",
+  "prep-a.treble-g",
+  "prep-a.d-e-f",
+  "prep-a.skips",
+  "prep-a.allegro"
+ ],
+ "skillId": "prep-a.allegro",
+ "skillMeasures": {
+  "prep-a.allegro": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16
+  ],
+  "prep-a.d-e-f": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "prep-a.half-note": [
+   1,
+   2,
+   4,
+   5,
+   6,
+   10,
+   12,
+   13,
+   14
+  ],
+  "prep-a.middle-c": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16
+  ],
+  "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16
+  ],
+  "prep-a.skips": [
+   1,
+   2,
+   5,
+   6,
+   7,
+   13,
+   14,
+   15
+  ],
+  "prep-a.treble-g": [
+   1,
+   4,
+   5,
+   7,
+   8,
+   12,
+   13,
+   15,
+   16
+  ],
+  "prep-a.whole-note": [
+   8,
+   16
+  ]
+ },
+ "song": "lightly-row",
+ "songTitle": "Lightly Row",
+ "title": "Lightly Row",
+ "version": null
+}

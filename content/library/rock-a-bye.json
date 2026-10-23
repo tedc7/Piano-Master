@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "rock-a-bye",
  "info": {
+  "checks": {
+   "bleedDb": -32.7,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.4,
+    "p95_ms": 40.8,
+    "share_over_50ms": 0.0,
+    "windows": 27
+   },
+   "grid50": {
+    "median_ms": 10.6,
+    "p95_ms": 62.4,
+    "share_over_50ms": 0.148,
+    "windows": 27
+   },
+   "heard": "Oh, rock-o-bye, dear, rest your head here. Stars above shine, sweet dreams now sleep.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.984,
+   "wordsOff": 0.231,
+   "worstPhraseMs": 23.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Rockabye, dear. Rest your head here. Stars above shine. Sweet dreams now, sleep.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-a). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/rock-a-bye.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 330,
- "media": null,
+ "media": {
+  "bpm": 104.0,
+  "check": {
+   "bleedDb": -32.7,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 10.4,
+    "p95_ms": 40.8,
+    "share_over_50ms": 0.0,
+    "windows": 27
+   },
+   "grid50": {
+    "median_ms": 10.6,
+    "p95_ms": 62.4,
+    "share_over_50ms": 0.148,
+    "windows": 27
+   },
+   "heard": "Oh, rock-o-bye, dear, rest your head here. Stars above shine, sweet dreams now sleep.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.984,
+   "wordsOff": 0.231,
+   "worstPhraseMs": 23.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 3.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 360960,
+     "url": "/api/library/media/rock-a-bye/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 720960,
+     "url": "/api/library/media/rock-a-bye/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 480960,
+     "url": "/api/library/media/rock-a-bye/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 401280,
+     "url": "/api/library/media/rock-a-bye/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "rock-a-bye-s6 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

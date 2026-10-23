@@ -25,23 +25,117 @@
  "hands": "RL",
  "id": "bee-and-ladybug",
  "info": {
+  "checks": {
+   "bleedDb": -32.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.0,
+    "p95_ms": 29.1,
+    "share_over_50ms": 0.027,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 15.1,
+    "p95_ms": 44.8,
+    "share_over_50ms": 0.027,
+    "windows": 37
+   },
+   "heard": "Oh bumblebee flies down so low Ladybug flies up so high Bumble, bumble, buzz, buzz, buzz Lady, ladybug",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 0.974,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 7.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Bumblebee flies down so low, Ladybug flies up so high, bumble, bumble, buzz, buzz, buzz, lady, lady, bye!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.question-answer). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bee-and-ladybug.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 440,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.9,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 7.0,
+    "p95_ms": 29.1,
+    "share_over_50ms": 0.027,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 15.1,
+    "p95_ms": 44.8,
+    "share_over_50ms": 0.027,
+    "windows": 37
+   },
+   "heard": "Oh bumblebee flies down so low Ladybug flies up so high Bumble, bumble, buzz, buzz, buzz Lady, ladybug",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 0.974,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 7.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 505440,
+     "url": "/api/library/media/bee-and-ladybug/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1009440,
+     "url": "/api/library/media/bee-and-ladybug/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 673440,
+     "url": "/api/library/media/bee-and-ladybug/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 561120,
+     "url": "/api/library/media/bee-and-ladybug/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "bee-and-ladybug-s2 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

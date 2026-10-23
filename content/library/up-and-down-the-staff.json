@@ -25,23 +25,125 @@
  "hands": "RL",
  "id": "up-and-down-the-staff",
  "info": {
+  "checks": {
+   "bleedDb": -32.4,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at we (14.4 s) .. go. (15.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 42.1,
+    "share_over_50ms": 0.034,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 60.0,
+    "share_over_50ms": 0.103,
+    "windows": 29
+   },
+   "heard": "Oh, up the staff, we go down the low staff, down down the staff, we go up the low staff, up up the low staff, up",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [
+    "we (14.4 s) .. go. (15.0 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.3,
+   "worstPhraseMs": 19.4
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Up the staff we go! Down the low staff, down! Down the staff we go. Up the low staff, up.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.the-staff). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/up-and-down-the-staff.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 200,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.4,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at we (14.4 s) .. go. (15.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.8,
+    "p95_ms": 42.1,
+    "share_over_50ms": 0.034,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 60.0,
+    "share_over_50ms": 0.103,
+    "windows": 29
+   },
+   "heard": "Oh, up the staff, we go down the low staff, down down the staff, we go up the low staff, up up the low staff, up",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [
+    "we (14.4 s) .. go. (15.0 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.3,
+   "worstPhraseMs": 19.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 536160,
+     "url": "/api/library/media/up-and-down-the-staff/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1070880,
+     "url": "/api/library/media/up-and-down-the-staff/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 714240,
+     "url": "/api/library/media/up-and-down-the-staff/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 595200,
+     "url": "/api/library/media/up-and-down-the-staff/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "up-and-down-the-staff-s3 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -25,6 +25,34 @@
  "hands": "R",
  "id": "warmup-flowing-wheels",
  "info": {
+  "checks": {
+   "bleedDb": -34.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 12.7,
+    "p95_ms": 87.0,
+    "share_over_50ms": 0.185,
+    "windows": 27
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 179.8,
+    "share_over_50ms": 0.222,
+    "windows": 27
+   },
+   "heard": "Oh, round and round go, wheels on the road, flowing along, never stopping.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.938,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 16.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
@@ -45,7 +73,69 @@
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 320,
- "media": null,
+ "media": {
+  "bpm": 104.0,
+  "check": {
+   "bleedDb": -34.3,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 12.7,
+    "p95_ms": 87.0,
+    "share_over_50ms": 0.185,
+    "windows": 27
+   },
+   "grid50": {
+    "median_ms": 23.2,
+    "p95_ms": 179.8,
+    "share_over_50ms": 0.222,
+    "windows": 27
+   },
+   "heard": "Oh, round and round go, wheels on the road, flowing along, never stopping.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.938,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.25,
+   "worstPhraseMs": 16.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 3.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 396000,
+     "url": "/api/library/media/warmup-flowing-wheels/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 791040,
+     "url": "/api/library/media/warmup-flowing-wheels/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 528000,
+     "url": "/api/library/media/warmup-flowing-wheels/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 440160,
+     "url": "/api/library/media/warmup-flowing-wheels/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-flowing-wheels-s1 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

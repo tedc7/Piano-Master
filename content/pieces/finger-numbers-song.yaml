@@ -1,9 +1,10 @@
 # Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app.
+# v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song).
 title: "The Finger Number Song"
 composer: Piano-Master
 genre: studies
 level: Prep A
-hands: RL
+hands: R
 source:
   site: Piano-Master
   url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/finger-numbers-song.yaml
@@ -17,12 +18,9 @@ abc: |
   T:The Finger Number Song
   M:4/4
   L:1/4
-  Q:1/4=96
-  %%score {RH LH}
+  Q:1/4=76
   K:C
-  V:RH clef=treble
-  V:LH clef=bass
-  [V:RH] !2!^C !3!^D ^C ^D | ^C ^C ^D ^D | z4 | z4 |]
+  !2!^C !3!^D ^C ^D | ^C ^C ^D ^D |
   w: Two, three, two, three, point-er, mid-dle.
-  [V:LH] z4 | z4 | !3!^C, !2!^D, ^C, ^D, | ^C, ^C, ^D, ^D, |]
+  !3!^D !2!^C ^D ^C | ^D ^D ^C ^C |]
   w: Three, two, three, two, mid-dle, point-er.

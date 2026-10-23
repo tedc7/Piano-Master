@@ -23,7 +23,10 @@ import soundfile as sf
 WHISPER = "small.en"
 
 
-def main(audio_path: str, out_path: str) -> None:
+def main(audio_path: str, out_path: str, song: str = "") -> None:
+    """`song`: the vocal as packaged, for the words-in-the-song check (align.heard_in_song). Whisper
+    then skips silence and doesn't carry its last words forward: on a repetitive song it otherwise
+    "hears" lines again that aren't sung (Canyon Echo, Oct 22, 2026: 20 words too many, in silence)."""
     from faster_whisper import WhisperModel
     a, sr = sf.read(audio_path, dtype="float32")
     if a.ndim > 1:
@@ -32,9 +35,10 @@ def main(audio_path: str, out_path: str) -> None:
     n = round(len(a) * 16000 / sr)
     x = np.fft.irfft(np.fft.rfft(a)[: n // 2 + 1], n) * (n / len(a))
     segs, _ = WhisperModel(WHISPER, device="cpu", compute_type="int8").transcribe(
-        x.astype(np.float32), language="en", beam_size=5)
+        x.astype(np.float32), language="en", beam_size=5,
+        **({"condition_on_previous_text": False} if song else {}))
     json.dump({"heard": " ".join(s.text.strip() for s in segs)}, open(out_path, "w"), indent=1)
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:3])
+    main(*sys.argv[1:4])

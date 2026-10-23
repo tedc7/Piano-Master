@@ -25,23 +25,117 @@
  "hands": "R",
  "id": "little-bird-steps",
  "info": {
+  "checks": {
+   "bleedDb": -32.0,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 6.7,
+    "p95_ms": 66.6,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 29.0,
+    "p95_ms": 98.2,
+    "share_over_50ms": 0.135,
+    "windows": 37
+   },
+   "heard": "Oh, little bird is hopping a line to space to line again Stepping down the ladder now, step by step, back home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.19,
+   "worstPhraseMs": 6.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Little bird is hopping up, line to space to line again, stepping down the ladder now, step by step back home.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.steps-on-the-staff). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/little-bird-steps.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 280,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -32.0,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 6.7,
+    "p95_ms": 66.6,
+    "share_over_50ms": 0.081,
+    "windows": 37
+   },
+   "grid50": {
+    "median_ms": 29.0,
+    "p95_ms": 98.2,
+    "share_over_50ms": 0.135,
+    "windows": 37
+   },
+   "heard": "Oh, little bird is hopping a line to space to line again Stepping down the ladder now, step by step, back home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.19,
+   "worstPhraseMs": 6.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 489600,
+     "url": "/api/library/media/little-bird-steps/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 977760,
+     "url": "/api/library/media/little-bird-steps/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 652320,
+     "url": "/api/library/media/little-bird-steps/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 543840,
+     "url": "/api/library/media/little-bird-steps/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "little-bird-steps-s5 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -24,23 +24,121 @@
  "hands": "R",
  "id": "d-e-f-parade",
  "info": {
+  "checks": {
+   "bleedDb": -34.4,
+   "firstWordSung": true,
+   "flags": [
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 46.8,
+    "share_over_50ms": 0.029,
+    "windows": 34
+   },
+   "grid50": {
+    "median_ms": 25.1,
+    "p95_ms": 159.0,
+    "share_over_50ms": 0.265,
+    "windows": 34
+   },
+   "heard": "Oh, here comes D and E and F marching in the band Stepping up and stepping down Then march back to C",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.105,
+   "worstPhraseMs": 18.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Here comes D and E and F, marching in the band, stepping up and stepping down, then march back to C.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.d-e-f). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/d-e-f-parade.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 270,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -34.4,
+   "firstWordSung": true,
+   "flags": [
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 46.8,
+    "share_over_50ms": 0.029,
+    "windows": 34
+   },
+   "grid50": {
+    "median_ms": 25.1,
+    "p95_ms": 159.0,
+    "share_over_50ms": 0.265,
+    "windows": 34
+   },
+   "heard": "Oh, here comes D and E and F marching in the band Stepping up and stepping down Then march back to C",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.105,
+   "worstPhraseMs": 18.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 505920,
+     "url": "/api/library/media/d-e-f-parade/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1010880,
+     "url": "/api/library/media/d-e-f-parade/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 674400,
+     "url": "/api/library/media/d-e-f-parade/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 562080,
+     "url": "/api/library/media/d-e-f-parade/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "d-e-f-parade-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

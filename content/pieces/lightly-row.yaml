@@ -1,0 +1,35 @@
+# Curriculum song (Prep A, prep-a.allegro). "Lightly Row": the German folk tune of "Hänschen klein"
+# (credited to Franz Wiedemann, 1821-1882) with anonymous English words, printed in Lowell Mason and
+# George Webb's "The Song-book of the School-room" (1854) and in many school songbooks since (Hollis
+# Dann's "First Year Music", 1914; "The Golden Book of Favorite Songs", 1915); public domain. Our own
+# arrangement, in C position for the right hand. It replaces When the Saints Go Marching In, deleted
+# from the library (Oct 20, 2026): a quick, bright song made of skips (G-E, F-D) for Unit 7's Allegro.
+title: "Lightly Row"
+composer: Traditional (German folk tune)
+genre: kids
+level: Prep A
+hands: R
+source:
+  site: Piano-Master
+  url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/lightly-row.yaml
+license:
+  composition: public-domain
+  edition: original (our own arrangement)
+  evidence: "tune traditional German (Hänschen klein, credited to Franz Wiedemann, 1821-1882); English words anonymous, printed in 1854 (Mason and Webb, The Song-book of the School-room) and in school songbooks of 1914-1915 (SingPraises.net lists the author as Unknown, no copyright)"
+tempoSource: "Allegro, as the skill it practises asks: quarter = 116, the curriculum's quick tempo (When the Saints, which it replaces, was 112)"
+phraseBars: 2
+abc: |
+  X:1
+  T:Lightly Row
+  M:4/4
+  L:1/4
+  Q:1/4=116
+  K:C
+  "C"!5!G !3!E E2 | "G7"!4!F !2!D D2 | "C"!1!C D E F | "C"G G G2 |
+  w: Light-ly row, light-ly row, o'er the glass-y waves we go;
+  "C"G E E2 | "G7"F D D2 | "C"C E G G | "C"C4 |
+  w: Smooth-ly glide, smooth-ly glide, on the si-lent tide.
+  "G7"D D D D | "G7"D E F2 | "C"E E E E | "C"E F G2 |
+  w: Let the winds and wa-ters be min-gled with our mel-o-dy;
+  "C"G E E2 | "G7"F D D2 | "C"C E G G | "C"C4 |]
+  w: Sing and float, sing and float, in our lit-tle boat.

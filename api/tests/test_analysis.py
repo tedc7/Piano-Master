@@ -156,6 +156,25 @@ def test_chords_ties_and_rests():
     assert "rest" in trailing["requiredSkills"]
 
 
+def test_taking_turns_is_its_own_skill_when_the_map_names_it():
+    # v0.40: a skill naming both hands no longer allows them to take turns once some skill names `turns`
+    skills = PREP_A[:2] + [{"id": "turns", "sequence": 25, "constraints": {"turns": True}}] + PREP_A[2:]
+    tune = [(0, 61, 2, "R"), (2, 63, 2, "R"), (4, 49, 4, "L")]
+
+    def run_on(notes, bars, sk):
+        n = nota(notes, bars=bars)
+        n["header"]["letters"] = True
+        return analysis.analyze(n, sk)
+    a = run_on(tune, 2, skills)
+    assert a["requiredSkills"] == ["black", "turns"] and a["featuredSkills"][0] == "turns"
+    assert a["skillMeasures"]["turns"] == [1, 2]
+    no_turns = [s for s in skills if s["id"] != "turns"] + [{"id": "late", "sequence": 99, "constraints": {"turns": False}}]
+    assert "hands taking turns" in run_on(tune, 2, no_turns)["beyondMap"]
+    assert run_on(tune[:2], 1, skills)["requiredSkills"] == ["black"]          # one hand: no turns needed
+    # without it, the hands take turns wherever both hands are named
+    assert run_on(tune, 2, PREP_A)["requiredSkills"] == ["black"]
+
+
 def test_older_maps_ignore_the_new_kinds():
     # no skill names intervals or rests: a skip and a silence are not beyond the map
     a = run(nota([(0, 60, 1, "R"), (2, 67, 2, "R")], bars=1))

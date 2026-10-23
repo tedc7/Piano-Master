@@ -1221,17 +1221,6 @@
    "seconds": 2.73,
    "where": "prep-a.f-g-a-b.yaml card 5"
   },
-  "Left hand: finger 3, then finger 2.": {
-   "check": {
-    "flag": false,
-    "heard": "Left hand, finger 3, then finger 2.",
-    "off": 0.0
-   },
-   "file": "4b82a3fcc9349ca6.mp3",
-   "say": "Left hand: finger 3, then finger 2.",
-   "seconds": 3.85,
-   "where": "prep-a.finger-numbers.yaml card 4"
-  },
   "Left hand: fingers 4, 3 and 2 on the three black keys below the middle.": {
    "check": {
     "flag": false,
@@ -1242,17 +1231,6 @@
    "say": "Left hand: fingers 4, 3 and 2 on the three black keys below the middle.",
    "seconds": 6.25,
    "where": "prep-a.three-black-keys.yaml card 5"
-  },
-  "Left hand: play the two black keys down low.": {
-   "check": {
-    "flag": false,
-    "heard": "Left hand, play the two black keys down low.",
-    "off": 0.0
-   },
-   "file": "f398149a46d0daac.mp3",
-   "say": "Left hand: play the two black keys down low.",
-   "seconds": 3.98,
-   "where": "prep-a.low-and-high.yaml card 4"
   },
   "Left hand: thumb on Middle C, finger 5 down on Bass F.": {
    "check": {
@@ -1661,6 +1639,17 @@
    "seconds": 4.9,
    "where": "prep-a.hands-at-once.yaml card 3"
   },
+  "Listen: the right hand, then the left hand, taking turns.": {
+   "check": {
+    "flag": false,
+    "heard": "Listen, the right hand, then the left hand taking turns.",
+    "off": 0.0
+   },
+   "file": "cc737ba49ae75819.mp3",
+   "say": "Listen: the right hand, then the left hand, taking turns.",
+   "seconds": 4.9,
+   "where": "prep-a.hands-take-turns.yaml card 3"
+  },
   "Listen: the same little pattern, one key higher each time.": {
    "check": {
     "flag": false,
@@ -1903,6 +1892,17 @@
    "seconds": 3.15,
    "where": "prep-a.half-note.yaml card 3"
   },
+  "Now finger 3 first, then finger 2.": {
+   "check": {
+    "flag": false,
+    "heard": "Now finger 3 first, then finger 2.",
+    "off": 0.0
+   },
+   "file": "b92e033ed197bb21.mp3",
+   "say": "Now finger 3 first, then finger 2.",
+   "seconds": 3.62,
+   "where": "prep-a.finger-numbers.yaml card 4"
+  },
   "Now four times with your left thumb.": {
    "check": {
     "flag": false,
@@ -1913,6 +1913,17 @@
    "say": "Now four times with your left thumb.",
    "seconds": 3.02,
    "where": "prep-a.middle-c.yaml card 5"
+  },
+  "Now one song uses both hands. They take turns. While one hand plays, the other waits on its own keys, ready. The hands swap at a long note, so hold it and get the other hand ready.": {
+   "check": {
+    "flag": false,
+    "heard": "Now, one song uses both hands. They take turns. While one hand plays, the other waits on its own keys ready. The hands swap at a long note, so hold it and get the other hand ready.",
+    "off": 0.0
+   },
+   "file": "1ccf3c41b1385e68.mp3",
+   "say": "Now one song uses both hands. They take turns. While one hand plays, the other waits on its own keys, ready. The hands swap at a long note, so hold it and get the other hand ready.",
+   "seconds": 14.47,
+   "where": "prep-a.hands-take-turns.yaml card 1"
   },
   "Now play them piano, soft and gentle.": {
    "check": {
@@ -1925,16 +1936,16 @@
    "seconds": 3.75,
    "where": "prep-a.forte-piano.yaml card 4"
   },
-  "Now the left hand, round and firm.": {
+  "Now the left hand starts, and the right hand answers.": {
    "check": {
     "flag": false,
-    "heard": "Now the left hand, round and firm.",
+    "heard": "Now the left hand starts, and the right hand answers.",
     "off": 0.0
    },
-   "file": "9c378181e8cacf74.mp3",
-   "say": "Now the left hand, round and firm.",
-   "seconds": 3.38,
-   "where": "prep-a.round-hand.yaml card 4"
+   "file": "edfb5933d9010d81.mp3",
+   "say": "Now the left hand starts, and the right hand answers.",
+   "seconds": 4.38,
+   "where": "prep-a.hands-take-turns.yaml card 5"
   },
   "Now the left hand: C D E F G with fingers 5 to 1.": {
    "check": {
@@ -1946,6 +1957,17 @@
    "say": "Now the left hand: C D E F G with fingers 5 to 1.",
    "seconds": 5.42,
    "where": "prep-a.c-five-finger.yaml card 6"
+  },
+  "Now the other way round, still round and firm.": {
+   "check": {
+    "flag": false,
+    "heard": "Now the other way round, still round and firm.",
+    "off": 0.0
+   },
+   "file": "221b315cfada2db7.mp3",
+   "say": "Now the other way round, still round and firm.",
+   "seconds": 4.05,
+   "where": "prep-a.round-hand.yaml card 4"
   },
   "Now the same notes counted in four. Can you hear the difference?": {
    "check": {
@@ -1979,6 +2001,17 @@
    "say": "Now without the rests: the notes run on with no gap.",
    "seconds": 4.58,
    "where": "prep-a.quarter-rest.yaml card 3"
+  },
+  "Now your left hand, for the first time: finger 3 and finger 2, on the group of two just below the middle.": {
+   "check": {
+    "flag": false,
+    "heard": "Now your left hand for the first time, finger 3 and finger 2 on the group of 2 just below the middle.",
+    "off": 0.0
+   },
+   "file": "99f90fe299ff15a2.mp3",
+   "say": "Now your left hand, for the first time: finger 3 and finger 2, on the group of two just below the middle.",
+   "seconds": 8.45,
+   "where": "prep-a.two-black-keys.yaml card 5"
   },
   "On the bass staff: G, then skip up to B.": {
    "check": {
@@ -2618,6 +2651,17 @@
    "seconds": 4.97,
    "where": "prep-a.quarter-rest.yaml card 2"
   },
+  "Put both hands on their two black keys. Play with the right hand, hold the long note, then play with the left.": {
+   "check": {
+    "flag": false,
+    "heard": "Put both hands on their two black keys play with the right hand hold the long note then play with the left",
+    "off": 0.0
+   },
+   "file": "7e0ef9fb07253473.mp3",
+   "say": "Put both hands on their two black keys. Play with the right hand, hold the long note, then play with the left.",
+   "seconds": 8.35,
+   "where": "prep-a.hands-take-turns.yaml card 4"
+  },
   "Put both thumbs on Middle C. The right hand covers C D E F G going up, and the left hand C B A G F going down: that's Middle C position.": {
    "check": {
     "flag": false,
@@ -2650,6 +2694,17 @@
    "say": "Read and play: step up from Middle C to G.",
    "seconds": 4.08,
    "where": "prep-a.steps-on-the-staff.yaml card 4"
+  },
+  "Right hand again: come back down to the two black keys in the middle. Lower!": {
+   "check": {
+    "flag": false,
+    "heard": "Right hand again, come back down to the two black keys in the middle. Lower.",
+    "off": 0.0
+   },
+   "file": "fa75035918b10b23.mp3",
+   "say": "Right hand again: come back down to the two black keys in the middle. Lower!",
+   "seconds": 6.1,
+   "where": "prep-a.low-and-high.yaml card 4"
   },
   "Right hand from Middle C up to G.": {
    "check": {
@@ -2948,15 +3003,15 @@
    "seconds": 4.47,
    "where": "prep-a.steps.yaml card 2"
   },
-  "Still sitting tall: now the left hand, on the two black keys just below.": {
+  "Still sitting tall: play them the other way round, finger 3 first.": {
    "check": {
     "flag": false,
-    "heard": "Still sitting tall, now the left hand on the two black keys just below.",
+    "heard": "Still sitting tall, play them the other way round, finger three first.",
     "off": 0.0
    },
-   "file": "29ff6dfe7b4e8822.mp3",
-   "say": "Still sitting tall: now the left hand, on the two black keys just below.",
-   "seconds": 5.88,
+   "file": "d33883bd4235f0db.mp3",
+   "say": "Still sitting tall: play them the other way round, finger 3 first.",
+   "seconds": 5.45,
    "where": "prep-a.sitting.yaml card 4"
   },
   "Tap, tap, hold. Hear the long note at the end?": {
@@ -3046,6 +3101,17 @@
    "say": "The right hand on the treble staff.",
    "seconds": 3.02,
    "where": "prep-a.the-clefs.yaml card 2"
+  },
+  "The right hand plays and holds the long note. Then the left hand plays.": {
+   "check": {
+    "flag": false,
+    "heard": "The right hand plays and holds the long note, then the left hand plays.",
+    "off": 0.0
+   },
+   "file": "6a5804044b42351c.mp3",
+   "say": "The right hand plays and holds the long note. Then the left hand plays.",
+   "seconds": 5.88,
+   "where": "prep-a.hands-take-turns.yaml card 2"
   },
   "The same group of two, three times: low, middle and high.": {
    "check": {
@@ -3366,6 +3432,17 @@
    "seconds": 2.67,
    "where": "prep-a.musical-alphabet.yaml card 5"
   },
+  "When do the hands swap?": {
+   "check": {
+    "flag": false,
+    "heard": "When do the hands swap?",
+    "off": 0.0
+   },
+   "file": "1508963d20f9bc33.mp3",
+   "say": "When do the hands swap?",
+   "seconds": 2.25,
+   "where": "prep-a.hands-take-turns.yaml card 6"
+  },
   "When the hand hops, which note tells you the finger?": {
    "check": {
     "flag": false,
@@ -3376,6 +3453,17 @@
    "say": "When the hand hops, which note tells you the finger?",
    "seconds": 3.92,
    "where": "prep-a.hand-shift.yaml card 5"
+  },
+  "When the hands take turns, what does the waiting hand do?": {
+   "check": {
+    "flag": false,
+    "heard": "When the hands take turns, what does the waiting hand do?",
+    "off": 0.0
+   },
+   "file": "8eb14b237f9fb381.mp3",
+   "say": "When the hands take turns, what does the waiting hand do?",
+   "seconds": 4.42,
+   "where": "prep-a.hands-take-turns.yaml card 6"
   },
   "Where do you sit on the bench?": {
    "check": {

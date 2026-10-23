@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "left-hand-waltz",
  "info": {
+  "checks": {
+   "bleedDb": -29.6,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 8.0,
+    "p95_ms": 38.5,
+    "share_over_50ms": 0.043,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 30.7,
+    "p95_ms": 54.9,
+    "share_over_50ms": 0.13,
+    "windows": 23
+   },
+   "heard": "Oh, left hand starts, then goes up, right hand joins, dancing to round, we go round again, round and round, home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.988,
+   "wordsOff": 0.1,
+   "worstPhraseMs": 10.6
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Left hand starts, then goes up, Right hand joins, dancing too, round we go, round again, round and round, home.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-g). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/left-hand-waltz.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 340,
- "media": null,
+ "media": {
+  "bpm": 120.0,
+  "check": {
+   "bleedDb": -29.6,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 8.0,
+    "p95_ms": 38.5,
+    "share_over_50ms": 0.043,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 30.7,
+    "p95_ms": 54.9,
+    "share_over_50ms": 0.13,
+    "windows": 23
+   },
+   "heard": "Oh, left hand starts, then goes up, right hand joins, dancing to round, we go round again, round and round, home",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.988,
+   "wordsOff": 0.1,
+   "worstPhraseMs": 10.6
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 3.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 298560,
+     "url": "/api/library/media/left-hand-waltz/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 595680,
+     "url": "/api/library/media/left-hand-waltz/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 397440,
+     "url": "/api/library/media/left-hand-waltz/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 331200,
+     "url": "/api/library/media/left-hand-waltz/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "left-hand-waltz-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -13,6 +13,8 @@ license:
   composition: public-domain
   edition: original (our own arrangement)
 phraseBars: 2
+media:
+  vocal_line: as-written  # the tune passes between the hands: sung as one line, not each hand in its own octave
 abc: |
   X:1
   T:Twinkle Twinkle Little Star

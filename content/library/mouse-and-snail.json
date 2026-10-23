@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-ebbe31bbd2",
+ "contentVersion": "lib-2d1b1d0eba",
  "display": {
   "fingers": null,
   "letters": null
@@ -30,29 +30,31 @@
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 8.6,
-    "p95_ms": 47.4,
-    "share_over_50ms": 0.067,
-    "windows": 30
+    "median_ms": 7.7,
+    "p95_ms": 19.1,
+    "share_over_50ms": 0.037,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 27.1,
-    "p95_ms": 108.1,
-    "share_over_50ms": 0.2,
-    "windows": 30
+    "median_ms": 21.0,
+    "p95_ms": 228.1,
+    "share_over_50ms": 0.222,
+    "windows": 27
    },
+   "heard": "Oh, little mouse runs quickly home Snail goes slow, slow Mouse runs around, round and home Snail is still slow",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
    "pass": false,
    "reasons": [
-    "words off the staff: 10%"
+    "words off the staff: 16%, in the first 15 s"
    ],
-   "tuningCents": 0.0,
+   "tuningCents": 1.5,
    "wordStretches": [
-    "slow, (10.0 s) .. slow. (11.2 s)"
+    "slow, (11.4 s) .. slow. (12.9 s)"
    ],
-   "wordsOff": 0.105,
-   "worstPhraseMs": 6.8
+   "wordsHeard": 1.0,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 17.4
   },
   "engine": "YuE2 vocal",
   "hands": "RL",
@@ -63,7 +65,7 @@
   },
   "lyrics": "1. Little mouse runs quickly home. Snail goes slow, slow. Mouse runs around, round and home. Snail is still slow.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.forte-piano). Original music and words for this app. v0.40: at 84 (was 96), like the rest of Unit 2."
   ],
   "source": {
    "site": "Piano-Master",
@@ -76,35 +78,37 @@
  "level": "Prep A",
  "mapPoint": 90,
  "media": {
-  "bpm": 96.0,
+  "bpm": 84.0,
   "check": {
    "bleedDb": -37.3,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 8.6,
-    "p95_ms": 47.4,
-    "share_over_50ms": 0.067,
-    "windows": 30
+    "median_ms": 7.7,
+    "p95_ms": 19.1,
+    "share_over_50ms": 0.037,
+    "windows": 27
    },
    "grid50": {
-    "median_ms": 27.1,
-    "p95_ms": 108.1,
-    "share_over_50ms": 0.2,
-    "windows": 30
+    "median_ms": 21.0,
+    "p95_ms": 228.1,
+    "share_over_50ms": 0.222,
+    "windows": 27
    },
+   "heard": "Oh, little mouse runs quickly home Snail goes slow, slow Mouse runs around, round and home Snail is still slow",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
    "pass": false,
    "reasons": [
-    "words off the staff: 10%"
+    "words off the staff: 16%, in the first 15 s"
    ],
-   "tuningCents": 0.0,
+   "tuningCents": 1.5,
    "wordStretches": [
-    "slow, (10.0 s) .. slow. (11.2 s)"
+    "slow, (11.4 s) .. slow. (12.9 s)"
    ],
-   "wordsOff": 0.105,
-   "worstPhraseMs": 6.8
+   "wordsHeard": 1.0,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 17.4
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -112,33 +116,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 532800,
+     "bytes": 539040,
      "url": "/api/library/media/mouse-and-snail/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1064640,
+     "bytes": 1076640,
      "url": "/api/library/media/mouse-and-snail/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 710400,
+     "bytes": 718080,
      "url": "/api/library/media/mouse-and-snail/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 592320,
+     "bytes": 598560,
      "url": "/api/library/media/mouse-and-snail/vocals_90.mp3"
     }
    }
   },
-  "take": "mouse-and-snail-s6 (dtw)"
+  "take": "mouse-and-snail-s20 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -174,7 +178,7 @@
     "treble",
     "bass"
    ],
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,

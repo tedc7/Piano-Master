@@ -1,4 +1,5 @@
 # Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app.
+# v0.40: at 84 (was 96), like the rest of Unit 2.
 title: "Four Slow Beats"
 composer: Piano-Master
 genre: studies
@@ -17,7 +18,7 @@ abc: |
   T:Four Slow Beats
   M:4/4
   L:1/4
-  Q:1/4=96
+  Q:1/4=84
   %%score {RH LH}
   K:C
   V:RH clef=treble

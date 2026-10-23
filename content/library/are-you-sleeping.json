@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Traditional",
- "contentVersion": "lib-9bd7df2a2f",
+ "contentVersion": "lib-1abc7096f6",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,23 +25,165 @@
  "hands": "RL",
  "id": "are-you-sleeping",
  "info": {
+  "backing": {
+   "leadMs": {
+    "Glockenspiel": 0,
+    "Pizzicato bass": 42,
+    "Strings, soft pad": 87
+   },
+   "parts": [
+    {
+     "name": "Strings, soft pad",
+     "notes": 6,
+     "program": 48
+    },
+    {
+     "name": "Pizzicato bass",
+     "notes": 2,
+     "program": 45
+    },
+    {
+     "name": "Glockenspiel",
+     "notes": 2,
+     "program": 9
+    }
+   ],
+   "style": "kids",
+   "timing": {
+    "pass": true,
+    "worstPartMedianMs": 5.5
+   }
+  },
+  "checks": {
+   "bleedDb": -33.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 11.2,
+    "p95_ms": 54.2,
+    "share_over_50ms": 0.053,
+    "windows": 38
+   },
+   "grid50": {
+    "median_ms": 21.3,
+    "p95_ms": 109.9,
+    "share_over_50ms": 0.184,
+    "windows": 38
+   },
+   "heard": "Oh, are you sleeping? Why do you sleep in brother John? Brother John, morning bells are ringing, ringing, still in bed, won't get up.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.959,
+   "wordsOff": 0.143,
+   "worstPhraseMs": 10.3
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "flags": [
+   "no `tempoSource`: say where the 100% tempo came from (a metronome mark or recordings)"
+  ],
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "public-domain",
    "edition": "original (our own arrangement)"
   },
-  "seeded": true,
+  "lyrics": "1. Are you sleeping, are you sleeping, Brother John, Brother John? Morning bells are ringing, ringing, Still in, bed, won't get up!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.allegro). Frère Jacques, French traditional; public domain. Our own arrangement (the bells simplified to quarter notes). The bells' \"ding, dang, dong\" is now the brother still in bed (at the parent's request, Oct 7, 2026: the vocal garbled the ding-dongs)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/are-you-sleeping.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 370,
- "media": null,
+ "media": {
+  "bpm": 100.0,
+  "check": {
+   "bleedDb": -33.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 11.2,
+    "p95_ms": 54.2,
+    "share_over_50ms": 0.053,
+    "windows": 38
+   },
+   "grid50": {
+    "median_ms": 21.3,
+    "p95_ms": 109.9,
+    "share_over_50ms": 0.184,
+    "windows": 38
+   },
+   "heard": "Oh, are you sleeping? Why do you sleep in brother John? Brother John, morning bells are ringing, ringing, still in bed, won't get up.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -2.5,
+   "wordStretches": [],
+   "wordsHeard": 0.959,
+   "wordsOff": 0.143,
+   "worstPhraseMs": 10.3
+  },
+  "engine": "YuE2 vocal + FluidSynth backing (kids, MuseScore General)",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "accompaniment": {
+     "bytes": 499200,
+     "url": "/api/library/media/are-you-sleeping/accompaniment_100.mp3"
+    },
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 466080,
+     "url": "/api/library/media/are-you-sleeping/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "accompaniment": {
+     "bytes": 900960,
+     "url": "/api/library/media/are-you-sleeping/accompaniment_50.mp3"
+    },
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 931200,
+     "url": "/api/library/media/are-you-sleeping/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "accompaniment": {
+     "bytes": 633120,
+     "url": "/api/library/media/are-you-sleeping/accompaniment_75.mp3"
+    },
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 621120,
+     "url": "/api/library/media/are-you-sleeping/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "accompaniment": {
+     "bytes": 543840,
+     "url": "/api/library/media/are-you-sleeping/accompaniment_90.mp3"
+    },
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 517920,
+     "url": "/api/library/media/are-you-sleeping/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "are-you-sleeping-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -197,37 +339,37 @@
    {
     "note": 22,
     "syllabic": "single",
-    "text": "ding,",
+    "text": "Still",
     "verse": 1
    },
    {
     "note": 24,
     "syllabic": "single",
-    "text": "dong,",
+    "text": "bed,",
     "verse": 1
    },
    {
     "note": 25,
     "syllabic": "single",
-    "text": "ding,",
+    "text": "won't",
     "verse": 1
    },
    {
     "note": 27,
     "syllabic": "single",
-    "text": "dong.",
+    "text": "up!",
     "verse": 1
    },
    {
     "note": 23,
     "syllabic": "single",
-    "text": "dang,",
+    "text": "in,",
     "verse": 1
    },
    {
     "note": 26,
     "syllabic": "single",
-    "text": "dang,",
+    "text": "get",
     "verse": 1
    }
   ],

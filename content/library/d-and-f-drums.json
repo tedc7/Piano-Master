@@ -24,23 +24,125 @@
  "hands": "RL",
  "id": "d-and-f-drums",
  "info": {
+  "checks": {
+   "bleedDb": -35.0,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (9.4 s) .. tune. (10.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 88.8,
+    "share_over_50ms": 0.091,
+    "windows": 33
+   },
+   "grid50": {
+    "median_ms": 37.7,
+    "p95_ms": 111.8,
+    "share_over_50ms": 0.303,
+    "windows": 33
+   },
+   "heard": "Boom, boom, boom, bap, bap, boom, bap, boom, snare drum plays a tune, bap, bap, boom, boom, bap, boom, bap, boom, snare drum plays in stops.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.5,
+   "wordStretches": [
+    "a (9.4 s) .. tune. (10.0 s)"
+   ],
+   "wordsHeard": 0.978,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 9.7
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Boom, boom, bap, bap, boom, bap, boom. Snare drum plays a tune. Bap, bap, boom, boom, bap, boom, boom. Snare drum plays and stops.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-d). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/d-and-f-drums.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 400,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -35.0,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at a (9.4 s) .. tune. (10.0 s)"
+   ],
+   "grid100": {
+    "median_ms": 9.7,
+    "p95_ms": 88.8,
+    "share_over_50ms": 0.091,
+    "windows": 33
+   },
+   "grid50": {
+    "median_ms": 37.7,
+    "p95_ms": 111.8,
+    "share_over_50ms": 0.303,
+    "windows": 33
+   },
+   "heard": "Boom, boom, boom, bap, bap, boom, bap, boom, snare drum plays a tune, bap, bap, boom, boom, bap, boom, bap, boom, snare drum plays in stops.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 4.5,
+   "wordStretches": [
+    "a (9.4 s) .. tune. (10.0 s)"
+   ],
+   "wordsHeard": 0.978,
+   "wordsOff": 0.125,
+   "worstPhraseMs": 9.7
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 520800,
+     "url": "/api/library/media/d-and-f-drums/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1040160,
+     "url": "/api/library/media/d-and-f-drums/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 694080,
+     "url": "/api/library/media/d-and-f-drums/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 578400,
+     "url": "/api/library/media/d-and-f-drums/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "d-and-f-drums-s2 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -25,23 +25,121 @@
  "hands": "R",
  "id": "bunny-hops",
  "info": {
+  "checks": {
+   "bleedDb": -27.1,
+   "firstWordSung": true,
+   "flags": [
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.4,
+    "p95_ms": 52.3,
+    "share_over_50ms": 0.067,
+    "windows": 30
+   },
+   "grid50": {
+    "median_ms": 51.4,
+    "p95_ms": 129.2,
+    "share_over_50ms": 0.5,
+    "windows": 30
+   },
+   "heard": "Oh, hop, bunny, hop, star, hop, belong to D, hop, belong to E, hop back home to C.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.922,
+   "wordsOff": 0.133,
+   "worstPhraseMs": 12.9
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Hop, bunny, hop! Stop. Hop along to D. Hop along to E. Hop back home to C.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.hand-shift). Original music and words for this app. The hand hops to a new place: the finger number on the first note there says which finger lands."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bunny-hops.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 300,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -27.1,
+   "firstWordSung": true,
+   "flags": [
+    "2 letter names the word check can't place: listen to them"
+   ],
+   "grid100": {
+    "median_ms": 9.4,
+    "p95_ms": 52.3,
+    "share_over_50ms": 0.067,
+    "windows": 30
+   },
+   "grid50": {
+    "median_ms": 51.4,
+    "p95_ms": 129.2,
+    "share_over_50ms": 0.5,
+    "windows": 30
+   },
+   "heard": "Oh, hop, bunny, hop, star, hop, belong to D, hop, belong to E, hop back home to C.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.9,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.922,
+   "wordsOff": 0.133,
+   "worstPhraseMs": 12.9
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 509280,
+     "url": "/api/library/media/bunny-hops/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1017120,
+     "url": "/api/library/media/bunny-hops/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 678720,
+     "url": "/api/library/media/bunny-hops/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 565440,
+     "url": "/api/library/media/bunny-hops/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "bunny-hops-s15 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

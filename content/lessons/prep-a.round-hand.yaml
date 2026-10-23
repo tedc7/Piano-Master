@@ -24,15 +24,14 @@ cards:
   - 3
   hand: R
 - kind: try
-  text: Now the left hand, round and firm.
-  notes: C#3 C#3 D#3 D#3
+  text: Now the other way round, still round and firm.
+  notes: D#4 D#4 C#4 C#4
   fingers:
   - 3
   - 3
   - 2
   - 2
-  hand: L
-  clef: bass
+  hand: R
 - kind: check
   questions:
   - text: Your hand is curved as if it holds a...

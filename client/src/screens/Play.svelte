@@ -236,6 +236,7 @@
       }
       if (opened?.hands && opened.hands !== "both" && p.hands === "RL") {
         hands = opened.hands;
+        player.handsAsked = opened.hands;        // a planned one-hand step: no one-hand aid (v0.40)
         player.setHands(hands);
         markHands();
       }

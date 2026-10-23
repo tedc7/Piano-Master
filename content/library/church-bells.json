@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-3a5a713b09",
+ "contentVersion": "lib-331c795ab7",
  "display": {
   "fingers": null,
   "letters": null
@@ -25,33 +25,31 @@
  "id": "church-bells",
  "info": {
   "checks": {
-   "bleedDb": -36.2,
+   "bleedDb": -33.8,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 3.2,
-    "p95_ms": 14.0,
-    "share_over_50ms": 0.0,
-    "windows": 26
+    "median_ms": 10.9,
+    "p95_ms": 51.2,
+    "share_over_50ms": 0.087,
+    "windows": 23
    },
    "grid50": {
-    "median_ms": 21.0,
-    "p95_ms": 33.4,
-    "share_over_50ms": 0.038,
-    "windows": 26
+    "median_ms": 32.9,
+    "p95_ms": 104.1,
+    "share_over_50ms": 0.174,
+    "windows": 23
    },
+   "heard": "Oh, bells ring out, Ring and ring again. Big bells hum, Hum and hum again.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
-   "pass": false,
-   "reasons": [
-    "words off the staff: 29%, in the first 15 s"
-   ],
-   "tuningCents": -2.0,
-   "wordStretches": [
-    "again. (10.2 s) .. Big (13.6 s)"
-   ],
-   "wordsOff": 0.286,
-   "worstPhraseMs": 6.4
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 6.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.214,
+   "worstPhraseMs": 24.1
   },
   "engine": "YuE2 vocal",
   "hands": "RL",
@@ -62,7 +60,7 @@
   },
   "lyrics": "1. Bells ring out, ring and ring again. Big bells hum, hum and hum again.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.whole-note). Original music and words for this app. v0.40: at 84 (was 88), like the rest of Unit 2."
   ],
   "source": {
    "site": "Piano-Master",
@@ -75,35 +73,33 @@
  "level": "Prep A",
  "mapPoint": 100,
  "media": {
-  "bpm": 88.0,
+  "bpm": 84.0,
   "check": {
-   "bleedDb": -36.2,
+   "bleedDb": -33.8,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 3.2,
-    "p95_ms": 14.0,
-    "share_over_50ms": 0.0,
-    "windows": 26
+    "median_ms": 10.9,
+    "p95_ms": 51.2,
+    "share_over_50ms": 0.087,
+    "windows": 23
    },
    "grid50": {
-    "median_ms": 21.0,
-    "p95_ms": 33.4,
-    "share_over_50ms": 0.038,
-    "windows": 26
+    "median_ms": 32.9,
+    "p95_ms": 104.1,
+    "share_over_50ms": 0.174,
+    "windows": 23
    },
+   "heard": "Oh, bells ring out, Ring and ring again. Big bells hum, Hum and hum again.",
    "melodyStretches": [],
    "notesOnPitch": 1.0,
-   "pass": false,
-   "reasons": [
-    "words off the staff: 29%, in the first 15 s"
-   ],
-   "tuningCents": -2.0,
-   "wordStretches": [
-    "again. (10.2 s) .. Big (13.6 s)"
-   ],
-   "wordsOff": 0.286,
-   "worstPhraseMs": 6.4
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 6.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.214,
+   "worstPhraseMs": 24.1
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -111,33 +107,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 554400,
+     "bytes": 579360,
      "url": "/api/library/media/church-bells/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 1107360,
+     "bytes": 1157280,
      "url": "/api/library/media/church-bells/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 738720,
+     "bytes": 771840,
      "url": "/api/library/media/church-bells/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 615840,
+     "bytes": 643680,
      "url": "/api/library/media/church-bells/vocals_90.mp3"
     }
    }
   },
-  "take": "church-bells-s3 (dtw)"
+  "take": "church-bells-s1 (words)"
  },
  "notation": {
   "chordSymbols": [],
@@ -155,7 +151,7 @@
     "treble",
     "bass"
    ],
-   "tempo": 88,
+   "tempo": 84,
    "timeSig": "4/4"
   },
   "length": 32.0,

@@ -25,23 +25,117 @@
  "hands": "R",
  "id": "tin-soldiers",
  "info": {
+  "checks": {
+   "bleedDb": -47.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 6.5,
+    "p95_ms": 41.2,
+    "share_over_50ms": 0.034,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 20.0,
+    "p95_ms": 82.6,
+    "share_over_50ms": 0.069,
+    "windows": 29
+   },
+   "heard": "Oh, left, right, left, right, soldiers marching down the little road. Turn around and march back home again, left, right, left, halt.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.095,
+   "worstPhraseMs": 4.5
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Left, right, left, right, soldiers marching down the little road. Turn around and march back home again, left, right, left, halt!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.four-four). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/tin-soldiers.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 290,
- "media": null,
+ "media": {
+  "bpm": 104.0,
+  "check": {
+   "bleedDb": -47.4,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 6.5,
+    "p95_ms": 41.2,
+    "share_over_50ms": 0.034,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 20.0,
+    "p95_ms": 82.6,
+    "share_over_50ms": 0.069,
+    "windows": 29
+   },
+   "heard": "Oh, left, right, left, right, soldiers marching down the little road. Turn around and march back home again, left, right, left, halt.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.0,
+   "wordStretches": [],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.095,
+   "worstPhraseMs": 4.5
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 440640,
+     "url": "/api/library/media/tin-soldiers/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 879840,
+     "url": "/api/library/media/tin-soldiers/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 587040,
+     "url": "/api/library/media/tin-soldiers/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 489120,
+     "url": "/api/library/media/tin-soldiers/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "tin-soldiers-s5 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

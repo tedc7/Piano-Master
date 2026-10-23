@@ -25,23 +25,117 @@
  "hands": "L",
  "id": "galloping",
  "info": {
+  "checks": {
+   "bleedDb": -25.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 13.3,
+    "p95_ms": 65.0,
+    "share_over_50ms": 0.114,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 36.5,
+    "p95_ms": 134.5,
+    "share_over_50ms": 0.353,
+    "windows": 34
+   },
+   "heard": "Oh, gallop, gallop, over hills, up the valley, down the road, trotting, trotting, slowing down into the bond home.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.056,
+   "worstPhraseMs": 16.3
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Gallop, gallop, over hills, up the valley, down the road, trotting, trotting, slowing down, into the barn, home.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-c-scale). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/galloping.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 420,
- "media": null,
+ "media": {
+  "bpm": 108.0,
+  "check": {
+   "bleedDb": -25.5,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 13.3,
+    "p95_ms": 65.0,
+    "share_over_50ms": 0.114,
+    "windows": 35
+   },
+   "grid50": {
+    "median_ms": 36.5,
+    "p95_ms": 134.5,
+    "share_over_50ms": 0.353,
+    "windows": 34
+   },
+   "heard": "Oh, gallop, gallop, over hills, up the valley, down the road, trotting, trotting, slowing down into the bond home.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 0.5,
+   "wordStretches": [],
+   "wordsHeard": 0.976,
+   "wordsOff": 0.056,
+   "worstPhraseMs": 16.3
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 426240,
+     "url": "/api/library/media/galloping/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 851520,
+     "url": "/api/library/media/galloping/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 567840,
+     "url": "/api/library/media/galloping/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 473280,
+     "url": "/api/library/media/galloping/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "galloping-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

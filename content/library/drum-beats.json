@@ -25,23 +25,131 @@
  "hands": "RL",
  "id": "drum-beats",
  "info": {
+  "checks": {
+   "bleedDb": -25.3,
+   "firstWordSung": true,
+   "flags": [
+    "Whisper heard 92% of the words: \"Oh, boom, boom, bang, boom, boom, boom, brat-a-tat, rump-a-boom, crumbs are marching down the street and stop, stop, bam\""
+   ],
+   "grid100": {
+    "median_ms": 6.0,
+    "p95_ms": 14.9,
+    "share_over_50ms": 0.0,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 16.7,
+    "p95_ms": 54.1,
+    "share_over_50ms": 0.069,
+    "windows": 29
+   },
+   "heard": "Oh, boom, boom, bang, boom, boom, boom, brat-a-tat, rump-a-boom, crumbs are marching down the street and stop, stop, bam!",
+   "melodyStretches": [],
+   "notesOnPitch": 0.87,
+   "pass": false,
+   "reasons": [
+    "notes on pitch 87% (needs 90%)",
+    "words off the staff: 17%"
+   ],
+   "tuningCents": -0.5,
+   "wordStretches": [
+    "boom, (5.6 s) .. bong! (6.2 s)"
+   ],
+   "wordsHeard": 0.916,
+   "wordsOff": 0.167,
+   "worstPhraseMs": 4.8
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Boom, boom, bang! Boom, boom, bong! Ratatat! Rumpapum! Drums are marching, Down the street and stop! Stop! Bang!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.hands-at-once). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/drum-beats.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 260,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -25.3,
+   "firstWordSung": true,
+   "flags": [
+    "Whisper heard 92% of the words: \"Oh, boom, boom, bang, boom, boom, boom, brat-a-tat, rump-a-boom, crumbs are marching down the street and stop, stop, bam\""
+   ],
+   "grid100": {
+    "median_ms": 6.0,
+    "p95_ms": 14.9,
+    "share_over_50ms": 0.0,
+    "windows": 29
+   },
+   "grid50": {
+    "median_ms": 16.7,
+    "p95_ms": 54.1,
+    "share_over_50ms": 0.069,
+    "windows": 29
+   },
+   "heard": "Oh, boom, boom, bang, boom, boom, boom, brat-a-tat, rump-a-boom, crumbs are marching down the street and stop, stop, bam!",
+   "melodyStretches": [],
+   "notesOnPitch": 0.87,
+   "pass": false,
+   "reasons": [
+    "notes on pitch 87% (needs 90%)",
+    "words off the staff: 17%"
+   ],
+   "tuningCents": -0.5,
+   "wordStretches": [
+    "boom, (5.6 s) .. bong! (6.2 s)"
+   ],
+   "wordsHeard": 0.916,
+   "wordsOff": 0.167,
+   "worstPhraseMs": 4.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 477120,
+     "url": "/api/library/media/drum-beats/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 952800,
+     "url": "/api/library/media/drum-beats/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 635520,
+     "url": "/api/library/media/drum-beats/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 529920,
+     "url": "/api/library/media/drum-beats/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "drum-beats-s1 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

@@ -146,8 +146,7 @@
     if (!c) return;
     const acts = c.kind === "show" || c.kind === "echo" || (c.kind === "hear" && autoRead);
     if (autoRead && !acts) timers.push(window.setTimeout(() => void voice.speak(reading()), READ_DELAY_MS));
-    const answers = (c.questions ?? []).flatMap((q) => [...(typeof q.answer === "string" ? [] : [q.answer]), ...(q.hear ?? [])]);
-    const all = [...(c.notes ?? []), ...(c.play ?? []), ...answers, ...(c.contrast?.play ?? [])];
+    const all = keysOf(c);
     if (kbHost && all.length) {
       const ps = all.flatMap((n) => n.pitches);
       const [lo, hi] = keyboardRange(Math.min(...ps), Math.max(...ps));
@@ -165,6 +164,13 @@
       if (autoRead) void readThen(true, SAY.hereItIs, () => void hear(c.play ?? [], c.tempo));
       else timers.push(window.setTimeout(() => void hear(c.play ?? [], c.tempo), 900));
     }
+  }
+
+  /** The notes a card shows, plays or asks for: the on-screen keyboard covers them. A Check card
+   *  answered only with the buttons has none, and no keyboard. */
+  function keysOf(c: Card): MiniNote[] {
+    const answers = (c.questions ?? []).flatMap((q) => [...(typeof q.answer === "string" ? [] : [q.answer]), ...(q.hear ?? [])]);
+    return [...(c.notes ?? []), ...(c.play ?? []), ...answers, ...(c.contrast?.play ?? [])];
   }
 
   const handOf = (c: Card, i: number): Hand => (c.hand === "RL" ? (Math.min(...c.notes![i].pitches) < 60 ? "L" : "R") : (c.hand ?? "R") as Hand);
@@ -473,14 +479,15 @@
             {#if (card.kind === "try" || card.kind === "echo") && app.inputStatus !== "connected"}<span class="muted">{app.micMode ? "Turn the microphone on to try it." : "Connect the piano to try it."}</span>{/if}
           </div>
         </div>
-        {#if card.notes || card.play || card.questions}<div class="keys" bind:this={kbHost}></div>{/if}
+        {#if keysOf(card).length}<div class="keys" bind:this={kbHost}></div>{/if}
         <div class="row">
           <button class="quiet" onclick={() => move(-1)}>‹ Back</button>
           {#if !done[step] && app.parentMode}<span class="muted">Parent mode: you can skip this card.</span>{/if}
+          <!-- ready to go on: it flashes, like the Play screen's Play button -->
           {#if !last}
-            <button class="next" disabled={!canNext} onclick={() => move(1)}>Next ›</button>
+            <button class="next" class:ready={canNext} disabled={!canNext} onclick={() => move(1)}>Next ›</button>
           {:else}
-            <button class="next" disabled={!canNext} onclick={finish}>{inSession ? "Next ›" : "Done"}</button>
+            <button class="next" class:ready={canNext} disabled={!canNext} onclick={finish}>{inSession ? "Next ›" : "Done"}</button>
           {/if}
         </div>
       {/if}
@@ -517,4 +524,9 @@
   .row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 12px; }
   .next { min-width: 180px; min-height: 60px; font-size: 20px; }
   .next:disabled { opacity: 0.45; }
+  .next.ready {
+    background: #dde8fb; color: var(--accent); outline: 3px dashed var(--accent); outline-offset: -6px;
+    animation: ready 1.2s ease-in-out infinite;
+  }
+  @keyframes ready { 50% { outline-color: transparent; } }
 </style>

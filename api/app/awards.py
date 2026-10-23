@@ -1,7 +1,7 @@
 """Rewards (arch §3 "Rewards", M10): the star collection and medals.
 
 The **star collection** is the sum of each song's best accuracy stars, from completed plays of the
-whole song (generated drills and section practice don't count). Playing a song again adds stars
+whole song (generated drills, section practice and planned one-hand steps don't count). Playing a song again adds stars
 only by beating its best, so the total rewards playing well, not playing the same easy song often.
 
 **Medals** come in bronze, silver, gold and platinum:
@@ -46,10 +46,13 @@ def step_label(kind: str, at: int) -> str:
 # ------------------------------------------------------------------------------ the star collection
 
 def plays(con: sqlite3.Connection, student_id: str) -> list[sqlite3.Row]:
-    """Completed plays of whole songs: what the star collection counts."""
+    """Completed plays of whole songs: what the star collection counts. A planned one-hand step of a
+    song for both hands (v0.40, played without the one-hand aid) is practice, not the song."""
     return con.execute(
         "SELECT id, piece_id, accuracy_stars, started_at FROM attempts WHERE student_id = ? AND completed = 1 "
-        "AND mode = 'play' AND accuracy_stars IS NOT NULL AND piece_id NOT LIKE 'drill-%'", (student_id,)).fetchall()
+        "AND mode = 'play' AND accuracy_stars IS NOT NULL AND piece_id NOT LIKE 'drill-%' "
+        "AND NOT (json_extract(conditions, '$.hands') IN ('R', 'L') "
+        "AND json_extract(conditions, '$.handsWritten') = json_extract(conditions, '$.hands'))", (student_id,)).fetchall()
 
 
 def bests(rows, before: date | None = None, skip: str | None = None) -> dict[str, float]:

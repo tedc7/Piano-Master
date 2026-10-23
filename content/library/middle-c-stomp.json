@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-826b200981",
+ "contentVersion": "lib-d3e2eda26d",
  "display": {
   "fingers": null,
   "letters": null
@@ -24,23 +24,105 @@
  "hands": "RL",
  "id": "middle-c-stomp",
  "info": {
+  "checks": {
+   "bleedDb": -32.5,
+   "firstWordSung": true,
+   "flags": [
+    "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
+   ],
+   "grid100": null,
+   "grid50": {},
+   "heard": "Oh, big dinosaur, stop it Shaking all the ground Boom, tail swing high Roar, big and so strong",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "a held note sung in another octave from the rest at 18.8 s (+2)"
+   ],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.933,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 0.0
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Big dinosaurs stomping, Shaking all the ground, boom! tails swing high, roar! Big and so strong!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.middle-c). Original music and words for this app. The words are big dinosaurs stomping (at the parent's request, Oct 7, 2026: some of the Middle C words didn't come through in the vocal); no word repeats on the repeated Cs. The last line was \"Big feet stomp home!\": three takes garbled it (four short closed words on one note), so it's \"Big and so strong!\" (Oct 20, 2026)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/middle-c-stomp.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 220,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.5,
+   "firstWordSung": true,
+   "flags": [
+    "timed by its words only (its notes repeat too much for the beat check): listen for the beat"
+   ],
+   "grid100": null,
+   "grid50": {},
+   "heard": "Oh, big dinosaur, stop it Shaking all the ground Boom, tail swing high Roar, big and so strong",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": false,
+   "reasons": [
+    "a held note sung in another octave from the rest at 18.8 s (+2)"
+   ],
+   "tuningCents": 1.0,
+   "wordStretches": [],
+   "wordsHeard": 0.933,
+   "wordsOff": 0.0,
+   "worstPhraseMs": 0.0
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 476160,
+     "url": "/api/library/media/middle-c-stomp/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 950880,
+     "url": "/api/library/media/middle-c-stomp/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 634080,
+     "url": "/api/library/media/middle-c-stomp/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 528960,
+     "url": "/api/library/media/middle-c-stomp/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "middle-c-stomp-s10 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -63,122 +145,122 @@
   "lyrics": [
    {
     "note": 0,
-    "syllabic": "begin",
-    "text": "Mid",
+    "syllabic": "single",
+    "text": "Big",
     "verse": 1
    },
    {
     "note": 1,
-    "syllabic": "end",
-    "text": "dle",
+    "syllabic": "begin",
+    "text": "di",
     "verse": 1
    },
    {
     "note": 2,
-    "syllabic": "single",
-    "text": "C,",
+    "syllabic": "middle",
+    "text": "no",
     "verse": 1
    },
    {
     "note": 3,
-    "syllabic": "begin",
-    "text": "Mid",
+    "syllabic": "end",
+    "text": "saurs",
     "verse": 1
    },
    {
     "note": 4,
-    "syllabic": "end",
-    "text": "dle",
+    "syllabic": "begin",
+    "text": "stomp",
     "verse": 1
    },
    {
     "note": 5,
-    "syllabic": "single",
-    "text": "C,",
+    "syllabic": "end",
+    "text": "ing,",
     "verse": 1
    },
    {
     "note": 12,
     "syllabic": "single",
-    "text": "march",
+    "text": "tails",
     "verse": 1
    },
    {
     "note": 13,
     "syllabic": "single",
-    "text": "with",
+    "text": "swing",
     "verse": 1
    },
    {
     "note": 14,
     "syllabic": "single",
-    "text": "me,",
+    "text": "high,",
     "verse": 1
    },
    {
     "note": 15,
     "syllabic": "single",
-    "text": "now!",
+    "text": "roar!",
     "verse": 1
    },
    {
     "note": 6,
-    "syllabic": "single",
-    "text": "Left",
+    "syllabic": "begin",
+    "text": "Shak",
     "verse": 1
    },
    {
     "note": 7,
-    "syllabic": "single",
-    "text": "thumb",
+    "syllabic": "end",
+    "text": "ing",
     "verse": 1
    },
    {
     "note": 8,
     "syllabic": "single",
-    "text": "on",
+    "text": "all",
     "verse": 1
    },
    {
     "note": 9,
-    "syllabic": "begin",
-    "text": "Mid",
+    "syllabic": "single",
+    "text": "the",
     "verse": 1
    },
    {
     "note": 10,
-    "syllabic": "end",
-    "text": "dle",
+    "syllabic": "single",
+    "text": "ground,",
     "verse": 1
    },
    {
     "note": 11,
     "syllabic": "single",
-    "text": "C,",
+    "text": "boom!",
     "verse": 1
    },
    {
     "note": 16,
     "syllabic": "single",
-    "text": "stomp,",
+    "text": "Big",
     "verse": 1
    },
    {
     "note": 17,
     "syllabic": "single",
-    "text": "stomp,",
+    "text": "and",
     "verse": 1
    },
    {
     "note": 18,
     "syllabic": "single",
-    "text": "stomp,",
+    "text": "so",
     "verse": 1
    },
    {
     "note": 19,
     "syllabic": "single",
-    "text": "stop!",
+    "text": "strong!",
     "verse": 1
    }
   ],

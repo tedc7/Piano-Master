@@ -11,7 +11,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-28e83c569e",
+ "contentVersion": "lib-699355574f",
  "display": {
   "fingers": false,
   "letters": true
@@ -24,23 +24,129 @@
  "hands": "L",
  "id": "warmup-octave-leap",
  "info": {
+  "checks": {
+   "bleedDb": -36.1,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (5.7 s) .. cat! (7.1 s); the (10.7 s) .. door, (11.4 s)",
+    "a short note sung in another octave at 16.4 s"
+   ],
+   "grid100": {
+    "median_ms": 11.2,
+    "p95_ms": 204.5,
+    "share_over_50ms": 0.261,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 266.7,
+    "share_over_50ms": 0.364,
+    "windows": 22
+   },
+   "heard": "home little mouse sees the cat running out the door hiding in the hole safe in my home",
+   "melodyStretches": [],
+   "notesOnPitch": 0.95,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "the (5.7 s) .. cat! (7.1 s)",
+    "the (10.7 s) .. door, (11.4 s)"
+   ],
+   "wordsHeard": 0.984,
+   "wordsOff": 0.353,
+   "worstPhraseMs": 28.2
+  },
+  "engine": "YuE2 vocal",
   "hands": "L",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Little mouse sees the cat! Running out the door, hiding in a hole, safe in my home!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.octave). Warm-up in our own music. Middle C to Bass C, 8 notes apart, with fingers 1 and 5: leap, don't stretch. Then skips in C position. The words are a little mouse who sees the cat, runs and hides, safe at home (at the parent's request, Oct 7, 2026), for the vocal."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/warmup-octave-leap.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 430,
- "media": null,
+ "media": {
+  "bpm": 84.0,
+  "check": {
+   "bleedDb": -36.1,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at the (5.7 s) .. cat! (7.1 s); the (10.7 s) .. door, (11.4 s)",
+    "a short note sung in another octave at 16.4 s"
+   ],
+   "grid100": {
+    "median_ms": 11.2,
+    "p95_ms": 204.5,
+    "share_over_50ms": 0.261,
+    "windows": 23
+   },
+   "grid50": {
+    "median_ms": 30.2,
+    "p95_ms": 266.7,
+    "share_over_50ms": 0.364,
+    "windows": 22
+   },
+   "heard": "home little mouse sees the cat running out the door hiding in the hole safe in my home",
+   "melodyStretches": [],
+   "notesOnPitch": 0.95,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 3.5,
+   "wordStretches": [
+    "the (5.7 s) .. cat! (7.1 s)",
+    "the (10.7 s) .. door, (11.4 s)"
+   ],
+   "wordsHeard": 0.984,
+   "wordsOff": 0.353,
+   "worstPhraseMs": 28.2
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 518400,
+     "url": "/api/library/media/warmup-octave-leap/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1035840,
+     "url": "/api/library/media/warmup-octave-leap/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 690720,
+     "url": "/api/library/media/warmup-octave-leap/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 576000,
+     "url": "/api/library/media/warmup-octave-leap/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-octave-leap-s4 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -59,7 +165,128 @@
    "timeSig": "4/4"
   },
   "length": 32.0,
-  "lyrics": [],
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "Lit",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "end",
+    "text": "tle",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "mouse",
+    "verse": 1
+   },
+   {
+    "note": 3,
+    "syllabic": "single",
+    "text": "sees",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "cat!",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "begin",
+    "text": "Run",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "end",
+    "text": "ning",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "out",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "door,",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "begin",
+    "text": "hid",
+    "verse": 1
+   },
+   {
+    "note": 12,
+    "syllabic": "end",
+    "text": "ing",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "in",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "hole,",
+    "verse": 1
+   },
+   {
+    "note": 16,
+    "syllabic": "single",
+    "text": "safe",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "in",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 1
+   },
+   {
+    "note": 19,
+    "syllabic": "single",
+    "text": "home!",
+    "verse": 1
+   }
+  ],
   "measures": [
    {
     "duration": 4.0,

@@ -24,23 +24,125 @@
  "hands": "RL",
  "id": "bass-parade",
  "info": {
+  "checks": {
+   "bleedDb": -37.3,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at boom, (5.0 s) .. boom, (6.2 s)"
+   ],
+   "grid100": {
+    "median_ms": 4.4,
+    "p95_ms": 45.3,
+    "share_over_50ms": 0.036,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 31.9,
+    "p95_ms": 142.9,
+    "share_over_50ms": 0.321,
+    "windows": 28
+   },
+   "heard": "Oh, big bass drums go boom boom down the long parade. Flutes are playing tweet tweet all along the street. Big bass drums go boom boom down the long parade. Flutes are playing tweet tweet all along the street.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [
+    "boom, (5.0 s) .. boom, (6.2 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 12.4
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Big bass drums go boom, boom, down the long parade. Flutes are playing tweet, tweet, all along the street.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.bass-c-scale). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/bass-parade.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 420,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -37.3,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at boom, (5.0 s) .. boom, (6.2 s)"
+   ],
+   "grid100": {
+    "median_ms": 4.4,
+    "p95_ms": 45.3,
+    "share_over_50ms": 0.036,
+    "windows": 28
+   },
+   "grid50": {
+    "median_ms": 31.9,
+    "p95_ms": 142.9,
+    "share_over_50ms": 0.321,
+    "windows": 28
+   },
+   "heard": "Oh, big bass drums go boom boom down the long parade. Flutes are playing tweet tweet all along the street. Big bass drums go boom boom down the long parade. Flutes are playing tweet tweet all along the street.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -0.5,
+   "wordStretches": [
+    "boom, (5.0 s) .. boom, (6.2 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 0.158,
+   "worstPhraseMs": 12.4
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 472320,
+     "url": "/api/library/media/bass-parade/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 943680,
+     "url": "/api/library/media/bass-parade/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 629280,
+     "url": "/api/library/media/bass-parade/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 524640,
+     "url": "/api/library/media/bass-parade/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "bass-parade-s3 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

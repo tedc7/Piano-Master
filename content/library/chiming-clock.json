@@ -24,23 +24,117 @@
  "hands": "RL",
  "id": "chiming-clock",
  "info": {
+  "checks": {
+   "bleedDb": -32.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.9,
+    "p95_ms": 15.8,
+    "share_over_50ms": 0.0,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 13.8,
+    "p95_ms": 29.8,
+    "share_over_50ms": 0.0,
+    "windows": 19
+   },
+   "heard": "Oh, tick, tock, tick, tock, tock, tock, tock, time for bay Up and down and down and up and goodnight sleep",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.972,
+   "wordsOff": 0.05,
+   "worstPhraseMs": 4.8
+  },
+  "engine": "YuE2 vocal",
   "hands": "RL",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Tick, tock, tick, tock, tock, tock, time for bed. up and down and Down and up and good night, sleep.",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.hands-at-once). Original music and words for this app."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/chiming-clock.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 260,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -32.2,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 2.9,
+    "p95_ms": 15.8,
+    "share_over_50ms": 0.0,
+    "windows": 19
+   },
+   "grid50": {
+    "median_ms": 13.8,
+    "p95_ms": 29.8,
+    "share_over_50ms": 0.0,
+    "windows": 19
+   },
+   "heard": "Oh, tick, tock, tick, tock, tock, tock, tock, time for bay Up and down and down and up and goodnight sleep",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 2.0,
+   "wordStretches": [],
+   "wordsHeard": 0.972,
+   "wordsOff": 0.05,
+   "worstPhraseMs": 4.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 466080,
+     "url": "/api/library/media/chiming-clock/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 930720,
+     "url": "/api/library/media/chiming-clock/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 621120,
+     "url": "/api/library/media/chiming-clock/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 517920,
+     "url": "/api/library/media/chiming-clock/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "chiming-clock-s3 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],

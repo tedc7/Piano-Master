@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-359ed71bdd",
+ "contentVersion": "lib-6a4f4c1131",
  "display": {
   "fingers": null,
   "letters": null
@@ -18,38 +18,42 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "finger-numbers-song",
  "info": {
   "checks": {
-   "bleedDb": -20.9,
+   "bleedDb": -30.4,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 7.4,
-    "p95_ms": 18.7,
-    "share_over_50ms": 0.0,
-    "windows": 19
+    "median_ms": 10.8,
+    "p95_ms": 160.9,
+    "share_over_50ms": 0.2,
+    "windows": 15
    },
    "grid50": {
-    "median_ms": 15.2,
-    "p95_ms": 43.5,
-    "share_over_50ms": 0.0,
-    "windows": 19
+    "median_ms": 18.5,
+    "p95_ms": 475.2,
+    "share_over_50ms": 0.389,
+    "windows": 18
    },
+   "heard": "Oh, two, three, two, three, pointer, middle, three, two, three, two, middle, pointer...",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
+   "notesOnPitch": 0.938,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -20.9 dB"
+    "words off the staff: 100%, in the first 15 s, at the end"
    ],
-   "tuningCents": 6.0,
-   "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 13.2
+   "tuningCents": 1.0,
+   "wordStretches": [
+    "Two, (3.2 s) .. pointer. (14.2 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 1.0,
+   "worstPhraseMs": 5.8
   },
   "engine": "YuE2 vocal",
-  "hands": "RL",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -57,7 +61,7 @@
   },
   "lyrics": "1. Two, three, two, three, pointer, middle. Three, two, three, two, middle, pointer.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app."
+   "Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -70,33 +74,37 @@
  "level": "Prep A",
  "mapPoint": 30,
  "media": {
-  "bpm": 96.0,
+  "bpm": 76.0,
   "check": {
-   "bleedDb": -20.9,
+   "bleedDb": -30.4,
    "firstWordSung": true,
    "flags": [],
    "grid100": {
-    "median_ms": 7.4,
-    "p95_ms": 18.7,
-    "share_over_50ms": 0.0,
-    "windows": 19
+    "median_ms": 10.8,
+    "p95_ms": 160.9,
+    "share_over_50ms": 0.2,
+    "windows": 15
    },
    "grid50": {
-    "median_ms": 15.2,
-    "p95_ms": 43.5,
-    "share_over_50ms": 0.0,
-    "windows": 19
+    "median_ms": 18.5,
+    "p95_ms": 475.2,
+    "share_over_50ms": 0.389,
+    "windows": 18
    },
+   "heard": "Oh, two, three, two, three, pointer, middle, three, two, three, two, middle, pointer...",
    "melodyStretches": [],
-   "notesOnPitch": 1.0,
+   "notesOnPitch": 0.938,
    "pass": false,
    "reasons": [
-    "backing left in the vocal at -20.9 dB"
+    "words off the staff: 100%, in the first 15 s, at the end"
    ],
-   "tuningCents": 6.0,
-   "wordStretches": [],
-   "wordsOff": 0.0,
-   "worstPhraseMs": 13.2
+   "tuningCents": 1.0,
+   "wordStretches": [
+    "Two, (3.2 s) .. pointer. (14.2 s)"
+   ],
+   "wordsHeard": 1.0,
+   "wordsOff": 1.0,
+   "worstPhraseMs": 5.8
   },
   "engine": "YuE2 vocal",
   "padBeats": 4.0,
@@ -104,33 +112,33 @@
    "100": {
     "ratio": 1.0,
     "vocals": {
-     "bytes": 280800,
+     "bytes": 359520,
      "url": "/api/library/media/finger-numbers-song/vocals_100.mp3"
     }
    },
    "50": {
     "ratio": 0.5,
     "vocals": {
-     "bytes": 560160,
+     "bytes": 717600,
      "url": "/api/library/media/finger-numbers-song/vocals_50.mp3"
     }
    },
    "75": {
     "ratio": 0.75,
     "vocals": {
-     "bytes": 373920,
+     "bytes": 479040,
      "url": "/api/library/media/finger-numbers-song/vocals_75.mp3"
     }
    },
    "90": {
     "ratio": 0.9,
     "vocals": {
-     "bytes": 312000,
+     "bytes": 399360,
      "url": "/api/library/media/finger-numbers-song/vocals_90.mp3"
     }
    }
   },
-  "take": "finger-numbers-song-s1 (dtw)"
+  "take": "finger-numbers-song-s21 (dtw)"
  },
  "notation": {
   "chordSymbols": [],
@@ -141,14 +149,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     63
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 16.0,
@@ -396,120 +403,120 @@
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "C"
+     "octave": 4,
+     "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 8.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 2,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "D"
+     "octave": 4,
+     "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 9.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "C"
+     "octave": 4,
+     "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 10.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 2,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "D"
+     "octave": 4,
+     "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 11.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "C"
+     "octave": 4,
+     "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 3,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "C"
+     "octave": 4,
+     "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 2,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "D"
+     "octave": 4,
+     "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
     "finger": 2,
-    "hand": "L",
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
-     "step": "D"
+     "octave": 4,
+     "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    }

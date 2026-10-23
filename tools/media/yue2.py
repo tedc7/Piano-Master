@@ -90,6 +90,29 @@ def pc(name: str) -> int:
 SING_LOW, SING_HIGH = 57, 77      # A3..F5: where the vocal is asked to sing
 
 
+def move(ns: list[dict], k: int) -> None:
+    for n in ns:
+        n["pitch"] += 12 * k
+        n["spelled"] = {**n["spelled"], "octave": n["spelled"]["octave"] + k}
+        if n.get("merged"):
+            n["merged"] = [m + 12 * k for m in n["merged"]]
+
+
+def line_as_written(mel: list[dict]) -> list[dict]:
+    """The piece's `media: {vocal_line: as-written}`: the whole line moves by whole octaves into the
+    singing range, the hands kept where they're written against each other. The default (singable)
+    moves each hand's passage on its own, which puts a left hand written low where a voice can sing
+    it, but can undo how the hands relate: Twinkle Twinkle's left-hand G3s sit just under the range,
+    so only they went up an octave and the vocal leapt every time the tune changed hands (Oct 7,
+    2026); and Echo Song's left-hand echo, an octave below, would be sung at the right hand's pitch."""
+    k = min(range(-3, 4), key=lambda k: (sum(not SING_LOW <= n["pitch"] + 12 * k <= SING_HIGH for n in mel), abs(k)))
+    if not k:
+        return []
+    move(mel, k)
+    return [{"change": f"the line sung {abs(k)} octave{'s' if abs(k) > 1 else ''} {'higher' if k > 0 else 'lower'}",
+             "songBeat": "0", "notes": len(mel)}]
+
+
 def singable(mel: list[dict], phrases: list) -> list[dict]:
     """Move each hand's passage (its notes until the other hand takes over) by whole octaves so most
     of them lie in SING_LOW..SING_HIGH, the smallest move first: a left hand written two octaves down
@@ -120,11 +143,7 @@ def singable(mel: list[dict], phrases: list) -> list[dict]:
         k = min(range(-3, 4), key=lambda k: (sum(not SING_LOW <= n["pitch"] + 12 * k <= SING_HIGH for n in ns), abs(k)))
         if not k:
             continue
-        for n in ns:
-            n["pitch"] += 12 * k
-            n["spelled"] = {**n["spelled"], "octave": n["spelled"]["octave"] + k}
-            if n.get("merged"):
-                n["merged"] = [m + 12 * k for m in n["merged"]]
+        move(ns, k)
         changes.append({"change": f"sung {abs(k)} octave{'s' if abs(k) > 1 else ''} {'higher' if k > 0 else 'lower'}",
                         "songBeat": str(ns[0]["start"]), "notes": len(ns)})
     return changes
@@ -227,7 +246,7 @@ def felt(nota: dict) -> tuple[dict, Fraction]:
     return out, k
 
 
-def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict]:
+def export(nota: dict, denom: int = 32, octave: int = 0, line: str | None = None) -> tuple[str, str, dict]:
     """(native ABC, lyrics, abcmap) for YuE2: one attack per syllable, chords, the "Oh" lead-in.
     abcmap's beats are ABC beats; `songPadBeats` is the lead-in in the song's own beats."""
     nota, scale = felt(nota)
@@ -238,13 +257,9 @@ def export(nota: dict, denom: int = 32, octave: int = 0) -> tuple[str, str, dict
     mel, changes = syllabic_melody(merged_melody(unrolled))
     if not mel:
         raise ValueError("no sung syllables: the vocal needs lyrics under the melody")
-    changes += singable(mel, nota["phrases"])
+    changes += line_as_written(mel) if line == "as-written" else singable(mel, nota["phrases"])
     if octave:      # the piece's `media: {vocal_octave: N}`: the whole vocal N octaves away, leaps kept
-        for n in mel:
-            n["pitch"] += 12 * octave
-            n["spelled"] = {**n["spelled"], "octave": n["spelled"]["octave"] + octave}
-            if n.get("merged"):
-                n["merged"] = [m + 12 * octave for m in n["merged"]]
+        move(mel, octave)
         changes.append({"change": f"the whole vocal {abs(octave)} octave{'s' if abs(octave) > 1 else ''} "
                                   f"{'higher' if octave > 0 else 'lower'} (vocal_octave)", "songBeat": "0", "notes": len(mel)})
     for n in mel:
@@ -389,7 +404,7 @@ def write_inputs(piece: Piece) -> Path:
     """build the YuE2 inputs in the piece's work folder; returns the folder."""
     out = piece.work / "yue2"
     out.mkdir(parents=True, exist_ok=True)
-    abc, lyrics, abcmap = export(piece.nota, octave=int(piece.spec.get("vocal_octave", 0)))
+    abc, lyrics, abcmap = export(piece.nota, octave=int(piece.spec.get("vocal_octave", 0)), line=piece.spec.get("vocal_line"))
     (out / "score.abc").write_text(abc)
     (out / "lyrics.txt").write_text(lyrics)
     (out / "abcmap.json").write_text(json.dumps(abcmap, indent=1, ensure_ascii=False) + "\n")

@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-a97b5bc19b",
+ "contentVersion": "lib-ed747e46e8",
  "display": {
   "fingers": null,
   "letters": null
@@ -21,23 +21,125 @@
  "hands": "R",
  "id": "c-g-seesaw",
  "info": {
+  "checks": {
+   "bleedDb": -28.5,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at Two (2.5 s) .. little (3.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.9,
+    "p95_ms": 33.8,
+    "share_over_50ms": 0.083,
+    "windows": 12
+   },
+   "grid50": {
+    "median_ms": 9.8,
+    "p95_ms": 49.6,
+    "share_over_50ms": 0.083,
+    "windows": 12
+   },
+   "heard": "Oh, oh, two little girls up and down, one up high and down.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [
+    "Two (2.5 s) .. little (3.1 s)"
+   ],
+   "wordsHeard": 0.925,
+   "wordsOff": 0.273,
+   "worstPhraseMs": 5.8
+  },
+  "engine": "YuE2 vocal",
   "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
    "edition": "original"
   },
-  "seeded": true,
+  "lyrics": "1. Two little girls, up and down, one up high, then down!",
+  "notes": [
+   "Curriculum song (Prep A, prep-a.treble-g). Original music and words for this app. The words are two girls on a seesaw (at the parent's request, Oct 7, 2026: the seesaw words came out garbled). The third bar's four Gs keep words that stay up (\"see-saw, see-saw\" there was sung up and down like a seesaw in 24 takes)."
+  ],
   "source": {
    "site": "Piano-Master",
    "url": "https://github.com/tedc7/Piano-Master/blob/main/content/pieces/c-g-seesaw.yaml"
-  }
+  },
+  "sourceIds": []
  },
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 230,
- "media": null,
+ "media": {
+  "bpm": 96.0,
+  "check": {
+   "bleedDb": -28.5,
+   "firstWordSung": true,
+   "flags": [
+    "words off the staff at Two (2.5 s) .. little (3.1 s)"
+   ],
+   "grid100": {
+    "median_ms": 5.9,
+    "p95_ms": 33.8,
+    "share_over_50ms": 0.083,
+    "windows": 12
+   },
+   "grid50": {
+    "median_ms": 9.8,
+    "p95_ms": 49.6,
+    "share_over_50ms": 0.083,
+    "windows": 12
+   },
+   "heard": "Oh, oh, two little girls up and down, one up high and down.",
+   "melodyStretches": [],
+   "notesOnPitch": 0.917,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": -1.5,
+   "wordStretches": [
+    "Two (2.5 s) .. little (3.1 s)"
+   ],
+   "wordsHeard": 0.925,
+   "wordsOff": 0.273,
+   "worstPhraseMs": 5.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 259680,
+     "url": "/api/library/media/c-g-seesaw/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 517920,
+     "url": "/api/library/media/c-g-seesaw/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 345600,
+     "url": "/api/library/media/c-g-seesaw/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 288000,
+     "url": "/api/library/media/c-g-seesaw/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "c-g-seesaw-s7 (dtw)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -59,68 +161,68 @@
   "lyrics": [
    {
     "note": 0,
-    "syllabic": "begin",
-    "text": "See",
+    "syllabic": "single",
+    "text": "Two",
     "verse": 1
    },
    {
     "note": 1,
-    "syllabic": "end",
-    "text": "saw,",
+    "syllabic": "begin",
+    "text": "lit",
     "verse": 1
    },
    {
     "note": 2,
-    "syllabic": "single",
-    "text": "up",
+    "syllabic": "end",
+    "text": "tle",
     "verse": 1
    },
    {
     "note": 3,
     "syllabic": "single",
-    "text": "and",
+    "text": "girls,",
     "verse": 1
    },
    {
     "note": 4,
     "syllabic": "single",
-    "text": "down,",
+    "text": "up",
     "verse": 1
    },
    {
     "note": 5,
-    "syllabic": "begin",
-    "text": "see",
+    "syllabic": "single",
+    "text": "and",
     "verse": 1
    },
    {
     "note": 6,
-    "syllabic": "end",
-    "text": "saw,",
+    "syllabic": "single",
+    "text": "down,",
     "verse": 1
    },
    {
     "note": 7,
-    "syllabic": "begin",
-    "text": "see",
+    "syllabic": "single",
+    "text": "one",
     "verse": 1
    },
    {
     "note": 8,
-    "syllabic": "end",
-    "text": "saw,",
+    "syllabic": "single",
+    "text": "up",
     "verse": 1
    },
    {
     "note": 9,
-    "syllabic": "begin",
-    "text": "see",
+    "syllabic": "single",
+    "text": "high,",
     "verse": 1
    },
    {
     "note": 10,
-    "syllabic": "end",
-    "text": "saw,",
+    "syllabic": "single",
+    "text": "then",
     "verse": 1
    },
    {

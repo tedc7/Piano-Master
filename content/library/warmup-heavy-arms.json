@@ -7,7 +7,7 @@
  },
  "beyondMap": [],
  "composer": "Piano-Master",
- "contentVersion": "lib-9aea8a3de4",
+ "contentVersion": "lib-dbc8cd7348",
  "display": {
   "fingers": null,
   "letters": null
@@ -18,10 +18,38 @@
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
- "hands": "RL",
+ "hands": "R",
  "id": "warmup-heavy-arms",
  "info": {
-  "hands": "RL",
+  "checks": {
+   "bleedDb": -26.8,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 8.6,
+    "p95_ms": 29.0,
+    "share_over_50ms": 0.0,
+    "windows": 12
+   },
+   "grid50": {
+    "median_ms": 56.8,
+    "p95_ms": 79.9,
+    "share_over_50ms": 0.583,
+    "windows": 12
+   },
+   "heard": "O heavy arm drop, heavy arm drop, Float up and and float up and rest. O empty arm drop, heavy arm drop, Float up and and let, float up and rest.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsHeard": 0.981,
+   "wordsOff": 0.143,
+   "worstPhraseMs": 5.8
+  },
+  "engine": "YuE2 vocal",
+  "hands": "R",
   "level": "Prep A",
   "license": {
    "composition": "original",
@@ -29,7 +57,7 @@
   },
   "lyrics": "1. Heavy arm, drop! Heavy arm, drop! Float up and land. Float up and rest.",
   "notes": [
-   "Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music and words (words added at the parent's request). Let the arm drop its weight into each key, then float up while the other hand drops."
+   "Curriculum song (Prep A, prep-a.round-hand). Warm-up in our own music and words (words added at the parent's request). Let the arm drop its weight into each key, then float up while the other hand drops. v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song)."
   ],
   "source": {
    "site": "Piano-Master",
@@ -41,7 +69,69 @@
  "kind": "song",
  "level": "Prep A",
  "mapPoint": 20,
- "media": null,
+ "media": {
+  "bpm": 76.0,
+  "check": {
+   "bleedDb": -26.8,
+   "firstWordSung": true,
+   "flags": [],
+   "grid100": {
+    "median_ms": 8.6,
+    "p95_ms": 29.0,
+    "share_over_50ms": 0.0,
+    "windows": 12
+   },
+   "grid50": {
+    "median_ms": 56.8,
+    "p95_ms": 79.9,
+    "share_over_50ms": 0.583,
+    "windows": 12
+   },
+   "heard": "O heavy arm drop, heavy arm drop, Float up and and float up and rest. O empty arm drop, heavy arm drop, Float up and and let, float up and rest.",
+   "melodyStretches": [],
+   "notesOnPitch": 1.0,
+   "pass": true,
+   "reasons": [],
+   "tuningCents": 1.5,
+   "wordStretches": [],
+   "wordsHeard": 0.981,
+   "wordsOff": 0.143,
+   "worstPhraseMs": 5.8
+  },
+  "engine": "YuE2 vocal",
+  "padBeats": 4.0,
+  "presets": {
+   "100": {
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 610560,
+     "url": "/api/library/media/warmup-heavy-arms/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 1220160,
+     "url": "/api/library/media/warmup-heavy-arms/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 814080,
+     "url": "/api/library/media/warmup-heavy-arms/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 678240,
+     "url": "/api/library/media/warmup-heavy-arms/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "warmup-heavy-arms-s24 (words)"
+ },
  "notation": {
   "chordSymbols": [],
   "graces": [],
@@ -51,14 +141,13 @@
    "letters": true,
    "pickupBeats": 0.0,
    "range": [
-    49,
+    61,
     63
    ],
    "staves": [
-    "treble",
-    "bass"
+    "treble"
    ],
-   "tempo": 84,
+   "tempo": 76,
    "timeSig": "4/4"
   },
   "length": 16.0,
@@ -88,30 +177,6 @@
     "verse": 1
    },
    {
-    "note": 8,
-    "syllabic": "single",
-    "text": "Float",
-    "verse": 1
-   },
-   {
-    "note": 9,
-    "syllabic": "single",
-    "text": "up",
-    "verse": 1
-   },
-   {
-    "note": 10,
-    "syllabic": "single",
-    "text": "and",
-    "verse": 1
-   },
-   {
-    "note": 11,
-    "syllabic": "single",
-    "text": "land.",
-    "verse": 1
-   },
-   {
     "note": 4,
     "syllabic": "begin",
     "text": "Hea",
@@ -133,6 +198,30 @@
     "note": 7,
     "syllabic": "single",
     "text": "drop!",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "Float",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "up",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "land.",
     "verse": 1
    },
    {
@@ -245,61 +334,61 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 4.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 5.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 6.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 7.0,
     "voice": 1
    },
@@ -365,61 +454,61 @@
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 12.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 13.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 3,
-    "hand": "L",
+    "finger": 2,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 49,
+    "pitch": 61,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "C"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 14.0,
     "voice": 1
    },
    {
     "duration": 1.0,
-    "finger": 2,
-    "hand": "L",
+    "finger": 3,
+    "hand": "R",
     "isMelody": true,
-    "pitch": 51,
+    "pitch": 63,
     "spelled": {
      "alter": 1,
-     "octave": 3,
+     "octave": 4,
      "step": "D"
     },
-    "staff": 1,
+    "staff": 0,
     "start": 15.0,
     "voice": 1
    }

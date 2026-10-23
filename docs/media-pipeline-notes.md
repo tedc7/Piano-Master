@@ -316,6 +316,146 @@ sheets used only to check them (arch §10.2).
     - *Result:* all nine re-rendered; eight pass, and B and C's take (the letters right, on the
       beat) is over only on bleed, by under 1 dB.
 
+32. **The third listen (Oct 7): 17 more curriculum songs for vocals, and two redos.**
+    - *Twinkle Twinkle, "the vocals switch octaves when the notes switch to the bass clef".* Our
+      range rule (note 25) moves each hand's passage into A3-F5 on its own. Twinkle's left hand is
+      written G3-B3, the right hand D4-E4: one line, as the tune goes. But G3 sits just under A3,
+      so only the left hand's passages went up an octave, and the vocal leapt every time the tune
+      changed hands. A piece can now say `media: {vocal_line: as-written}`: the whole line moves
+      into range, the hands kept where they're written against each other. Twinkle has it, and so
+      does Echo Song, whose left hand echoes an octave below (hand by hand, the echo would have been
+      sung at the call's pitch). The default stays hand by hand: it's right for a left hand written
+      low for the keyboard.
+    - *New words asked for:* a butterfly finding flowers (Middle Line D), down to the valley and up
+      the hill (Down to Bass C), a little mouse who sees the cat and runs home (Warm-up: Octave Leap,
+      which had none), and an echo for Echo Song's left hand ("I sing low, deep and low"). Rain,
+      Rain got chord symbols (C, Am, G7) and the `kids` backing.
+    - *Middle C Stomp, "great until the last 3 words".* Whisper heard every word of that take; the
+      aligner had "stomp" and "home!", the last two, 0.4 s late, and the checks flagged it, but a
+      short stretch after the first 15 s was only ever a flag. The ending is what's heard last, so
+      words off the staff on the song's last word now fail a take, however short the stretch.
+    - *Whisper doesn't hear everything the parent does.* It wrote "pre-twealy flowers" for "pretty
+      flowers" and still scored the letters 97%, and it can't hear timing at all. It's a second
+      opinion on garbled words, not the listen.
+
+33. **Oct 20: Lightly Row for Allegro, and three songs back.** When the Saints was deleted from the
+    library, so Allegro (a concept skill: its pieces feature it by being written for it) needed
+    another song with nothing newer than the skills before it. Every library and batch song was
+    beyond the map at that point, so it's a new arrangement: Lightly Row (the German folk tune with
+    words printed in 1854), right hand in C position. Its first take passed.
+    - *Middle C Stomp's ending, sent back a third time.* Each take the checks passed had "Big feet
+      stomp home!" sung with "feet" and "stomp" a fifth of a second long and placed with low
+      confidence: four short, closed words on four repeated Cs. Three seeds in a row couldn't make
+      them clear, which says the words are the problem, not the take: "Big and so strong!" (open
+      vowels, a long last word). The same lesson as Pony Trot and C and G Seesaw (note 31): when
+      a line fails take after take in the same place, change the words.
+    - *Middle Line D, still garbled.* Eleven of twelve takes garbled "But-ter-fly" as the first word
+      ("brother fly", "bold up life"), just after the lead-in on quick low skips; it moved to the
+      second phrase, behind "Flut-ter-ing wings".
+    - *Bass Walk:* new words climbing to meadow views, at the parent's request; the old opening's
+      "hill, hill" on two held Gs is gone with them.
+    - *Middle C Stomp's new ending sang clearly but wouldn't hold the note.* With "Big and so
+      strong!" the words came through, but none of 36 takes passed: nearly every one jumped an
+      octave on a held note, sung at C4 or (with `vocal_octave: 1`) at C5. The whole song is one
+      note, and YuE2 won't sing a monotone for 20 seconds without leaping. The best take (every word
+      on its note, one jump on "so") went to the parent flagged, with Vocals off as the fallback.
+      A one-note curriculum song may be a poor fit for a sung vocal at all.
+    - *Middle Line D:* "blooms" was sung "blues" in most takes; it ends on "flow'rs" now.
+    - *A Whisper failure stopped a batch* (once, likely short of memory beside YuE2): the hearing
+      step now tries twice, then judges the take without it.
+34. **Oct 20: the second Christmas batch (19 songs, 11 of them Beginner versions).** The batch's own
+    problems are in `content/incoming/christmas-2/NOTES.md`; the media's here.
+    - *The choice of take preferred a drift to a near miss.* Taking the fewest failed checks first
+      chose God Rest Ye's Beginner take with 82% of its words off (one failed check) over one with
+      10% off and an octave slip (two), and O Come, O Come, Emmanuel a take 80% off. A take with a
+      quarter or more of its words off is one the parent can't use (note 30), so it now comes after
+      every take under that, whatever its count (`media.rank`, with a test). That alone then chose
+      The Holly and the Ivy's one take under a quarter: 70% on pitch, by the aligner's words mode.
+      The take Whisper heard best had 99% of its words heard and was 93% on pitch, with the aligner
+      lost on repeated Gs. So a take with 95% or more of its words heard counts as usable too.
+      Re-ranked this way, both Emmanuels and Three Ships (Beginner) had better takes (99-100% on
+      pitch) than the ones submitted.
+    - *The Holly and the Ivy garbled its refrain at quarter = 108* ("the gnarling of the deer", "the
+      claying of the berry organ") in every take; at 96 it came through.
+    - *"Fa la la" again.* Deck the Halls' Beginner takes were sung clearly (Whisper heard 98% of
+      the words in take 1, 98% of the notes on pitch), but the aligner lost its place in nine "la"s
+      in a row and called 41-70% of the words off. The Gloria run's problem (first Christmas batch):
+      more takes won't fix the aligner, so it goes to the parent flagged.
+    - *Beginner versions passed less often than the full ones* in the first round (3 of 11, against
+      4 of 8). The quarter-note rewrites put several syllables on repeated pitches ("Glo-o-o-ria",
+      "fa la la", "come, let us a-dore Him"), the aligner's known weak spot. The failing songs got
+      up to six takes.
+
+35. **Oct 21: Units 1 and 2 again, one hand at a time (v0.40).** 22 live curriculum songs rearranged
+    (the right hand alone, then the left, then the hands taking turns) and slowed (Unit 1 to 76 a
+    minute, Unit 2 to 84), and two new songs for The hands take turns: every one needs a new vocal.
+    - *Three takes weren't enough for the two-note songs at 76.* Sit Tall's three takes were 25-62%
+      on pitch with 71-100% of their words off, and the run kept the best of them, unusable (a
+      quarter or more of the words off, note 30). The two-note black-key songs were already YuE2's
+      weakest (note 23: it seems to need more song to settle into), and the old Sit Tall was kept
+      from its fifth seed. The batch was started again with `--max-takes 12`; finished takes are
+      reused.
+    - *The lyric aligner died on one take and stopped the batch.* Three Black Keys' third take (100%
+      on pitch) made `lyric_align.py` abort with `std::bad_alloc` every time, with 10 GB of memory
+      free: something in that take's audio, not the machine. The exception ended the whole run after
+      11 songs. Now a take the aligner can't read has no word placed, fails the word check, and the
+      batch goes on (`align.check_words`).
+    - *After 12 takes,* 7 of the first 11 passed. Sit Tall's kept take fails only "the first word
+      isn't sung"; Heavy Arms is 88% on pitch (90% needed) and Knock, Knock 83%; The Finger Number
+      Song is still unusable (62% on pitch, 67% of its words off), as the two-note four-bar songs
+      have been from the start (note 23).
+    - *24 takes for the last three:* Mouse and Snail came down to 16% of its words off (take 20).
+      Shout and Whisper stayed at 24% (take 7, just under note 30's quarter). The Finger Number Song's
+      kept take (21) is 94% on pitch, 6 ms from the beat and every word heard by Whisper, but the
+      aligner placed none of "two, three, two, three" on the two repeated keys: the number words
+      are like letter names to it. Flagged for the listen.
+    - *A curriculum change to 22 live songs can't go to the review list by itself.* The intake takes
+      an update to a live song only when the parent has asked for one (Needs improvement on its Play
+      screen, v0.27), one song at a time. That suits a fix the parent hears; for a change the
+      parent asked for across a whole unit it means 22 requests first.
+    - *The parent's listen (Oct 22): three sent back, all a vocal singing more than the song has.*
+      Heavy Arms ("the last bar had twice as many vocal words as lyrics": "float up and rest"
+      twice), Pointer and Middle ("vocals got offset from the lyrics") and Two-Key Hops ("garbled
+      vocals"). Every check had passed them or failed them only on pitch. The Whisper check (note
+      26) hears the whole take, where singing on after the end is harmless (it's cut away), and it
+      counts the song's letters heard in order, so words sung twice cost nothing. New check
+      (`align.heard_in_song`): Whisper on the vocal as packaged, cut where the song ends; a take
+      fails when it holds more than 2 words (and 10%) beyond the song's, or under 80% of them. Tuned
+      on the batch: Whisper invents lines in a long silence (the packaged file's silent tail gave
+      Canyon Echo 20 extra words, and Pointer and Middle its second half twice) and loops when it
+      carries its last words forward; its voice filter dropped Canyon Echo's quieter echo lines.
+      Kept: the cut without the silence, not carrying words forward, digits read as numbers ("3
+      black keys"), and its sign-offs on a recording's end ("Thanks for watching!", "Ciao!")
+      ignored. On the batch it fails Heavy Arms (4 extra) and Two-Key Hops (11 extra, 55% heard)
+      and passes the 11 kept takes the parent didn't send back. It doesn't see Pointer and Middle's
+      drift: the words are all there, late. That one gets a new take, to the parent's ear.
+    - *Two Christmas Beginner songs back too:* I Saw Three Ships ("too fast and vocals garbled":
+      dotted half = 100, the full version's speed, five notes a second for a first-year player;
+      slowed to 72) and Deck the Halls ("some vocals are mismatched from lyrics": Whisper heard
+      "Light is the season", "Latroll the ancient yuletide carol"; a new take).
+    - *The redo (Oct 23), every take judged by the new check:* Heavy Arms passes (take 24); Three
+      Ships (Beginner) at 72 passes on its first take (99% on pitch). Pointer and Middle's take 19
+      fails only on bleed (-22.7 dB). Two-Key Hops: the choice took a take at -12 dB of bleed, the
+      backing plainly heard, over one at -23 dB, both failing on bleed alone, by score. The ranking
+      now takes 0.05 off the score for each dB over the limit (`media.rank`, with a test); it then
+      chose take 17, 79% heard in the song ("up on two keys" for "hop"), a word a child would hear
+      wrong. Take 7 (100% on pitch, its words exactly as written in the song, 2 dB over on bleed) was
+      chosen by hand (`chosenBy` in its choice.json).
+    - *Deck the Halls (Beginner): not the fa-la-las, the lyric lines.* Twelve takes; Whisper heard
+      97-99% of the words. Counting "la"s in its transcripts suggested YuE2 sang ten to twelve where
+      the arrangement has eight; wrong twice over: each "fa la la" is the real song's nine notes
+      (the left hand's B the eighth "la"), and Whisper's count of a run of "la"s isn't reliable
+      (one take: 8 in one line, 13 in another). The real cause was in YuE2's input: its lyric lines
+      break at each phrase, the phrases were two bars (`phraseBars: 2`) and the lines five, so it
+      was given "la. 'Tis the season" and "to be jolly, Fa la la la", and mis-sang round the breaks
+      ("Tis the season to be joy", "the peril thaw", "holy fire"). Now `phraseBars: 5`, one phrase
+      a line; the notes and words unchanged; new takes. Worth checking for every Beginner version
+      whose lines aren't a whole number of phrases.
+      Result: take 4 (of 12), every note on pitch, 14 ms from the beat, Whisper hearing the lines
+      as written but "And we now" and "Why thy tale"; only the aligner's 22% (the "la" runs) fails
+      it. Submitted with those two to listen for. The two new songs were
+      staged (package 57e4b1c79049); the 22 updates wait. Fixed in the app (v0.40): the Review list's "Ask for updates to several songs" asks for a skill's songs at once, with one note. Deployed with the server's own content (the new map waits for the parent's approvals).
+
 ## Results (at the real tempos)
 
 | Song | Tempo | Take kept | Notes on pitch | On the beat, 100% / 50% (median) | Tuning | Checks |

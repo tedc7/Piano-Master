@@ -11,12 +11,12 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-a002e2e2dd",
+   "contentVersion": "lib-0bfa5a2ade",
    "featuredSkills": [
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "sit-tall",
    "keyboardSize": 61,
@@ -40,10 +40,10 @@
    },
    "song": "sit-tall",
    "songTitle": "Sit Tall",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Sit Tall",
-   "updatedAt": "2026-10-04T05:45:24+00:00",
+   "updatedAt": "2026-10-22T04:58:36+00:00",
    "version": null,
    "words": "Sit up tall and sit up straight, yes! Shoulders loose and feet are resting."
   },
@@ -62,12 +62,12 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-8295b3c368",
+   "contentVersion": "lib-fb222bacc7",
    "featuredSkills": [
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "ready-to-play",
    "keyboardSize": 61,
@@ -95,10 +95,10 @@
    },
    "song": "ready-to-play",
    "songTitle": "Ready to Play",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Ready to Play",
-   "updatedAt": "2026-10-04T05:45:01+00:00",
+   "updatedAt": "2026-10-22T04:16:13+00:00",
    "version": null,
    "words": "Not too near and not too far, good! Arms are level, hands are ready. Sit on the front part of the bench. Now I'm ready, ready to play!"
   },
@@ -117,13 +117,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-2da1f71a03",
+   "contentVersion": "lib-4b45875f04",
    "featuredSkills": [
     "prep-a.round-hand",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "warmup-bubble-hands",
    "keyboardSize": 61,
@@ -162,12 +162,12 @@
    },
    "song": "warmup-bubble-hands",
    "songTitle": "Warm-up: Bubble Hands",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Warm-up: Bubble Hands",
-   "updatedAt": "2026-10-04T05:45:55+00:00",
+   "updatedAt": "2026-10-22T04:16:54+00:00",
    "version": null,
-   "words": "Hold a bubble in my right hand, Hold a bubble in my left hand, round and gentle, don't let it pop! round and gentle, don't let it pop!"
+   "words": "Hold a bubble in my right hand, keep it floating up in the air, round and gentle, don't let it pop! Round and gentle, don't let it pop!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -180,14 +180,14 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-9aea8a3de4",
+   "contentVersion": "lib-dbc8cd7348",
    "featuredSkills": [
     "prep-a.round-hand",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
-   "hasMedia": false,
+   "hands": "R",
+   "hasMedia": true,
    "id": "warmup-heavy-arms",
    "keyboardSize": 61,
    "kind": "song",
@@ -217,10 +217,10 @@
    },
    "song": "warmup-heavy-arms",
    "songTitle": "Warm-up: Heavy Arms",
-   "tempo": 84,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Warm-up: Heavy Arms",
-   "updatedAt": "2026-10-01T06:43:22+00:00",
+   "updatedAt": "2026-10-23T19:21:06+00:00",
    "version": null,
    "words": "Heavy arm, drop! Heavy arm, drop! Float up and land. Float up and rest."
   },
@@ -235,13 +235,13 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-359ed71bdd",
+   "contentVersion": "lib-6a4f4c1131",
    "featuredSkills": [
     "prep-a.finger-numbers",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "finger-numbers-song",
    "keyboardSize": 61,
@@ -272,10 +272,10 @@
    },
    "song": "finger-numbers-song",
    "songTitle": "The Finger Number Song",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "The Finger Number Song",
-   "updatedAt": "2026-10-04T05:46:29+00:00",
+   "updatedAt": "2026-10-22T04:18:20+00:00",
    "version": null,
    "words": "Two, three, two, three, pointer, middle. Three, two, three, two, middle, pointer."
   },
@@ -294,13 +294,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-4b707dea3a",
+   "contentVersion": "lib-9d992c0c32",
    "featuredSkills": [
     "prep-a.finger-numbers",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "pointer-and-middle",
    "keyboardSize": 61,
@@ -339,10 +339,10 @@
    },
    "song": "pointer-and-middle",
    "songTitle": "Pointer and Middle",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Pointer and Middle",
-   "updatedAt": "2026-10-04T21:02:00+00:00",
+   "updatedAt": "2026-10-23T19:21:50+00:00",
    "version": null,
    "words": "Bunny, bunny, in the garden, nibbling on a crunchy carrot, two long ears go up to listen, hopping home in time for dinner!"
   },
@@ -361,13 +361,12 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-8bcbfd67be",
+   "contentVersion": "lib-d6b2ec5db1",
    "featuredSkills": [
-    "prep-a.low-and-high",
-    "prep-a.sitting"
+    "prep-a.low-and-high"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "two-black-keys",
    "keyboardSize": 61,
@@ -387,7 +386,8 @@
      1,
      2,
      3,
-     4
+     4,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -402,12 +402,12 @@
    },
    "song": "two-black-keys",
    "songTitle": "Two Black Keys",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Two Black Keys",
-   "updatedAt": "2026-10-04T05:46:59+00:00",
+   "updatedAt": "2026-10-23T06:45:30+00:00",
    "version": null,
-   "words": "Up, up, up high, two black keys sing. Down, down, down low, two black keys hum. Now the middle, two black keys, too. Left hand middle, two black keys, too."
+   "words": "Up, up, up high, two black keys sing. Up, up, higher, two black keys ring. Now the middle, two black keys, too. Low and high, the two black keys play."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -420,13 +420,13 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-9447f807af",
+   "contentVersion": "lib-5d6fced53c",
    "featuredSkills": [
     "prep-a.low-and-high",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "warmup-two-key-hops",
    "keyboardSize": 61,
@@ -444,6 +444,7 @@
    "skillMeasures": {
     "prep-a.low-and-high": [
      2,
+     3,
      4
     ],
     "prep-a.sitting": [
@@ -455,12 +456,12 @@
    },
    "song": "warmup-two-key-hops",
    "songTitle": "Warm-up: Two-Key Hops",
-   "tempo": 88,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Warm-up: Two-Key Hops",
-   "updatedAt": "2026-10-04T15:34:12+00:00",
+   "updatedAt": "2026-10-23T19:22:12+00:00",
    "version": null,
-   "words": "Hop on two keys, hop up high now! Hop on two keys, hop down low now!"
+   "words": "Hop on two keys, hop up high now! Hop on two keys, hop up higher!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -475,13 +476,13 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-8bdd4fc607",
+   "contentVersion": "lib-cbe6bd42b7",
    "featuredSkills": [
     "prep-a.two-black-keys",
     "prep-a.sitting"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "L",
    "hasMedia": true,
    "id": "knock-knock",
    "keyboardSize": 61,
@@ -516,10 +517,10 @@
    },
    "song": "knock-knock",
    "songTitle": "Knock, Knock",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Knock, Knock",
-   "updatedAt": "2026-10-04T05:48:02+00:00",
+   "updatedAt": "2026-10-22T04:24:25+00:00",
    "version": null,
    "words": "Knock, knock, who is there? It's me, hi! Knock, knock, who is there? It's me, hi! Come in, come in, come in, my friend!"
   },
@@ -538,13 +539,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-6aa42189d8",
+   "contentVersion": "lib-b51b104831",
    "featuredSkills": [
     "prep-a.two-black-keys",
     "prep-a.low-and-high"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "L",
    "hasMedia": true,
    "id": "canyon-echo",
    "keyboardSize": 61,
@@ -562,12 +563,8 @@
    "skillId": "prep-a.two-black-keys",
    "skillMeasures": {
     "prep-a.low-and-high": [
-     1,
-     2,
      3,
      4,
-     5,
-     6,
      7,
      8
     ],
@@ -594,10 +591,10 @@
    },
    "song": "canyon-echo",
    "songTitle": "Canyon Echo",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Canyon Echo",
-   "updatedAt": "2026-10-04T05:47:35+00:00",
+   "updatedAt": "2026-10-23T06:45:47+00:00",
    "version": null,
    "words": "Hello, hello, is someone there? Hello, hello, is someone there? Who is down below? Please tell me! Who is down below? Please tell me!"
   },
@@ -616,7 +613,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-df42323ad9",
+   "contentVersion": "lib-3f4abe99bc",
    "featuredSkills": [
     "prep-a.three-black-keys"
    ],
@@ -660,10 +657,10 @@
    },
    "song": "balancing-act",
    "songTitle": "Balancing Act",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Balancing Act",
-   "updatedAt": "2026-10-04T05:49:02+00:00",
+   "updatedAt": "2026-10-22T04:26:14+00:00",
    "version": null,
    "words": "One step, two steps, three steps, balance! Wobble, wobble, don't fall down now! High up in the circus, higher, higher, look down, safe on the ground!"
   },
@@ -682,13 +679,12 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-e85ed3c50e",
+   "contentVersion": "lib-05f65d176a",
    "featuredSkills": [
-    "prep-a.three-black-keys",
-    "prep-a.sitting"
+    "prep-a.three-black-keys"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "L",
    "hasMedia": true,
    "id": "three-black-keys",
    "keyboardSize": 61,
@@ -727,12 +723,12 @@
    },
    "song": "three-black-keys",
    "songTitle": "Three Black Keys",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Three Black Keys",
-   "updatedAt": "2026-10-04T05:49:31+00:00",
+   "updatedAt": "2026-10-23T06:46:15+00:00",
    "version": null,
-   "words": "Three black keys up, three black keys down. Three low keys down, three low keys up. Three high keys up, three high keys down. Three deep keys down, three deep keys up."
+   "words": "Three black keys up, three black keys down. Three low keys down, three low keys up. Three black keys up, three black keys down. Three deep keys down, three deep keys up."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -749,13 +745,12 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-ed8679515a",
+   "contentVersion": "lib-15482a52c1",
    "featuredSkills": [
-    "prep-a.three-black-keys",
-    "prep-a.sitting"
+    "prep-a.three-black-keys"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "mixed-up-black-keys",
    "keyboardSize": 61,
@@ -766,11 +761,16 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.low-and-high",
     "prep-a.three-black-keys"
    ],
    "seeded": true,
    "skillId": "prep-a.three-black-keys",
    "skillMeasures": {
+    "prep-a.low-and-high": [
+     5,
+     7
+    ],
     "prep-a.sitting": [
      1,
      2,
@@ -792,10 +792,10 @@
    },
    "song": "mixed-up-black-keys",
    "songTitle": "Mixed-Up Black Keys",
-   "tempo": 96,
+   "tempo": 76,
    "timeSig": "4/4",
    "title": "Mixed-Up Black Keys",
-   "updatedAt": "2026-10-04T05:48:33+00:00",
+   "updatedAt": "2026-10-23T06:46:58+00:00",
    "version": null,
    "words": "Two keys, two keys, three keys, three keys, two keys, three keys, all black keys play! Two keys, two keys, three keys, three keys, two keys, three keys, all black keys play!"
   },
@@ -814,13 +814,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-da322b8ded",
+   "contentVersion": "lib-1d49722cad",
    "featuredSkills": [
     "prep-a.quarter-note",
     "prep-a.low-and-high"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "tick-tock",
    "keyboardSize": 61,
@@ -866,12 +866,12 @@
    },
    "song": "tick-tock",
    "songTitle": "Tick-Tock",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Tick-Tock",
-   "updatedAt": "2026-10-04T05:51:00+00:00",
+   "updatedAt": "2026-10-23T06:49:37+00:00",
    "version": null,
-   "words": "Tick, tock, tick, tock, one beat, one beat, Tock, tick, tock, tick, quarter notes, go! keep a steady beat like a clock. Every quarter note gets one beat."
+   "words": "Tick, tock, tick, tock, one beat, one beat, tock, tick, tock, tick, quarter notes, go! Keep a steady beat like a clock. Every quarter note gets one beat."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -884,13 +884,13 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-4379083664",
+   "contentVersion": "lib-92d2469307",
    "featuredSkills": [
     "prep-a.quarter-note",
     "prep-a.low-and-high"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "L",
    "hasMedia": true,
    "id": "steady-steps",
    "keyboardSize": 61,
@@ -926,10 +926,10 @@
    },
    "song": "steady-steps",
    "songTitle": "Steady Steps",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Steady Steps",
-   "updatedAt": "2026-10-04T21:00:56+00:00",
+   "updatedAt": "2026-10-23T06:47:54+00:00",
    "version": null,
    "words": "Walk, walk, walk, walk, step, step, step, step. Big bear marches, stomping feet, boom!"
   },
@@ -948,13 +948,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-fd24456f77",
+   "contentVersion": "lib-265cacbf76",
    "featuredSkills": [
     "prep-a.half-note",
     "prep-a.low-and-high"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "ding-dong-bells",
    "keyboardSize": 61,
@@ -1000,12 +1000,12 @@
    },
    "song": "ding-dong-bells",
    "songTitle": "Ding-Dong Bells",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Ding-Dong Bells",
-   "updatedAt": "2026-10-04T05:51:31+00:00",
+   "updatedAt": "2026-10-23T06:49:07+00:00",
    "version": null,
-   "words": "Ding, dong, ding, ding, dong, Bong, bong, bong, bong, bong, ding, dong, the bells ring. bong, bong, big bells sing."
+   "words": "Ding, dong, ding, ding, dong, bong, bong, bong, bong, bong, ding, dong, the bells ring. Bong, bong, big bells sing."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -1022,13 +1022,12 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-11c0073507",
+   "contentVersion": "lib-bea729320d",
    "featuredSkills": [
-    "prep-a.half-note",
-    "prep-a.sitting"
+    "prep-a.half-note"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "L",
    "hasMedia": true,
    "id": "tap-and-stretch",
    "keyboardSize": 61,
@@ -1039,6 +1038,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.low-and-high",
     "prep-a.half-note"
    ],
    "seeded": true,
@@ -1050,6 +1050,12 @@
      4,
      5,
      6,
+     8
+    ],
+    "prep-a.low-and-high": [
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -1065,10 +1071,10 @@
    },
    "song": "tap-and-stretch",
    "songTitle": "Tap and Stretch",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Tap and Stretch",
-   "updatedAt": "2026-10-04T15:53:48+00:00",
+   "updatedAt": "2026-10-23T06:48:35+00:00",
    "version": null,
    "words": "Pitter pat, raindrops fall, jump into the puddle, splash! Rumble, boom! Thunder roars! Sun peeks out, a rainbow glows!"
   },
@@ -1087,13 +1093,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-bc34b2433a",
+   "contentVersion": "lib-dfe8c13602",
    "featuredSkills": [
     "prep-a.half-note",
     "prep-a.three-black-keys"
    ],
    "genre": "studies",
-   "hands": "RL",
+   "hands": "R",
    "hasMedia": true,
    "id": "warmup-firm-fingertips",
    "keyboardSize": 61,
@@ -1139,12 +1145,145 @@
    },
    "song": "warmup-firm-fingertips",
    "songTitle": "Warm-up: Firm Fingertips",
-   "tempo": 88,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Warm-up: Firm Fingertips",
-   "updatedAt": "2026-10-04T05:53:30+00:00",
+   "updatedAt": "2026-10-22T04:31:01+00:00",
    "version": null,
-   "words": "Firm fingertips, tap, tap, standing up tall, tap, tap! Left fingertips, tap, tap, standing up tall, tap, tap!"
+   "words": "Firm fingertips, tap, tap, standing up tall, tap, tap! Strong fingertips, tap, tap, standing up tall, tap, tap!"
+  },
+  {
+   "approvedAt": "2026-10-21T23:24:20+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-192d86f4d4",
+   "featuredSkills": [
+    "prep-a.half-note",
+    "prep-a.sitting"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "my-turn-your-turn",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 80,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note"
+   ],
+   "skillId": "prep-a.half-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "my-turn-your-turn",
+   "songTitle": "My Turn, Your Turn",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "My Turn, Your Turn",
+   "version": null,
+   "words": "My turn, my turn, I play first, Your turn, your turn, you play next. hold the long note, then you wait. Left hand hops in, right on time!"
+  },
+  {
+   "approvedAt": "2026-10-21T23:24:54+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 3,
+    "5": 4,
+    "6": 3,
+    "7": 4,
+    "8": 3
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-c1774c380e",
+   "featuredSkills": [
+    "prep-a.half-note",
+    "prep-a.three-black-keys"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "ping-and-pong",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 80,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.three-black-keys",
+    "prep-a.half-note"
+   ],
+   "skillId": "prep-a.half-note",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2,
+     4,
+     6,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.three-black-keys": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ]
+   },
+   "song": "ping-and-pong",
+   "songTitle": "Ping and Pong",
+   "tempo": 84,
+   "timeSig": "4/4",
+   "title": "Ping and Pong",
+   "version": null,
+   "words": "Ping, it bounces over here, Pong, it bounces back down there. ping and pong, now back and forth, Two hands taking turns to play."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -1161,7 +1300,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-ebbe31bbd2",
+   "contentVersion": "lib-2d1b1d0eba",
    "featuredSkills": [
     "prep-a.forte-piano",
     "prep-a.half-note"
@@ -1226,10 +1365,10 @@
    },
    "song": "mouse-and-snail",
    "songTitle": "Mouse and Snail",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Mouse and Snail",
-   "updatedAt": "2026-10-04T05:53:59+00:00",
+   "updatedAt": "2026-10-22T04:31:32+00:00",
    "version": null,
    "words": "Little mouse runs quickly home. Snail goes slow, slow. Mouse runs around, round and home. Snail is still slow."
   },
@@ -1248,7 +1387,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-8dc950c474",
+   "contentVersion": "lib-4b98f09215",
    "featuredSkills": [
     "prep-a.forte-piano",
     "prep-a.half-note"
@@ -1313,10 +1452,10 @@
    },
    "song": "shout-and-whisper",
    "songTitle": "Shout and Whisper",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Shout and Whisper",
-   "updatedAt": "2026-10-04T15:31:55+00:00",
+   "updatedAt": "2026-10-22T04:32:04+00:00",
    "version": null,
    "words": "Shout it out, loud and clear! Whisper back, soft and low. Here's my voice, strong and loud! Softly now, quiet, shh."
   },
@@ -1335,7 +1474,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-e1500e06cc",
+   "contentVersion": "lib-bb20d762c9",
    "featuredSkills": [
     "prep-a.whole-note"
    ],
@@ -1392,10 +1531,10 @@
    },
    "song": "four-slow-beats",
    "songTitle": "Four Slow Beats",
-   "tempo": 96,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Four Slow Beats",
-   "updatedAt": "2026-10-04T05:56:12+00:00",
+   "updatedAt": "2026-10-22T04:32:44+00:00",
    "version": null,
    "words": "Count to four and hold. Count to four and hold. Long, long note. Low, low sound."
   },
@@ -1475,7 +1614,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-3a5a713b09",
+   "contentVersion": "lib-331c795ab7",
    "featuredSkills": [
     "prep-a.whole-note"
    ],
@@ -1531,12 +1670,88 @@
    },
    "song": "church-bells",
    "songTitle": "Church Bells",
-   "tempo": 88,
+   "tempo": 84,
    "timeSig": "4/4",
    "title": "Church Bells",
-   "updatedAt": "2026-10-04T05:55:42+00:00",
+   "updatedAt": "2026-10-22T04:33:14+00:00",
    "version": null,
    "words": "Bells ring out, ring and ring again. Big bells hum, hum and hum again."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Traditional",
+   "contentVersion": "lib-c72d8e9674",
+   "featuredSkills": [
+    "prep-a.c-d-e"
+   ],
+   "genre": "folk",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "by-the-moonlight",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 110,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.c-d-e"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-d-e",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "by-the-moonlight",
+   "songTitle": "By the Moonlight",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "By the Moonlight",
+   "updatedAt": "2026-10-04T05:58:50+00:00",
+   "version": null,
+   "words": "By the moonlight, my friend, lend me your pen, please. Let me write a little note to my dear friend."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -1619,78 +1834,74 @@
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
    "barNotes": {
-    "1": 4,
-    "2": 2,
+    "1": 3,
+    "2": 3,
     "3": 4,
-    "4": 1,
-    "5": 4,
-    "6": 2,
-    "7": 4,
-    "8": 1
+    "4": 4,
+    "5": 3
    },
-   "beats": 32.0,
+   "beats": 20.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-c72d8e9674",
+   "contentVersion": "lib-d3f0182453",
    "featuredSkills": [
+    "prep-a.musical-alphabet",
     "prep-a.c-d-e"
    ],
-   "genre": "folk",
-   "hands": "R",
+   "genre": "kids",
+   "hands": "L",
    "hasMedia": true,
-   "id": "by-the-moonlight",
+   "id": "hot-cross-buns-left",
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 110,
-   "measures": 8,
-   "phrases": 4,
+   "mapPoint": 120,
+   "measures": 5,
+   "phrases": 3,
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.c-d-e"
+    "prep-a.c-d-e",
+    "prep-a.musical-alphabet"
    ],
    "seeded": true,
-   "skillId": "prep-a.c-d-e",
+   "skillId": "prep-a.musical-alphabet",
    "skillMeasures": {
     "prep-a.c-d-e": [
      1,
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8
+     5
     ],
     "prep-a.half-note": [
+     1,
      2,
-     6
+     5
+    ],
+    "prep-a.musical-alphabet": [
+     1,
+     2,
+     3,
+     4,
+     5
     ],
     "prep-a.sitting": [
      1,
      2,
      3,
      4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.whole-note": [
-     4,
-     8
+     5
     ]
    },
-   "song": "by-the-moonlight",
-   "songTitle": "By the Moonlight",
-   "tempo": 92,
+   "song": "hot-cross-buns",
+   "songTitle": "Hot Cross Buns",
+   "tempo": 100,
    "timeSig": "4/4",
-   "title": "By the Moonlight",
-   "updatedAt": "2026-10-04T05:58:50+00:00",
-   "version": null,
-   "words": "By the moonlight, my friend, lend me your pen, please. Let me write a little note to my dear friend."
+   "title": "Hot Cross Buns for the Left Hand",
+   "updatedAt": "2026-10-04T15:15:54+00:00",
+   "version": "Left hand",
+   "words": "Hot cross buns, hot cross buns, one a penny, two a penny, hot cross buns!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -1776,78 +1987,6 @@
    "updatedAt": "2026-10-05T07:12:34+00:00",
    "version": null,
    "words": "Eagle spreads its wings wide, soaring to the sky high! Gopher digs a deep hole, digging down below ground!"
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 3,
-    "2": 3,
-    "3": 4,
-    "4": 4,
-    "5": 3
-   },
-   "beats": 20.0,
-   "beyondMap": [],
-   "composer": "Traditional",
-   "contentVersion": "lib-d3f0182453",
-   "featuredSkills": [
-    "prep-a.musical-alphabet",
-    "prep-a.c-d-e"
-   ],
-   "genre": "kids",
-   "hands": "L",
-   "hasMedia": true,
-   "id": "hot-cross-buns-left",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 120,
-   "measures": 5,
-   "phrases": 3,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.c-d-e",
-    "prep-a.musical-alphabet"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.musical-alphabet",
-   "skillMeasures": {
-    "prep-a.c-d-e": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ],
-    "prep-a.half-note": [
-     1,
-     2,
-     5
-    ],
-    "prep-a.musical-alphabet": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5
-    ]
-   },
-   "song": "hot-cross-buns",
-   "songTitle": "Hot Cross Buns",
-   "tempo": 100,
-   "timeSig": "4/4",
-   "title": "Hot Cross Buns for the Left Hand",
-   "updatedAt": "2026-10-04T15:15:54+00:00",
-   "version": "Left hand",
-   "words": "Hot cross buns, hot cross buns, one a penny, two a penny, hot cross buns!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -2712,6 +2851,78 @@
    "approvedAt": "2026-10-01T05:25:41+00:00",
    "barNotes": {
     "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1
+   },
+   "beats": 24.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6ff978d45f",
+   "featuredSkills": [
+    "prep-a.c-b-a-g-f",
+    "prep-a.f-g-a-b"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "warmup-thumb-on-middle-c",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 180,
+   "measures": 6,
+   "phrases": 3,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.f-g-a-b",
+    "prep-a.c-b-a-g-f"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.c-b-a-g-f",
+   "skillMeasures": {
+    "prep-a.c-b-a-g-f": [
+     1,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.f-g-a-b": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6
+    ]
+   },
+   "song": "warmup-thumb-on-middle-c",
+   "songTitle": "Warm-up: Thumb on Middle C",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Thumb on Middle C",
+   "updatedAt": "2026-10-04T15:29:23+00:00",
+   "version": null,
+   "words": "Thumb on its side, down! Stepping back up, home! Back to Middle C!"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
     "2": 3,
     "3": 4,
     "4": 3,
@@ -2971,51 +3182,61 @@
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
    "barNotes": {
-    "1": 4,
-    "2": 1,
-    "3": 4,
+    "1": 2,
+    "2": 2,
+    "3": 2,
     "4": 1,
-    "5": 4,
-    "6": 1
+    "5": 2,
+    "6": 2,
+    "7": 4,
+    "8": 1
    },
-   "beats": 24.0,
+   "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-6ff978d45f",
+   "contentVersion": "lib-32b7f1e3c3",
    "featuredSkills": [
-    "prep-a.c-b-a-g-f",
-    "prep-a.f-g-a-b"
+    "prep-a.dotted-half"
    ],
    "genre": "studies",
-   "hands": "L",
+   "hands": "R",
    "hasMedia": true,
-   "id": "warmup-thumb-on-middle-c",
+   "id": "sea-waves",
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 180,
-   "measures": 6,
-   "phrases": 3,
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.whole-note",
+    "prep-a.c-d-e",
     "prep-a.f-g-a-b",
-    "prep-a.c-b-a-g-f"
+    "prep-a.dotted-half"
    ],
    "seeded": true,
-   "skillId": "prep-a.c-b-a-g-f",
+   "skillId": "prep-a.dotted-half",
    "skillMeasures": {
-    "prep-a.c-b-a-g-f": [
+    "prep-a.c-d-e": [
      1,
+     2,
      3,
-     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     1,
+     2,
+     3,
      5,
      6
     ],
     "prep-a.f-g-a-b": [
-     1,
-     2,
-     3
+     3,
+     4,
+     5
     ],
     "prep-a.sitting": [
      1,
@@ -3023,22 +3244,100 @@
      3,
      4,
      5,
-     6
+     6,
+     7,
+     8
     ],
     "prep-a.whole-note": [
-     2,
      4,
-     6
+     8
     ]
    },
-   "song": "warmup-thumb-on-middle-c",
-   "songTitle": "Warm-up: Thumb on Middle C",
+   "song": "sea-waves",
+   "songTitle": "Sea Waves",
    "tempo": 88,
    "timeSig": "4/4",
-   "title": "Warm-up: Thumb on Middle C",
-   "updatedAt": "2026-10-04T15:29:23+00:00",
+   "title": "Sea Waves",
+   "updatedAt": "2026-10-04T15:30:21+00:00",
    "version": null,
-   "words": "Thumb on its side, down! Stepping back up, home! Back to Middle C!"
+   "words": "Waves roll in, then roll away. Waves roll in, then roll back to the sea."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-f96e5b87ab",
+   "featuredSkills": [
+    "prep-a.dotted-half",
+    "prep-a.c-d-e"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "warmup-softer-and-softer",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 190,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.c-d-e",
+    "prep-a.dotted-half"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.dotted-half",
+   "skillMeasures": {
+    "prep-a.c-d-e": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.dotted-half": [
+     2,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "warmup-softer-and-softer",
+   "songTitle": "Warm-up: Softer and Softer",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Softer and Softer",
+   "updatedAt": "2026-10-04T15:31:27+00:00",
+   "version": null,
+   "words": "Loud and proud now, big sound, fill the whole room, BOOM! Now so softly, whisper like a little mouse."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -3212,166 +3511,6 @@
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
    "barNotes": {
-    "1": 2,
-    "2": 2,
-    "3": 2,
-    "4": 1,
-    "5": 2,
-    "6": 2,
-    "7": 4,
-    "8": 1
-   },
-   "beats": 32.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-32b7f1e3c3",
-   "featuredSkills": [
-    "prep-a.dotted-half"
-   ],
-   "genre": "studies",
-   "hands": "R",
-   "hasMedia": true,
-   "id": "sea-waves",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 190,
-   "measures": 8,
-   "phrases": 4,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.whole-note",
-    "prep-a.c-d-e",
-    "prep-a.f-g-a-b",
-    "prep-a.dotted-half"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.dotted-half",
-   "skillMeasures": {
-    "prep-a.c-d-e": [
-     1,
-     2,
-     3,
-     6,
-     7,
-     8
-    ],
-    "prep-a.dotted-half": [
-     1,
-     2,
-     3,
-     5,
-     6
-    ],
-    "prep-a.f-g-a-b": [
-     3,
-     4,
-     5
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.whole-note": [
-     4,
-     8
-    ]
-   },
-   "song": "sea-waves",
-   "songTitle": "Sea Waves",
-   "tempo": 88,
-   "timeSig": "4/4",
-   "title": "Sea Waves",
-   "updatedAt": "2026-10-04T15:30:21+00:00",
-   "version": null,
-   "words": "Waves roll in, then roll away. Waves roll in, then roll back to the sea."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 2,
-    "3": 4,
-    "4": 1,
-    "5": 4,
-    "6": 2,
-    "7": 4,
-    "8": 1
-   },
-   "beats": 32.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-f96e5b87ab",
-   "featuredSkills": [
-    "prep-a.dotted-half",
-    "prep-a.c-d-e"
-   ],
-   "genre": "studies",
-   "hands": "R",
-   "hasMedia": true,
-   "id": "warmup-softer-and-softer",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 190,
-   "measures": 8,
-   "phrases": 4,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.whole-note",
-    "prep-a.c-d-e",
-    "prep-a.dotted-half"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.dotted-half",
-   "skillMeasures": {
-    "prep-a.c-d-e": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.dotted-half": [
-     2,
-     6
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.whole-note": [
-     4,
-     8
-    ]
-   },
-   "song": "warmup-softer-and-softer",
-   "songTitle": "Warm-up: Softer and Softer",
-   "tempo": 92,
-   "timeSig": "4/4",
-   "title": "Warm-up: Softer and Softer",
-   "updatedAt": "2026-10-04T15:31:27+00:00",
-   "version": null,
-   "words": "Loud and proud now, big sound, fill the whole room, BOOM! Now so softly, whisper like a little mouse."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
     "1": 4,
     "2": 1,
     "3": 4,
@@ -3391,7 +3530,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "lines-and-spaces",
    "keyboardSize": 61,
    "kind": "song",
@@ -3459,6 +3598,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Lines and Spaces",
+   "updatedAt": "2026-10-07T15:50:00+00:00",
    "version": null,
    "words": "Line, space, line, space, line! Space, line, space, line, space. Up we climb the staff, then back down again to"
   },
@@ -3484,7 +3624,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "up-and-down-the-staff",
    "keyboardSize": 61,
    "kind": "song",
@@ -3550,6 +3690,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Up and Down the Staff",
+   "updatedAt": "2026-10-07T15:50:29+00:00",
    "version": null,
    "words": "Up the staff we go! Down the low staff, down! Down the staff we go. Up the low staff, up."
   },
@@ -3575,7 +3716,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "two-clefs",
    "keyboardSize": 61,
    "kind": "song",
@@ -3643,6 +3784,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Two Clefs",
+   "updatedAt": "2026-10-07T15:51:26+00:00",
    "version": null,
    "words": "Treble clef, up high, I sing, Bass clef, down below, I hum, right hand on the upper staff. left hand, lower staff."
   },
@@ -3668,7 +3810,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "high-and-low-staff",
    "keyboardSize": 61,
    "kind": "song",
@@ -3727,6 +3869,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "High and Low on the Staff",
+   "updatedAt": "2026-10-07T15:50:59+00:00",
    "version": null,
    "words": "High up on the treble staff, Low down on the bass clef staff, Middle C is in between, left hand sings it lower too."
   },
@@ -3745,13 +3888,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-826b200981",
+   "contentVersion": "lib-d3e2eda26d",
    "featuredSkills": [
     "prep-a.middle-c"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "middle-c-stomp",
    "keyboardSize": 61,
    "kind": "song",
@@ -3804,8 +3947,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Middle C Stomp",
+   "updatedAt": "2026-10-20T19:11:38+00:00",
    "version": null,
-   "words": "Middle C, Middle C, Left thumb on Middle C, march with me, now! stomp, stomp, stomp, stop!"
+   "words": "Big dinosaurs stomping, Shaking all the ground, boom! tails swing high, roar! Big and so strong!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -3820,13 +3964,13 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-c77f777a86",
+   "contentVersion": "lib-c7e950a675",
    "featuredSkills": [
     "prep-a.middle-c"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "thumbs-take-turns",
    "keyboardSize": 61,
    "kind": "song",
@@ -3876,8 +4020,79 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Thumbs Take Turns",
+   "updatedAt": "2026-10-07T15:46:14+00:00",
    "version": null,
-   "words": ""
+   "words": "Henny, Penny, pecking golden, grain and barley, scratch and peck!"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ed747e46e8",
+   "featuredSkills": [
+    "prep-a.treble-g",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "c-g-seesaw",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 230,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.treble-g",
+   "skillMeasures": {
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.treble-g": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "c-g-seesaw",
+   "songTitle": "C and G Seesaw",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "C and G Seesaw",
+   "updatedAt": "2026-10-07T21:07:26+00:00",
+   "version": null,
+   "words": "Two little girls, up and down, one up high, then down!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -3901,7 +4116,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "hello-treble-g",
    "keyboardSize": 61,
    "kind": "song",
@@ -3960,6 +4175,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Hello, Treble G",
+   "updatedAt": "2026-10-07T18:15:23+00:00",
    "version": null,
    "words": "Hello, Treble G, you're on the second line! Left thumb keeps the beat on Middle C too."
   },
@@ -3974,19 +4190,19 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-a97b5bc19b",
+   "contentVersion": "lib-12b8f359a7",
    "featuredSkills": [
-    "prep-a.treble-g",
+    "prep-a.bass-f",
     "prep-a.middle-c"
    ],
    "genre": "studies",
-   "hands": "R",
-   "hasMedia": false,
-   "id": "c-g-seesaw",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "f-c-seesaw",
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 230,
+   "mapPoint": 240,
    "measures": 4,
    "phrases": 2,
    "requiredSkills": [
@@ -3994,11 +4210,17 @@
     "prep-a.half-note",
     "prep-a.whole-note",
     "prep-a.middle-c",
-    "prep-a.treble-g"
+    "prep-a.bass-f"
    ],
    "seeded": true,
-   "skillId": "prep-a.treble-g",
+   "skillId": "prep-a.bass-f",
    "skillMeasures": {
+    "prep-a.bass-f": [
+     1,
+     2,
+     3,
+     4
+    ],
     "prep-a.half-note": [
      2
     ],
@@ -4014,23 +4236,18 @@
      3,
      4
     ],
-    "prep-a.treble-g": [
-     1,
-     2,
-     3,
-     4
-    ],
     "prep-a.whole-note": [
      4
     ]
    },
-   "song": "c-g-seesaw",
-   "songTitle": "C and G Seesaw",
+   "song": "f-c-seesaw",
+   "songTitle": "F and C Seesaw",
    "tempo": 96,
    "timeSig": "4/4",
-   "title": "C and G Seesaw",
+   "title": "F and C Seesaw",
+   "updatedAt": "2026-10-07T18:16:09+00:00",
    "version": null,
-   "words": "Seesaw, up and down, seesaw, seesaw, seesaw, down!"
+   "words": "Bass F, Middle C, back and forth we go to F."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -4054,7 +4271,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "down-to-bass-f",
    "keyboardSize": 61,
    "kind": "song",
@@ -4113,77 +4330,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Down to Bass F",
+   "updatedAt": "2026-10-07T18:15:52+00:00",
    "version": null,
    "words": "Down I go to Bass F, Right thumb plays C. jump, jump, jump, jump, land! Right thumb, Middle C."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 3,
-    "3": 4,
-    "4": 1
-   },
-   "beats": 16.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-12b8f359a7",
-   "featuredSkills": [
-    "prep-a.bass-f",
-    "prep-a.middle-c"
-   ],
-   "genre": "studies",
-   "hands": "L",
-   "hasMedia": false,
-   "id": "f-c-seesaw",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 240,
-   "measures": 4,
-   "phrases": 2,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.bass-f"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.bass-f",
-   "skillMeasures": {
-    "prep-a.bass-f": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.half-note": [
-     2
-    ],
-    "prep-a.middle-c": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.whole-note": [
-     4
-    ]
-   },
-   "song": "f-c-seesaw",
-   "songTitle": "F and C Seesaw",
-   "tempo": 96,
-   "timeSig": "4/4",
-   "title": "F and C Seesaw",
-   "version": null,
-   "words": "Bass F, Middle C, back and forth we go to F."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -4207,7 +4356,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "warmup-drop-and-lift",
    "keyboardSize": 61,
    "kind": "song",
@@ -4285,7 +4434,7 @@
    "tempo": 88,
    "timeSig": "4/4",
    "title": "Warm-up: Drop and Lift",
-   "updatedAt": "2026-10-01T06:46:16+00:00",
+   "updatedAt": "2026-10-07T18:17:05+00:00",
    "version": null,
    "words": "Drop and lift, drop and lift, drop, drop, drop, drop, lift! Drop and lift, drop and lift, drop, drop, drop, drop, lift!"
   },
@@ -4311,7 +4460,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "doorbell",
    "keyboardSize": 61,
    "kind": "song",
@@ -4389,6 +4538,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Doorbell",
+   "updatedAt": "2026-10-07T18:16:36+00:00",
    "version": null,
    "words": "Ding, dong, doorbell rings, Bong, bong, low bell sings, ding, dong, ding, dong! bong, bong, bong, bong!"
   },
@@ -4413,7 +4563,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "chiming-clock",
    "keyboardSize": 61,
    "kind": "song",
@@ -4483,6 +4633,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Chiming Clock",
+   "updatedAt": "2026-10-07T18:17:33+00:00",
    "version": null,
    "words": "Tick, tock, tick, tock, tock, tock, time for bed. up and down and Down and up and good night, sleep."
   },
@@ -4501,13 +4652,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-c3f4c4ed89",
+   "contentVersion": "lib-d0a1f7d305",
    "featuredSkills": [
     "prep-a.hands-at-once"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "three-friends",
    "keyboardSize": 61,
    "kind": "song",
@@ -4576,8 +4727,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Three Friends",
+   "updatedAt": "2026-10-07T21:07:56+00:00",
    "version": null,
-   "words": "Middle C is home. Treble G is high. Bass F is so low. Three friends sing!"
+   "words": "First frog on the pad. Second frog croaks high. Big frog croaks so low. Three frogs sing!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -4601,7 +4753,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "drum-beats",
    "keyboardSize": 61,
    "kind": "song",
@@ -4673,6 +4825,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Drum Beats",
+   "updatedAt": "2026-10-07T18:18:00+00:00",
    "version": null,
    "words": "Boom, boom, bang! Boom, boom, bong! Ratatat! Rumpapum! Drums are marching, Down the street and stop! Stop! Bang!"
   },
@@ -4786,7 +4939,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "d-e-f-parade",
    "keyboardSize": 61,
    "kind": "song",
@@ -4848,6 +5001,7 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "The D-E-F Parade",
+   "updatedAt": "2026-10-07T18:20:46+00:00",
    "version": null,
    "words": "Here comes D and E and F, marching in the band, stepping up and stepping down, then march back to C."
   },
@@ -4873,7 +5027,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "stepping-up-stepping-down",
    "keyboardSize": 61,
    "kind": "song",
@@ -4949,6 +5103,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Stepping Up, Stepping Down",
+   "updatedAt": "2026-10-07T18:21:39+00:00",
    "version": null,
    "words": "Stepping up the stairs we go, step by step and down we go. Up again to reach the top, then we tiptoe home."
   },
@@ -4974,7 +5129,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "little-bird-steps",
    "keyboardSize": 61,
    "kind": "song",
@@ -5052,6 +5207,7 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "Little Bird Steps",
+   "updatedAt": "2026-10-07T18:21:11+00:00",
    "version": null,
    "words": "Little bird is hopping up, line to space to line again, stepping down the ladder now, step by step back home."
   },
@@ -5077,7 +5233,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "tin-soldiers",
    "keyboardSize": 61,
    "kind": "song",
@@ -5147,6 +5303,7 @@
    "tempo": 104,
    "timeSig": "4/4",
    "title": "Tin Soldiers",
+   "updatedAt": "2026-10-07T18:22:33+00:00",
    "version": null,
    "words": "Left, right, left, right, soldiers marching down the little road. Turn around and march back home again, left, right, left, halt!"
   },
@@ -5172,7 +5329,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "four-beat-band",
    "keyboardSize": 61,
    "kind": "song",
@@ -5246,6 +5403,7 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "Four-Beat Band",
+   "updatedAt": "2026-10-07T18:22:06+00:00",
    "version": null,
    "words": "Four beats in each measure, that's what fourfour means. Quarter notes get one beat, count along with me!"
   },
@@ -5264,14 +5422,14 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-0f868ed6d6",
+   "contentVersion": "lib-acb1fabf46",
    "featuredSkills": [
     "prep-a.hand-shift",
     "prep-a.d-e-f"
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "warmup-hop-to-the-next-key",
    "keyboardSize": 61,
    "kind": "song",
@@ -5342,8 +5500,9 @@
    "tempo": 92,
    "timeSig": "4/4",
    "title": "Warm-up: Hop to the Next Key",
+   "updatedAt": "2026-10-07T15:46:46+00:00",
    "version": null,
-   "words": ""
+   "words": "Lazy turtle yawns, takes one tiny step, nibbles on a leaf, then goes back to bed."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -5367,7 +5526,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "bunny-hops",
    "keyboardSize": 61,
    "kind": "song",
@@ -5437,8 +5596,79 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Bunny Hops",
+   "updatedAt": "2026-10-07T21:20:04+00:00",
    "version": null,
    "words": "Hop, bunny, hop! Stop. Hop along to D. Hop along to E. Hop back home to C."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 3,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-229938bb3f",
+   "featuredSkills": [
+    "prep-a.bass-b",
+    "prep-a.middle-c"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "bouncing-b",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 310,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-b"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-b",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.half-note": [
+     2
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "bouncing-b",
+   "songTitle": "Bouncing B",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bouncing B",
+   "updatedAt": "2026-10-07T18:25:53+00:00",
+   "version": null,
+   "words": "Bouncing ball goes down to B, bouncing, bouncing, C!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -5459,7 +5689,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "b-and-c",
    "keyboardSize": 61,
    "kind": "song",
@@ -5516,77 +5746,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "B and C",
+   "updatedAt": "2026-10-07T21:20:31+00:00",
    "version": null,
    "words": "B and C are neighbors, C and G say hi! step down, step up, home."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 3,
-    "3": 4,
-    "4": 1
-   },
-   "beats": 16.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-229938bb3f",
-   "featuredSkills": [
-    "prep-a.bass-b",
-    "prep-a.middle-c"
-   ],
-   "genre": "studies",
-   "hands": "L",
-   "hasMedia": false,
-   "id": "bouncing-b",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 310,
-   "measures": 4,
-   "phrases": 2,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.bass-b"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.bass-b",
-   "skillMeasures": {
-    "prep-a.bass-b": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.half-note": [
-     2
-    ],
-    "prep-a.middle-c": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.whole-note": [
-     4
-    ]
-   },
-   "song": "bouncing-b",
-   "songTitle": "Bouncing B",
-   "tempo": 96,
-   "timeSig": "4/4",
-   "title": "Bouncing B",
-   "version": null,
-   "words": "Bouncing ball goes down to B, bouncing, bouncing, C!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -5610,7 +5772,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "waltzing-bear",
    "keyboardSize": 61,
    "kind": "song",
@@ -5680,6 +5842,7 @@
    "tempo": 120,
    "timeSig": "3/4",
    "title": "Waltzing Bear",
+   "updatedAt": "2026-10-07T18:26:12+00:00",
    "version": null,
    "words": "One, two, three, dance with me, round and round, go. Twirl around, light as air, now we bow, done."
   },
@@ -5705,7 +5868,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "warmup-flowing-wheels",
    "keyboardSize": 61,
    "kind": "song",
@@ -5775,7 +5938,7 @@
    "tempo": 104,
    "timeSig": "3/4",
    "title": "Warm-up: Flowing Wheels",
-   "updatedAt": "2026-10-01T06:46:57+00:00",
+   "updatedAt": "2026-10-07T18:26:33+00:00",
    "version": null,
    "words": "Round and round go, wheels on the road, flowing along, never stopping."
   },
@@ -5800,7 +5963,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "rock-a-bye",
    "keyboardSize": 61,
    "kind": "song",
@@ -5877,6 +6040,7 @@
    "tempo": 104,
    "timeSig": "3/4",
    "title": "Rock-a-Bye",
+   "updatedAt": "2026-10-07T18:27:17+00:00",
    "version": null,
    "words": "Rockabye, dear. Rest your head here. Stars above shine. Sweet dreams now, sleep."
   },
@@ -5895,13 +6059,13 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-6140a005ae",
+   "contentVersion": "lib-bc67941d0f",
    "featuredSkills": [
     "prep-a.bass-a"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "pony-trot",
    "keyboardSize": 61,
    "kind": "song",
@@ -5975,8 +6139,9 @@
    "tempo": 108,
    "timeSig": "3/4",
    "title": "Pony Trot",
+   "updatedAt": "2026-10-07T18:26:54+00:00",
    "version": null,
-   "words": "Trot, trot, trot, go! Trot, trot, trot, whoa! Pony goes down, then back up home."
+   "words": "Clippety clop! Galloping, whoa! Pony goes down, then back up home."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -6000,7 +6165,7 @@
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "bear-walk",
    "keyboardSize": 61,
    "kind": "song",
@@ -6079,6 +6244,7 @@
    "tempo": 88,
    "timeSig": "4/4",
    "title": "Bear Walk",
+   "updatedAt": "2026-10-07T18:27:47+00:00",
    "version": null,
    "words": "Down the mountain, big bear climbs up to the cave. Bear is sleepy, yawning wide, snoring, snoring, shh."
   },
@@ -6104,7 +6270,7 @@
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "turtle-walk",
    "keyboardSize": 61,
    "kind": "song",
@@ -6181,6 +6347,7 @@
    "tempo": 80,
    "timeSig": "4/4",
    "title": "Turtle Walk",
+   "updatedAt": "2026-10-07T18:28:39+00:00",
    "version": null,
    "words": "Turtle, turtle, walking slowly, slowly, home. In his little shell house, sleepy turtle rests."
   },
@@ -6205,7 +6372,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "left-hand-waltz",
    "keyboardSize": 61,
    "kind": "song",
@@ -6282,8 +6449,118 @@
    "tempo": 120,
    "timeSig": "3/4",
    "title": "Left-Hand Waltz",
+   "updatedAt": "2026-10-07T18:28:05+00:00",
    "version": null,
    "words": "Left hand starts, then goes up, Right hand joins, dancing too, round we go, round again, round and round, home."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 1,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 1,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-4dbeccab36",
+   "featuredSkills": [
+    "prep-a.middle-c-position",
+    "prep-a.bass-g"
+   ],
+   "genre": "studies",
+   "hands": "L",
+   "hasMedia": true,
+   "id": "warmup-thumb-walk",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 350,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.bass-f",
+    "prep-a.bass-b",
+    "prep-a.bass-a",
+    "prep-a.bass-g",
+    "prep-a.middle-c-position"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.middle-c-position",
+   "skillMeasures": {
+    "prep-a.bass-a": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "prep-a.bass-f": [
+     5
+    ],
+    "prep-a.bass-g": [
+     3,
+     5,
+     7
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     7,
+     8
+    ],
+    "prep-a.middle-c-position": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.whole-note": [
+     2,
+     4,
+     6,
+     8
+    ]
+   },
+   "song": "warmup-thumb-walk",
+   "songTitle": "Warm-up: Thumb Walk",
+   "tempo": 88,
+   "timeSig": "4/4",
+   "title": "Warm-up: Thumb Walk",
+   "updatedAt": "2026-10-07T15:47:24+00:00",
+   "version": null,
+   "words": "Short pig wants a pie, way up on the shelf, standing on tiptoes, reaching, got it, yum!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -6307,7 +6584,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "i-call-you-call",
    "keyboardSize": 61,
    "kind": "song",
@@ -6393,6 +6670,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "I Call, You Call",
+   "updatedAt": "2026-10-07T18:29:09+00:00",
    "version": null,
    "words": "I call up high, hi! you call down low, hi! High and low and back again, Low and high and home we go."
   },
@@ -6400,76 +6678,60 @@
    "approvedAt": "2026-10-01T05:25:41+00:00",
    "barNotes": {
     "1": 4,
-    "2": 1,
-    "3": 4,
-    "4": 1,
+    "2": 3,
+    "3": 3,
+    "4": 3,
     "5": 4,
-    "6": 1,
+    "6": 4,
     "7": 4,
     "8": 1
    },
    "beats": 32.0,
    "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-4b4f77ef28",
+   "composer": "Traditional",
+   "contentVersion": "lib-cf5b0baedb",
    "featuredSkills": [
-    "prep-a.middle-c-position",
-    "prep-a.bass-g"
+    "prep-a.skips",
+    "prep-a.d-e-f"
    ],
-   "genre": "studies",
-   "hands": "L",
-   "hasMedia": false,
-   "id": "warmup-thumb-walk",
+   "genre": "kids",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "mary-had-a-little-lamb",
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 350,
+   "mapPoint": 360,
    "measures": 8,
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.half-note",
     "prep-a.whole-note",
     "prep-a.middle-c",
-    "prep-a.bass-f",
-    "prep-a.bass-b",
-    "prep-a.bass-a",
-    "prep-a.bass-g",
-    "prep-a.middle-c-position"
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips"
    ],
    "seeded": true,
-   "skillId": "prep-a.middle-c-position",
+   "skillId": "prep-a.skips",
    "skillMeasures": {
-    "prep-a.bass-a": [
-     1,
-     3,
-     5,
-     6,
-     7
-    ],
-    "prep-a.bass-b": [
+    "prep-a.d-e-f": [
      1,
      2,
      3,
      4,
      5,
      6,
-     7
-    ],
-    "prep-a.bass-f": [
-     5
-    ],
-    "prep-a.bass-g": [
-     3,
-     5,
-     7
-    ],
-    "prep-a.middle-c": [
-     1,
-     2,
      7,
      8
     ],
-    "prep-a.middle-c-position": [
+    "prep-a.half-note": [
+     2,
+     3,
+     4
+    ],
+    "prep-a.middle-c": [
      1,
      2,
      3,
@@ -6489,20 +6751,25 @@
      7,
      8
     ],
-    "prep-a.whole-note": [
-     2,
+    "prep-a.skips": [
      4,
-     6,
+     5
+    ],
+    "prep-a.treble-g": [
+     4
+    ],
+    "prep-a.whole-note": [
      8
     ]
    },
-   "song": "warmup-thumb-walk",
-   "songTitle": "Warm-up: Thumb Walk",
-   "tempo": 88,
+   "song": "mary-had-a-little-lamb",
+   "songTitle": "Mary Had a Little Lamb",
+   "tempo": 100,
    "timeSig": "4/4",
-   "title": "Warm-up: Thumb Walk",
+   "title": "Mary Had a Little Lamb",
+   "updatedAt": "2026-10-07T18:29:34+00:00",
    "version": null,
-   "words": ""
+   "words": "Mary had a little lamb, little lamb, little lamb, Mary had a little lamb, its fleece was white as snow."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -6519,13 +6786,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-9f2ec52a2f",
+   "contentVersion": "lib-aea7aecd3c",
    "featuredSkills": [
     "prep-a.skips"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "warmup-checkers",
    "keyboardSize": 61,
    "kind": "song",
@@ -6599,8 +6866,9 @@
    "tempo": 92,
    "timeSig": "4/4",
    "title": "Warm-up: Checkers",
+   "updatedAt": "2026-10-07T15:47:59+00:00",
    "version": null,
-   "words": ""
+   "words": "Red checker jumps, hop! Hopping, crowned a king! Black jumps two at once! Checkmate! Game is won!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -6621,13 +6889,13 @@
    "beats": 48.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-bc3663715b",
+   "contentVersion": "lib-749941bcee",
    "featuredSkills": [
     "prep-a.skips"
    ],
    "genre": "kids",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "twinkle-twinkle",
    "keyboardSize": 61,
    "kind": "song",
@@ -6726,154 +6994,58 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "Twinkle Twinkle Little Star",
+   "updatedAt": "2026-10-20T15:36:44+00:00",
    "version": null,
    "words": "Twinkle, twinkle little star, how I wonder what you are! up above the world so high, like a diamond in the sky. Twinkle, twinkle little star, how I wonder what you are!"
   },
   {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 3,
-    "3": 3,
-    "4": 3,
-    "5": 4,
-    "6": 4,
-    "7": 4,
-    "8": 1
-   },
-   "beats": 32.0,
-   "beyondMap": [],
-   "composer": "Traditional",
-   "contentVersion": "lib-cf5b0baedb",
-   "featuredSkills": [
-    "prep-a.skips",
-    "prep-a.d-e-f"
-   ],
-   "genre": "kids",
-   "hands": "R",
-   "hasMedia": false,
-   "id": "mary-had-a-little-lamb",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 360,
-   "measures": 8,
-   "phrases": 4,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.treble-g",
-    "prep-a.d-e-f",
-    "prep-a.skips"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.skips",
-   "skillMeasures": {
-    "prep-a.d-e-f": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.half-note": [
-     2,
-     3,
-     4
-    ],
-    "prep-a.middle-c": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.skips": [
-     4,
-     5
-    ],
-    "prep-a.treble-g": [
-     4
-    ],
-    "prep-a.whole-note": [
-     8
-    ]
-   },
-   "song": "mary-had-a-little-lamb",
-   "songTitle": "Mary Had a Little Lamb",
-   "tempo": 100,
-   "timeSig": "4/4",
-   "title": "Mary Had a Little Lamb",
-   "version": null,
-   "words": "Mary had a little lamb, little lamb, little lamb, Mary had a little lamb, its fleece was white as snow."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "approvedAt": "2026-10-20T16:13:43+00:00",
    "barNotes": {
     "1": 3,
-    "10": 2,
+    "10": 3,
     "11": 4,
-    "12": 1,
-    "13": 4,
-    "14": 2,
-    "15": 1,
-    "2": 1,
-    "3": 3,
-    "4": 1,
+    "12": 3,
+    "13": 3,
+    "14": 3,
+    "15": 4,
+    "16": 1,
+    "2": 3,
+    "3": 4,
+    "4": 3,
     "5": 3,
-    "6": 2,
-    "7": 2,
+    "6": 3,
+    "7": 4,
     "8": 1,
-    "9": 3
+    "9": 4
    },
-   "beats": 60.0,
+   "beats": 64.0,
    "beyondMap": [],
-   "composer": "Traditional",
-   "contentVersion": "lib-ce8449235f",
+   "composer": "Traditional (German folk tune)",
+   "contentVersion": "lib-9d536b8a9e",
    "featuredSkills": [
     "prep-a.allegro",
     "prep-a.skips"
    ],
-   "genre": "folk",
+   "genre": "kids",
    "hands": "R",
-   "hasMedia": false,
-   "id": "when-the-saints",
+   "hasMedia": true,
+   "id": "lightly-row",
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
    "mapPoint": 370,
-   "measures": 15,
+   "measures": 16,
    "phrases": 8,
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
     "prep-a.whole-note",
-    "prep-a.dotted-half",
     "prep-a.middle-c",
     "prep-a.treble-g",
     "prep-a.d-e-f",
     "prep-a.skips",
     "prep-a.allegro"
    ],
-   "seeded": true,
    "skillId": "prep-a.allegro",
    "skillMeasures": {
     "prep-a.allegro": [
@@ -6891,9 +7063,37 @@
      12,
      13,
      14,
-     15
+     15,
+     16
     ],
     "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15
+    ],
+    "prep-a.half-note": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     10,
+     12,
+     13,
+     14
+    ],
+    "prep-a.middle-c": [
      1,
      2,
      3,
@@ -6908,31 +7108,8 @@
      12,
      13,
      14,
-     15
-    ],
-    "prep-a.dotted-half": [
-     10
-    ],
-    "prep-a.half-note": [
-     1,
-     3,
-     5,
-     6,
-     7,
-     9,
-     14
-    ],
-    "prep-a.middle-c": [
-     1,
-     3,
-     5,
-     7,
-     9,
-     10,
-     11,
-     12,
-     14,
-     15
+     15,
+     16
     ],
     "prep-a.sitting": [
      1,
@@ -6949,42 +7126,42 @@
      12,
      13,
      14,
-     15
+     15,
+     16
     ],
     "prep-a.skips": [
      1,
-     3,
+     2,
      5,
      6,
      7,
-     11,
      13,
-     14
+     14,
+     15
     ],
     "prep-a.treble-g": [
-     2,
-     3,
+     1,
      4,
      5,
-     6,
-     11,
-     13
-    ],
-    "prep-a.whole-note": [
-     2,
-     4,
+     7,
      8,
      12,
-     15
+     13,
+     15,
+     16
+    ],
+    "prep-a.whole-note": [
+     8,
+     16
     ]
    },
-   "song": "when-the-saints",
-   "songTitle": "When the Saints Go Marching In",
-   "tempo": 112,
+   "song": "lightly-row",
+   "songTitle": "Lightly Row",
+   "tempo": 116,
    "timeSig": "4/4",
-   "title": "When the Saints Go Marching In",
+   "title": "Lightly Row",
    "version": null,
-   "words": "Oh, when the saints go marching in, oh, when the saints go marching in, oh Lord, I want to be in that number, when the saints go marching in."
+   "words": "Lightly row, lightly row, o'er the glassy waves we go; Smoothly glide, smoothly glide, on the silent tide. Let the winds and waters be mingled with our melody; Sing and float, sing and float, in our little boat."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7001,14 +7178,14 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-9bd7df2a2f",
+   "contentVersion": "lib-1abc7096f6",
    "featuredSkills": [
     "prep-a.allegro",
     "prep-a.skips"
    ],
    "genre": "kids",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "are-you-sleeping",
    "keyboardSize": 61,
    "kind": "song",
@@ -7095,8 +7272,90 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "Are You Sleeping?",
+   "updatedAt": "2026-10-07T21:08:50+00:00",
    "version": null,
-   "words": "Are you sleeping, are you sleeping, Brother John, Brother John? Morning bells are ringing, ringing, ding, dang, dong, ding, dang, dong."
+   "words": "Are you sleeping, are you sleeping, Brother John, Brother John? Morning bells are ringing, ringing, Still in, bed, won't get up!"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-6a0b158f60",
+   "featuredSkills": [
+    "prep-a.more-skips",
+    "prep-a.skips"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "space-hops",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 380,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.more-skips"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.more-skips",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.middle-c": [
+     2,
+     4
+    ],
+    "prep-a.more-skips": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.treble-g": [
+     2
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "space-hops",
+   "songTitle": "Space Hops",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Space Hops",
+   "updatedAt": "2026-10-07T15:48:21+00:00",
+   "version": null,
+   "words": "Green aliens hopping, bouncing, off to planet Zorg!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7111,14 +7370,14 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-5b4d882cc9",
+   "contentVersion": "lib-e92fa71f05",
    "featuredSkills": [
     "prep-a.more-skips",
     "prep-a.skips"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "kangaroo-skips",
    "keyboardSize": 61,
    "kind": "song",
@@ -7196,88 +7455,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Kangaroo Skips",
+   "updatedAt": "2026-10-07T21:08:18+00:00",
    "version": null,
-   "words": "Kangaroo skips, hopping, G and B, space to space. space to space, then home."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 4,
-    "3": 4,
-    "4": 1
-   },
-   "beats": 16.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-9c0c161201",
-   "featuredSkills": [
-    "prep-a.more-skips",
-    "prep-a.skips"
-   ],
-   "genre": "studies",
-   "hands": "R",
-   "hasMedia": false,
-   "id": "space-hops",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 380,
-   "measures": 4,
-   "phrases": 2,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.treble-g",
-    "prep-a.d-e-f",
-    "prep-a.skips",
-    "prep-a.more-skips"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.more-skips",
-   "skillMeasures": {
-    "prep-a.d-e-f": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.middle-c": [
-     2,
-     4
-    ],
-    "prep-a.more-skips": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.skips": [
-     1,
-     2,
-     3
-    ],
-    "prep-a.treble-g": [
-     2
-    ],
-    "prep-a.whole-note": [
-     4
-    ]
-   },
-   "song": "space-hops",
-   "songTitle": "Space Hops",
-   "tempo": 96,
-   "timeSig": "4/4",
-   "title": "Space Hops",
-   "version": null,
-   "words": "D, F, E, D, D, F, G, F, E, D, F, D, C."
+   "words": "Kangaroo is hungry, hopping over the hill, yummy dinner time!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7300,7 +7480,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "skipping-stones",
    "keyboardSize": 61,
    "kind": "song",
@@ -7390,6 +7570,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Skipping Stones",
+   "updatedAt": "2026-10-07T18:40:06+00:00",
    "version": null,
    "words": "Skip a stone across the lake, Skip, skip, skip, skip, splash! plip, plop, plip, plop, Ripples spreading splash!"
   },
@@ -7411,7 +7592,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "snowflakes",
    "keyboardSize": 61,
    "kind": "song",
@@ -7487,6 +7668,7 @@
    "tempo": 84,
    "timeSig": "4/4",
    "title": "Snowflakes",
+   "updatedAt": "2026-10-07T18:40:27+00:00",
    "version": null,
    "words": "Snowflakes falling down. Soft and white."
   },
@@ -7501,13 +7683,13 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-47b04d935c",
+   "contentVersion": "lib-f5c1955560",
    "featuredSkills": [
     "prep-a.bass-d"
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "middle-line-d",
    "keyboardSize": 61,
    "kind": "song",
@@ -7569,8 +7751,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Middle Line D",
+   "updatedAt": "2026-10-20T19:11:10+00:00",
    "version": null,
-   "words": "D on the middle line, skip up and skip down."
+   "words": "Fluttering wings, high, low, butterfly finds flow'rs!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7593,7 +7776,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "d-and-f-drums",
    "keyboardSize": 61,
    "kind": "song",
@@ -7671,6 +7854,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "D and F Drums",
+   "updatedAt": "2026-10-20T15:38:31+00:00",
    "version": null,
    "words": "Boom, boom, bap, bap, boom, bap, boom. Snare drum plays a tune. Bap, bap, boom, boom, bap, boom, boom. Snare drum plays and stops."
   },
@@ -7685,14 +7869,14 @@
    "beats": 16.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-51443fc891",
+   "contentVersion": "lib-9cde2daa7e",
    "featuredSkills": [
     "prep-a.bass-c",
     "prep-a.bass-d"
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "down-to-bass-c",
    "keyboardSize": 61,
    "kind": "song",
@@ -7763,8 +7947,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Down to Bass C",
+   "updatedAt": "2026-10-20T15:58:33+00:00",
    "version": null,
-   "words": "Down, down, down to Bass C, up and down again to C."
+   "words": "Walking down the valley, climbing up the big green hill."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7784,7 +7969,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "c-d-f-dance",
    "keyboardSize": 61,
    "kind": "song",
@@ -7854,125 +8039,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "C, D, F Dance",
+   "updatedAt": "2026-10-20T15:58:13+00:00",
    "version": null,
    "words": "Bass C, Bass D, F, D, C. Now the right hand sings!"
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 4,
-    "2": 2,
-    "3": 4,
-    "4": 1,
-    "5": 4,
-    "6": 2,
-    "7": 4,
-    "8": 1
-   },
-   "beats": 32.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-ac4d496260",
-   "featuredSkills": [
-    "prep-a.bass-c-scale"
-   ],
-   "genre": "studies",
-   "hands": "RL",
-   "hasMedia": false,
-   "id": "bass-parade",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 420,
-   "measures": 8,
-   "phrases": 4,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.treble-g",
-    "prep-a.bass-f",
-    "prep-a.d-e-f",
-    "prep-a.bass-b",
-    "prep-a.bass-g",
-    "prep-a.bass-d",
-    "prep-a.bass-c",
-    "prep-a.bass-c-scale"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.bass-c-scale",
-   "skillMeasures": {
-    "prep-a.bass-b": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.bass-c": [
-     1,
-     4
-    ],
-    "prep-a.bass-c-scale": [
-     1,
-     3
-    ],
-    "prep-a.bass-d": [
-     1,
-     3
-    ],
-    "prep-a.bass-f": [
-     1,
-     3
-    ],
-    "prep-a.bass-g": [
-     2,
-     3
-    ],
-    "prep-a.d-e-f": [
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.half-note": [
-     2,
-     6
-    ],
-    "prep-a.middle-c": [
-     2,
-     3,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.treble-g": [
-     6,
-     7
-    ],
-    "prep-a.whole-note": [
-     4,
-     8
-    ]
-   },
-   "song": "bass-parade",
-   "songTitle": "Bass Parade",
-   "tempo": 96,
-   "timeSig": "4/4",
-   "title": "Bass Parade",
-   "version": null,
-   "words": "Big bass drums go boom, boom, down the long parade. Flutes are playing tweet, tweet, all along the street."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -7989,14 +8058,14 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-f8727aa41e",
+   "contentVersion": "lib-210d05928f",
    "featuredSkills": [
     "prep-a.bass-c-scale",
     "prep-a.bass-c"
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "bass-walk",
    "keyboardSize": 61,
    "kind": "song",
@@ -8093,8 +8162,9 @@
    "tempo": 90,
    "timeSig": "4/4",
    "title": "Bass Walk",
+   "updatedAt": "2026-10-20T19:10:49+00:00",
    "version": null,
-   "words": "Climbing up the hill, hill, rolling down again. Left hand plays the low notes too, down and down and home."
+   "words": "Climbing up the hilltop, valleys far below. Peaceful meadow views around, resting on the hill."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -8118,7 +8188,7 @@
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "galloping",
    "keyboardSize": 61,
    "kind": "song",
@@ -8209,8 +8279,127 @@
    "tempo": 108,
    "timeSig": "4/4",
    "title": "Galloping",
+   "updatedAt": "2026-10-20T16:05:44+00:00",
    "version": null,
    "words": "Gallop, gallop, over hills, up the valley, down the road, trotting, trotting, slowing down, into the barn, home."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 4,
+    "2": 2,
+    "3": 4,
+    "4": 1,
+    "5": 4,
+    "6": 2,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-ac4d496260",
+   "featuredSkills": [
+    "prep-a.bass-c-scale"
+   ],
+   "genre": "studies",
+   "hands": "RL",
+   "hasMedia": true,
+   "id": "bass-parade",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 420,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.bass-f",
+    "prep-a.d-e-f",
+    "prep-a.bass-b",
+    "prep-a.bass-g",
+    "prep-a.bass-d",
+    "prep-a.bass-c",
+    "prep-a.bass-c-scale"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.bass-c-scale",
+   "skillMeasures": {
+    "prep-a.bass-b": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.bass-c": [
+     1,
+     4
+    ],
+    "prep-a.bass-c-scale": [
+     1,
+     3
+    ],
+    "prep-a.bass-d": [
+     1,
+     3
+    ],
+    "prep-a.bass-f": [
+     1,
+     3
+    ],
+    "prep-a.bass-g": [
+     2,
+     3
+    ],
+    "prep-a.d-e-f": [
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     2,
+     6
+    ],
+    "prep-a.middle-c": [
+     2,
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.treble-g": [
+     6,
+     7
+    ],
+    "prep-a.whole-note": [
+     4,
+     8
+    ]
+   },
+   "song": "bass-parade",
+   "songTitle": "Bass Parade",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Bass Parade",
+   "updatedAt": "2026-10-20T15:59:02+00:00",
+   "version": null,
+   "words": "Big bass drums go boom, boom, down the long parade. Flutes are playing tweet, tweet, all along the street."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -8227,13 +8416,13 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-28e83c569e",
+   "contentVersion": "lib-699355574f",
    "featuredSkills": [
     "prep-a.octave"
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "warmup-octave-leap",
    "keyboardSize": 61,
    "kind": "song",
@@ -8321,8 +8510,9 @@
    "tempo": 84,
    "timeSig": "4/4",
    "title": "Warm-up: Octave Leap",
+   "updatedAt": "2026-10-20T16:10:01+00:00",
    "version": null,
-   "words": ""
+   "words": "Little mouse sees the cat! Running out the door, hiding in a hole, safe in my home!"
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -8342,7 +8532,7 @@
    ],
    "genre": "studies",
    "hands": "L",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "octave-bells",
    "keyboardSize": 61,
    "kind": "song",
@@ -8413,6 +8603,7 @@
    "tempo": 92,
    "timeSig": "4/4",
    "title": "Octave Bells",
+   "updatedAt": "2026-10-20T16:09:29+00:00",
    "version": null,
    "words": "Ding, dong, ding, dong, high, low, C, E, G, E, low, high, low."
   },
@@ -8431,14 +8622,14 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Piano-Master",
-   "contentVersion": "lib-906878e4ee",
+   "contentVersion": "lib-9062d83384",
    "featuredSkills": [
     "prep-a.question-answer",
     "prep-a.bass-c-scale"
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "echo-song",
    "keyboardSize": 61,
    "kind": "song",
@@ -8544,8 +8735,9 @@
    "tempo": 90,
    "timeSig": "4/4",
    "title": "Echo Song",
+   "updatedAt": "2026-10-20T16:12:11+00:00",
    "version": null,
-   "words": "I sing high, up so high, now I'm coming down to C."
+   "words": "I sing high, I sing low, up so high, deep and low, now I'm coming humming softly down to C. down to C."
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -8569,7 +8761,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "bee-and-ladybug",
    "keyboardSize": 61,
    "kind": "song",
@@ -8680,6 +8872,7 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Bumblebee and Ladybug",
+   "updatedAt": "2026-10-20T16:10:58+00:00",
    "version": null,
    "words": "Bumblebee flies down so low, Ladybug flies up so high, bumble, bumble, buzz, buzz, buzz, lady, lady, bye!"
   },
@@ -8705,7 +8898,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "trumpet-call",
    "keyboardSize": 61,
    "kind": "song",
@@ -8773,6 +8966,7 @@
    "tempo": 108,
    "timeSig": "4/4",
    "title": "Trumpet Call",
+   "updatedAt": "2026-10-20T16:14:37+00:00",
    "version": null,
    "words": "Hear the trumpets call all across the land, hear them playing loud!"
   },
@@ -8797,7 +8991,7 @@
    ],
    "genre": "studies",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "long-long-lullaby",
    "keyboardSize": 61,
    "kind": "song",
@@ -8869,6 +9063,7 @@
    "tempo": 100,
    "timeSig": "3/4",
    "title": "Long, Long Lullaby",
+   "updatedAt": "2026-10-20T16:14:09+00:00",
    "version": null,
    "words": "Hush now, sleep tight dream of stars bright, sleep till dawn light."
   },
@@ -8992,7 +9187,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "drone-song",
    "keyboardSize": 61,
    "kind": "song",
@@ -9103,6 +9298,7 @@
    "tempo": 100,
    "timeSig": "4/4",
    "title": "Drone Song",
+   "updatedAt": "2026-10-20T16:12:40+00:00",
    "version": null,
    "words": "Bagpipes playing, humming, humming, low notes holding long and low. Drone goes on and on and on, while we sing along."
   },
@@ -9119,13 +9315,13 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-d0ee36dc29",
+   "contentVersion": "lib-26852a0b34",
    "featuredSkills": [
     "prep-a.quarter-rest"
    ],
    "genre": "kids",
    "hands": "R",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "rain-rain",
    "keyboardSize": 61,
    "kind": "song",
@@ -9199,8 +9395,188 @@
    "tempo": 108,
    "timeSig": "4/4",
    "title": "Rain, Rain, Go Away",
+   "updatedAt": "2026-10-20T16:15:33+00:00",
    "version": null,
    "words": "Rain, rain, go away, come again another day, little children want to play."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 4,
+    "4": 1,
+    "5": 3,
+    "6": 3,
+    "7": 4,
+    "8": 1
+   },
+   "beats": 32.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-7eee5820a0",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "clap-and-rest",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 8,
+   "phrases": 4,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     2,
+     3,
+     4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.half-note": [
+     4
+    ],
+    "prep-a.middle-c": [
+     1,
+     2,
+     4,
+     5,
+     6,
+     8
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2,
+     4,
+     5,
+     6
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.skips": [
+     2,
+     3
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     8
+    ]
+   },
+   "song": "clap-and-rest",
+   "songTitle": "Clap and Rest",
+   "tempo": 96,
+   "timeSig": "4/4",
+   "title": "Clap and Rest",
+   "updatedAt": "2026-10-20T16:15:06+00:00",
+   "version": null,
+   "words": "Clap, clap, clap, tap, tap, tap, rest between the beats, one, two, three, rest on four, resting keeps the time."
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 1
+   },
+   "beats": 16.0,
+   "beyondMap": [],
+   "composer": "Piano-Master",
+   "contentVersion": "lib-758574bbe9",
+   "featuredSkills": [
+    "prep-a.quarter-rest"
+   ],
+   "genre": "studies",
+   "hands": "R",
+   "hasMedia": false,
+   "id": "warmup-quick-fist",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "Prep A",
+   "mapPoint": 460,
+   "measures": 4,
+   "phrases": 2,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.whole-note",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.skips",
+    "prep-a.quarter-rest"
+   ],
+   "seeded": true,
+   "skillId": "prep-a.quarter-rest",
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     2,
+     3
+    ],
+    "prep-a.half-note": [
+     3
+    ],
+    "prep-a.middle-c": [
+     1,
+     4
+    ],
+    "prep-a.quarter-rest": [
+     1,
+     2
+    ],
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.skips": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.treble-g": [
+     3
+    ],
+    "prep-a.whole-note": [
+     4
+    ]
+   },
+   "song": "warmup-quick-fist",
+   "songTitle": "Warm-up: Quick Fist",
+   "tempo": 92,
+   "timeSig": "4/4",
+   "title": "Warm-up: Quick Fist",
+   "version": null,
+   "words": ""
   },
   {
    "approvedAt": "2026-10-01T05:25:41+00:00",
@@ -9223,7 +9599,7 @@
    ],
    "genre": "studies",
    "hands": "RL",
-   "hasMedia": false,
+   "hasMedia": true,
    "id": "stop-and-go",
    "keyboardSize": 61,
    "kind": "song",
@@ -9317,186 +9693,9 @@
    "tempo": 96,
    "timeSig": "4/4",
    "title": "Stop and Go",
+   "updatedAt": "2026-10-20T16:16:01+00:00",
    "version": null,
    "words": "Go, go, go! Go, go, go! Stop! Stop! Stop! Stop! Red light, stop! Green light, go! Look both ways, go!"
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 3,
-    "2": 3,
-    "3": 4,
-    "4": 1,
-    "5": 3,
-    "6": 3,
-    "7": 4,
-    "8": 1
-   },
-   "beats": 32.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-7eee5820a0",
-   "featuredSkills": [
-    "prep-a.quarter-rest"
-   ],
-   "genre": "studies",
-   "hands": "R",
-   "hasMedia": false,
-   "id": "clap-and-rest",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 460,
-   "measures": 8,
-   "phrases": 4,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.treble-g",
-    "prep-a.d-e-f",
-    "prep-a.skips",
-    "prep-a.quarter-rest"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.quarter-rest",
-   "skillMeasures": {
-    "prep-a.d-e-f": [
-     2,
-     3,
-     4,
-     6,
-     7,
-     8
-    ],
-    "prep-a.half-note": [
-     4
-    ],
-    "prep-a.middle-c": [
-     1,
-     2,
-     4,
-     5,
-     6,
-     8
-    ],
-    "prep-a.quarter-rest": [
-     1,
-     2,
-     4,
-     5,
-     6
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4,
-     5,
-     6,
-     7,
-     8
-    ],
-    "prep-a.skips": [
-     2,
-     3
-    ],
-    "prep-a.treble-g": [
-     3
-    ],
-    "prep-a.whole-note": [
-     8
-    ]
-   },
-   "song": "clap-and-rest",
-   "songTitle": "Clap and Rest",
-   "tempo": 96,
-   "timeSig": "4/4",
-   "title": "Clap and Rest",
-   "version": null,
-   "words": "Clap, clap, clap, tap, tap, tap, rest between the beats, one, two, three, rest on four, resting keeps the time."
-  },
-  {
-   "approvedAt": "2026-10-01T05:25:41+00:00",
-   "barNotes": {
-    "1": 3,
-    "2": 3,
-    "3": 3,
-    "4": 1
-   },
-   "beats": 16.0,
-   "beyondMap": [],
-   "composer": "Piano-Master",
-   "contentVersion": "lib-758574bbe9",
-   "featuredSkills": [
-    "prep-a.quarter-rest"
-   ],
-   "genre": "studies",
-   "hands": "R",
-   "hasMedia": false,
-   "id": "warmup-quick-fist",
-   "keyboardSize": 61,
-   "kind": "song",
-   "level": "Prep A",
-   "mapPoint": 460,
-   "measures": 4,
-   "phrases": 2,
-   "requiredSkills": [
-    "prep-a.sitting",
-    "prep-a.half-note",
-    "prep-a.whole-note",
-    "prep-a.middle-c",
-    "prep-a.treble-g",
-    "prep-a.d-e-f",
-    "prep-a.skips",
-    "prep-a.quarter-rest"
-   ],
-   "seeded": true,
-   "skillId": "prep-a.quarter-rest",
-   "skillMeasures": {
-    "prep-a.d-e-f": [
-     1,
-     2,
-     3
-    ],
-    "prep-a.half-note": [
-     3
-    ],
-    "prep-a.middle-c": [
-     1,
-     4
-    ],
-    "prep-a.quarter-rest": [
-     1,
-     2
-    ],
-    "prep-a.sitting": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.skips": [
-     1,
-     2,
-     3,
-     4
-    ],
-    "prep-a.treble-g": [
-     3
-    ],
-    "prep-a.whole-note": [
-     4
-    ]
-   },
-   "song": "warmup-quick-fist",
-   "songTitle": "Warm-up: Quick Fist",
-   "tempo": 92,
-   "timeSig": "4/4",
-   "title": "Warm-up: Quick Fist",
-   "version": null,
-   "words": ""
   }
  ]
 }

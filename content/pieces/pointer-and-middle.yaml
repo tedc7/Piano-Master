@@ -1,10 +1,11 @@
 # Curriculum song (Prep A, prep-a.finger-numbers). Original music and words for this app. The words are a rabbit's day (at the parent's request: the earlier
 # finger-number words were hard to sing and dull); the finger numbers stay on the staff. Pointer and middle held up together make the bunny's ears.
+# v0.40: the right hand alone, at 76 (it took turns with the left hand before: too much for a first song).
 title: "Pointer and Middle"
 composer: Piano-Master
 genre: studies
 level: Prep A
-hands: RL
+hands: R
 source:
   site: Piano-Master
   url: https://github.com/tedc7/Piano-Master/blob/main/content/pieces/pointer-and-middle.yaml
@@ -18,12 +19,9 @@ abc: |
   T:Pointer and Middle
   M:4/4
   L:1/4
-  Q:1/4=96
-  %%score {RH LH}
+  Q:1/4=76
   K:C
-  V:RH clef=treble
-  V:LH clef=bass
-  [V:RH] !2!^C !3!^D ^C ^D | ^D ^D ^C ^C | z4 | z4 | ^C ^D ^D ^C | ^C ^D ^C ^C | z4 | z4 |]
-  w: Bun-ny, bun-ny, in the gar-den, two long ears go up to lis-ten,
-  [V:LH] z4 | z4 | !3!^C, !2!^D, ^C, ^D, | ^D, ^D, ^C, ^C, | z4 | z4 | ^C, ^D, ^D, ^C, | ^C, ^D, ^C, ^C, |]
-  w: nib-bling on a crunch-y car-rot, hop-ping home in time for din-ner!
+  !2!^C !3!^D ^C ^D | ^D ^D ^C ^C | ^C ^D ^C ^D | ^D ^D ^C ^C |
+  w: Bun-ny, bun-ny, in the gar-den, nib-bling on a crunch-y car-rot,
+  ^C ^D ^D ^C | ^C ^D ^C ^C | ^C ^D ^D ^C | ^C ^D ^C ^C |]
+  w: two long ears go up to lis-ten, hop-ping home in time for din-ner!

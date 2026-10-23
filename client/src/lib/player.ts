@@ -75,6 +75,8 @@ export class Player {
   mode: Mode = "play";
   preset: Preset;
   hands: Hands = "both";
+  /** The hand the session item asks for, when it asks for one hand of a song for both (v0.40), else null. */
+  handsAsked: "R" | "L" | null = null;
   /** The section being played (phrase indices, inclusive), or null for the whole piece. */
   section: [number, number] | null = null;
   state: State = "idle";
@@ -126,7 +128,7 @@ export class Player {
     const loop = !!this.section;
     return new Attempt(this.tl, {
       hands: this.hands,
-      handsWritten: this.piece.hands,
+      handsWritten: this.handsAsked ?? this.piece.hands,
       section: loop ? { start: this.start, end: this.end } : null,
       from: this.from ?? undefined,
       level: this.piece.level,
