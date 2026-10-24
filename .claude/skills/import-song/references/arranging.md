@@ -74,8 +74,8 @@ the written tempo down for beginners.
 
 Run `check`: its **map point** and **featured skills** come from the skill map's constraints (song
 analysis, §6.8), and they decide when the piece unlocks. Your `level:` is the description people
-see. Use the app's levels (Prep A, Prep B, Level 1 … Level 10, named after the RCM levels; method books are
-close). If the analysis says **beyond the map**, the piece waits for the map to grow. That's fine
+see. Use the app's levels (Prep A, Prep B, Level 1 … Level 10). Never name a method book or syllabus in a
+piece, its notes or the review. If the analysis says **beyond the map**, the piece waits for the map to grow. That's fine
 for a library batch, but say so in the review.
 
 Rough guide at the early levels:

@@ -65,27 +65,7 @@ def load_skill_maps():
         data = yaml.safe_load(path.read_text())
         data["file"] = path.name
         maps.append(data)
-    add_book_refs(maps)
     return maps
-
-
-BOOK_REFS = CONTENT / "private" / "book-refs.yaml"
-
-
-def add_book_refs(maps):
-    """The family's own method-book pages for each skill (arch §6.2; parent mode shows them), from
-    content/private/book-refs.yaml, which is never committed: `source` (the books) and `refs`
-    (skill id -> [{book, pages}]). Without the file, no skill has book pages."""
-    if not BOOK_REFS.exists():
-        return
-    data = yaml.safe_load(BOOK_REFS.read_text()) or {}
-    refs = data.get("refs") or {}
-    for m in maps:
-        if data.get("source"):
-            m["source"] = data["source"]
-        for s in m.get("skills", []):
-            if s.get("id") in refs:
-                s["bookRefs"] = refs[s["id"]]
 
 
 def validate_skill_maps(maps, piece_ids):
@@ -411,10 +391,28 @@ def content_version() -> str:
     """A short hash of the deployed content's sources: the skill map and lessons (arch §5
     ContentVersion). Songs have their own version, from their notes (app.content.song_version)."""
     h = hashlib.sha256()
-    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("lessons/*.yaml"),
-                     *CONTENT.glob("private/*.yaml")]):   # not content/incoming/
+    for p in sorted([*CONTENT.glob("skillmap/*.yaml"), *CONTENT.glob("lessons/*.yaml")]):   # not incoming/ or private/
         h.update(str(p.relative_to(CONTENT)).encode() + b"\0" + p.read_bytes())
     return h.hexdigest()[:12]
+
+
+NEVER_NAME = CONTENT / "private" / "never-name.txt"
+
+
+def never_named(dirs) -> list[str]:
+    """The built content may not name a reference curriculum (arch §6.2, v0.41): the names, one per
+    line, are in content/private/never-name.txt, which is never committed. Returns "file: name" for
+    each built file that has one; without the list there is nothing to check."""
+    if not NEVER_NAME.exists():
+        return []
+    names = [n.strip() for n in NEVER_NAME.read_text().splitlines() if n.strip() and not n.startswith("#")]
+    found = []
+    for d in dirs:
+        for f in sorted(d.rglob("*.json")):
+            text = f.read_text(errors="ignore")
+            found += [f"{f.relative_to(ROOT)}: {n}" for n in names
+                      if re.search(rf"\b{re.escape(n)}\b", text, re.IGNORECASE)]
+    return found
 
 
 ANALYSIS_KEYS = ("barNotes", "requiredSkills", "featuredSkills", "mapPoint", "skillMeasures", "beyondMap")
@@ -530,11 +528,14 @@ def main():
     # `pieces` in the built map: each skill's practice pieces (its bubble's songs); `featuring`: every
     # piece the analysis says features it, which the engine also uses for review
     skillmap = {"contentVersion": version, "placeholder": any(m.get("placeholder") for m in maps),
-                "maps": [{k: m[k] for k in ("map", "level", "file", "source") if k in m} for m in maps],
+                "maps": [{k: m[k] for k in ("map", "level", "file") if k in m} for m in maps],
                 "skills": [{**s, "pieces": s.get("pieces", []), "featuring": featuring[s["id"]], "lesson": s["id"] in lessons}
                            for s in skills]}
     (OUT / "skillmap.json").write_text(json.dumps(skillmap, indent=1))
     (SONGS / "index.json").write_text(json.dumps({"pieces": index}, indent=1))
+    if named := never_named([OUT, SONGS]):
+        print("error: the built content names a reference curriculum:\n  " + "\n  ".join(named), file=sys.stderr)
+        return 1
     if warnings:
         print("Warnings:\n  " + "\n  ".join(warnings))
     print(f"wrote {OUT.relative_to(ROOT)}: {len(skills)} skills, {len(lessons)} lessons, content version {version}; "

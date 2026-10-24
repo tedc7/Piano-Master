@@ -20,8 +20,8 @@ one concept each (one Journey bubble), each labelled Notes, Rhythm, Technique, T
 concept lessons are in `content/lessons/` (one YAML file per skill, one Explain card,
 then show/hear/try/check/echo/watch). Every song's source is in `content/pieces/`: each skill's `pieces` list is
 its practice songs, 2 to 4 (Units 1 to 3 are pre-staff pieces, `letters: true`; `dynamics:` marks f, mf, p;
-`warmup-*` are the warm-ups). The family's own method-book photos (`Background/`) and page references
-(`content/private/book-refs.yaml`, merged into parent mode by the build) stay out of the repository.
+`warmup-*` are the warm-ups). The family's reference material (`Background/`) and the private curriculum
+notes (`content/private/`) stay out of the repository and out of the app: neither names its sources (arch §6.2).
 `content/incoming/` holds batches being prepared (never built or deployed, never committed): the
 classical arrangements and their import notes (`incoming/classical/NOTES.md`), and the kids' songs.
 

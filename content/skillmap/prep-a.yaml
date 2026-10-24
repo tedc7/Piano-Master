@@ -1,7 +1,7 @@
 # The Prep A skill map (arch §6.2, §6.3): the order of concepts for a first year at the piano, in
-# the common sequence of beginner method books, checked against the RCM Preparatory A level. The
-# lessons are in our own words and the pieces are our own music or our own arrangements of
-# public-domain tunes (§6.2). A piano teacher checks the map before it is final (§6.3 step 6).
+# the order beginners are commonly taught. The lessons are in our own words and the pieces are our
+# own music or our own arrangements of public-domain tunes (§6.2). A piano teacher checks the map
+# before it is final (§6.3 step 6).
 #
 # One concept per skill (v0.25): each skill is one idea, with one Explain in its concept lesson and
 # its own practice pieces (`pieces`, 2 to 4: the songs in its Journey bubble, in the order they come
@@ -27,8 +27,8 @@
 # and the skills with `letters: true` count only those pieces' notes. Reading from the staff starts
 # in Unit 4 with three landmark notes: Middle C, Treble G and Bass F.
 #
-# `position` is a five-finger hand position for the finger-number generator. The family's own
-# method-book page references live outside the repository (content/private/, §6.2).
+# `position` is a five-finger hand position for the finger-number generator. How the map lines up
+# with its references is in private notes outside the repository (content/private/, §6.2).
 
 map: basic
 level: Prep A
