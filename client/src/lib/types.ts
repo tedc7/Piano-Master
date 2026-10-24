@@ -146,8 +146,7 @@ export interface Skill {
   featuring?: string[];                            // every piece the song analysis says features it
   requiredCapabilities?: string[];
   conceptLesson?: boolean;
-  unit?: string;                                   // the method book's unit, "Unit 3 · Key Names"
-  bookRefs?: { book: string; pages: string }[];    // the family's own book pages (content/private/, arch §6.2; parent mode)
+  unit?: string;                                   // our own grouping, "Unit 3 · Naming the White Keys"
   map: string;
   level: string;
   placeholder: boolean;
@@ -156,6 +155,6 @@ export interface Skill {
 export interface SkillMap {
   contentVersion?: string;
   placeholder: boolean;
-  maps: { map: string; level: string; file: string; source?: string }[];
+  maps: { map: string; level: string; file: string }[];
   skills: Skill[];
 }

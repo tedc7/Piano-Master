@@ -180,7 +180,7 @@
     {#if content?.map.placeholder && !test}
       <p class="muted note">Placeholder skill map, for testing.{app.parentMode ? " Parent mode: every bubble opens." : ""}</p>
     {:else if app.parentMode && !test && content}
-      <p class="muted note">Parent mode: every bubble opens. {content.map.maps.map((m) => `${m.level}${m.source ? ` follows ${m.source}` : ""}`).join("; ")}.</p>
+      <p class="muted note">Parent mode: every bubble opens.</p>
     {/if}
     <div class="map" style:width="{width}px" style:height="{height}px">
       <div class="chapter">{content?.map.maps[0]?.level ?? ""}</div>
@@ -227,11 +227,6 @@
         </p>
       {/if}
       {#if open.description}<p>{open.description}</p>{/if}
-      {#if app.parentMode && open.bookRefs?.length}
-        <!-- arch §6.2: the family's own book pages for this concept (from content/private/, never committed) -->
-        <p class="refs">📖 {content?.map.maps.find((m) => m.level === open!.level)?.source ?? "Book"}:
-          {open.bookRefs.map((r) => `${r.book} p.${r.pages.replace(/\s*~$/, "")}`).join(" · ")}</p>
-      {/if}
       {#if st === "locked" && !app.parentMode}
         <p class="notice">Unlocks after: {needs(open)}</p>
       {:else if st === "open" && !app.parentMode}
@@ -288,7 +283,6 @@
   .type { color: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13px; font-weight: 800; margin-right: 6px; }
   .unitline { display: flex; align-items: center; gap: 8px; font-weight: 650; font-size: 15px; color: var(--muted); margin: 4px 0; }
   .practice { margin: 6px 0 0; font-weight: 800; color: var(--muted); }
-  .refs { font-size: 14px; background: #f6f3ea; border-radius: 10px; padding: 8px 12px; }
   .sheet {
     position: fixed; right: 16px; top: var(--deadzone); bottom: 90px; width: min(460px, 92vw); overflow: auto;
     background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px 20px 20px;

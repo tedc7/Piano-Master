@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.40** · Oct 21, 2026
+**Version 0.41** · Oct 23, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -13,7 +13,7 @@ A private, family-only piano tutor for kids that teaches like Simply Piano but p
 **Goals**
 
 - Interactive lessons with real-time right/wrong feedback from the MIDI keyboard.
-- A proven learning sequence, adapted from an established piano method, stored as a skill map.
+- A proven learning sequence, in the order the piano is commonly taught, stored as a skill map.
 - Flexible progression: pass with good-enough accuracy, and automatically revisit weak spots.
 - Every session mixes review with new material.
 - A curated song library the parent controls; students choose only from approved songs.
@@ -440,7 +440,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 
 | Entity | Key fields |
 | --- | --- |
-| Skill | id (stable, never reused), name, map (basic, intermediate, advanced), level, **sequence** (suggested order along the map, unique; used for layout and to choose which available skill to introduce first), track (reading, rhythm, technique, theory, repertoire, musicianship), staff (treble, bass, grand), **prerequisites\[\]** (define the map's forks and joins; each must have a lower sequence), requiredCapabilities\[\] (e.g. pedal, velocity, 88 keys), constraints (allowed notes or hand positions, rhythms, keys, time signatures, hands, staff, range; since v0.24 also intervals, two notes at once, held-note hands together, ties, rests and pre-staff `letters`), unit?, targetTempo?, conceptLessonId?, sourceMethods\[\], bookRefs\[\]?, description |
+| Skill | id (stable, never reused), name, map (basic, intermediate, advanced), level, **sequence** (suggested order along the map, unique; used for layout and to choose which available skill to introduce first), track (reading, rhythm, technique, theory, repertoire, musicianship), staff (treble, bass, grand), **prerequisites\[\]** (define the map's forks and joins; each must have a lower sequence), requiredCapabilities\[\] (e.g. pedal, velocity, 88 keys), constraints (allowed notes or hand positions, rhythms, keys, time signatures, hands, staff, range; since v0.24 also intervals, two notes at once, held-note hands together, ties, rests and pre-staff `letters`), unit?, targetTempo?, conceptLessonId?, description |
 | Lesson | id, skillIds\[\], type (concept, exercise, drill, song, review), drillParams? (e.g. scale, key, octaves, hands, target bpm), arrangementId?, cards\[\] (concept lessons), passCriteria |
 | ConceptCard | kind (explain, show, hear, try, check, watch), text, diagram (declarative: keys to light, staff notes, timing), audioExample, expectedNotes\[\], questions\[\] |
 | Genre | id, name, genreStyle (e.g. "traditional hymn"), defaultVocalStyle, defaultAccompanimentStyle (named instruments and how they play, 10.5), defaultAllowed (false for every genre: the map's practice songs are allowed whatever their genre, 10.1) |
@@ -495,54 +495,54 @@ The streak and the star collection (each song's best accuracy stars, with its gr
 
 ## 6. Curriculum and skill map
 
-The curriculum uses established, published progressions so it can run from first notes to advanced playing. Beginners follow a concept order drawn from standard published beginner methods. From there, the skill map follows The Royal Conservatory (RCM) Certificate Program, which runs from Preparatory A through Level 10 plus diploma levels. App levels use the same names (Prep A, Prep B, Level 1 to Level 10) so progress can be compared to a real, recognized standard.
+The curriculum follows established ways of teaching the piano so it can run from first notes to advanced playing. The skill map, lessons and pieces are our own. They are drafted from reference material the family owns, and from standard teaching practice, without naming or copying it. App levels are named Prep A, Prep B and Level 1 to Level 10, the level names commonly used for graded piano study, so progress can be compared to a recognized standard.
 
-### 6.1 Combining method books
+### 6.1 Combining references
 
-The methods are not mutually exclusive. Our skill map is our own, so we can take the best of each:
+References are not mutually exclusive. Our skill map is our own, so we can take the best of each:
 
-- **One spine for order and pacing:** one method's order of concepts, chosen because it lines up well with the RCM backbone.
-- **Borrow from others:** other methods' concepts and practice ideas fill gaps and add extra exercises where the spine moves too fast for our kids.
-- **One reading approach at first:** methods broadly differ in how they start reading (some lean on landmark notes and reading by intervals, others on fixed hand positions around middle C). The first few weeks follow the spine's approach only, so a new reader is not taught two ways at once; blending starts once basic reading is secure.
+- **One spine for order and pacing:** one reference's order of concepts at a time, chosen because it lines up well with graded piano study.
+- **Borrow from others:** other references' concepts and practice ideas fill gaps and add extra exercises where the spine moves too fast for our kids.
+- **One reading approach at first:** beginner courses broadly differ in how they start reading (some lean on landmark notes and reading by intervals, others on fixed hand positions around middle C). The first few weeks follow the spine's approach only, so a new reader is not taught two ways at once; blending starts once basic reading is secure.
 
-The repository names no method book (v0.25): the map, lessons and pieces are our own, and each skill has a general type (Notes, Rhythm, Technique, Theory, Musicianship) rather than a book reference.
+The references change as the levels go up. Each skill has a general type (Notes, Rhythm, Technique, Theory, Musicianship), never a reference to a source.
 
-### 6.2 Using the family's method books
+### 6.2 Using reference material
 
-The family owns physical method books (a lesson book, a theory book, a technique book and a performance book per level). Ownership does not allow copying their pieces, text, or illustrations into the app, but the teaching design they contain can be reused freely: which ideas come first, and in what order.
+The family owns physical reference books for the early levels. Ownership does not allow copying their pieces, text, or illustrations into the app, but the teaching design they contain can be reused freely: which ideas come first, and in what order.
 
 | We reuse (ideas, order, facts) | We do not copy (protected expression) |
 | --- | --- |
-| Order of concepts | The books' pieces and their arrangements |
-| New notes, positions, rhythms, keys, and terms introduced at each stage | Explanatory text, stories, lyrics and titles written for the books |
+| Order of concepts | The references' pieces and their arrangements |
+| New notes, positions, rhythms, keys, and terms introduced at each stage | Explanatory text, stories, lyrics and titles written for them |
 | Pacing: how much practice each concept gets before the next | Illustrations and page layouts |
 | Kinds of technique exercises and theory questions | Exact exercises and worksheets |
-| Which public-domain tunes suit a level | The books' arrangements of those tunes |
+| Which public-domain tunes suit a level | Their arrangements of those tunes |
 
-**Nothing in the repository links to the books (v0.25):** the repository is public, so it names no method book, its units or its pages, and no piece or lesson borrows a book's title or wording. The map's units are our own groupings.
+**Nothing names a reference (v0.25; the app too since v0.41):** the repository is public, so no file, code comment, commit or PR, and nothing the app is built from or shows, names a reference curriculum, its books, its units, titles or pages. No piece or lesson borrows a title or wording. The map's units are our own groupings. Before v0.41 the build merged the family's private page references into the built skill map and parent mode showed them on each Journey bubble, naming the book; v0.41 removed that. The build now refuses content that names a reference (`content/private/never-name.txt`, a local list), and local git hooks refuse commits that do.
 
-**Workflow, one level at a time as the children approach it:** photograph each book's table of contents and the pages where new material is introduced (kept in `Background/`, never committed). Claude reads the photos and drafts that level's skills (with prerequisites, constraints and sequence), concept lessons, drill types and a core-piece plan in our own words and music. A piano teacher checks the level, then it goes into the content files.
+**Workflow, one level at a time as the children approach it:** photograph the reference's table of contents and the pages where new material is introduced (kept in `Background/`, never committed). Claude reads the photos and drafts that level's skills (with prerequisites, constraints and sequence), concept lessons, drill types and a core-piece plan in our own words and music. A piano teacher checks the level, then it goes into the content files.
 
-**Book references (optional, private):** the family's own page references for each skill live in `content/private/book-refs.yaml`, which is never committed. The content build merges them into the built skill map when the file is present, and parent mode shows them, so a parent or teacher can also assign a page from the physical book. Without the file, no skill shows book pages. Book pieces played this way are not scored by the app.
+**Private curriculum notes:** how each skill lines up with its references, and where the map purposely diverges and why, are recorded in `content/private/` (never committed, never built), for cross-checking when the map is reviewed or improved. The app does not read them.
 
-**Done for Prep A (v0.24; one concept per skill and no book links in v0.25):** the family's first-level books were photographed page by page. The Prep A map has 46 skills, one idea each, in our own units; the page references are in the private file. A piano teacher's check is still to come (6.3 step 6). The photographed books cover Prep A only: the Prep B map needs the next level's four books, photographed the same way.
+**Done for Prep A (v0.24; one concept per skill in v0.25):** the reference for the first level was photographed page by page. The Prep A map has 46 skills (47 since v0.40), one idea each, in our own units. A piano teacher's check is still to come (6.3 step 6). The photos cover Prep A only: the Prep B map needs the next level's reference, photographed the same way.
 
-**At the early intermediate level,** the RCM levels take over as the backbone; the teacher review confirms where the method books and the RCM levels line up.
+**At the early intermediate level,** a graded syllabus takes over as the backbone; the teacher review confirms where the references line up.
 
 ### 6.3 Building the skill map (no transcription)
 
-We only need the **order of concepts and requirements**, not the books' pages or music. That is a short list per level, not a transcription project.
+We only need the **order of concepts and requirements**, not a reference's pages or music. That is a short list per level, not a transcription project.
 
-1. **Beginner order (Prep A to Level 1):** photograph the tables of contents and unit openers of the family's method books, level by level (6.2). Claude reads the photos and drafts the skill list. Claude can also draft this sequence from standard piano teaching practice, aligned to RCM Preparatory A and B.
-2. **Levels 1 to 10:** the RCM Piano Syllabus (2022 edition) lists each level's technical requirements (scales, chords, arpeggios, with keys and tempos), musicianship (sight-reading, ear tests), and repertoire lists. Claude turns them into skills, a level at a time, as the children approach it.
-3. **Map shape and sequence:** the skill map is a set of branches, not one line. Each skill's **prerequisites** say which skills must be passed first, so the map can **fork** (two skills that both build on the same earlier skill, for example a reading skill and a technique skill) and **join** (a skill that needs skills from two branches, such as hands together needing both hands' reading). A child can move ahead on one branch while still working on another. Every skill also gets a unique **sequence number**: a suggested order that interleaves tracks the way the method does, used to lay out the map and to choose which available skill to introduce first. Prerequisites must always have a lower sequence number; the content loader checks this.
+1. **Beginner order (Prep A to Level 1):** photograph the tables of contents and unit openers of the family's reference books, level by level (6.2). Claude reads the photos and drafts the skill list. Claude can also draft this sequence from standard piano teaching practice.
+2. **Levels 1 to 10:** a published graded syllabus lists each level's technical requirements (scales, chords, arpeggios, with keys and tempos), musicianship (sight-reading, ear tests), and repertoire lists. Claude turns them into skills, a level at a time, as the children approach it.
+3. **Map shape and sequence:** the skill map is a set of branches, not one line. Each skill's **prerequisites** say which skills must be passed first, so the map can **fork** (two skills that both build on the same earlier skill, for example a reading skill and a technique skill) and **join** (a skill that needs skills from two branches, such as hands together needing both hands' reading). A child can move ahead on one branch while still working on another. Every skill also gets a unique **sequence number**: a suggested order that interleaves tracks the way the spine does, used to lay out the map and to choose which available skill to introduce first. Prerequisites must always have a lower sequence number; the content loader checks this.
 4. **Exercises:** 2 to 4 per skill, written with Claude's help. Technical drills (scales, chords, arpeggios) are generated by the app itself.
-5. **Songs and pieces:** public-domain works, including the many classical pieces that appear on RCM repertoire lists, plus folk songs and hymns.
+5. **Songs and pieces:** public-domain works, including the many classical pieces that appear on graded repertoire lists, plus folk songs and hymns.
 6. **Review and pilot:** a piano teacher checks each new level's skill map; the kids' results guide pacing.
 
 ### 6.4 Roadmap from beginner to advanced
 
-| Stage | App levels (RCM) | Map | What the app does | New app capabilities | Build phase |
+| Stage | App levels | Map | What the app does | New app capabilities | Build phase |
 | --- | --- | --- | --- | --- | --- |
 | Beginner | Prep A, Prep B | Basic | Guided lessons, concept lessons, play with smooth rewind | Core app (M0 to M10) | Phase 1 |
 | Elementary | Levels 1 to 2 | Basic | Guided lessons; hands together, first scales | Tempo ramp, generated scale drills | Potential feature (section 14, v0.26) |
@@ -569,11 +569,11 @@ MIDI already carries what advanced scoring needs: key velocity (dynamics), the s
 
 Each skill has a track: **reading**, **rhythm**, **technique**, **theory**, **repertoire**, or **musicianship**. Tracks let reports show strengths and weaknesses by category, and let the session planner balance practice at higher levels.
 
-**Concept lessons:** every skill that introduces something new gets a concept lesson (section 3, "Teaching concepts"). Its Explain text follows the method book's order and vocabulary but is written in our own words. Claude drafts the card text and quiz questions during content authoring; the parent reviews them in parent mode before they go live.
+**Concept lessons:** every skill that introduces something new gets a concept lesson (section 3, "Teaching concepts"). Its Explain text follows the spine's order and the standard vocabulary but is written in our own words. Claude drafts the card text and quiz questions during content authoring; the parent reviews them in parent mode before they go live.
 
 ### 6.7 Staff progression
 
-**Since v0.24 the staff follows the method spine's reading approach** (6.1: the first weeks follow one method's reading approach). Each step is a skill in the map, with its own concept lesson.
+**Since v0.24 the staff follows the spine's reading approach** (6.1: the first weeks follow one reading approach). Each step is a skill in the map, with its own concept lesson.
 
 | Step (Prep A unit) | Staff shown | What the student plays |
 | --- | --- | --- |
@@ -589,7 +589,7 @@ v0.9 planned a treble-only step and then a bass-only step. The spine instead rea
 
 ### 6.8 Songs in the curriculum
 
-Method books teach through their own pieces, but those pieces and their arrangements are copyrighted, so we use only the books' concept order. We can use the same public-domain tunes many methods use (folk songs, "Ode to Joy", and so on) in our own arrangements.
+Beginner courses teach through their own pieces, but those pieces and their arrangements are copyrighted, so we use only a reference's concept order. We can use the same public-domain tunes many courses use (folk songs, "Ode to Joy", and so on) in our own arrangements.
 
 **Decision: every arrangement is analyzed for the skills it requires, and it unlocks for a student by those skills. Nobody hand-assigns songs to lessons.**
 
@@ -630,7 +630,7 @@ For the earliest skills (for example three black keys, or five notes in C positi
 
 | Content | Authored as | Notes |
 | --- | --- | --- |
-| Skill map | One YAML file per level: skills with id, sequence, track, constraints, prerequisites, capabilities, book refs | Drafted by Claude from the book photos and syllabus |
+| Skill map | One YAML file per level: skills with id, sequence, track, constraints, prerequisites, capabilities | Drafted by Claude from the reference photos and standard teaching practice |
 | Concept lessons | YAML, one file per skill in `content/lessons/`, with a list of cards (explain, show, hear, try, check, watch); notes as `C4 D4:2 [C4,E4,G4]` (v0.20) | The Show card is declarative (keys to light, staff notes, order and timing), so no animation authoring is needed. Every line read aloud is recorded with the lesson voice when it is written or changed (the `lesson-voice` skill, 10.5, v0.34); `say:` beside a `text` gives the words to read when they differ from what is shown |
 | Songs | MusicXML (e.g. from MuseScore) or ABC, with a small YAML header (title, composer, genre, level, hands, source, license), one file per song in `content/pieces/` | Converted to the notation format by the shared converter. Every song's source is kept in git, whether it was written here or imported (`promote` moves an approved import's source in); the songs themselves reach the app through the library (10.7) |
 | Drills | Parameters only (6.6); built by the generators | No notation files |
@@ -1382,7 +1382,7 @@ Each milestone ends with something testable at the piano. Curriculum work (M3) r
 | M0-S | Media feasibility spike (parallel) | YuE2 on the RTX 5070 Ti with one short song: memory use, whether it sings the exact melody, accompaniment quality and separation, pitch and word checks, 90%, 75%, and 50% time-stretch. **Done: proceed with YuE2** (`feasibility/yue2-probe/RESULTS.md`). **Extended in v0.17** with real hymns and songs, the song clock and alignment on the iPad (`feasibility/sync-probe/RESULTS.md`): YuE2 input rules, alignment method and checks settled (10.5) | Decision recorded: proceed with YuE2, try another engine, or rely on chord pad and choir voice |
 | M1 | Play screen prototype | Scrolling staff, play line, on-screen keyboard, play-along with **smooth automatic rewind** (phrases, triggers, glide, count-in), tempo presets, simple note matching, lyrics line, 3 hard-coded songs. **Built (Sep 28, 2026)** at `https://<piano-server>/app/` with a placeholder skill map and 6 songs; the acceptance test waits for the MIDI keyboard | A child plays "Twinkle Twinkle" start to finish at the 50% preset on the student device, and child and parent agree the rewinds feel natural (thresholds and glide timing tuned here) |
 | M2 | Scoring and results | Evaluator per section 7 (matching, accuracy, timing, practice-aid factor, latency offset), star ratings, rewind-aware scoring (last pass per phrase, rewind factor), result screen with practice-mode chip and "Practice tricky part", section loop; the first recorded fixtures. **Built (Sep 28, 2026)** with the App API storing attempts and raw events, and 16 scripted fixtures; recorded fixtures and the "fair over 10 plays" check wait for the MIDI keyboard | Fixture suite passes; ratings feel fair to the parent over 10 test plays; with the pedal unplugged, pedal features are hidden and nothing breaks |
-| M3 | Content pipeline and skill map (**built without the books, Sep 28, 2026:** content build with validation, song analysis, coverage report, concept-lesson format and player, finger-number generator v1, grace notes, tuplets, clef changes, per-note hands, songs with several arrangements; **the Prep A map from the family's method books, Sep 30, 2026 (v0.24), one concept per skill (v0.25):** 46 skills, a concept lesson for each and 108 songs written for it, all passing validation (in the server's library since v0.27); still to come: a teacher's check and the Prep B map; Level 1 and 2 maps moved to section 14 in v0.26) | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A and Prep B skill maps with prerequisites (branches) and sequence numbers, concept lessons, practice songs (2 or more per skill, v0.25, approved in the library before the map deploys, v0.27), coverage report, re-analysis of library songs after a map change (6.10; built in v0.27) | The skill map and lessons load with no hand edits and pass validation |
+| M3 | Content pipeline and skill map (**built before the reference arrived, Sep 28, 2026:** content build with validation, song analysis, coverage report, concept-lesson format and player, finger-number generator v1, grace notes, tuplets, clef changes, per-note hands, songs with several arrangements; **the Prep A map from the family's reference books, Sep 30, 2026 (v0.24), one concept per skill (v0.25):** 46 skills, a concept lesson for each and 108 songs written for it, all passing validation (in the server's library since v0.27); still to come: a teacher's check and the Prep B map; Level 1 and 2 maps moved to section 14 in v0.26) | Content formats (6.9), converter, content loader with validation, song analysis (required skills, map point, featured skills, skill measures), finger-number generator v1, Prep A and Prep B skill maps with prerequisites (branches) and sequence numbers, concept lessons, practice songs (2 or more per skill, v0.25, approved in the library before the map deploys, v0.27), coverage report, re-analysis of library songs after a map change (6.10; built in v0.27) | The skill map and lessons load with no hand edits and pass validation |
 | M4 | Students, progress, and parent mode | Server database and API for students and attempts (with raw events), student picker, parent mode (PIN login and logout, all bubbles open), My Progress, DeviceProfile, client outbox, client logging, backup added to the server procedure; per-student settings moved out of the Play screen into each student (set by the parent in Config), device settings in Config > Device settings (v0.18). **Built (Sep 28, 2026)** with API tests for the PIN lockout, parent-only functions and separate progress, and the browser check adding two students from a new server; the backup and its restore test passed with the Server repo (Oct 5, 2026, with the song library), and the two-device check waits for real use | Two children's progress stays separate and follows each child between the iPad and the Chromebook; a restore test succeeds |
 | M5 | Lesson engine | Skill states on the branching map, Guided-ready and library-ready unlocking, running mastery with best-so-far, rhythm-skill pass rule, "Try it another way" options and stuck handling with support practice, review ladder with polish and implicit review, session queue with "Up next" cards, adaptive session length, Guided vs Free Play rules, end-of-content behavior, Journey maps with branches and star rows (render test with 200 bubbles). **Built (Sep 28, 2026)** in `api/app/engine.py`; the practice simulator runs fast, slow, inconsistent and one-hard-skill learners for 8 weeks on a generated 60-skill branching map (`api/tests/test_simulator.py`); the 200-bubble render test is in Config and ran at 59 fps in desktop Chromium, and waits for the iPad | Two months of simulated practice produce the expected unlocking, stuck handling (support practice rises, other branches keep progressing, no skill passes below standard), review timing, polish cadence, backlog handling, and session mix |
 | M6 | Diagnostics and drill generator | Five error-pattern detectors with first-version thresholds, generated remedial drills, stuck marking, theory and ear-training scoring. **Built (Sep 28, 2026)** in `api/app/diagnostics.py` and `api/app/drills.py`, with scale and arpeggio fingering tables, Check and Echo scoring in the concept lessons, and the planted-pattern simulator (`api/tests/test_planted.py`); tuning waits for real attempts from the keyboard | Errors planted in simulated data are detected and get the right remedy |
@@ -1397,10 +1397,10 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 
 **Next steps**
 
-- [x] Choose the base method book spine and photograph the four first-level books (v0.24)
+- [x] Choose the spine and photograph the first level's reference (v0.24)
 - [x] Sketch the branch shape of the Prep A map and build it (`content/skillmap/prep-a.yaml`, v0.24)
 - [ ] A piano teacher checks the Prep A map, its lessons and practice songs (6.3 step 6)
-- [ ] Photograph the next level's four method books and draft the Prep B map (6.2)
+- [ ] Photograph the next level's reference and draft the Prep B map (6.2)
 - [ ] Listen to the Prep A lessons and practice songs in parent mode (Journey: every bubble opens; Needs improvement in the gear pop-up for anything to fix)
 - [ ] Easy arrangements of the library's kids' songs for Prep A (quarter, half and whole notes in C position), as second arrangements
 - [ ] Buy a class-compliant USB MIDI keyboard with 88 velocity-sensitive keys and a sustain pedal (2.3); test it on a computer, then run the MIDI and latency checks on the iPad
@@ -1489,7 +1489,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Vocal-style changes | The parent picks another vocal style for a song; the media skill re-renders it and the new media comes back as a media update (10.1) |
 | Wait mode | The music stops at each note until it is played (7.2); no vocals or accompaniment. Built only if smooth rewind proves not to be enough |
 | Dark theme | A dark theme alongside the light one; the staff keeps high contrast |
-| Level 1 and 2 maps | The rest of the Basic map: hands together, first scales, the tempo ramp and scale drills (6.4). Needs those levels' method books |
+| Level 1 and 2 maps | The rest of the Basic map: hands together, first scales, the tempo ramp and scale drills (6.4). Needs those levels' references |
 | Other pianos | 61-key and smaller keyboards (octave-shifted arrangements, "Needs 88 keys"), no sustain pedal ("Needs pedal", pedal markings as hints) and keys without touch sensitivity (dynamics as hints) (2.3, 2.4) |
 | Concept videos | The concept-video skill (10.6), the Concept videos page in Parental Controls and staged videos; was part of M8 until v0.26. The lesson format's Watch card is built and plays a video when one is added. Concept lessons teach fully without videos |
 | Per-child coverage | The coverage report counted after each child's genre and song rules (6.8) |
@@ -1505,7 +1505,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 - **Mastery step (8.2):** the 0.3 running-value step is a first version; tune with the practice simulator.
 - **Lockdown:** is the full-screen reminder (2.2) enough, or is Guided Access needed? Full-screen mode alone is not reliable: it is lost when the app relaunches. Decide in M0.
 - **Suno fallback:** Suno is only available through unofficial third-party APIs; acceptable as a fallback for a personal project?
-- **Method spine:** confirm the method spine and its supplement with the piano teacher.
+- **Spine:** confirm the spine and its supplements with the piano teacher.
 - **Ages:** what ages are the current students? This affects visual style (all students are assumed to read).
 - **Song import:** which genres to import first?
 - **Scoring numbers (section 7) and diagnostic thresholds (8.8):** first versions; tune after M2 fixtures and real use.
@@ -1612,16 +1612,16 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Optional hardware (v0.8) | Pedal and velocity detected; missing capabilities hide features only | App works on any reasonable digital piano |
 | Keyboard size (v0.9) | Parent sets 61 or 88 keys; out-of-range notes never used | Supports both common piano sizes |
 | Students (v0.9) | Any number; add, edit, archive, delete | Family can change over time |
-| Staff progression (v0.9, changed v0.24) | The method spine's order: letter names before the staff, then the grand staff with landmark notes, Middle C position with hands taking turns, C position, hands together | The first weeks follow one method's reading approach (6.1) |
+| Staff progression (v0.9, changed v0.24) | The spine's order: letter names before the staff, then the grand staff with landmark notes, Middle C position with hands taking turns, C position, hands together | The first weeks follow one reading approach (6.1) |
 | Hands one at a time (v0.40) | The right hand alone, then the left alone, then the hands taking turns (a skill of its own, each switch after a held note), then the hands at once; a new song for both hands is met one hand at a time first; slower first songs | A song that needs both hands is hard for a beginner even when they never play at once; the first sessions showed it |
-| Prep A map (v0.24) | 16 skills in the method's 10 units, forked where units are independent; own lessons and pieces, book pages as references (private since v0.25) | The method's proven order, without copying its pieces |
+| Prep A map (v0.24) | 16 skills in the spine's 10 units, forked where units are independent; own lessons and pieces (one concept per skill since v0.25) | A proven order, without copying its pieces |
 | One concept per bubble (v0.25) | 46 Prep A skills, one idea each, with one Explain and 2 to 4 practice songs; ideas the notes can't show are practised by the pieces written for them | Quicker, clearer progress for the child; stars that describe one or two songs; nothing required the grouping |
-| Pre-staff pieces (v0.24) | Note heads carry letter names; the analysis counts them only for pre-staff skills | Beginners read letters first, as in the books; staff reading is a separate skill |
+| Pre-staff pieces (v0.24) | Note heads carry letter names; the analysis counts them only for pre-staff skills | Beginners read letters first, as is common; staff reading is a separate skill |
 | Song import (v0.10) | Claude skill finds, fixes, and levels songs; server validates and stages them; parent approves from the review list | Judgment-heavy work goes to Claude; deterministic checks and approval stay in the app |
 | Song deletion (v0.9) | Full delete plus a do-not-re-add record | Deleted songs never come back by accident |
 | Input | MIDI only | Microphone detection is unreliable |
 | Play view | Moving staff with fixed play line; cursor view later | Easier for beginners; builds real reading later |
-| Curriculum (v0.8) | Combined method order (one spine, other methods as supplements) for beginners; RCM levels Prep A to Level 10 as the backbone | Best of both methods on a recognized standard |
+| Curriculum (v0.8) | Combined order (one spine, other references as supplements) for beginners; graded levels Prep A to Level 10 as the backbone | The best of each on a recognized standard |
 | Spaced review (v0.8) | Ladder of 1, 3, 7, 14, 30, 60, 120 days, plus implicit review from any strong use of a skill | Long-term retention without a growing review burden |
 | Session flow (v0.8) | Auto-sequenced queue with "Up next" cards; map is optional | Student never has to hunt for what to do next |
 | Diagnostics (v0.8) | Rule-based error-pattern detection with targeted remedies | Fixes the cause of weak skills, not just the score |

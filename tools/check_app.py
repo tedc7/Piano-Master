@@ -830,16 +830,14 @@ def main():
         tab("Songs").click()
         page.wait_for_selector(".song")
         check(page.locator(".song .card[disabled]").count() == 0, "parent: every song opens")
-        # parent mode: every bubble opens, and a skill shows the family's own book pages when the private
-        # file has them (content/private/book-refs.yaml, never committed), and none otherwise
+        # parent mode: every bubble opens, and the app names no reference curriculum (v0.41): the built
+        # map has no book pages or source, and the pop-up shows none
         tab("Journey").click()
         page.wait_for_selector(".map .bubble")
         page.locator(".node", has_text="The quarter rest").locator(".bubble").click()
-        refs = page.locator(".sheet .refs").inner_text() if page.locator(".sheet .refs").count() else ""
-        built = json.loads((DIST / "content" / "skillmap.json").read_text())["skills"]
-        want = next(s for s in built if s["id"] == "prep-a.quarter-rest").get("bookRefs") or []
-        check((f"{want[0]['book']} p.{want[0]['pages']}" in refs) if want else refs == "",
-              f"journey: parent mode shows the skill's own book pages, if any ({refs!r})")
+        built = json.loads((DIST / "content" / "skillmap.json").read_text())
+        check(not any("bookRefs" in s for s in built["skills"]) and not any("source" in m for m in built["maps"])
+              and page.locator(".sheet .refs").count() == 0, "journey: the app names no reference curriculum")
         # back from a song: the map scrolled where it was, with the same pop-up open
         page.evaluate("document.querySelector('.map-body').scrollLeft = 500")
         page.wait_for_timeout(200)

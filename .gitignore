@@ -20,9 +20,9 @@ content/media/
 # song batches being made (the import skill): sources, drafts and stems, some for private family
 # use only. Approved songs reach git through content/pieces/ and content/library/, never from here
 content/incoming/
-# the family's method-book photos: never committed
+# the family's reference material (photos): never committed
 Background/
-# the family's own method-book page references (content/private/book-refs.yaml): never committed
+# private curriculum notes (how the map lines up with its references) and the never-name list: never committed
 content/private/
 # every song built for the library (tools/build_content.py): submitted or seeded, never deployed
 /build/
