@@ -309,6 +309,13 @@ describe("NoteDetector", () => {
     });
   });
 
+  it("hears a top key's pure tone, but never as surely wrong (an \"s\" or a whistle looks the same)", () => {
+    const tone = (t: number) => (t > 0.3 && t < 0.8 ? 0.05 * Math.min(1, (t - 0.3) / 0.005) * Math.sin(2 * Math.PI * hzOf(96) * t) : 0) + background(t);
+    const ev = ons(listen(1.2, tone));
+    expect(ev.map((e) => e.pitch)).toEqual([96]);
+    expect(ev[0].sure).toBe(false);
+  });
+
   it("does not report keys the app is sounding itself", () => {
     const n: Tone = { pitch: 60, start: 0.3, dur: 0.5 };
     const ev = listen(1.2, (t) => piano(t, n) + background(t), { masked: (p) => p === 60 });

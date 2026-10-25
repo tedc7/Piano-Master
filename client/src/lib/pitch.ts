@@ -29,7 +29,8 @@
 //  6. The app's own sounds: keys the app is sounding itself (its piano, the metronome) are masked.
 //
 // Each key-down carries `sure`: whether it is clear enough to count as a wrong note. A borderline
-// detection can match the note the music expects, but is never scored as a mistake.
+// detection, or a single pure tone (a top key, or just as likely an "s" or a whistle), can match the
+// note the music expects, but is never scored as a mistake.
 
 export const FRAME = 4096;
 export const MAX_KEYS = 4;
@@ -148,6 +149,7 @@ export function partialsOf(pitch: number): Partial[] {
 interface Candidate {
   pitch: number; level: number; peaky: number; cents: number;
   echo: number;            // the app's own sound of this key, as the microphone hears it
+  pure: boolean;           // heard as one partial only (a top key; or an "s", a whistle, a beep)
 }
 
 export class NoteDetector {
@@ -300,8 +302,9 @@ export class NoteDetector {
     // velocity: 30 at the threshold up to 110 at 30 dB above it
     const db = 20 * Math.log10(c.level / this.threshold);
     const velocity = Math.round(Math.max(30, Math.min(110, 30 + (db / 30) * 80)));
+    // a single pure tone is a top key, or just as likely an "s" or a whistle: never surely wrong
     const sure = c.level >= 2 * this.threshold && c.peaky >= 2 * PEAKINESS && Math.abs(c.cents) <= CENTS_OK * 0.7 &&
-      k.drift <= CENTS_SURE;
+      k.drift <= CENTS_SURE && !c.pure;
     return { type: "on", pitch: c.pitch, velocity, timeMs, sure };
   }
 
@@ -504,7 +507,7 @@ export class NoteDetector {
     const fundamental = parts[0]?.h === 1 && values[0] >= (f0 < LOW_HZ ? 0.05 : 0.1) * Math.max(...values.slice(0, 4));
     if (!fundamental && !(f0 < LOW_HZ && this.lowKeyHeard(spec, parts, values))) level *= 0.1;
     const enough = pitch >= PURE_FROM ? 1 : 2;     // the top keys are nearly pure tones
-    return { pitch, level, peaky: peaks / (beside + 1e-9), cents: present >= enough ? centsAt : 999, echo: 0 };
+    return { pitch, level, peaky: peaks / (beside + 1e-9), cents: present >= enough ? centsAt : 999, echo: 0, pure: present < 2 };
   }
 
   /** A low key whose fundamental the device doesn't hear is there when its overtones are, with

@@ -50,9 +50,9 @@ FAKE_MIDI = """
 
 # Plays the piece's expected notes when the song clock reaches them, until the attempt finishes
 # (or `untilRewinds` rewinds have happened). Notes at the `skip` beats are left out, or, with
-# `wrongKeys`, played a semitone too high.
+# `wrongKeys`, played a semitone too high. `shift` moves every note by that many semitones.
 AUTOPLAY = """
-([skip, untilRewinds, maxSeconds, wrongKeys]) => new Promise((resolve) => {
+([skip, untilRewinds, maxSeconds, wrongKeys, shift = 0]) => new Promise((resolve) => {
   const pm = window.__pm, tl = pm.tl, player = pm.player;
   let next = 0, lastState = null, rewinds = 0, t0 = performance.now();
   const notes = tl.notes.filter((n) => !n.tieContinuation);
@@ -68,7 +68,7 @@ AUTOPLAY = """
     if (st === "playing" || st === "countin") {
       while (next < notes.length && notes[next].beat <= pos + 1e-6) {
         const n = notes[next++];
-        let pitch = n.pitch;
+        let pitch = n.pitch + shift;
         if (skip.some((b) => Math.abs(b - n.beat) < 1e-6)) { if (!wrongKeys) continue; pitch += 1; }
         window.__midiSend([0x90, pitch, 80]);
         setTimeout(() => window.__midiSend([0x80, pitch, 0]), 120);
@@ -1011,6 +1011,22 @@ def main():
         st = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display})")
         check(st["s"] == "idle" and st["b"] < 0 and page.locator(".result").count() == 0, f"rewind after the end: back to the start, ready to play ({st})")
 
+        # 3c. Knock, Knock (bass clef) played two octaves up, as a child reading it as treble clef
+        # did: the keys are drawn where they were played, and the screen says what's wrong (v0.44)
+        open_piece(page, "knock-knock")
+        page.get_by_role("button", name="100%").click()
+        page.evaluate("""() => { window.__wrongMarks = 0;
+          new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.classList?.contains('pm-wrong')) window.__wrongMarks++; })))
+            .observe(document.querySelector('.stage'), { childList: true, subtree: true }); }""")
+        page.locator(".modes button").first.click()
+        page.evaluate(AUTOPLAY, [[], 1, 30, False, 24])
+        hint = page.locator(".octave-hint").inner_text() if page.locator(".octave-hint").count() else ""
+        marks = page.evaluate("window.__wrongMarks")
+        page.screenshot(path=str(OUT / "knock-knock-two-octaves-up.png"))
+        check("Right keys, two octaves too high" in hint and "bass clef" in hint and marks > 0,
+              f"octave hint: a bass-clef song played two octaves up is drawn where played, and named ({hint!r}, {marks} marks)")
+        page.locator(".modes button").first.click()     # pause
+
         # 4. Hot Cross Buns with three wrong keys in the first phrase (6 errors): one rewind, then a clean pass
         open_piece(page, "hot-cross-buns")
         page.get_by_role("button", name="100%").click()
@@ -1289,8 +1305,9 @@ def main():
         audio = sum(len(base64.b64decode(c["pcm16"])) for c in parts)
         first = next((c for c in parts if c["part"] == 0), {})
         check(parts and len(parts) == parts[0]["parts"] and abs(audio / 2 / parts[0]["rate"] - 60) < 1.5
-              and any(k["type"] == "on" for k in first.get("keys", [])) and "echoCancellation" in first.get("settings", {}),
-              f"microphone: a recording for tuning reaches the server whole, with the keys heard ({len(parts)} parts, {audio / 2 / max(1, first.get('rate', 1)):.1f} s)")
+              and any(k["type"] == "on" for k in first.get("keys", [])) and "echoCancellation" in first.get("settings", {})
+              and all("out16" in c for c in parts) and first.get("context", {}).get("screen") == "piano check",
+              f"microphone: a recording for tuning reaches the server whole, with the keys heard and what the app played ({len(parts)} parts, {audio / 2 / max(1, first.get('rate', 1)):.1f} s)")
         open_piece(page, "mary-had-a-little-lamb")
         check(not page.locator(".modes button").nth(0).is_disabled(), "microphone: Play is open with the microphone as the piano")
         page.goto(url + "#/config/device")

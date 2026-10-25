@@ -3,6 +3,7 @@
   // lyrics, control strip, on-screen keyboard. Play and Loop need the MIDI piano; Listen doesn't.
   import { onMount, tick, untrack } from "svelte";
   import DeviceSettings from "../components/DeviceSettings.svelte";
+  import { RECORD_S, micRecorder } from "../lib/micRecording.svelte.js";
   import Medal from "../components/Medal.svelte";
   import PlayerSettings from "../components/PlayerSettings.svelte";
   import Stars from "../components/Stars.svelte";
@@ -175,9 +176,12 @@
             layout?.noteEls[v.noteId]?.classList.add(v.onTime ? "pm-ok" : "pm-late");
             kb?.press(pitch, v.onTime ? "ok" : "late");
             if (!v.onTime) showOffTime(v.noteId, v.beat);
+            octaveRun = [];
+            octaveHint = "";
           } else if (v.kind === "wrong") {
             kb?.press(pitch, "wrong");
             showWrong(pitch, v.beat);
+            wrongOctave(pitch, v.beat);
           }
         },
         keyDown: (pitch) => kb?.press(pitch, "neutral"),
@@ -474,6 +478,35 @@
     addMark(layout.playedNote(pitch, beat, staff));
   }
 
+  // Right keys in the wrong octave (a bass-clef song played up in the treble, say): after three
+  // wrong keys in a row that are each a written note's key an octave or more away, the same way,
+  // say so. A right key clears it.
+  const OCTAVE_RUN = 3;
+  let octaveRun: number[] = [];
+  let octaveHint = $state("");
+
+  function wrongOctave(pitch: number, beat: number): void {
+    let off = 0, best = Infinity;
+    for (const n of tl.notes) {
+      if (hands !== "both" && n.hand !== hands) continue;
+      const d = Math.abs(n.beat - beat);
+      if (d > 1 || n.pitch === pitch || (pitch - n.pitch) % 12 !== 0 || d >= best) continue;
+      best = d;
+      off = (pitch - n.pitch) / 12;
+    }
+    octaveRun = off ? [...octaveRun, off].slice(-OCTAVE_RUN) : [];
+    if (octaveRun.length === OCTAVE_RUN && octaveRun.every((o) => o === off)) octaveHint = octaveText(off);
+  }
+
+  function octaveText(off: number): string {
+    const n = Math.abs(off);
+    const how = n === 1 ? "one octave" : n === 2 ? "two octaves" : `${n} octaves`;
+    const staves = piece?.notation.header.staves ?? [];
+    const clef = staves.length === 1 && staves[0] === "bass" && off > 0 ? " This song is in the bass clef: play the keys below middle C."
+      : staves.length === 1 && staves[0] === "treble" && off < 0 ? " This song is in the treble clef: play the keys above middle C." : "";
+    return `Right keys, ${how} too ${off > 0 ? "high" : "low"}.${clef}`;
+  }
+
   /** A right key outside the on-time window (the same one that turns its note amber): its note head
    *  where it was played, with a line back to the written note, so the student sees early or late
    *  and by how much. */
@@ -621,6 +654,7 @@
     <div class="progress"><div class="bar" bind:this={progressEl}></div></div>
     <span>{mode === "play" ? "Play" : "Listen"} · {sectionLabel} · {preset}%{hands !== "both" ? (hands === "R" ? " · right hand" : " · left hand") : ""}</span>
     {#if pending}<span class="muted">{pending} to send</span>{/if}
+    {#if micRecorder.busy}<span class="rec">● {micRecorder.label}</span>{:else if micRecorder.note && micRecorder.state !== "sent"}<span class="muted">{micRecorder.note}</span>{/if}
   </Status>
 
   <div class="stage" class:dragging={!!dragBar} bind:this={stageEl} role="presentation"
@@ -643,6 +677,9 @@
       <div class="message error">{error}</div>
     {:else if needPiano && !running && !result}
       <div class="message">{app.micMode ? "The microphone isn't on: see Config › Device settings, or choose Listen." : "Connect the piano to play along, or choose Listen."}</div>
+    {/if}
+    {#if octaveHint}
+      <div class="octave-hint">{octaveHint}</div>
     {/if}
     {#if loopNote}
       <div class="loopnote">{loopNote.text} · {"★".repeat(Math.floor(loopNote.stars))}{loopNote.stars % 1 ? "½" : ""}</div>
@@ -772,6 +809,16 @@
           <span class="muted small">For this song, for every child.{showMsg ? ` ${showMsg}` : ""}</span>
         </div>
       {/if}
+      {#if app.micMode}
+        <div class="improve">
+          <p><b>Microphone recording:</b> records the next {RECORD_S} seconds of what the microphone hears and what the app
+            plays, with the keys it heard, and sends them for tuning the note detection. Press it, close this, and play the song.</p>
+          <button onclick={() => { void micRecorder.start({ screen: "play", pieceId: piece?.id, mode, preset, hands, vocals: vocalsOn,
+                                                             latencyOffsetMs: app.settings.latencyOffsetMs }); sheet = false; }}
+                  disabled={micRecorder.busy || app.inputStatus !== "connected"}>{micRecorder.label}</button>
+          {#if micRecorder.note}<span class="muted small">{micRecorder.note}</span>{/if}
+        </div>
+      {/if}
       <p class="muted small">Settings for the parent. Students' own settings are under Config › Students.</p>
       <div class="grid">
         <DeviceSettings />
@@ -790,6 +837,7 @@
 </div>
 
 <style>
+  .rec { color: #b42318; font-weight: 700; }
   .play { display: flex; flex-direction: column; height: 100%; }
   .progress { flex: 1; height: 8px; background: #ebe9e3; border-radius: 4px; overflow: hidden; min-width: 120px; }
   .bar { height: 100%; width: 0; background: var(--accent); }
@@ -818,6 +866,10 @@
   @keyframes mark-in { from { opacity: 0; } }
   .message { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: #fff4d6; border: 1px solid #efd58a; border-radius: 12px; padding: 10px 16px; }
   .message.error { background: #fde8e6; border-color: #f0b3ac; }
+  .octave-hint {
+    position: absolute; left: 50%; top: 10px; transform: translateX(-50%); max-width: 80%; text-align: center;
+    background: #fff4d6; border: 1px solid #efd58a; border-radius: 12px; padding: 8px 16px; font-weight: 700;
+  }
   .result {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; max-height: calc(100% - 16px); width: min(720px, calc(100% - 24px));

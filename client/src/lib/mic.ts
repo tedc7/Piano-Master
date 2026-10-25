@@ -24,6 +24,7 @@ export type Sensitivity = 1 | 2 | 3;
 export interface MicRecording {
   rate: number;
   samples: Float32Array;
+  output: Float32Array;                    // what the app played meanwhile (vocals, backing, its piano)
   keys: { type: "on" | "off"; pitch: number; ms: number; sure: boolean }[];
   settings: Record<string, unknown>;       // what the browser applied (echo cancellation, ...)
 }
@@ -57,7 +58,7 @@ export class MicInput {
   private changeListeners = new Set<() => void>();
 
   private source: MediaStreamAudioSourceNode | null = null;
-  private recording: { chunks: Float32Array[]; keys: MicRecording["keys"]; start: number } | null = null;
+  private recording: { chunks: Float32Array[]; outs: Float32Array[]; keys: MicRecording["keys"]; start: number } | null = null;
 
   constructor(private audio: AudioEngine, private sensitivity: () => Sensitivity, private voiceProcessing: () => boolean,
               private keys: () => 61 | 88 | null) {}
@@ -73,13 +74,20 @@ export class MicInput {
   async record(seconds: number, progress: (done: number) => void): Promise<MicRecording | null> {
     const ctx = this.audio.ctx;
     if (!this.source || !ctx || this.recording) return null;
-    // a ScriptProcessor, though old, runs everywhere this app does (an AudioWorklet needs a module)
-    const proc = ctx.createScriptProcessor(4096, 1, 1);
+    // a ScriptProcessor, though old, runs everywhere this app does (an AudioWorklet needs a module);
+    // the microphone on one channel, the app's own output on the other
+    const merge = ctx.createChannelMerger(2);
+    const proc = ctx.createScriptProcessor(4096, 2, 1);
     const sink = new GainNode(ctx, { gain: 0 });
-    const rec = { chunks: [] as Float32Array[], keys: [] as MicRecording["keys"], start: performance.now() };
+    const rec = { chunks: [] as Float32Array[], outs: [] as Float32Array[], keys: [] as MicRecording["keys"], start: performance.now() };
     this.recording = rec;
-    proc.onaudioprocess = (e) => { rec.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0))); };
-    this.source.connect(proc);
+    proc.onaudioprocess = (e) => {
+      rec.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+      rec.outs.push(new Float32Array(e.inputBuffer.getChannelData(1)));
+    };
+    this.source.connect(merge, 0, 0);
+    this.outputTap?.connect(merge, 0, 1);
+    merge.connect(proc);
     proc.connect(sink).connect(ctx.destination);
     const end = rec.start + seconds * 1000;
     await new Promise<void>((done) => {
@@ -89,15 +97,19 @@ export class MicInput {
       };
       tick();
     });
-    this.source?.disconnect(proc);
+    try { this.source?.disconnect(merge); this.outputTap?.disconnect(merge); } catch { /* the microphone stopped */ }
+    merge.disconnect();
     proc.disconnect();
     sink.disconnect();
     this.recording = null;
-    const samples = new Float32Array(rec.chunks.reduce((n, c) => n + c.length, 0));
-    let at = 0;
-    for (const c of rec.chunks) { samples.set(c, at); at += c.length; }
+    const join = (parts: Float32Array[]) => {
+      const all = new Float32Array(parts.reduce((n, c) => n + c.length, 0));
+      let at = 0;
+      for (const c of parts) { all.set(c, at); at += c.length; }
+      return all;
+    };
     const track = this.stream?.getAudioTracks()[0];
-    return { rate: ctx.sampleRate, samples, keys: rec.keys,
+    return { rate: ctx.sampleRate, samples: join(rec.chunks), output: join(rec.outs), keys: rec.keys,
              settings: { ...(track?.getSettings() ?? {}), sensitivity: this.sensitivity(), voiceProcessing: this.voiceProcessing(),
                          coupling: this.detector?.coupling ?? null, label: this.deviceLabel, userAgent: navigator.userAgent } };
   }
