@@ -2,11 +2,13 @@
 v0.38), for tuning the note detector to a real keyboard and device.
 
     tools/.venv/bin/python tools/mic_recording.py              # list the recordings on the server
-    tools/.venv/bin/python tools/mic_recording.py <id> [dir]   # write <dir>/<id>.wav and <id>.json
+    tools/.venv/bin/python tools/mic_recording.py <id> [dir]   # write <dir>/<id>.wav, <id>.out.wav and <id>.json
 
 Each recording is in the piano server's client log as 5-second parts of 16-bit audio; the first
-part also has the keys the app heard (ms from the start) and what the browser applied to the
-microphone. The log keeps them 90 days. Written to tests-output/mic/ unless a folder is given.
+part also has the keys the app heard (ms from the start), what the browser applied to the
+microphone, and where it was made (the piano check, or a song on the Play screen). Recordings since
+v0.43 also have what the app played meanwhile (<id>.out.wav), which the detector compares with
+what it hears. The log keeps them 90 days. Written to tests-output/mic/ unless a folder is given.
 tools/mic_replay.ts then replays one through the detector and scores it against the keys played.
 """
 from __future__ import annotations
@@ -52,15 +54,18 @@ def main() -> int:
         raise SystemExit(f"recording {rid} has {len(parts)} of {parts[0]['parts']} parts")
     out = Path(sys.argv[2]) if len(sys.argv) > 2 else OUT
     out.mkdir(parents=True, exist_ok=True)
-    with wave.open(str(out / f"{rid}.wav"), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(int(parts[0]["rate"]))
-        for p in parts:
-            w.writeframes(base64.b64decode(p["pcm16"]))
+    for name, field in ((f"{rid}.wav", "pcm16"), (f"{rid}.out.wav", "out16")):
+        if field not in parts[0]:
+            continue
+        with wave.open(str(out / name), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(int(parts[0]["rate"]))
+            for p in parts:
+                w.writeframes(base64.b64decode(p[field]))
     (out / f"{rid}.json").write_text(json.dumps({"rate": parts[0]["rate"], "time": parts[0]["time"], "keys": parts[0].get("keys", []),
-                                                  "settings": parts[0].get("settings", {})}, indent=1))
-    print(f"wrote {out / rid}.wav and .json")
+                                                  "settings": parts[0].get("settings", {}), "context": parts[0].get("context")}, indent=1))
+    print(f"wrote {out / rid}.wav" + (" and .out.wav" if "out16" in parts[0] else "") + " and .json")
     return 0
 
 

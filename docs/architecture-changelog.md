@@ -6,6 +6,9 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.44 | Oct 24, 2026 | Microphone keys far from the music count again, drawn where played (v0.42's rule hid a bass-clef song played as treble clef); a wrong-octave hint names the mistake and the clef |
+| v0.43 | Oct 24, 2026 | Microphone keys out of reach kept in the attempt (marked) and lit on the keyboard; Record and send from the Play screen, with what the app played |
+| v0.42 | Oct 23, 2026 | The microphone ignores keys more than a fifth outside the music's own (singing heard as keys, up to C8, in a left-hand piece on C3 to E3), and a single pure tone is never surely wrong |
 | v0.41 | Oct 23, 2026 | Nothing names a reference curriculum: no reference pages or source in the built skill map or on Journey bubbles; general wording in this document; the build refuses content that names one, and local git hooks refuse commits; how the map lines up with its references kept in private notes |
 | v0.40 | Oct 21, 2026 | From the first sessions with the curriculum: the hands one at a time (the right hand alone, then the left, then a new skill where they take turns, then together in Unit 4); `turns` in the song analysis; a new song for both hands met one hand at a time first; slower first songs; a bubble's songs in the map's order; lesson-screen fixes |
 | v0.39 | Oct 20, 2026 | From the first practice sessions: wrong keys, and right keys off time, drawn on the staff where they were played (wrong keys instead of their note name); held-note feedback to potential features; the chosen Play or Listen button flashes a dashed outline while it waits to start, solid blue only while playing; the result card's buttons always in sight |
@@ -36,6 +39,24 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.44 (Oct 24, 2026)
+
+The gray notes of v0.43 were real mistakes: Knock, Knock and Canyon Echo, in the bass clef, read as treble clef and played two octaves up (a recording made while playing showed every key heard, in rhythm and in tune, as C♯5 and D♯5; the keyboard's own C♯5, not a misheard C♯3). v0.42's rule ignored keys that far from the music, so nothing was drawn.
+- **Keys far from the music count again (4, 7.2):** every sure microphone key is drawn where it was played and counts, as with MIDI; a single pure tone is still never sure (v0.42), which keeps an "s" from showing as a top key. The marked `ignored` raw events of v0.43 are gone with the rule.
+- **Wrong-octave hint (3):** after three wrong keys in a row that are each the right key an octave or more away, the same way, the Play screen says so, and for a one-staff song played on the wrong side of middle C names the clef ("This song is in the bass clef: play the keys below middle C"). For MIDI too.
+
+## v0.43 (Oct 24, 2026)
+
+After v0.42, notes went gray with no wrong key shown, and the song rewound. The attempts showed why: the microphone heard some keys an octave or two from where they were played (Knock, Knock's C♯3 and D♯3 never in their own octave during a song, 24 of 24 missed; Canyon Echo 96 of 96), and v0.42 dropped those keys without a trace, where before they were drawn as wrong. The keys are still out of reach (4); now:
+- **Kept and shown (4):** a microphone key out of reach lights its key on the on-screen keyboard, and is kept in the attempt's raw events marked `ignored` (skipped by `tools/fixture_from_attempt.py`).
+- **Recording a song (4):** **Record and send** is also in the Play screen's settings sheet (parent, microphone mode), and every recording now has what the app played meanwhile beside what the microphone heard, so a song's session can be replayed through the detector exactly (`tools/mic_recording.py`, `tools/mic_replay.ts`).
+
+## v0.42 (Oct 23, 2026)
+
+From a Free Play of the left-hand Hot Cross Buns (C3 to E3) with singing: the microphone drew wrong keys far above the staff, up to C8. 96 of its 117 key-downs were a fifth or more outside the piece's keys: the tune sung an octave up, and an "s" heard as a top key.
+- **Keys out of reach (4, 7.2):** a microphone key more than a fifth outside the piece's range (or a lesson card's keys) is ignored by the Play screen and the lessons. A child who really plays that far away still loses the notes they should have played, as missed. MIDI keys always count; the piano check still shows every key heard.
+- **Pure tones (4):** a key heard as a single partial (a top key, or an "s", a whistle, a beep) can match the note expected but never counts as a wrong note.
 
 ## v0.41 (Oct 23, 2026)
 

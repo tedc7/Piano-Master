@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app, pianoLabel } from "../../lib/app.svelte.js";
+  import { RECORD_S, micRecorder } from "../../lib/micRecording.svelte.js";
   import { isVirtualPort, type MidiNote, type MidiPedal } from "../../lib/midi";
   import { KeyboardView, noteName } from "../../lib/keyboard";
 
@@ -104,43 +105,6 @@
     audioLatency,
   });
 
-  // ---- a recording for tuning the microphone input (v0.38): what the microphone hears, with the
-  // keys heard, sent to the piano server's client log in 5-second parts (tools/mic_recording.py)
-  const RECORD_S = 60;
-  let recState = $state<"" | "recording" | "sending" | "sent" | "failed">("");
-  let recProgress = $state(0);
-  let recNote = $state("");
-
-  async function recordAndSend(): Promise<void> {
-    recState = "recording";
-    recNote = "";
-    const rec = await app.mic.record(RECORD_S, (f) => { recProgress = f; });
-    if (!rec) { recState = "failed"; recNote = "The microphone isn't on."; return; }
-    recState = "sending";
-    // 16-bit, at half the rate (24 kHz from 48 kHz): plenty for a piano's keys
-    const half = rec.rate >= 44100;
-    const rate = half ? rec.rate / 2 : rec.rate;
-    const n = half ? Math.floor(rec.samples.length / 2) : rec.samples.length;
-    const pcm = new Int16Array(n);
-    for (let i = 0; i < n; i++) {
-      const x = half ? (rec.samples[2 * i] + rec.samples[2 * i + 1]) / 2 : rec.samples[i];
-      pcm[i] = Math.max(-32768, Math.min(32767, Math.round(x * 32767)));
-    }
-    const id = crypto.randomUUID?.() ?? String(Date.now());
-    const per = rate * 5, parts = Math.ceil(n / per);
-    for (let k = 0; k < parts; k++) {
-      const bytes = new Uint8Array(pcm.buffer, k * per * 2, Math.min(per, n - k * per) * 2);
-      let bin = "";
-      for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-      const ok = await api.logNow("mic recording", { id, part: k, parts, rate, pcm16: btoa(bin),
-        ...(k === 0 && { keys: rec.keys, settings: rec.settings }) });
-      if (!ok) { recState = "failed"; recNote = `Sending part ${k + 1} of ${parts} failed: try again.`; return; }
-      recProgress = (k + 1) / parts;
-    }
-    recState = "sent";
-    recNote = `Sent (recording ${id.slice(0, 8)}, ${rec.keys.filter((e) => e.type === "on").length} keys heard).`;
-  }
-
   function save(): void {
     api.log("info", "piano check", { ...summary, input: app.device.inputMode, ...(app.micMode && { mic: app.mic.applied }) });
     const found: { hasPedal?: boolean; velocitySensitive?: boolean } = {};
@@ -194,11 +158,10 @@
   {#if app.micMode}
     <section class="panel record">
       <h2>Send a recording for tuning</h2>
-      <p>Records {RECORD_S} seconds of what the microphone hears, with the keys the app heard, and sends it to the piano server so the microphone's note detection can be tuned to this keyboard. Press <b>Record</b>, then play each key once, slowly, from the lowest to the highest (about one key every half second), then a few chords.</p>
+      <p>Records {RECORD_S} seconds of what the microphone hears, with the keys the app heard, and sends it to the piano server so the microphone's note detection can be tuned to this keyboard. Press <b>Record</b>, then play each key once, slowly, from the lowest to the highest (about one key every half second), then a few chords. (A song can be recorded too, from the Play screen's ⚙ sheet.)</p>
       <div class="rec-row">
-        <button onclick={recordAndSend} disabled={recState === "recording" || recState === "sending" || app.inputStatus !== "connected"}>
-          {recState === "recording" ? `Recording… ${Math.ceil(RECORD_S * (1 - recProgress))} s` : recState === "sending" ? `Sending… ${Math.round(recProgress * 100)}%` : "Record and send"}</button>
-        {#if recNote}<span class:ok={recState === "sent"} class="muted">{recNote}</span>{/if}
+        <button onclick={() => micRecorder.start({ screen: "piano check" })} disabled={micRecorder.busy || app.inputStatus !== "connected"}>{micRecorder.label}</button>
+        {#if micRecorder.note}<span class:ok={micRecorder.state === "sent"} class="muted">{micRecorder.note}</span>{/if}
       </div>
     </section>
   {/if}
