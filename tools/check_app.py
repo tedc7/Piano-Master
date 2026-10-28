@@ -420,6 +420,13 @@ def main():
                 elif kind == "check":
                     while not page.evaluate("__lesson.done"):
                         q = page.evaluate("__lesson.card.questions[__lesson.progress]")
+                        if q.get("hear"):
+                            # a question with a tune plays it on its own, with no tap on Listen
+                            try:
+                                page.wait_for_function("__lesson.heard.thisCard", timeout=30000)
+                                listened.append(True)
+                            except Exception:
+                                listened.append(False)
                         if isinstance(q["answer"], str):
                             wrong = next(c for c in q["choices"] if c != q["answer"])
                             if wrong_first and not went_back:
@@ -461,6 +468,7 @@ def main():
             raise AssertionError("lesson: never finished")
 
         echo_cues = []
+        listened = []
 
         def ok_pin(digits):
             pad(digits)
@@ -864,8 +872,10 @@ def main():
         page.wait_for_function("__lesson.heard.thisCard", timeout=30000)
         said = [x["text"] for x in page.evaluate("__lesson.voice.log")[-2:]]
         check(said == [hear_text, "Here it is."], f"lesson voice: then it says \"Here it is\" and plays the tune by itself ({said})")
+        listened.clear()
         _, pts = do_lesson()
         check(len(pts) == 3 and sum(pts.values()) == 3, f"lesson: tap-an-answer questions score like key questions ({pts})")
+        check(listened == [True], f"lesson: a Listen question plays its tune by itself ({listened})")
         page.goto(url + "#/config")
         tab("Config").click()
         tile("Journey render test").click()

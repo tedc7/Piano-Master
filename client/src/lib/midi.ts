@@ -2,7 +2,8 @@
 // as MIDIWeb Browser's own "MIDIWeb Out" and iPadOS's "Network Session 1", which appear even with
 // no keyboard (feasibility test Q2, step 3). Reconnects when the piano is unplugged and replugged.
 
-export type MidiStatus = "starting" | "unsupported" | "denied" | "no-piano" | "connected";
+export type MidiStatus = "starting" | "unsupported" | "denied" | "no-piano" | "connected"
+  | "silent";      // the microphone only: on, but giving no sound at all (taken by a call or another app)
 
 export interface MidiNote {
   type: "on" | "off";

@@ -136,7 +136,7 @@
             <p class="why">{refresher ? "A quick look back at this idea." : why[item.reason]}{skill && item.kind !== "lesson" ? ` Skill: ${skill.name}.` : ""}{item.section !== null || item.bars ? " Just the tricky bars." : item.preset ? ` At ${item.preset}% speed.` : ""}{item.hands === "R" ? " Right hand only." : item.hands === "L" ? " Left hand only." : ""}{item.click ? " With the metronome." : ""}</p>
           </div>
           <div class="upnext-actions">
-            <button class="start" onclick={start}>{item.kind === "pick" ? "Choose a song" : "Start"}</button>
+            <button class="start ready" onclick={start}>{item.kind === "pick" ? "Choose a song" : "Start"}</button>
             {#if !item.skipped && s.items.filter((i) => !i.done).length > 1}<button class="quiet" onclick={() => app.skipItem(item.id)}>Skip for now</button>{/if}
           </div>
         </div>
@@ -199,6 +199,12 @@
   .why { font-size: 18px; margin: 0; }
   .upnext-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
   .start { font-size: 24px; min-width: 240px; min-height: 72px; border-radius: 18px; }
+  /* ready to start, like Play's ready look (Play.svelte) */
+  .start.ready {
+    background: #dde8fb; color: var(--accent); outline: 3px dashed var(--accent); outline-offset: -6px;
+    animation: ready 1.2s ease-in-out infinite;
+  }
+  @keyframes ready { 50% { outline-color: transparent; } }
   .soon { margin-top: 12px; }
   .collection { font-weight: 750; color: #8a6200; }
 </style>
