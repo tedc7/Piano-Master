@@ -29,6 +29,7 @@ export interface MicRecording {
   settings: Record<string, unknown>;       // what the browser applied (echo cancellation, ...)
 }
 const TICK_MS = 10;
+const SILENT_TICKS = 300;        // 3 s of exact zeros: the microphone isn't giving sound
 
 /** A key event from the microphone: a MIDI-style note, and whether it is clear enough to count
  *  as a wrong note (lib/pitch.ts). */
@@ -53,6 +54,7 @@ export class MicInput {
   private detector: NoteDetector | null = null;
   private buf = new Float32Array(FRAME);
   private timer = 0;
+  private silentTicks = 0;
   private starting: Promise<void> | null = null;
   private listeners = new Set<Listener>();
   private changeListeners = new Set<() => void>();
@@ -199,6 +201,9 @@ export class MicInput {
     this.inputName = "Microphone";
     this.deviceLabel = track?.label ?? "";
     track?.addEventListener("ended", () => { this.stop(); this.setStatus("no-piano"); });
+    // iPadOS mutes the microphone while a call, Siri or another app has it
+    track?.addEventListener("mute", () => this.setStatus("silent"));
+    track?.addEventListener("unmute", () => this.setStatus("connected"));
     this.timer = window.setInterval(() => this.tick(), TICK_MS);
     this.setStatus("connected");
   }
@@ -210,6 +215,12 @@ export class MicInput {
     const now = performance.now();
     this.analyser.getFloatTimeDomainData(this.buf);
     this.outputTap?.getFloatTimeDomainData(this.outBuf);
+    // exact digital silence is no room, however quiet: the microphone gives no sound at all
+    // (a Piano check recording of 60 s of zeros, Oct 28, 2026)
+    const zero = this.buf.every((v) => v === 0);
+    this.silentTicks = zero ? this.silentTicks + 1 : 0;
+    if (this.silentTicks === SILENT_TICKS && this.status === "connected") this.setStatus("silent");
+    if (!zero && this.status === "silent" && !this.stream?.getAudioTracks()[0]?.muted) this.setStatus("connected");
     const self = this.audio.selfSound(ctx.currentTime);
     const events = this.detector.process(this.buf, now, (p) => self.pitches.has(p), this.outBuf);
     this.levelDb = this.detector.levelDb;

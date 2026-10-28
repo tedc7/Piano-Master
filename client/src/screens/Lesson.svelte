@@ -6,7 +6,8 @@
   //  - Hear: the app plays the example, then a contrast;
   //  - Try: the student plays it on the piano; each note is confirmed, with the next key lit as a hint;
   //  - Check: tap the right key on screen or play it, or tap one of the answers (after listening,
-  //    for an "identify" question); a wrong answer goes back to Show;
+  //    for an "identify" question: its tune plays on its own, then again on Listen); a wrong answer
+  //    goes back to Show;
   //  - Echo: the app plays a short phrase and the student plays it back (ear training);
   //  - Watch: a parent-approved video, if one has been added.
   // Going through it makes the skill Current (arch §8.1); in parent mode nothing is recorded, and
@@ -144,7 +145,7 @@
     await tick();
     const c = card;
     if (!c) return;
-    const acts = c.kind === "show" || c.kind === "echo" || (c.kind === "hear" && autoRead);
+    const acts = c.kind === "show" || c.kind === "echo" || (c.kind === "hear" && autoRead) || (c.kind === "check" && !!c.questions?.[0]?.hear);
     if (autoRead && !acts) timers.push(window.setTimeout(() => void voice.speak(reading()), READ_DELAY_MS));
     const all = keysOf(c);
     if (kbHost && all.length) {
@@ -157,6 +158,7 @@
     if (c.kind === "show") void readThen(true, SAY.showYou, showMe);
     if (c.kind === "hear" && autoRead) void readThen(true, SAY.hereItIs, () => void hear(c.play ?? [], c.tempo, c.level));
     if (c.kind === "try") hint();
+    if (c.kind === "check" && c.questions?.[0]?.hear) listenFirst(true);
     if (c.kind === "echo") {
       echoPlayed = [];
       replays = 0;
@@ -197,10 +199,24 @@
         if (at !== intro) return;
         if (!read) { act(); return; }
       }
-      await voice.speak(cue);
-      if (at !== intro) return;
+      if (cue) {
+        await voice.speak(cue);
+        if (at !== intro) return;
+      }
     }
     act();
+  }
+
+  /** A Check question with a tune to listen to plays it on its own, like a Hear card: read first
+   *  with Auto-read on (on arriving, after the pause; a later question straight away), otherwise a
+   *  moment after it shows. Listen plays it again; a tap on it cancels what was waiting. */
+  function listenFirst(arriving: boolean): void {
+    const c = card!;
+    const q = c.questions![progress];
+    const play = () => { if (card === c && c.questions![progress] === q) void hear(q.hear ?? [], 90); };
+    if (autoRead) { void readThen(arriving, arriving ? "" : q.text, play); return; }
+    const at = ++intro;
+    timers.push(window.setTimeout(() => { if (at === intro) play(); }, 900));
   }
 
   /** A tap that plays or shows something now: whatever reading-then-action was under way stops. */
@@ -334,7 +350,13 @@
     if (!(k in points)) points[k] = questionPoints(wrongTries[k] ?? 0);   // the first time it is got right
     progress++;
     if (progress >= c.questions!.length) { done[step] = true; feedback = `${SAY.checkDone} 🎉`; say(SAY.checkDone); }
-    else { feedback = "Yes!"; timers.push(window.setTimeout(() => { after?.(); say(c.questions![progress].text); }, 600)); }
+    else {
+      feedback = "Yes!";
+      timers.push(window.setTimeout(() => {
+        after?.();
+        if (c.questions![progress].hear) listenFirst(false); else say(c.questions![progress].text);
+      }, 600));
+    }
   }
 
   function wrongAnswer(): void {
@@ -443,7 +465,7 @@
           {#if card.kind === "check" && card.questions && !done[step]}
             {@const q = card.questions[progress]}
             <p class="text question">{q.text}</p>
-            {#if q.hear}<button class="quiet" onclick={() => hear(q.hear ?? [], 90)}>▶ Listen</button>{/if}
+            {#if q.hear}<button class="quiet" onclick={() => { now(); void hear(q.hear ?? [], 90); }}>▶ Listen</button>{/if}
             {#if q.choices}
               <div class="choices">
                 {#each q.choices as ch (ch)}<button class="choice" onclick={() => choose(ch)}>{ch}</button>{/each}

@@ -513,6 +513,7 @@ export function pianoLabel(status: MidiStatus, name: string | null, mic = false)
       case "starting": return "Starting the microphone…";
       case "unsupported": return "No microphone in this browser";
       case "denied": return "Microphone not allowed";
+      case "silent": return "Microphone silent: close other apps using it, or reload";
       default: return "No microphone found";
     }
   }

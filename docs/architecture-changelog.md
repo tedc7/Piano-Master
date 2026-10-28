@@ -6,6 +6,8 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.46 | Oct 28, 2026 | From three more key-range recordings: one clear partial is enough from A♯4 up; a microphone giving no sound says so |
+| v0.45 | Oct 27, 2026 | From practice sessions: a Check card's Listen question plays its tune on its own, after the question is read; Today's Practice's Start button has Play's ready look |
 | v0.44 | Oct 24, 2026 | Microphone keys far from the music count again, drawn where played (v0.42's rule hid a bass-clef song played as treble clef); a wrong-octave hint names the mistake and the clef |
 | v0.43 | Oct 24, 2026 | Microphone keys out of reach kept in the attempt (marked) and lit on the keyboard; Record and send from the Play screen, with what the app played |
 | v0.42 | Oct 23, 2026 | The microphone ignores keys more than a fifth outside the music's own (singing heard as keys, up to C8, in a left-hand piece on C3 to E3), and a single pure tone is never surely wrong |
@@ -39,6 +41,19 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.46 (Oct 28, 2026)
+
+From three more Piano check recordings of the keyboard's range, low to high (replayed with `tools/mic_replay.ts`, keys labelled from each one's onsets and spectra). Two agreed with the first (Oct 19): C3 to B5 heard, 30 of 33 and 35 of 35 (the first: 36 of 36), the top keys mostly, the bottom octave still about half, and every false key-down that counts in the bottom octave.
+- **One partial from A♯4 up (4):** B4 and D♯5, nearly pure tones in the slower run, were missed for lack of a second harmonic; one clear partial is now enough from A♯4 (it was E5). The slower run hears 32 of 33 from C3 to B5; the others are unchanged, with a few more unsure key-downs, which never count as wrong.
+- **A silent microphone says so (4):** the third recording was 60 seconds of exact zeros: the microphone gave no sound at all. Now 3 seconds of zeros, or iPadOS muting the microphone (a call, Siri, another app), shows "Microphone silent: close other apps using it, or reload", and Play waits.
+
+## v0.45 (Oct 27, 2026)
+
+From the family's practice sessions:
+
+- **A Listen question plays by itself (3 "Teaching concepts", 7.8).** On a Check card, a question with a phrase to listen to ("Listen. Steps or skips?") waited for a tap on Listen, while Hear and Echo cards play on their own; in practice the child waited for it. Now the phrase plays once the question has been read (Auto-read on), or a moment after it shows (Auto-read off), for the first question and for each one after it. Listen plays it again and cancels a play still waiting. The browser check confirms it.
+- **Start looks ready (8.5).** The Up next card's Start button is pale blue with a flashing dashed outline, like Play while it waits for a tap (v0.39) and the lesson's Next and Done.
 
 ## v0.44 (Oct 24, 2026)
 
