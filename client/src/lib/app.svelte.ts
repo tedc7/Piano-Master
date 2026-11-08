@@ -240,6 +240,14 @@ class AppState {
     go(`play/${id}`);
   }
 
+  /** A concept lesson opened from a screen (the Journey): its Back returns there as it was left. */
+  lessonFrom: string | null = null;
+  openLesson(skillId: string, from: string): void {
+    this.returnTo = from;
+    this.lessonFrom = from;
+    go(`lesson/${encodeURIComponent(skillId)}`);
+  }
+
   /** The Play screen's Back: to the screen that opened the song, as it was left. */
   back(): void {
     this.returning = this.returnTo;

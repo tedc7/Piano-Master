@@ -346,6 +346,26 @@ def test_a_strong_week_steps_the_target_up(con, content):
     assert engine.adjust_target(con, content, "s1", D0 + timedelta(days=8)) == 17.5   # once a week
 
 
+def test_a_week_short_of_its_minutes_holds_the_target(con, content):
+    # every session completed and a skill mastered, but 10 of the 15 minutes each day (v0.47)
+    master(con, content)
+    for k in range(7):
+        d = D0 + timedelta(days=k)
+        engine.get_session(con, content, "s1", d)
+        engine.add_practice(con, "s1", d, 600, True)
+        con.execute("UPDATE practice_days SET session_completed = 1 WHERE student_id = 's1' AND date = ?", (d.isoformat(),))
+    assert engine.adjust_target(con, content, "s1", D0 + timedelta(days=7)) == 15.0
+
+
+def test_a_song_the_session_may_ask_for_is_open_in_the_library(con, content):
+    # v0.47: library-ready is the session's rule, one Current skill beyond the passed ones
+    pa1 = content.pieces["pa1"]
+    assert not engine.library_ready(pa1, states(con, content))       # t.a not learned yet
+    learn(con, content, "t.a", D0)
+    st = states(con, content)
+    assert st["t.a"].status == "current" and engine.library_ready(pa1, st)
+
+
 def test_other_required_skills_get_review_credit_from_their_own_bars(con, content):
     # pd1 needs t.a in bars 1-2 and features t.d in bars 3-4 (skill measures, §6.8)
     pd1 = content.pieces["pd1"]

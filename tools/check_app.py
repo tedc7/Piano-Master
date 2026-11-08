@@ -604,6 +604,20 @@ def main():
         page.wait_for_selector(".bubble.done >> nth=1")
         check(page.locator(".bubble.done").count() == 2 and page.locator('.node [aria-label="♪: 5 of 5 stars"]').count() == 1,
               "practice: the lesson and the song are checked off, the song with its 5 stars")
+        # the minutes ring is the path's last step (v0.47), and practice isn't complete before it is full
+        lefts = page.evaluate("[...document.querySelectorAll('.path .node')].map(n => [n.classList.contains('ring-node'), n.offsetLeft])")
+        check(lefts[-1][0] and lefts[-1][1] == max(x for _, x in lefts) and page.locator(".path .ring-node .ring").count() == 1
+              and page.get_by_text("Today's Practice Complete!").count() == 0,
+              f"practice: the minutes ring is the last step on the path ({len(lefts) - 1} items before it)")
+        # on a narrow screen the path scrolls to the step up next (v0.47)
+        size = page.viewport_size
+        page.set_viewport_size({"width": 700, "height": size["height"]})
+        page.wait_for_timeout(400)
+        seen = page.evaluate("""(() => { const p = document.querySelector('.path-panel'), b = document.querySelector('.bubble.next');
+            const r = p.getBoundingClientRect(), q = b.getBoundingClientRect();
+            return [p.scrollWidth > p.clientWidth, p.scrollLeft, q.left >= r.left && q.right <= r.right]; })()""")
+        page.set_viewport_size(size)
+        check(seen[0] and seen[1] > 0 and seen[2], f"practice: a path wider than the screen scrolls to the step up next ({seen})")
         wait_api(page, f"fetch('api/attempts?piece_id={first}').then(r => r.json()).then(j => j.attempts.some(a => a.studentId))", timeout=15000)
         stored = page.evaluate(f"fetch('api/attempts?piece_id={first}').then(r => r.json())")["attempts"][0]
         check(stored["context"] == "guided" and stored["itemId"] and stored["skillId"] == "prep-a.sitting",
@@ -617,6 +631,15 @@ def main():
         tab("Journey").click()
         page.wait_for_selector(".map .bubble")
         page.wait_for_timeout(300)
+        # opened from the tab bar, the map centres on the skill to learn next (v0.47): here the first
+        # one ready to learn, as far as the map scrolls
+        seq = {s["name"]: s["sequence"] for s in skillmap}
+        ready = page.evaluate("[...document.querySelectorAll('.map .bubble.open')].map(b => [b.getAttribute('aria-label').split(':')[0], b.parentElement.offsetLeft])")
+        name, x = min(ready, key=lambda r: seq[r[0]])
+        el = "document.querySelector('.map-body')"
+        w, most, left = page.evaluate(f"[{el}.clientWidth, {el}.scrollWidth - {el}.clientWidth, {el}.scrollLeft]")
+        want = max(0, min(most, x + 46 - w / 2))
+        check(abs(left - want) <= 2, f"journey: opens centred on the next skill to learn, {name} (scrolled {left}, want {want:.0f})")
         states = page.evaluate("[...document.querySelectorAll('.map .bubble')].map(b => [...b.classList].find(c => ['locked', 'open', 'current', 'passed', 'mastered'].includes(c)))")
         check(states.count("passed") == 1 and states.count("open") == 2 and states.count("locked") == len(states) - 3 and len(states) == 47,
               f"journey: the first skill passed, its two branches ready to learn, the rest locked ({states})")
@@ -627,6 +650,20 @@ def main():
         check(page.get_by_text("Unlocks after:").count() == 1, "journey: a locked bubble says what it needs")
         page.locator(".map .name").first.click()
         check(page.locator(".sheet").count() == 0, "journey: a tap outside the pop-up closes it")
+        # back from a lesson opened here: the map as it was left, with the same pop-up open (v0.47)
+        page.locator(".bubble.passed").first.click()
+        page.evaluate("document.querySelector('.map-body').scrollLeft = 300")
+        page.wait_for_timeout(200)
+        left = page.evaluate("document.querySelector('.map-body').scrollLeft")
+        page.evaluate("document.querySelectorAll('.sheet .card')[0].click()")
+        page.wait_for_function("window.__lesson && window.__lesson.card")
+        page.get_by_role("button", name="‹ Back").click()
+        page.wait_for_selector(".sheet")
+        page.wait_for_timeout(300)
+        back = (page.locator(".sheet h2").inner_text(), page.evaluate("document.querySelector('.map-body').scrollLeft"))
+        check(back[0] == "Sitting at the piano" and left > 0 and abs(back[1] - left) <= 2,
+              f"journey: ‹ Back from a lesson returns to the map as it was left ({back}, scrolled {left})")
+        page.locator(".map .name").first.click()
 
         tab("Songs").click()
         page.wait_for_selector(".song")

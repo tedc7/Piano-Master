@@ -28,8 +28,8 @@
   let openId = $state<string | null>(null);       // the bubble whose pop-up is showing
   const open = $derived(openId ? content?.map.skills.find((s) => s.id === openId) ?? null : null);
   let bodyEl = $state<HTMLElement>();
-  // back from a song: the map scrolled where it was, with the same pop-up open
-  keepView<string | null>(untrack(() => (test ? "journey/test" : "journey")), () => bodyEl, { get: () => openId, set: (v) => { openId = v; } });
+  // back from a song or a lesson: the map scrolled where it was, with the same pop-up open
+  const restored = keepView<string | null>(untrack(() => (test ? "journey/test" : "journey")), () => bodyEl, { get: () => openId, set: (v) => { openId = v; } });
 
   /** A tap outside the pop-up and the bubbles closes the pop-up (a bubble opens its own). */
   function tapOutside(e: MouseEvent): void {
@@ -105,6 +105,23 @@
   type Shown = "locked" | "open" | "current" | "passed" | "mastered";
   /** Locked, but with its concept lesson open: ready to learn. */
   const shown = (p: SkillProgress | undefined): Shown => (p?.status === "locked" && p.lessonOpen ? "open" : p?.status ?? "locked");
+
+  // opened fresh (not by Back): the map scrolls so the skill being learned is in the middle, the
+  // first Current one, else the first ready to learn (v0.47); a new map starts at its beginning
+  let centered = false;
+  $effect(() => {
+    if (centered || restored || test || !bodyEl || !placed.length || !progress.size) return;
+    const by = (st: Shown) => placed.filter((p) => shown(progress.get(p.skill.id)) === st)
+                                    .sort((a, b) => a.skill.sequence - b.skill.sequence)[0];
+    const at = by("current") ?? by("open");
+    centered = true;
+    if (!at) return;
+    const el = bodyEl;
+    requestAnimationFrame(() => {
+      el.scrollLeft = at.x + BUBBLE / 2 - el.clientWidth / 2;
+      el.scrollTop = at.y + BUBBLE / 2 - el.clientHeight / 2;
+    });
+  });
 
   // columns by depth (the longest prerequisite chain); within a column, rows follow the average row
   // of each skill's prerequisites (then sequence), so the paths cross as little as they can
@@ -233,7 +250,7 @@
         <p class="notice">Start with the concept lesson: it shows the new idea, then the songs open.</p>
       {/if}
       <div class="cards">
-        <button class="card" disabled={!canOpen(open)} onclick={() => go(`lesson/${encodeURIComponent(open!.id)}`)}>
+        <button class="card" disabled={!canOpen(open)} onclick={() => app.openLesson(open!.id, "journey")}>
           <span class="card-title">💡 Concept lesson</span>
           <span class="card-meta">Learn the new idea</span>
         </button>

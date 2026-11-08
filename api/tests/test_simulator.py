@@ -56,7 +56,8 @@ def test_no_rule_is_broken(fast, slow, inconsistent, hard):
 
 def test_unlocking_follows_the_pace_of_the_learner(fast, slow, content):
     assert fast.passed_count[DAYS - 1] > slow.passed_count[DAYS - 1] > 3
-    assert fast.passed_count[DAYS - 1] >= slow.passed_count[DAYS - 1] + 10 and fast.passed_count[27] >= 30
+    # compared mid-way: playing on to the day's minutes (v0.47) brings both near the end of the map
+    assert fast.passed_count[27] >= slow.passed_count[27] + 10 and fast.passed_count[27] >= 30
     # mastery follows passing, a day or more later (2 separate days)
     first_pass = {s: d for d, s, _ in reversed(fast.passes)}
     assert fast.mastered and all(d > first_pass[s] for d, s in fast.mastered)

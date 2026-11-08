@@ -1,7 +1,7 @@
-// Back from a song to the screen that opened it, as it was left (arch §3, v0.29): its scroll
-// position and what it had open (the Journey's skill pop-up, the library's filter). A screen keeps
-// its view here as it changes; the view is put back only when the Play screen's Back returns to
-// that screen, so the tab bar still opens every screen fresh.
+// Back from a song (or, since v0.47, a lesson) to the screen that opened it, as it was left (arch §3,
+// v0.29): its scroll position and what it had open (the Journey's skill pop-up, the library's filter).
+// A screen keeps its view here as it changes; the view is put back only when Back returns to that
+// screen, so the tab bar still opens every screen fresh.
 import { onMount } from "svelte";
 import { app } from "./app.svelte.js";
 
@@ -9,9 +9,10 @@ interface View { top: number; left: number; extra: unknown }
 const views = new Map<string, View>();
 
 /** Call while the screen's component starts. `key` is the route the screen is at (as given to
- *  app.openPiece); `scroller` is the element that scrolls; `extra` the screen's own state. */
+ *  app.openPiece); `scroller` is the element that scrolls; `extra` the screen's own state. Returns
+ *  whether a view is being put back (else the screen opens fresh). */
 export function keepView<T>(key: string, scroller: () => HTMLElement | null | undefined,
-                            extra?: { get: () => T; set: (v: T) => void }): void {
+                            extra?: { get: () => T; set: (v: T) => void }): boolean {
   const back = app.takeReturn(key);
   const saved = back ? views.get(key) : undefined;
   if (saved && saved.extra !== undefined) extra?.set(saved.extra as T);
@@ -39,4 +40,5 @@ export function keepView<T>(key: string, scroller: () => HTMLElement | null | un
       views.set(key, { ...(views.get(key) ?? view()), extra: extra?.get() });
     };
   });
+  return !!saved;
 }

@@ -89,6 +89,8 @@
   // fixed when the screen opens, like the Play screen's session item
   const itemId = untrack(() => app.session?.items.find((i) => !i.done && i.kind === "lesson" && i.skillId === skillId)?.id ?? null);
   const inSession = itemId !== null;
+  // opened from the Journey: Back returns to the map as it was left (v0.47)
+  const from = untrack(() => { const f = app.lessonFrom; app.lessonFrom = null; return f; });
   const opened = performance.now();
 
   onMount(() => {
@@ -439,7 +441,7 @@
   }
 
   function leave(): void {
-    if (inSession) go("session"); else if (history.length > 1) history.back(); else go("journey");
+    if (inSession) go("session"); else if (from) app.back(); else if (history.length > 1) history.back(); else go("journey");
   }
 </script>
 
