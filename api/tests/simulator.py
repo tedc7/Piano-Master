@@ -101,7 +101,7 @@ class Sim:
             self.ability[sid] = a + rate * (1 - a)
         st = stars_for(acc)
         tim = max(0.5, st - self.rng.choice([0, 0.5, 1.0]))
-        info = engine.AttemptInfo(piece_id=pid, day=today, context="guided", mode=mode, completed=True, accuracy=acc,
+        info = engine.AttemptInfo(piece_id=pid, day=today, context="guided" if item else "free", mode=mode, completed=True, accuracy=acc,
                                   accuracy_stars=st, timing_stars=tim, duration_sec=p.play_seconds() * 1.3,
                                   preset=preset, skill_id=item["skillId"] if item else sid,
                                   item_id=item["id"] if item else None, tricky_phrase=1 if st < 4 else None)
@@ -147,6 +147,17 @@ class Sim:
                 used += 60
             done.append(it)
             self.check(today)
+        # the items done, the student plays on until the day's minutes are reached (the ring, v0.47)
+        for _ in range(40):
+            r = self.con.execute("SELECT guided_sec + free_sec FROM practice_days WHERE student_id = 's' AND date = ?",
+                                 (today.isoformat(),)).fetchone()
+            if not r or r[0] >= s["targetMinutes"] * 60:
+                break
+            states = engine.load_states(self.con, self.c, "s")
+            ready = [p for p in self.c.pieces.values() if engine.library_ready(p, states)]
+            if not ready:
+                break
+            self.play(self.rng.choice(ready).id, today, None)
         self.log.played[n] = done
 
     def check(self, today: date) -> None:

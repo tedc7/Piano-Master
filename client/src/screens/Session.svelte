@@ -2,7 +2,8 @@
   // Today's Practice (arch §3, §8.5): the student's start screen. The whole session is shown as a
   // path of bubbles, like the Journey map, so it is clear how many items finish it: done items
   // are checked off with the stars they earned, and the next one has an "Up next" card with the
-  // reason and a big Start button. The ring shows today's practice minutes toward the target.
+  // reason and a big Start button. The ring of today's practice minutes is the path's last step
+  // (v0.47): practice is complete for the student once the items are done and the ring is full.
   // The lesson engine on the piano server builds the queue; it is resumed on any device today.
   import { onMount } from "svelte";
   import Stars from "../components/Stars.svelte";
@@ -15,7 +16,7 @@
   import { keepView } from "../lib/keep";
   import { go } from "../lib/route";
 
-  const STEP = 200, BUBBLE = 84, X0 = 30, Y0 = 30, WAVE = 56;
+  const STEP = 200, MIN_STEP = 165, BUBBLE = 84, RING = 130, X0 = 30, Y0 = 30, WAVE = 56;
 
   let content = $state<Content | null>(null);
   let error = $state("");
@@ -33,6 +34,9 @@
   const target = $derived(app.day?.targetMinutes ?? 15);
   const minutes = $derived(Math.floor(((app.day?.guidedSec ?? 0) + (app.day?.freeSec ?? 0)) / 60));
   const ring = $derived(Math.min(1, minutes / target));
+  // what the student sees as complete: the items and the minutes. The server's own "session
+  // completed" (the weekly target step, §8.6) still counts the items only.
+  const timeDone = $derived(minutes >= target);
   // a "Song needed" note (no song this child may play practises its skill) is shown on the path
   // but is nothing to play: it is left out of the counts
   const toPlay = $derived(s ? s.items.filter((i) => i.kind !== "needed") : []);
@@ -40,8 +44,23 @@
   // the star collection (M10): each song's best stars added up, and what it grew by today
   const stars = $derived(app.rewards?.stars ?? null);
   const starsToday = $derived(app.rewards?.starsToday ?? 0);
-  const pos = (i: number) => ({ x: X0 + i * STEP, y: Y0 + (i % 2 ? WAVE : 0) });
-  const width = $derived(X0 * 2 + Math.max(0, (s?.items.length ?? 1) - 1) * STEP + 170);
+  const last = $derived(s?.items.length ?? 0);                // the ring's place on the path, after the items
+  // the steps close up (to MIN_STEP) so a usual session and its ring fit the panel; a longer one scrolls
+  let panelW = $state(0);
+  const step = $derived(panelW ? Math.max(MIN_STEP, Math.min(STEP, (panelW - 20 - X0 * 2 - RING - 25) / Math.max(1, last))) : STEP);
+  const pos = (i: number) => ({ x: X0 + i * step, y: Y0 + (i % 2 ? WAVE : 0) });
+  const width = $derived(X0 * 2 + last * step + RING + 25);
+  // a path longer than its panel scrolls to the step up next (the ring, once the items are done):
+  // on arriving here, and each time an item is checked off (v0.47). A number, so a refresh that
+  // keeps the same step leaves the student's own scrolling alone.
+  let panelEl = $state<HTMLElement>();
+  const focus = $derived(s ? (item ? s.items.findIndex((i) => i.id === item.id) : last) : -1);
+  $effect(() => {
+    const el = panelEl, at = focus, w = panelW;
+    if (!el || at < 0 || !w) return;
+    const x = pos(at).x + (at === last ? RING : BUBBLE) / 2 + 10;      // 10: the panel's padding
+    requestAnimationFrame(() => { el.scrollLeft = x - w / 2; });
+  });    // the ring's label is wider than the ring
 
   const reasonIcon: Record<SessionReason, string> = {
     Review: "🔁", New: "✨", "Tricky spot": "🎯", Polish: "💎", Support: "🧱", "Your pick": "🎁", Focus: "🔍",
@@ -61,7 +80,7 @@
 
   function curve(i: number): string {
     const a = pos(i), b = pos(i + 1), h = BUBBLE / 2;
-    const x1 = a.x + h, y1 = a.y + h, x2 = b.x + h, y2 = b.y + h, xm = (x1 + x2) / 2;
+    const x1 = a.x + h, y1 = a.y + h, x2 = b.x + (i + 1 === last ? RING / 2 : h), y2 = b.y + h, xm = (x1 + x2) / 2;
     return `M${x1},${y1} C${xm},${y1} ${xm},${y2} ${x2},${y2}`;
   }
 
@@ -75,7 +94,7 @@
 
 <div class="screen">
   <Status title="Today's Practice">
-    {#if s}<span class="muted">{doneCount} of {toPlay.length} done</span>{/if}
+    {#if s}<span class="muted">{doneCount} of {toPlay.length} done · ⏱ {minutes} of {target} min</span>{/if}
     {#if stars !== null}<span class="collection">★ {starText(stars)}{starsToday > 0 ? ` · +${starText(starsToday)} today` : ""}</span>{/if}
     {#if app.day}<span>🔥 {app.day.streak} day{app.day.streak === 1 ? "" : "s"}</span>{/if}
   </Status>
@@ -90,11 +109,11 @@
 
     {#if s}
       <div class="top">
-        <section class="panel path-panel">
+        <section class="panel path-panel" bind:clientWidth={panelW} bind:this={panelEl}>
           <div class="path" style:width="{width}px">
             <svg class="lines" width={width} height={Y0 * 2 + WAVE + BUBBLE} aria-hidden="true">
-              {#each s.items.slice(0, -1) as it, i (it.id)}
-                <path d={curve(i)} class:done={it.done && s.items[i + 1].done} />
+              {#each s.items as it, i (it.id)}
+                <path d={curve(i)} class:done={it.done && (i + 1 === last ? timeDone : s.items[i + 1].done)} />
               {/each}
             </svg>
             {#each s.items as it, i (it.id)}
@@ -121,11 +140,17 @@
                 {/if}
               </div>
             {/each}
+            <!-- the last step: today's practice time -->
+            <div class="node ring-node" style:left="{pos(last).x}px" style:top="{pos(last).y + BUBBLE / 2 - RING / 2}px">
+              <div class="ring" style:--p={ring} aria-label="{minutes} of {target} minutes today">
+                <div class="ring-inner">{#if timeDone}<b>✓</b>{:else}<b>{minutes}</b>{/if}<span>of {target} min</span></div>
+              </div>
+              {#if !item && !timeDone}<span class="tag">Up next</span>{/if}
+              <div class="name">Practice time</div>
+              <div class="reason">{timeDone ? "Done" : `${target - minutes} more min`}</div>
+            </div>
           </div>
         </section>
-        <div class="ring" style:--p={ring} aria-label="{minutes} of {target} minutes today">
-          <div class="ring-inner"><b>{minutes}</b><span>of {target} min</span></div>
-        </div>
       </div>
 
       {#if item}
@@ -139,6 +164,16 @@
             <button class="start ready" onclick={start}>{item.kind === "pick" ? "Choose a song" : "Start"}</button>
             {#if !item.skipped && s.items.filter((i) => !i.done).length > 1}<button class="quiet" onclick={() => app.skipItem(item.id)}>Skip for now</button>{/if}
           </div>
+        </div>
+      {:else if !timeDone}
+        <!-- the items are done: playing on until the ring is full completes today's practice -->
+        <div class="upnext">
+          <div class="upnext-text">
+            <p class="label">Up next · Practice time</p>
+            <h1>Any song you like</h1>
+            <p class="why">Keep playing until the circle is full: {target - minutes} more minute{target - minutes === 1 ? "" : "s"} today.</p>
+          </div>
+          <div class="upnext-actions"><button class="start ready" onclick={() => go("library")}>Choose a song</button></div>
         </div>
       {:else}
         <div class="upnext done">
@@ -180,8 +215,10 @@
   .tag { position: absolute; top: -14px; right: -38px; background: #ffe7a3; border-radius: 999px; padding: 1px 8px; font-size: 13px; font-weight: 800; white-space: nowrap; }
   .name { width: 180px; text-align: center; font-weight: 700; font-size: 15px; margin-top: 6px; line-height: 1.2; }
   .reason, .picked { font-size: 13px; color: var(--muted); font-weight: 650; }
+  .ring-node { width: 130px; }
+  .ring-node .tag { right: -30px; }
   .ring {
-    flex: 0 0 130px; height: 130px; border-radius: 50%;
+    width: 130px; height: 130px; border-radius: 50%; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     background: conic-gradient(var(--ok) calc(var(--p) * 360deg), #e4e2da 0);
     display: grid; place-items: center;
   }

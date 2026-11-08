@@ -185,7 +185,9 @@ def guided_ready(p: Piece, states: dict[str, SkillState], learning: str | None =
 
 
 def library_ready(p: Piece, states: dict[str, SkillState]) -> bool:
-    return not p.beyond and all(states[r].counts_passed for r in p.required if r in states)
+    """Free Play, the song library and the Reward slot (6.8): since v0.47 what Guided sessions may
+    ask for, so a song a session plays is open in the library too."""
+    return guided_ready(p, states)
 
 
 # ------------------------------------------------------------------------------ attempts
@@ -463,7 +465,8 @@ def streak(con: sqlite3.Connection, student_id: str, today: date) -> int:
 
 def adjust_target(con: sqlite3.Connection, content: Content, student_id: str, today: date) -> float:
     """Today's target length (8.6): down 2.5 minutes for every 3 days missed after a gap, up 2.5
-    after a strong week; always between 10 and 30 minutes."""
+    after a strong week (and, since v0.47, the day's minutes reached on 80% of its practice days);
+    always between 10 and 30 minutes."""
     r = con.execute("SELECT target_minutes, target_checked, start_date FROM students WHERE id = ?", (student_id,)).fetchone()
     target = float(r["target_minutes"])
     checked = day(r["target_checked"]) or day(r["start_date"]) or today
@@ -483,9 +486,13 @@ def adjust_target(con: sqlite3.Connection, content: Content, student_id: str, to
         sessions = con.execute("SELECT COUNT(*) FROM sessions WHERE student_id = ? AND date >= ? AND date < ?",
                                (student_id, iso(since), iso(today))).fetchone()[0]
         completed = sum(1 for x in week if x["session_completed"])
+        # the day's minutes reached (v0.47): a child who practises often but stops short holds the target
+        reached = sum(1 for x in week if practiced(x["guided_sec"], x["free_sec"])
+                      and x["guided_sec"] + x["free_sec"] >= x["target_minutes"] * 60)
         mastered = con.execute("SELECT COUNT(*) FROM skill_states WHERE student_id = ? AND mastered_date >= ? AND mastered_date < ?",
                                (student_id, iso(since), iso(today))).fetchone()[0]
-        if days_practiced >= 5 and sessions and completed / sessions >= 0.8 and mastered >= 1:
+        if days_practiced >= 5 and sessions and completed / sessions >= 0.8 and mastered >= 1 \
+                and reached >= 0.8 * days_practiced:
             target = min(TARGET_MAX, target + TARGET_STEP)
         checked = today
     con.execute("UPDATE students SET target_minutes = ?, target_checked = ? WHERE id = ?", (target, iso(checked), student_id))

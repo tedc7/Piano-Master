@@ -34,8 +34,9 @@ export function requiredSkills(piece: PieceSummary): string[] {
   return piece.requiredSkills ?? (piece.skillId ? [piece.skillId] : []);
 }
 
-/** Library-ready: every required skill passed (§6.8). Otherwise the skills still to reach; a
- *  piece needing something no skill in the map covers yet is never ready (`beyond`). */
+/** Library-ready (§6.8): what Today's Practice may ask for (v0.47), every required skill passed
+ *  except at most one being learned now (Current). Otherwise the skills still to reach; a piece
+ *  needing something no skill in the map covers yet is never ready (`beyond`). */
 export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progress): { ready: boolean; toReach: Skill[]; beyond: string[] } {
   const beyond = piece.beyondMap ?? [];
   const byId = new Map(map.skills.map((s) => [s.id, s]));
@@ -49,7 +50,9 @@ export function libraryState(piece: PieceSummary, map: SkillMap, progress: Progr
   };
   requiredSkills(piece).forEach(visit);
   const list = [...toReach.values()].sort((a, b) => a.sequence - b.sequence);
-  return { ready: list.length === 0 && beyond.length === 0, toReach: list, beyond };
+  const short = requiredSkills(piece).filter((id) => byId.has(id) && !isPassed(progress.get(id)));
+  const ready = beyond.length === 0 && (short.length === 0 || (short.length === 1 && progress.get(short[0])?.status === "current"));
+  return { ready, toReach: list, beyond };
 }
 
 export type SessionReason = "Review" | "New" | "Tricky spot" | "Polish" | "Support" | "Your pick" | "Focus";

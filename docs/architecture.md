@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.46** · Oct 28, 2026
+**Version 0.47** · Nov 8, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -176,7 +176,7 @@ The app offers **Guided** practice (the daily session from the skill map) and **
 
 1. **Student picker:** large avatar cards, one per child, plus a small "Parent" button that asks for the PIN. Shows the full-screen reminder when needed (2.2).
 2. **Home:** two big buttons, "Today's Practice" (Guided) and "Free Play". Shows today's session as 3 to 5 cards, a progress ring toward today's target minutes, the streak, and the star collection with what it grew by today (v0.36, "Rewards" below).
-3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its concept lesson and practice songs; a tap anywhere else closes them (v0.29).
+3. **Journey map:** the skill map as a winding, branching path of skill bubbles (see "Journey maps" below). Each bubble shows locked, current, passed, or mastered, plus two star rows. Tapping a bubble shows its concept lesson and practice songs; a tap anywhere else closes them (v0.29). Opened from the tab bar, the map scrolls so the skill being learned (the first Current skill, else the first one ready to learn) is in the middle; Back from a song or a lesson returns to the map as it was left (v0.47).
 4. **Lesson intro:** a short interactive concept lesson, with an optional parent-approved video (see "Teaching concepts" below).
 5. **Play screen:** the core screen (below).
 6. **Result screen:** accuracy stars and timing stars (0.5 to 5), what the play earned once the server has it (a skill passed or mastered, a new medal, a new best on the song, the stars it added to the collection; v0.36), the trickiest measure, a small "practice mode" chip when practice aids were used (section 7.5), and "Practice tricky part", "Play again", "Next". After 3 tries at an item without passing, the main button becomes **"Try it another way"**, which opens gentle practice choices (8.1).
@@ -612,7 +612,7 @@ Beginner courses teach through their own pieces, but those pieces and their arra
 | Readiness | Rule | Where it is used |
 | --- | --- | --- |
 | **Guided-ready** | Every required skill is passed, except at most one, which is a Current skill (being learned now): "passed skills + 1" | Guided sessions, so every Current skill always has pieces to practice |
-| **Library-ready** | Every required skill is passed | Free Play, the song library, and the Reward slot |
+| **Library-ready** | The same as Guided-ready since v0.47 (every required skill passed until then): a song Today's Practice may ask for is open on the Songs page too | Free Play, the song library, and the Reward slot |
 
 A song is visible in the library when at least one of its arrangements is library-ready and the song is allowed for the child.
 
@@ -816,7 +816,7 @@ When all of a skill's prerequisites are passed, its concept lesson opens (the bu
 
 A skill that needs a capability the current setup lacks (for example a pedal) is marked **capability hold**: it shows "Needs pedal" on the map, is skipped by the session planner, counts as passed for the skills that depend on it and for unlocking, and becomes Current as soon as the capability is detected.
 
-**Unlocking:** Passed, Mastered, and held skills count as passed. A skill unlocks when all of its prerequisites are passed. Arrangements unlock by their required skills (6.8): Guided sessions may use pieces that need one Current skill beyond the passed skills ("passed skills + 1"); Free Play and the library show only pieces whose required skills are all passed.
+**Unlocking:** Passed, Mastered, and held skills count as passed. A skill unlocks when all of its prerequisites are passed. Arrangements unlock by their required skills (6.8): Guided sessions may use pieces that need one Current skill beyond the passed skills ("passed skills + 1"); Free Play and the library show the same pieces since v0.47 (until then only pieces whose required skills were all passed), so a song a session asks for is never locked on the Songs page.
 
 #### Gentle options when a skill is hard
 
@@ -909,11 +909,11 @@ The Journey map shows the same information visually: refresh badges on due skill
 
 Today's target length starts at 15 minutes and adjusts automatically between 10 and 30 minutes. It is a goal, never a limit: the app never stops or locks the student out. All "days" are the local calendar day on the server.
 
-- **Weekly step up (+2.5 min):** practiced on 5 or more of the last 7 days, completed at least 80% of sessions, and mastered at least 1 new skill that week.
+- **Weekly step up (+2.5 min):** practiced on 5 or more of the last 7 days, completed at least 80% of sessions, mastered at least 1 new skill that week, and (v0.47) reached the day's target minutes on at least 80% of the days practised, so a child who practises often but stops short keeps the same target.
 - **Hold:** 3 to 4 practice days, or steady but slow progress.
 - **Step down after a gap:** after 3 or more days without practice, the target drops 2.5 minutes for every 3 days missed (minimum 10 minutes), then builds back up by the weekly rule.
 - **Session content scales with length:** longer sessions add more new material and review items, not just more repetition.
-- **Completion:** when today's Guided items are done, a small, non-intrusive banner says "Today's Practice Complete!" with a star burst. The student can keep going with more Guided lessons or Free Play.
+- **Completion:** when today's Guided items are done, a small, non-intrusive banner says "Today's Practice Complete!" with a star burst. Since v0.47 the student sees it only once the day's target minutes are reached too: the minutes ring is the last step on the session path (a path longer than its panel scrolls to the step up next), and once the items are done the Up next card asks for any song they like until the ring is full. Practice time matters for learning, not only the items. Internally nothing changed: the session counts as completed (for the weekly step) when its items are done, and skills, unlocking and the Journey work as before. The student can keep going with more Guided lessons or Free Play.
 - **Streak:** the number of consecutive calendar days with a practice day.
 
 ### 8.7 Guided vs Free Play: what counts
@@ -1445,7 +1445,10 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [x] Check the lesson voice on the iPad: the first lesson after opening the app reads its first card, and with the silent switch on [2026-10-06: Silent mode tested: card reading plays like normal in Silent mode]
 - [x] Add a search functionality in the Songs page, which narrows the visible list to songs which have that text somewhere (title, lyrics). The student can already narrow by 'Favorites' from 'All Songs'. As part of this work, also add a genre pulldown so the student can narrow to a specific genre. (v0.35)
 - [x] Add option for the Song page to show/hide the Chord symbols on the staff. This should be a sticky button per student similar to 'Metro' button.  This should default to Off for beginner students. (v0.35: the Chords button, off until the student first turns it on)
-- [ ] When the user exits the lesson by tapping the 'back' button, which takes the user back to the Journey map, the journey map reverts back to is default position.  How difficult is it to have this go back to the same location in the journey map where the user had been when they initiated the Lesson?
+- [x] When the user exits the lesson by tapping the 'back' button, which takes the user back to the Journey map, the journey map reverts back to is default position.  How difficult is it to have this go back to the same location in the journey map where the user had been when they initiated the Lesson? (v0.47: a lesson opened from the Journey returns to it as it was left, like a song)
+- [x] When navigated to, the Journey Map should be shown so that the current development skill position is roughly centered on the screen.  Currently the Journey Map is shown at the beginning, and the student must scroll all the way to where they are currently working on their journey to find their current work and next steps. (v0.47: opened from the tab bar, the map centres on the first Current skill, else the first one ready to learn)
+- [x] The daily practice time needs a little more clarity when a practice is complete. Currently the lesson has indicated its complete even though the student had not played for enough minutes yet that day. Can we make the Time Played circle the final step in the Today's Practice secequence? If we do this, the Time Played circle would be inside the white steps rectangle and connected with the little path dashed lines as the final step in all Today's Practice sessions.  This would visually indicate to the student that part of completing practice includes practicing for sufficient time. The 'Any song you like' and "Choose a song" option are shown underneath when the only remaining task is to practice until the specified time is completed. The app would only notify the student that practice is complete when they have practiced for sufficient number of minutes. Review why the time wasn't originally included within the practice rectangle, and if there are any downsides to making this change. (v0.47: the minutes ring is the path's last step, and practice is complete for the student only once it is full; the internal completion is unchanged. The ring had been beside the path because the target was a goal and completion counted the items only; sessions are planned on estimated times, which run longer than the recorded practice, so the items often finished short of the minutes. The weekly step up now also needs the minutes reached on 80% of practice days)
+- [x] Are song used in a lesson prior to unlocking on the Songs area? We found this happened with 1 of the songs - is that normal? That seems counter-intuitive, because if a song is ready to be practiced as part of a lesson, then it seems like it also should be ready to be practiced in the songs area.  What would break if we made songs 'unlocked' once the student had made it to a lesson point which asked them to play the song as part of the normal lesson? (v0.47: yes, it was by design, Guided-ready vs library-ready; now the Songs page uses the session's rule, so anything Today's Practice may ask for is open)
 
 
 ## 13. Later-phase design (placeholders)

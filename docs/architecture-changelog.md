@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.47 | Nov 8, 2026 | From the Next Steps list: Back from a lesson returns to the Journey as it was left; the Journey opens centred on the skill being learned; the minutes ring is the session path's last step, and practice is complete for the student only once it is full (the weekly step up also needs the minutes reached); the Songs page opens what Today's Practice may ask for |
 | v0.46 | Oct 28, 2026 | From three more key-range recordings: one clear partial is enough from A♯4 up; a microphone giving no sound says so |
 | v0.45 | Oct 27, 2026 | From practice sessions: a Check card's Listen question plays its tune on its own, after the question is read; Today's Practice's Start button has Play's ready look |
 | v0.44 | Oct 24, 2026 | Microphone keys far from the music count again, drawn where played (v0.42's rule hid a bass-clef song played as treble clef); a wrong-octave hint names the mistake and the clef |
@@ -41,6 +42,16 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.47 (Nov 8, 2026)
+
+From the Next Steps list (12):
+
+- **Back from a lesson (3 "Journey maps").** A lesson opened from a Journey bubble now returns to the map as it was left, scrolled where it was with the same pop-up open, as a song has since v0.29. It used the browser's history before, which opened the map fresh.
+- **The Journey opens on the skill being learned (3).** Opened from the tab bar, the map scrolls so the first Current skill (else the first one ready to learn) is in the middle, instead of at the start of the map.
+- **The minutes ring is the last step (3, 8.6).** The ring of today's practice minutes moves from beside the session path to its last step, joined by the dashed path. Once the items are done, the Up next card asks for any song the student likes ("Choose a song") until the ring is full, and "Today's Practice Complete!" shows only then. The ring had been beside the path because the target is a goal, never a limit, and completion counted the items only. Sessions are planned on estimated times (two plays, getting ready, the result screen), which run longer than the practice the server records, so the items often finished short of the minutes: in the simulator, a session planned for 15 minutes recorded about 8. Internally completion is unchanged: the session counts as completed when its items are done, and skills, unlocking and the Journey work as before. The top strip also shows the minutes. The steps close up to fit the panel, and a path longer than its panel scrolls to the step up next (the ring, once the items are done) whenever the screen opens or an item is checked off.
+- **The weekly step up needs the minutes too (8.6).** The target steps up only if the day's minutes were reached on at least 80% of the days practised that week, so a child who practises often but stops short keeps the same target. The simulator's students now play on to the day's minutes, as the ring asks; its pacing test compares the learners mid-way, since both now reach the end of its 60-skill map.
+- **The Songs page opens what the session may ask for (6.8, 8.1).** Library-ready is now the same as Guided-ready: every required skill passed except at most one Current skill. A new skill's practice songs, which Today's Practice and the Journey bubble already offered, were locked on the Songs page until the skill passed. Free Play and the Reward slot follow the same rule, on the server and in the app.
 
 ## v0.46 (Oct 28, 2026)
 
