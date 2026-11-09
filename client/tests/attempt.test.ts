@@ -62,3 +62,28 @@ describe("A play from a dragged-to bar (v0.33)", () => {
     expect(a.result(true).conditions.sectionOnly).toBe(false);
   });
 });
+
+describe("The end of a section (v0.48)", () => {
+  const section = (play: (n: { beat: number; pitch: number }) => number | null) => {
+    const tl = buildTimeline(FOUR_BARS);
+    const a = new Attempt(tl, { hands: "both", handsWritten: "R", section: { start: 8, end: 16 }, preset: "100" });
+    a.beginPass(8, 0);
+    for (const n of tl.notes.filter((x) => x.beat >= 8)) {
+      const pitch = play(n);
+      if (pitch !== null) a.noteOn(pitch, n.beat, 80, SPB, n.beat * 500);
+      a.tick(n.beat + 0.2, SPB, false);
+    }
+    a.tick(16.1, SPB, false);
+    return a;
+  };
+
+  it("went well when its phrases stay under the rewind threshold", () => {
+    expect(section((n) => n.pitch).wentWell).toBe(true);
+    expect(section((n) => (n.beat === 9 ? n.pitch + 1 : n.pitch)).wentWell).toBe(true);        // one wrong key: 2 errors
+  });
+
+  it("did not with 3 wrong keys (6 errors), or with nothing played", () => {
+    expect(section((n) => ([9, 10, 11].includes(n.beat) ? n.pitch + 1 : n.pitch)).wentWell).toBe(false);
+    expect(section(() => null).wentWell).toBe(false);
+  });
+});

@@ -1091,16 +1091,43 @@ def main():
         check(page.get_by_text("Practice mode: 1 rewind").count() == 1, "hot cross buns: practice-mode chip lists the rewind")
         page.get_by_role("button", name="Practice tricky part").click()
         page.wait_for_function("__pm.player.mode === 'play' && __pm.player.section && __pm.player.preset === '90'")
-        check(page.get_by_text("Bars 1–2").count() > 0, "tricky part: loops bars 1-2 at the next slower preset (90%)")
+        check(page.get_by_text("Bars 1–2").count() > 0, "tricky part: plays bars 1-2 at the next slower preset (90%)")
+        # a section plays once (v0.48): played well, it glides back to its start, ready, with no result card
         r = page.evaluate(AUTOPLAY, [[], 1, 30, False])
-        page.wait_for_selector(".loopnote")
-        page.screenshot(path=str(OUT / "hcb-loop.png"))
-        check("6 of 6 notes" in page.locator(".loopnote").inner_text(), f"tricky part: a clean loop pass shows its result ({page.locator('.loopnote').inner_text()})")
+        page.wait_for_function("__pm.player.state === 'idle'", timeout=5000)
+        page.screenshot(path=str(OUT / "hcb-section-done.png"))
+        note = page.locator(".loopnote").inner_text() if page.locator(".loopnote").count() else ""
+        at = page.evaluate("__pm.player.position.display - (__pm.player.start - __pm.tl.barLength)")
+        check("6 of 6 notes" in note and page.locator(".result").count() == 0 and abs(at) < 1e-6
+              and page.locator(".modes button.ready").count() == 1,
+              f"tricky part: played well, back to bar 1 with Play ready, no result card and no going round ({note!r}, {at})")
         wait_api(page, "fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json()).then(j => j.attempts.some(a => a.mode === 'loop'))", timeout=15000)
         loops = [a for a in page.evaluate("fetch('api/attempts?piece_id=hot-cross-buns').then(r => r.json())")["attempts"] if a["mode"] == "loop"]
         check(len(loops) == 1 and loops[0]["accuracyStars"] == 3.5 and loops[0]["tempoPreset"] == "90",
-              f"tricky part: loop pass stored as a section attempt (0.9 x 0.92 = 83%, 3.5 stars: {[(a['accuracyStars'], a['tempoPreset']) for a in loops]})")
-        page.get_by_role("button", name="Pause").click()
+              f"tricky part: stored as a section attempt (0.9 x 0.92 = 83%, 3.5 stars: {[(a['accuracyStars'], a['tempoPreset']) for a in loops]})")
+        # three wrong keys in the section: it rewinds like any phrase, then a clean pass ends it
+        wrong3 = page.evaluate("__pm.tl.notes.filter(n => n.phrase === 0).slice(1, 4).map(n => n.beat)")
+        page.locator(".modes button").first.click()
+        r = page.evaluate(AUTOPLAY, [wrong3, 1, 30, True])
+        check(r["rewinds"] == 1 and r["debug"]["rewinds"][0] == 1, f"section: 3 wrong keys rewind it to its start ({r['debug']['rewinds']})")
+        page.wait_for_timeout(250)
+        r = page.evaluate(AUTOPLAY, [[], 2, 30, False])
+        page.wait_for_function("__pm.player.state === 'idle'", timeout=5000)
+        check(page.locator(".result").count() == 0, "section: after the rewind, a clean pass ends it, ready to play again")
+        # wrong every time: after 3 rewinds it stops, and the result card offers the choices
+        page.locator(".modes button").first.click()
+        r = page.evaluate(AUTOPLAY, [wrong3, 0, 60, True])
+        page.wait_for_selector(".result", timeout=5000)
+        page.screenshot(path=str(OUT / "hcb-section-limit.png"))
+        check(r["state"] == "finished" and r["rewinds"] == 3 and page.get_by_role("button", name="Practice tricky part").count() == 1,
+              f"section: after 3 rewinds it stops with the result card, never going round by itself ({r['state']}, {r['rewinds']} rewinds)")
+        # the bars picker: one section, played once
+        page.get_by_role("button", name="Later bars").click()
+        page.locator(".modes button").first.click()
+        page.evaluate(AUTOPLAY, [[], 1, 30, False])
+        page.wait_for_function("__pm.player.state === 'idle'", timeout=5000)
+        check(page.locator(".result").count() == 0 and page.locator(".loopbars").inner_text().startswith("Bar"),
+              f"bars picker: the chosen bars play once and are ready again ({page.locator('.loopbars').inner_text()})")
 
         # 4b. Echo Song, right hand only: the left hand's notes are shown faintly
         open_piece(page, "echo-song")
@@ -1283,6 +1310,19 @@ def main():
         wait_api(page, f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items.find(i => i.id === '{focus[0]['id']}').done)", timeout=10000)
         page.screenshot(path=str(OUT / "drill-rhythm.png"))
         check(True, "diagnostics: playing the drill checks the Focus item off")
+        # the Focus bars come next: they play once, and their end shows the result card with Next (v0.48)
+        page.get_by_role("button", name="Next ›").click()
+        page.wait_for_selector(".upnext")
+        page.get_by_role("button", name="Start").click()
+        page.wait_for_function(f"window.__pm && window.__pm.layout && window.__pm.player.piece.id === '{focus[1]['pieceId']}' && window.__pm.player.section")
+        page.get_by_role("button", name="100%").click()
+        page.locator(".modes button").first.click()
+        r = page.evaluate(AUTOPLAY, [[], 1, 60, False])
+        page.wait_for_selector(".result", timeout=5000)
+        page.screenshot(path=str(OUT / "focus-bars-done.png"))
+        wait_api(page, f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session.items.find(i => i.id === '{focus[1]['id']}').done)", timeout=10000)
+        check(page.get_by_role("button", name="Next ›").count() == 1 and r["rewinds"] == 1,
+              f"focus bars: played once, then the result card with Next, and the item checked off ({r['rewinds']})")
 
         # 8. no song this child may play practises a skill (the parent blocked them): the session
         # shows a "Song needed" note on the path, which is nothing to play and holds nothing up

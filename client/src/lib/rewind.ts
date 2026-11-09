@@ -9,6 +9,8 @@
 //  - it goes back to the start of the phrase with the errors, or one more phrase for a run-up
 //    when the first error was on that phrase's first beat.
 //  - after 3 rewinds of the same phrase in one attempt the music keeps going.
+//  - a section of bars is checked the same way, its last phrase too: the section plays on to its
+//    end only when that phrase went well enough (v0.48; until then a section went round by itself).
 import type { Matcher } from "./matcher";
 import { nextBarLine, phraseIndexAt, type Timeline } from "./timeline";
 
@@ -29,9 +31,9 @@ export interface RewindPlan {
   atBeat: number;        // start the rewind when the song reaches this beat
 }
 
-/** The part of the piece being played: the whole piece, or a section loop. In a loop the
- *  rewind never goes before the section start, and the loop itself handles the section end. */
-export interface PlayRange { start: number; end: number; loop: boolean }
+/** The part of the piece being played: the whole piece, a section, or from a dragged-to bar. The
+ *  rewind never goes before its start. */
+export interface PlayRange { start: number; end: number }
 
 export class RewindPolicy {
   readonly rewinds: number[];
@@ -41,7 +43,7 @@ export class RewindPolicy {
   private pending: RewindPlan | null = null;
 
   constructor(private tl: Timeline, private matcher: Matcher, readonly rules: RewindRules = REWIND_RULES,
-              private range: PlayRange = { start: 0, end: tl.length, loop: false }) {
+              private range: PlayRange = { start: 0, end: tl.length }) {
     this.rewinds = tl.phrases.map(() => 0);
   }
 
@@ -86,7 +88,6 @@ export class RewindPolicy {
     while (this.checkedTo + 1 < ph.length && ph[this.checkedTo + 1].end <= beat + 1e-6) {
       const p = ++this.checkedTo;
       if (ph[p].end <= this.passStart + 1e-6) continue;
-      if (this.range.loop && ph[p].end >= this.range.end - 1e-6) continue;   // the loop goes back anyway
       if (this.rewinds[p] >= this.rules.maxPerPhrase) continue;
       const err = this.matcher.phraseErrors(p);
       if (err.count >= this.threshold(p)) return this.plan("errors", p, err.firstBeat, ph[p].end);
@@ -110,7 +111,7 @@ export class RewindPolicy {
     const ph = this.tl.phrases;
     let target = phrase;
     // first error on the phrase's first beat: go back one more phrase for a run-up, but never
-    // before the start of a section loop
+    // before the start of a section
     if (firstError !== null && target > 0 && firstError < ph[target].start + this.tl.beatUnit - 1e-6 &&
         ph[target - 1].start >= this.range.start - 1e-6) target--;
     const targetBeat = Math.max(ph[target].start, this.range.start);

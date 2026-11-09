@@ -74,7 +74,7 @@ export class Attempt {
 
   constructor(readonly tl: Timeline, readonly opts: AttemptOptions) {
     const s = opts.section;
-    this.range = { start: Math.max(s?.start ?? 0, opts.from ?? 0), end: s?.end ?? tl.length, loop: !!s };
+    this.range = { start: Math.max(s?.start ?? 0, opts.from ?? 0), end: s?.end ?? tl.length };
     const inRange = (b: number) => b >= this.range.start - 1e-6 && b < this.range.end - 1e-6;
     const all = tl.notes.filter((n) => !n.tieContinuation && inRange(n.beat))
       .map((n) => ({ id: n.id, pitch: n.pitch, beat: n.beat, phrase: n.phrase, hand: n.hand }));
@@ -94,6 +94,18 @@ export class Attempt {
     this.reached = Math.max(this.reached, beat);
     this.matcher.resetFrom(beat);
     this.policy.beginPass(beat);
+  }
+
+  /** Every phrase played well enough to carry on, by the automatic rewind's rule (§3): on its last
+   *  pass its errors stay under the threshold and a note of it was played. The end of a section
+   *  goes by this (v0.48). */
+  get wentWell(): boolean {
+    const m = this.matcher;
+    return this.tl.phrases.every((p, i) => {
+      if (p.end <= this.range.start + 1e-6 || p.start >= this.range.end - 1e-6) return true;
+      const notes = m.expected.filter((e) => e.phrase === i);
+      return m.phraseErrors(i).count < this.policy.threshold(i) && (!notes.length || notes.some((e) => m.hits.has(e.id)));
+    });
   }
 
   usedPreset(p: Preset): void {

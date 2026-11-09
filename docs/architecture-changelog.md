@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.48 | Nov 8, 2026 | From family practice: a section of bars (Practice tricky part, the bars picker, Tricky spot and Focus items) plays once with the usual rewinds and never goes round by itself; played well it waits at its start with Play ready, otherwise the result card |
 | v0.47 | Nov 8, 2026 | From the Next Steps list: Back from a lesson returns to the Journey as it was left; the Journey opens centred on the skill being learned; the minutes ring is the session path's last step, and practice is complete for the student only once it is full (the weekly step up also needs the minutes reached); the Songs page opens what Today's Practice may ask for |
 | v0.46 | Oct 28, 2026 | From three more key-range recordings: one clear partial is enough from A♯4 up; a microphone giving no sound says so |
 | v0.45 | Oct 27, 2026 | From practice sessions: a Check card's Listen question plays its tune on its own, after the question is read; Today's Practice's Start button has Play's ready look |
@@ -42,6 +43,13 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.48 (Nov 8, 2026)
+
+From family practice on Nov 8, 2026: Dad's "Practice tricky part" on Mouse and Snail went round bars 7–8 15 times (12 with every note right), and Zippy's Tricky spot item on Balancing Act 16 times, until each left the song. A section of bars went round and round by itself, however well it was played: the automatic rewind skipped a section's last phrase because the loop went back anyway.
+
+- **A section plays once (3 "Playing a section").** Practice tricky part, the bars picker, and a session's Tricky spot and Focus items play their bars once, with the same automatic rewinds as a whole song, the last phrase checked too (up to 3 rewinds of a phrase). Played well enough to carry on, the staff glides back to the section's start with the Play button ready and no result card, as at the start of a song; otherwise, after the rewinds, it stops with the result card and its choices. A Tricky spot or Focus item is checked off at the end of its bars, with the result card and Next.
+- **The bars picker isn't a loop any more.** Its section was the old Section loop mode (v0.18), but nothing on the screen said it would repeat. It now picks which bars to practise.
 
 ## v0.47 (Nov 8, 2026)
 
