@@ -3,9 +3,11 @@
 // frame() from requestAnimationFrame and draws what it returns.
 //
 // Two modes: Play (play along, scored, with smooth automatic rewind) and Listen (the app plays it;
-// no scoring). Either runs over the whole piece or over a section of bars chosen on the screen,
-// which then goes round and round ("Practice tricky part" picks one at a slower preset). A section
-// in Play mode is stored as a "loop" attempt, one per time round.
+// no scoring). Either runs over the whole piece or over a section of bars chosen on the screen
+// ("Practice tricky part" picks one at a slower preset). A section plays once, with the usual
+// automatic rewinds, its last phrase too; played well enough (or listened to), the staff glides
+// back to its start, ready to play again, and otherwise it stops for the result (v0.48; until then
+// it went round by itself). A section in Play mode is stored as a "loop" attempt.
 //
 // The app's piano: Listen mode plays every note; in Play mode with one hand chosen, it plays the
 // other hand (the student setting "otherHand"), so one-hand practice still sounds like the piece.
@@ -59,7 +61,7 @@ export interface PlayerHooks {
   missed(noteIds: number[]): void;
   pass(fromBeat: number, targetPhrase: number | null): void;   // a new pass: reset colours from here
   finished(r: AttemptRecord): void;             // the whole piece, in Play mode
-  loopPass(r: AttemptRecord): void;             // one time round a section loop
+  sectionDone(r: AttemptRecord, well: boolean): void;   // the end of a section, in Play mode
   save(r: AttemptRecord): void;                 // every attempt with notes played, finished or not
   loading(fraction: number): void;
   error(message: string): void;
@@ -85,7 +87,7 @@ export class Player {
   private attempt: Attempt;
   private from: number | null = null;         // the next attempt starts here (the staff was dragged)
   private clock: Clock | null = null;
-  private glide: { t0: number; from: number; to: number; target: number } | null = null;
+  private glide: { t0: number; from: number; to: number; target: number; park?: boolean } | null = null;
   private displayBeat: number;
   private logicBeat: number;
   private passStart = 0;
@@ -330,8 +332,7 @@ export class Player {
     await this.resumeAt(target);
   }
 
-  /** "Practice tricky part": play along with that phrase, round and round, at the next slower
-   *  preset (arch §3). */
+  /** "Practice tricky part": play along with that phrase at the next slower preset (arch §3). */
   async practiceTricky(phrase: number): Promise<Preset> {
     this.stop();
     this.mode = "play";
@@ -470,7 +471,12 @@ export class Player {
       this.softPulse();
       if (p >= 1) {
         this.glide = null;
-        this.startAt(g.target);
+        if (g.park) {
+          this.setState("idle");
+          this.releaseWake();
+        } else {
+          this.startAt(g.target);
+        }
       }
     } else if (this.clock) {
       const s = this.settings();
@@ -486,7 +492,7 @@ export class Player {
         if (plan) this.rewind(plan);
       }
       if (this.clock) {
-        if (this.section && this.logicBeat >= this.end + 0.1) this.loopAround();
+        if (this.section && this.logicBeat >= this.end + 0.1) this.sectionEnd();
         else if (!this.section && this.logicBeat >= this.end + 0.25) this.finish();
       }
       if (this.clock && this.displayBeat < this.passStart) {
@@ -504,15 +510,25 @@ export class Player {
     this.beginGlide(this.displayBeat, plan.targetBeat);
   }
 
-  /** One time round the loop: score it as its own (section) attempt, then go again. */
-  private loopAround(): void {
+  /** The end of a section: it never goes round by itself (v0.48). Played well enough to carry on,
+   *  or listened to, the staff glides back to the section's start, ready to play again (the notes
+   *  keep their colours until then); otherwise it stops at the end, for the result. */
+  private sectionEnd(): void {
+    const well = !this.scoring || this.attempt.wentWell;
     const rec = this.closeAttempt(true);
-    if (rec) this.hooks.loopPass(rec);
-    this.from = null;                    // every time round after the first is the whole section
-    this.attempt = this.newAttempt();
     this.quiet(FADE_S);
-    this.hooks.pass(this.start, this.section![0]);
-    this.beginGlide(this.displayBeat, this.start);
+    this.clock = null;
+    this.pulseAt = null;
+    this.from = null;
+    if (well) {
+      this.attempt = this.newAttempt();
+      this.glide = { t0: performance.now(), from: this.displayBeat, to: this.start - this.tl.barLength, target: this.start, park: true };
+      this.setState("gliding");
+    } else {
+      this.setState("finished");
+      this.releaseWake();
+    }
+    if (rec) this.hooks.sectionDone(rec, well);
   }
 
   private finish(): void {

@@ -102,7 +102,7 @@
   });
   const inSession = opened !== null;
   const sectionItem = (opened?.section !== null && opened?.section !== undefined) || !!opened?.bars;
-  let itemSection: [number, number] | null = null;       // the phrases the item loops
+  let itemSection: [number, number] | null = null;       // the phrases the item plays
   const itemNow = $derived(opened ? app.item(opened.id) : null);
   const itemSkill = $derived(opened?.skillId ?? piece?.skillId ?? null);
   const stillLearning = $derived(!!itemSkill && app.progress.get(itemSkill)?.status === "current");
@@ -209,15 +209,20 @@
             app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars, title: opened.kind === "pick" ? piece?.title : undefined });
           }
         },
-        loopPass: (r) => {
+        sectionDone: (r, well) => {
           const e = r.evaluation;
+          // a tricky-spot or Focus item is done at the end of its bars, with the result card and its
+          // Next; other bars played well just show how it went and are ready to play again (v0.48)
+          const mine = !!opened && sectionItem && !!section && !!itemSection && section[0] === itemSection[0] && section[1] === itemSection[1];
+          if (mine) app.completeItem(opened!.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars });
+          if (!well || mine) {
+            result = r;
+            another = false;
+            return;
+          }
           loopNote = { text: `${e.matched} of ${e.expected} notes`, stars: e.accuracyStars };
           clearTimeout(loopTimer);
           loopTimer = window.setTimeout(() => { loopNote = null; }, 3000);
-          // a tricky-spot item is done once round its section
-          if (opened && sectionItem && section && itemSection && section[0] === itemSection[0] && section[1] === itemSection[1]) {
-            app.completeItem(opened.id, { accuracyStars: e.accuracyStars, timingStars: e.timingStars });
-          }
         },
         save: (r) => {
           // the parent's plays are never recorded to a student (arch §3)

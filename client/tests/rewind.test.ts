@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Matcher } from "../src/lib/matcher";
-import { REWIND_RULES, RewindPolicy, type RewindRules } from "../src/lib/rewind";
+import { REWIND_RULES, RewindPolicy, type PlayRange, type RewindRules } from "../src/lib/rewind";
 import { buildTimeline, phraseIndexAt } from "../src/lib/timeline";
 import { FOUR_BARS } from "./fixtures";
 
@@ -9,12 +9,12 @@ const SPB = 0.5;
 // the mechanism is tested with the arch's original threshold of 2; the default is checked below
 const TWO: RewindRules = { ...REWIND_RULES, minErrors: 2 };
 
-function setup(rules: RewindRules = TWO) {
+function setup(rules: RewindRules = TWO, range?: PlayRange) {
   const tl = buildTimeline(FOUR_BARS);
   const expected = tl.notes.map((x) => ({ id: x.id, pitch: x.pitch, beat: x.beat, phrase: x.phrase }));
   const m = new Matcher(expected, (b) => phraseIndexAt(tl.phrases, b));
-  const p = new RewindPolicy(tl, m, rules);
-  p.beginPass(0);
+  const p = new RewindPolicy(tl, m, rules, range);
+  p.beginPass(range?.start ?? 0);
   /** Play the expected notes from..to (beats), each on time, stepping the clock like frames. */
   const play = (from: number, to: number, skip: number[] = [], wrongAt: number[] = []) => {
     let plan = null;
@@ -78,5 +78,11 @@ describe("RewindPolicy", () => {
     expect(p.rewinds[1]).toBe(3);
     expect(p.trickiest()).toBe(1);
     expect(tl.phrases).toHaveLength(2);
+  });
+
+  it("checks a section's last phrase too, and never goes back before the section (v0.48)", () => {
+    const r = setup(TWO, { start: 8, end: 16 }).play(8, 16.1, [8, 9]);    // phrase 1 only, errors from its first beat
+    expect(r?.plan).toMatchObject({ reason: "errors", phrase: 1, targetPhrase: 1, targetBeat: 8, atBeat: 16 });
+    expect(setup(TWO, { start: 8, end: 16 }).play(8, 16.5)).toBeNull();
   });
 });

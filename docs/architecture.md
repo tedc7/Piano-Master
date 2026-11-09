@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.47** · Nov 8, 2026
+**Version 0.48** · Nov 8, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -242,9 +242,9 @@ On the Journey map, a skill's concept lesson opens from its bubble: the bubble's
 - **Status strip (top):** song progress bar, current tempo preset and mode, shown only (see the screen layout rule above).
 - **Control strip (between the staff and the on-screen keyboard):** Back (to the screen that opened the song, as it was left: the same scroll position and the same pop-up open, v0.29; the tab bar still opens every screen fresh), the two mode buttons (each starts and pauses its mode; the chosen mode is solid blue only while it plays, and while it waits for a tap to start, paused or stopped, it is pale blue with a flashing dashed outline, v0.39), Rewind, the bars picker (All bars or a section), hands, tempo presets (50%, 75%, 90%, 100%), **vocals on/off**, **chords on/off** (on songs with chord symbols, v0.35), metronome on/off (v0.18).
 - **Song and settings (the gear, parent mode only):** Needs improvement (10.7), the song's finger numbers and letter names, and the device and parent settings. A tap outside closes it and does nothing else (v0.29).
-- **Modes:** Play (the default: play-along with smooth automatic rewind, below) and Listen (the app plays it, with accompaniment and vocals). Either runs over all bars or a chosen section, which then repeats (the section loop; v0.18). The screen opens paused in Play mode.
+- **Modes:** Play (the default: play-along with smooth automatic rewind, below) and Listen (the app plays it, with accompaniment and vocals). Either runs over all bars or a chosen section (v0.18). A section plays once, never round by itself (v0.48; see "Playing a section" below). The screen opens paused in Play mode.
 - **Rewind button:** while playing, glides back a set number of bars (2 by default, from the start of the current bar; never before the section start) and plays on after the count-in; while paused, moves the resume point back; after the end, returns to the start. In Play mode it counts as a rewind for the practice-aid factor (7.5). Wait mode is a potential feature (section 14).
-- **Smooth rewind:** see "Play and smooth rewind" below; section loops use the same glide.
+- **Smooth rewind:** see "Play and smooth rewind" below; a section uses the same rewinds and glide.
 - **Count-in and metronome:** visual beat dots plus an optional click. The metronome is one choice per student for every song (v0.29): once the student turns it on, it stays on for every song until they turn it off. Until they first choose, songs with singing play without it. A Diagnostics remedy can turn it on for its item (8.8). The count-in always clicks.
 - **Chord symbols (v0.35):** one choice per student for every song, like the metronome. They are off until the student first turns them on, since the children start as beginners. Hiding them doesn't move the staff: it keeps the same headroom for every song.
 
@@ -261,7 +261,7 @@ On the Journey map, a skill's concept lesson opens from its bubble: the bubble's
 | Too many errors | Missed plus wrong notes in the current phrase reach 6, or 25% of the phrase's notes, whichever is larger (v0.18; 2 in v0.17). A wrong key counts twice: the written note is missed and the key is a wrong note. Timing alone never triggers a rewind | At the end of the phrase, so the music is not cut off mid-phrase |
 | Lost place | No notes played for 2 beats while notes are expected | At the next bar line |
 
-**Where it goes back to:** the start of the phrase with the errors. If the first error was on the phrase's first beat, it goes back one more phrase for a run-up. In section loop it never goes before the section start.
+**Where it goes back to:** the start of the phrase with the errors. If the first error was on the phrase's first beat, it goes back one more phrase for a run-up. In a section it never goes before the section start.
 
 **How it moves:**
 
@@ -272,13 +272,21 @@ On the Journey map, a skill's concept lesson opens from its bubble: the bubble's
 
 Notes played during the glide and count-in are ignored. Nothing on screen announces the rewind.
 
-**Limits:** after 3 rewinds of the same phrase in one attempt, the music keeps going, so there is never an endless loop. That phrase becomes the tricky spot on the result screen, where "Practice tricky part" loops it at the next slower tempo preset. (To try in M1: playing the third pass of a phrase one preset slower.)
+**Limits:** after 3 rewinds of the same phrase in one attempt, the music keeps going, so there is never an endless loop. That phrase becomes the tricky spot on the result screen, where "Practice tricky part" plays it at the next slower tempo preset. (To try in M1: playing the third pass of a phrase one preset slower.)
+
+**Playing a section (v0.48):** "Practice tricky part", the bars picker, and a session's Tricky spot and Focus items all play a section of bars the same way: once, with the automatic rewinds above, the section's last phrase checked like any other. At its end:
+
+- **Played well enough to carry on** (every phrase under the rewind threshold on its last pass, with a note of it played), the staff glides back to the section's start and waits there, the Play button pale blue and flashing, as at the start of a song. There is no result card; a small note shows how it went ("6 of 6 notes ★★★★") for 3 seconds. In Listen mode a section always ends this way.
+- **Not**, after its 3 rewinds, it stops at the end with the result card, whose choices (Practice tricky part one preset slower, Play again, Next) let the student decide.
+- **A session's Tricky spot or Focus item** ends with the result card either way, since it is checked off there and the card has Next.
+
+Until v0.48 a section went round and round by itself, however well it was played, until the student left the song: a section chosen in the bars picker was the old Section loop mode (v0.18), and nothing on the screen said it would repeat. In family practice on Nov 8, 2026 a tricky part went round 15 times (12 of them with every note right) and a Tricky spot item 16 times.
 
 **Setting:** auto-rewind is on by default and can be turned off per student in parent mode.
 
 **Scoring:** each phrase counts its last pass, so fixing a phrase earns the credit; each rewind lowers the attempt's practice-aid factor, so 5 stars needs a clean run (7.5).
 
-**Dragging the staff (v0.33):** the student can drag the staff to any place in the song. While it's held the music pauses and the bar at the play line shows above it ("Bar 7"); a tap does nothing. On letting go it plays on in the same mode from the nearest bar line, with the same glide and count-in as a rewind. In Play mode, a drag back over what was just played is a rewind of the same attempt, counted like the Rewind button's; a drag ahead, or from the start position or the result, starts a new attempt from that bar (the one under way is saved, as Stop saves it). That attempt is practice of part of the song, like a section loop (`mode: "loop"`, its section from that bar to the end): it shows "Practice mode: one section", never passes a skill or moves mastery, and doesn't check off a Guided item. Automatic rewinds and the Rewind button never go back before its first bar. With a section chosen, the drag stays inside it. In Play mode with no piano connected the drag only moves the staff.
+**Dragging the staff (v0.33):** the student can drag the staff to any place in the song. While it's held the music pauses and the bar at the play line shows above it ("Bar 7"); a tap does nothing. On letting go it plays on in the same mode from the nearest bar line, with the same glide and count-in as a rewind. In Play mode, a drag back over what was just played is a rewind of the same attempt, counted like the Rewind button's; a drag ahead, or from the start position or the result, starts a new attempt from that bar (the one under way is saved, as Stop saves it). That attempt is practice of part of the song, like a section (`mode: "loop"`, its section from that bar to the end): it shows "Practice mode: one section", never passes a skill or moves mastery, and doesn't check off a Guided item. Automatic rewinds and the Rewind button never go back before its first bar. With a section chosen, the drag stays inside it. In Play mode with no piano connected the drag only moves the staff.
 
 **Technical notes for smoothness:** the staff is pre-rendered, so the glide only moves it and never re-lays it out (tested: a 64-measure grand staff with lyrics, about 22,000 px wide, scrolled and glided at a steady 60 fps on the iPad A16, worst frame 24 ms); audio stems are decoded in advance, so they can restart instantly from any point (tested: 691 MB of decoded audio held and played, 2 x 6-minute stems decoded in 0.5 s, restarts at a new point with no audible delay); one song-clock position drives the staff, audio, lyrics, and scoring, so they cannot drift apart (tested in v0.17 with real songs and aligned stems: 60 fps with no frame over 25 ms in a 3-minute run with 9 rewinds and tempo switches).
 - **The song clock** reads the audio clock through `getOutputTimestamp()`. It uses a time stamp only when it is fresh (under 250 ms old) from a running audio context; after the iPad sleeps, a stale time stamp once jumped the clock minutes ahead. Otherwise it falls back to `currentTime` minus the reported latencies, which read about 12 ms off on the iPad.
@@ -733,14 +741,14 @@ Each aid multiplies the score by a factor before stars are given. Factors multip
 | Smooth rewinds in the attempt | 1 rewind: 0.95 · 2: 0.90 · 3 or more: 0.85 | 4.5, 4, 3.5 |
 | Wait mode (optional mode; no timing score) | 0.80 | 3.5 |
 | One hand when the item is hands together (not a step the session planned for one hand, v0.40) | 0.85 | 3.5 |
-| Section only (loop or tricky part) | 0.90 | 4 |
+| Section only (chosen bars or tricky part) | 0.90 | 4 |
 | Extra hints beyond the level default | 0.95 | 4.5 |
 
 **Decision: practice aids are for practice. Stacked aids do not pass a skill.** Aids let a student slow down, take one hand, or loop a spot until they can press the keys properly; they are not a route around the pass standard. What this means in practice:
 
 - Every aided attempt shows its stars and counts as practice (implicit review, Diagnostics, practice minutes).
 - **Passing (3 stars) needs near-normal conditions.** A single aid can still pass with accurate playing: for example about 87% accuracy with one hand only, or about 95% at the 50% preset. Stacked aids, such as the 50% preset with one hand (at most 66%), cannot reach 3 stars. This is deliberate, so a skill is never passed by practice-mode playing alone.
-- **Only attempts of the whole item can pass a skill.** Section loops and "Practice tricky part" are practice.
+- **Only attempts of the whole item can pass a skill.** Sections and "Practice tricky part" are practice.
 - **The curriculum decides what is expected (v0.40).** A song written for one hand is played as written: no aid. When the session plans a song for both hands one hand at a time (8.5), each one-hand step is played as asked, with no aid either, and is practice: it passes nothing and isn't in the star collection. Once both hands are expected, one hand is the aid above.
 - **Mastery** (4 stars) in practice needs the 90% or 100% preset with few rewinds.
 - **5 stars** needs normal conditions.
@@ -823,7 +831,7 @@ A skill that needs a capability the current setup lacks (for example a pedal) is
 After 3 completed attempts at an item without passing, the result screen's main button becomes **"Try it another way"**, with friendly choices:
 
 - **Listen first:** the app plays it, with accompaniment and vocals.
-- **Practice the tricky part:** loop the hardest phrase.
+- **Practice the tricky part:** play the hardest phrase, one preset slower (3 "Playing a section").
 - **Slower:** the next tempo preset down.
 - **One hand at a time.**
 - **See the idea again:** reopen the concept lesson.
