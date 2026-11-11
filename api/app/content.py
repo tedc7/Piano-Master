@@ -50,6 +50,7 @@ class Skill:
     has_lesson: bool = True            # every skill has a concept lesson unless the map says not
     pieces: list[str] = field(default_factory=list)
     constraints: dict = field(default_factory=dict)     # as in the skill map (analysis.Constraints parses them)
+    pass_needs: list[str] = field(default_factory=list)  # scorers a pass also needs 3 stars from (v0.50, §7.7)
 
     @property
     def needs_timing(self) -> bool:
@@ -141,7 +142,8 @@ class Content:
                 id=s["id"], name=s["name"], sequence=int(s["sequence"]), track=s.get("track", "reading"),
                 prerequisites=list(s.get("prerequisites", [])), level=s.get("level", ""), unit=s.get("unit") or "",
                 capabilities=list(s.get("requiredCapabilities", [])), has_lesson=s.get("conceptLesson", True) is not False,
-                pieces=list(s.get("pieces", [])), constraints=dict(s.get("constraints") or {}))
+                pieces=list(s.get("pieces", [])), constraints=dict(s.get("constraints") or {}),
+                pass_needs=list(s.get("passNeeds") or []))
         pieces = {}
         for p in index["pieces"]:
             sid = p.get("skillId")

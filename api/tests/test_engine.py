@@ -438,6 +438,8 @@ def test_the_hands_played_come_from_finished_plays(con):
             "evaluation, raw_events, passes) VALUES (?, 'dev', 's1', ?, ?, 'guided', ?, ?, ?, ?, '100', ?, 1, 1, 1, 5, '[]', '[]', '{}', '[]', '[]')",
             (f"a{n}", "pa2" if hands else "pa1", "pa2" if hands else "pa1", mode, done, D0.isoformat(), D0.isoformat(),
              json.dumps({"hands": hands} if hands else {})))
+    from app import song_progress
+    song_progress.rebuild(con, {})                    # the songs' records, as the migration fills them (v0.50)
     assert engine.hands_played(con, "s1") == {"pa2": {"R"}, "pa1": {"both"}}
 
 
@@ -452,3 +454,27 @@ def test_a_planned_one_hand_step_is_practice_and_the_song_passes_with_both_hands
     assert st.status == "current" and st.mastery is None and st.last_piece_id == "pa2"
     both = AttemptInfo(piece_id="pa2", day=D0, context="guided", accuracy=0.99, accuracy_stars=5, timing_stars=5, skill_id="t.a")
     assert engine.record_attempt(con, c, "s1", both)["passed"] == ["t.a"]
+
+
+def test_a_skill_can_need_a_later_scorers_stars_to_pass(con):
+    """v0.50 (§7.7): `passNeeds` names scorers a pass also needs 3 stars from; a scorer the play
+    couldn't run (the microphone, keys without touch) isn't held against it."""
+    skills = [{**SKILLS[0], "passNeeds": ["dynamics"]}] + SKILLS[1:]
+    c = Content.from_json({"skills": skills}, {"contentVersion": "t", "pieces": PIECES})
+    assert c.skills["t.a"].pass_needs == ["dynamics"]
+    engine.lesson_done(con, c, "s1", "t.a", D0)
+    soft = AttemptInfo(piece_id="pa1", day=D0, accuracy=0.95, accuracy_stars=5, timing_stars=5, skill_id="t.a",
+                       scorer_stars={"dynamics": 2.0})
+    assert engine.record_attempt(con, c, "s1", soft)["passed"] == []
+    st = engine.load_states(con, c, "s1")["t.a"]
+    assert st.best_scorer_stars == {"dynamics": 2.0}
+    loud = AttemptInfo(piece_id="pa1", day=D0, accuracy=0.95, accuracy_stars=5, timing_stars=5, skill_id="t.a",
+                       scorer_stars={"dynamics": 3.5})
+    assert engine.record_attempt(con, c, "s1", loud)["passed"] == ["t.a"]
+    assert engine.load_states(con, c, "s1")["t.a"].best_scorer_stars == {"dynamics": 3.5}
+    # no dynamics row in the play (the microphone input): notes alone pass, as before
+    engine.lesson_done(con, c, "s1", "t.b", D0)
+    skills2 = [s if s["id"] != "t.b" else {**s, "passNeeds": ["dynamics"]} for s in skills]
+    c2 = Content.from_json({"skills": skills2}, {"contentVersion": "t", "pieces": PIECES})
+    mic = AttemptInfo(piece_id="pb1", day=D0, accuracy=0.95, accuracy_stars=4, timing_stars=4, skill_id="t.b")
+    assert engine.record_attempt(con, c2, "s1", mic)["passed"] == ["t.b"]

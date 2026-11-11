@@ -3,7 +3,8 @@
 // drive this class, so recorded performances are scored exactly like live play.
 import { Matcher, type Expected, type Verdict } from "./matcher";
 import { RewindPolicy, type PlayRange, type RewindPlan } from "./rewind";
-import { evaluate, levelBand, WINDOWS_BY_BAND, type Conditions, type Evaluation } from "./scoring";
+import { evaluate, levelBand, WINDOWS_BY_BAND, type Conditions, type Evaluation, type MoreScores } from "./scoring";
+import { DYNAMICS_MARGIN, dynamics, heldShort, type PlayedNote, type ScorerId } from "./scorers";
 import { phraseIndexAt, type Timeline } from "./timeline";
 import type { Preset } from "./types";
 
@@ -26,6 +27,10 @@ export interface AttemptOptions {
   from?: number;
   level?: string;
   preset: Preset;
+  /** The later scorers this play runs (scorers.scorersFor: the level, the setup, the skill), §7.7. */
+  scorers?: ScorerId[];
+  /** The velocity a loud-and-soft change must show on this keyboard (scorers.dynamicsMargin). */
+  dynamicsMargin?: number;
 }
 
 /** A missed written note, or a wrong key. A wrong key is paired with the missed written note
@@ -43,8 +48,10 @@ export interface AttemptResult {
   perPhraseErrors: number[];    // missed + wrong in the last pass of each phrase
   noteErrors: NoteError[];
   /** Each written note of the scored pass: [index in the notation, timing in ms, or null when
-   *  missed]. Notes the attempt never reached (stopped part-way) are left out. */
-  noteResults: [number, number | null][];
+   *  missed]; a matched note also has how long it was held (a share of its written length, null
+   *  if its key was still down at the end) and its velocity (v0.50, §7.7). Notes the attempt never
+   *  reached (stopped part-way) are left out. */
+  noteResults: ([number, number | null] | [number, number, number | null, number])[];
   tricky: { phrase: number; bars: [number, number] } | null;
 }
 
@@ -108,6 +115,17 @@ export class Attempt {
     });
   }
 
+  /** Every matched written note of the scored pass, as played (scorers.ts). */
+  playedNotes(): PlayedNote[] {
+    const out: PlayedNote[] = [];
+    for (const [id, h] of this.matcher.hits) {
+      const n = this.tl.notes[id];
+      out.push({ id, beat: n.beat, length: tiedLength(this.tl, id), hit: h.beat, release: h.release ?? null,
+                 velocity: h.velocity, written: n.velocity ?? null });
+    }
+    return out.sort((a, b) => a.beat - b.beat);
+  }
+
   usedPreset(p: Preset): void {
     if (PRESET_ORDER.indexOf(p) < PRESET_ORDER.indexOf(this.slowest)) this.slowest = p;
   }
@@ -133,8 +151,8 @@ export class Attempt {
     return this.matcher.noteOn(pitch, beat, velocity, spb, timeMs, unsure);
   }
 
-  noteOff(pitch: number, timeMs: number): void {
-    this.matcher.noteOff(pitch, timeMs);
+  noteOff(pitch: number, timeMs: number, beat?: number): void {
+    this.matcher.noteOff(pitch, timeMs, beat);
   }
 
   /** Advance to `beat`: newly missed notes, and a rewind plan when one is due. */
@@ -160,7 +178,13 @@ export class Attempt {
       rewinds: this.rewinds,
     };
     const windows = m.windows;
-    const evaluation = evaluate({ expected: m.expected.length, deltasMs, extra }, windows, conditions);
+    const played = this.playedNotes();
+    const want = new Set(this.opts.scorers ?? []);
+    const more: MoreScores = {};
+    if (want.has("held")) more.held = heldShort(played);
+    if (want.has("dynamics")) more.dynamics = dynamics(played, this.opts.dynamicsMargin ?? DYNAMICS_MARGIN);
+    const evaluation = evaluate({ expected: m.expected.length, deltasMs, extra }, windows, conditions, more);
+    const byId = new Map<number, PlayedNote>(played.map((p) => [p.id, p]));
     const ph = this.tl.phrases;
     const inRange = (i: number) => ph[i].end > this.range.start + 1e-6 && ph[i].start < this.range.end - 1e-6;
     const perPhraseErrors = ph.map((_, i) => (inRange(i) ? m.phraseErrors(i).count : 0));
@@ -171,9 +195,16 @@ export class Attempt {
     };
     const missed = m.expected.filter((e) => m.missed.has(e.id) || (completed && !m.hits.has(e.id)));
     const missedIds = new Set(missed.map((e) => e.id));
-    const noteResults: [number, number | null][] = m.expected
+    const noteResults: AttemptResult["noteResults"] = m.expected
       .filter((e) => m.hits.has(e.id) || missedIds.has(e.id))
-      .map((e) => [this.tl.notes[e.id].index, m.hits.has(e.id) ? Math.round(m.hits.get(e.id)!.deltaMs) : null]);
+      .map((e) => {
+        const h = m.hits.get(e.id);
+        const i = this.tl.notes[e.id].index;
+        if (!h) return [i, null];
+        const p = byId.get(e.id)!;
+        const held = p.release === null || !p.length ? null : Math.round(((p.release - p.hit) / p.length) * 100) / 100;
+        return [i, Math.round(h.deltaMs), held, h.velocity];
+      });
     const pairFor = (beat: number, pitch: number) => {
       let best: Expected | null = null;
       for (const e of missed) {
@@ -208,4 +239,20 @@ export class Attempt {
     }
     return { evaluation, conditions, completed, perPhraseErrors, noteErrors, noteResults, tricky };
   }
+}
+
+
+/** A note's written length, with the notes tied on from it (they are held, not played again). */
+export function tiedLength(tl: Timeline, id: number): number {
+  let n = tl.notes[id];
+  let len = n.duration;
+  for (let j = id + 1; n.tieToNext && j < tl.notes.length; j++) {
+    const x = tl.notes[j];
+    if (x.beat > n.beat + n.duration + 1e-6) break;
+    if (x.tieContinuation && x.pitch === n.pitch && x.staff === n.staff && x.voice === n.voice && Math.abs(x.beat - (n.beat + n.duration)) < 1e-6) {
+      len += x.duration;
+      n = x;
+    }
+  }
+  return len;
 }

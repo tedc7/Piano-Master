@@ -5,6 +5,7 @@
   // skills, Guided and Free Play minutes, the target length, the content runway (§8.10) and what
   // Diagnostics found (§8.8), with stuck patterns highlighted.
   import { onMount } from "svelte";
+  import { stageLabel, type SongStage, type SongState } from "../lib/songs";
   import Stars from "./Stars.svelte";
   import { api } from "../lib/api";
   import { starText } from "../lib/awards";
@@ -20,7 +21,8 @@
     streak: number;
     stars: number;                     // the star collection: each song's best (M10)
     starsThisWeek: number;             // what it grew by in the last 7 days
-    weeks: { from: string; plays: number; accuracyStars: number | null; timingStars: number | null }[];
+    weeks: { from: string; plays: number; accuracyStars: number | null; timingStars: number | null; songsLearned?: number }[];
+    songsLearned?: { pieceId: string; title: string; stage: SongStage; learned: string; stars: number | null }[];   // §8.12
     tracks: { track: string; mastery: number; skills: number }[];
     greatAt: string[];
     workingOn: string[];
@@ -110,7 +112,7 @@
             <div><small>from {new Date(`${w.from}T12:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</small>
               <b>{w.accuracyStars === null ? "–" : w.accuracyStars.toFixed(1)}</b><span class="muted">♪</span>
               <b>{w.timingStars === null ? "–" : w.timingStars.toFixed(1)}</b><span class="muted">⏱</span>
-              <small>{w.plays} plays</small></div>
+              <small>{w.plays} plays{w.songsLearned ? ` · ${w.songsLearned} song${w.songsLearned === 1 ? "" : "s"} learned` : ""}</small></div>
           {/each}
         </div>
       {/if}
@@ -124,6 +126,13 @@
       {/if}
       <h2 class="gap">Working on</h2>
       <p>{r.workingOn.length ? list(r.workingOn) : full ? "Nothing current." : "Your next new skill!"}</p>
+      <h2 class="gap">{full ? "Songs learned" : "Songs I can play"}</h2>
+      {#each (r.songsLearned ?? []).slice(0, 12) as x (x.pieceId)}
+        <p class="line">{x.title} <span class="muted">· {stageLabel({ stage: x.stage, tempoReached: "100" } as SongState)} · {day(x.learned)}</span></p>
+      {:else}
+        <p class="muted">{full ? "None yet: a song is learned at 3 stars, at full speed, with all its notes." : "Play a song at full speed with 3 stars, and it shows up here."}</p>
+      {/each}
+      {#if (r.songsLearned ?? []).length > 12}<p class="muted">and {(r.songsLearned ?? []).length - 12} more</p>{/if}
       {#if full && r.stuck.length}<p class="notice">Stuck: {list(r.stuck)}. The sessions add support practice around it (arch §8.1).</p>{/if}
       {#if full}
         <h2 class="gap">Content runway</h2>

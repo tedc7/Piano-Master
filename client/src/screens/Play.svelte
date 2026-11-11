@@ -12,6 +12,7 @@
   import { loadContent } from "../lib/content";
   import { app, awardMoment } from "../lib/app.svelte.js";
   import { starText, type AttemptRewards } from "../lib/awards";
+  import { stageMoment } from "../lib/songs";
   import { KeyboardView, keyboardRange, noteName, type Target } from "../lib/keyboard";
   import { Player, type AttemptRecord, type Hands, type Mode, type State } from "../lib/player";
   import { STAR_MEANING } from "../lib/scoring";
@@ -38,7 +39,7 @@
   // what the last play earned (M10), once the server has it: skills passed or mastered, medals, a
   // new best on this song, and the stars it added to the collection. A unit or level medal shows
   // over the screen (Celebration.svelte); the rest on the result card.
-  let earned = $state<{ passed: string[]; mastered: string[]; rewards: AttemptRewards } | null>(null);
+  let earned = $state<{ passed: string[]; mastered: string[]; rewards: AttemptRewards; song: string | null } | null>(null);
   let savedId = "";
   let hands = $state<Hands>("both");
   let section = $state<[number, number] | null>(null);   // null = all bars
@@ -121,10 +122,10 @@
       void loadContent().catch(() => null).then((c) => {
         const name = (sid: string) => c?.map.skills.find((k) => k.id === sid)?.name ?? sid;
         if (aid !== savedId) return;
-        earned = { passed: fx.passed.map(name), mastered: fx.mastered.map(name), rewards };
+        earned = { passed: fx.passed.map(name), mastered: fx.mastered.map(name), rewards, song: fx.song ? stageMoment(fx.song.stage) : null };
         const big = rewards.awards.filter((a) => a.kind === "unit" || a.kind === "level");
         if (big.length) app.celebrate(big.map(awardMoment));
-        else if (fx.passed.length || fx.mastered.length || rewards.awards.length || rewards.best) app.chime();
+        else if (fx.passed.length || fx.mastered.length || rewards.awards.length || rewards.best || fx.song) app.chime();
       });
     });
     const onVis = () => { if (document.hidden) player?.pause(); };
@@ -253,6 +254,11 @@
         clickOverride = opened.click;
         player.forceClick = opened.click;
       }
+      // the scorers the skill being learned needs for its pass run in this play too (§7.7)
+      void loadContent().then((c) => {
+        const sk = c.map.skills.find((k) => k.id === itemSkill);
+        if (player && sk?.passNeeds?.length) player.needs = sk.passNeeds;
+      }).catch(() => {});
       void player.preload();
       (window as unknown as { __pm: unknown }).__pm = { player, tl, audio: app.audio, get layout() { return layout; } };
 
@@ -700,10 +706,17 @@
           <!-- rhythm tapping scores timing only (§7.8) -->
           {#if !tapping}<Stars label="Notes" value={e.accuracyStars} />{/if}
           <Stars label="Timing" value={e.timingStars} />
+          <!-- the later scorers the level and the piano allow (§7.7, v0.50): a row each -->
+          {#each (e.scorers ?? []).filter((x) => x.id !== "notes" && x.id !== "timing") as x (x.id)}
+            <Stars label={x.label} value={x.stars} />
+          {/each}
           <!-- under the stars, two lines: how it went and the counts (rewinds are in the practice mode), then
                any practice mode and its hint -->
           <p><b class="meaning">{STAR_MEANING[main]}{e.tendency === "early" ? " · a little rushed" : e.tendency === "late" ? " · a little behind the beat" : ""}</b>
             <span class="detail"> · {e.matched} of {e.expected} notes{e.extra ? ` · ${e.extra} extra` : ""}{result.tricky ? ` · tricky spot: ${result.tricky.bars[0] === result.tricky.bars[1] ? `bar ${result.tricky.bars[0]}` : `bars ${result.tricky.bars[0]}–${result.tricky.bars[1]}`}` : ""}</span></p>
+          {#if (e.scorers ?? []).some((x) => x.advice)}
+            <p class="aids"><span class="hint">{(e.scorers ?? []).filter((x) => x.advice).map((x) => x.advice).join(" ")}</span></p>
+          {/if}
           {#if e.aids.length}
             <p class="aids"><span class="chip">Practice mode: {e.aids.map((a) => a.label).join(", ")}</span>{#if e.hint}<span class="hint">{e.hint}</span>{/if}</p>
           {/if}
@@ -713,6 +726,7 @@
             <div class="earned">
               {#each earned.mastered as n (n)}<div class="win"><span class="mark mastered">🏆</span><b>Skill mastered</b><span>{n}</span></div>{/each}
               {#each earned.passed as n (n)}<div class="win"><span class="mark passed">✓</span><b>Skill passed</b><span>{n}</span></div>{/each}
+              {#if earned.song}<div class="win"><span class="mark best">♪</span><b>{earned.song.split(":")[0]}</b><span>{earned.song.split(":").slice(1).join(":").trim() || piece?.title}</span></div>{/if}
               {#each medals as a (a.id)}<div class="win"><Medal kind={a.kind} tier={a.tier} size={34} /><b>New medal</b><span>{a.title}: {a.detail}</span></div>{/each}
               {#if rw.best}<div class="win"><span class="mark best">★</span><b>New best</b><span>{starText(rw.best.previous)} → {starText(rw.best.now)} stars</span></div>{/if}
               {#if rw.stars.gained > 0}<p class="added">+{starText(rw.stars.gained)} ★ to your collection · {starText(rw.stars.total)} ★ in all</p>{/if}

@@ -470,3 +470,47 @@ The 50% figures are in the stretched time the child hears (the sync probe had 13
 is 6–23 MB a song for the four presets. The batch was submitted with `import_song.py submit`; all
 five passed the server's intake and wait in Config › Review list (package a55bfcd03029). Still to
 come: the parent's listen, which tunes the `kids` style, the bleed threshold and the slip rules.
+
+36. **Nov 10: melismas bent into three live carols.** The parent asked, through Needs improvement,
+    for The First Noel, Joy to the World and What Child Is This with their melismas sung as written
+    (the melisma probe, `feasibility/melisma-probe/`). No new render: `apply.py` there bent each
+    approved take's aligned stems at every preset (the media skill's own take, gain and fade, so a
+    rebuild without the bend matched the approved MP3s sample for sample) and replaced the media;
+    `import_song.py submit` sent each as an update to its live song (packages 1a9005f70cd2 and
+    472077484dd8). Melisma notes on pitch at 100%: 0 to 53 of 57, 4 to 38 of 41, 0 to 23 of 24.
+    - *The media skill can't do this yet.* The bend is a probe script, run by hand after
+      `media.py package`; a later `media.py package` of these songs would undo it. HANDOFF.md says
+      where it goes in the skill.
+    - *The stems are stereo; the bend is mono.* Inside each bent melisma the bent mono sum is on both
+      channels, the stereo original everywhere else. Listen for the image narrowing on a melisma.
+    - *`submit` overwrites the batch's `submitted.json`;* the record of each batch's first
+      submission was kept as `submitted.before-melisma.json`.
+
+37. **Nov 11: melismas for the other 21 songs with them (v0.50).** The parent asked for all of them
+    in the Review list: 14 live songs ("Add melisma"), and 7 of the second Christmas batch still
+    waiting, sent back to "recheck the vocals are good and match lyrics, and then add melisma".
+    The live songs keep their takes, packaged again with the bend (`media.py package`, which
+    rebuilds a song's media from its chosen take; built without a melisma it gives the approved
+    files). The 7 get more takes (to 10, or 5 for the two that passed), every take checked again,
+    and the best kept, then the bend.
+    - *A quiet phrase came back unbent.* Up on the Housetop's one melisma ("top", just after the
+      muted lead-in) measured on its old pitch after the bend: on the whole song, Praat found one
+      pitch point in that note where its own stretch gives 59, because its voicing threshold is
+      relative to the loudest part of what it analyses. Each melisma is now resynthesised on its own
+      stretch of the take, 1.5 s around it, and joined within 1.2 s (inside what was resynthesised).
+      The seven songs not yet submitted were packaged again with it; the seven submitted before the
+      fix measured every bent note on pitch, so they stand.
+    - *The batch stopped half-way when the session ended* (a background job dies with it); restarted
+      detached (`setsid nohup`), with each song's approved media backed up first in
+      `feasibility/melisma-probe/out/approved/`.
+    - *The 7 rechecked (Nov 11).* Words off the staff, take heard → take sent: God Rest Ye (Beginner)
+      18% → 9% (a new take, now passing; Whisper heard 92% against 97%); It Came Upon the Midnight
+      Clear 21% → 7% (a new take, every word heard; fails only on bleed, -24.7 dB against -25); O Come,
+      All Ye Faithful (Beginner) 38% → 27% (a new take, still failing); We Three Kings (Beginner) 10% →
+      8% (a new take); We Three Kings 6% (its take was the best). O Come, O Come, Emmanuel kept its
+      takes, 41% (Beginner) and 80%, with 98% of their words heard by Whisper and every note on pitch:
+      no new take of 10 checked better. The parent said to send those back with the melismas bent.
+      With nearly every word heard and every note on pitch, the Emmanuels' "words off" may be the
+      aligner losing its place in the repeated refrain (as with "fa la la", note 34) more than the
+      singing; the parent's listen decides. Next to try if they still sound wrong: a slower tempo
+      (The Holly and the Ivy came through at 96 where 108 garbled it, note 34).

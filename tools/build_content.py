@@ -47,6 +47,7 @@ MEDIA = SONGS / "media"
 MEDIA_SRC = CONTENT / "media"      # the media skill's stems (gitignored, arch §10.5)
 SYNC_PROBE = ROOT / "feasibility" / "sync-probe" / "dist"
 TRACKS = {"reading", "rhythm", "technique", "theory", "repertoire", "musicianship"}
+PASS_NEEDS = {"timing", "dynamics"}       # scorers a skill can need for its pass (v0.50, arch §7.7)
 PRESETS = ("100", "90", "75", "50")
 KEYS_61 = (36, 96)          # C2-C7: a 61-key keyboard (arch §2.3); anything outside needs 88 keys
 
@@ -94,6 +95,10 @@ def validate_skill_maps(maps, piece_ids):
             errors.append(f"{sid}: placeholder skill ids must start with 'placeholder.'")
         if s.get("track") not in TRACKS:
             errors.append(f"{sid}: unknown track {s.get('track')!r}")
+        # the scorers a pass also needs 3 stars from (v0.50, arch §7.7): a rhythm skill needs timing anyway
+        needs = s.get("passNeeds", [])
+        if not isinstance(needs, list) or any(n not in PASS_NEEDS for n in needs):
+            errors.append(f"{sid}: passNeeds must be a list of {', '.join(sorted(PASS_NEEDS))}")
     listed = {}
     for s in skills:
         sid = s.get("id")

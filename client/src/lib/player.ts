@@ -24,6 +24,7 @@ import type { RewindPlan } from "./rewind";
 import type { Settings } from "./settings";
 import { gridBeat, phraseIndexAt, type Timeline, type TimelineNote } from "./timeline";
 import type { Piece, Preset } from "./types";
+import { dynamicsMargin, scorersFor } from "./scorers";
 
 export type Mode = "play" | "listen";
 export type State = "idle" | "loading" | "gliding" | "countin" | "playing" | "paused" | "finished";
@@ -84,6 +85,8 @@ export class Player {
   state: State = "idle";
   /** The metronome for this visit, overriding the student's remembered choice (a remedy item's). */
   forceClick: boolean | null = null;
+  /** The scorers the skill being learned needs to pass (its `passNeeds`, §7.7), so they run. */
+  needs: string[] = [];
   private attempt: Attempt;
   private from: number | null = null;         // the next attempt starts here (the staff was dragged)
   private clock: Clock | null = null;
@@ -128,7 +131,11 @@ export class Player {
 
   private newAttempt(): Attempt {
     const loop = !!this.section;
+    const s = this.settings();
     return new Attempt(this.tl, {
+      // the later scorers this play runs: the level, the piano and the skill decide (§7.7)
+      scorers: scorersFor(this.piece.level, s.inputMode, s.velocitySensitive, this.needs),
+      dynamicsMargin: dynamicsMargin(s.dynamicsSoft, s.dynamicsLoud),
       hands: this.hands,
       handsWritten: this.handsAsked ?? this.piece.hands,
       section: loop ? { start: this.start, end: this.end } : null,
@@ -622,7 +629,7 @@ export class Player {
     }
     this.attempt.record({ t: ev.timeMs, type: ev.type, pitch: ev.pitch, velocity: ev.velocity, beat });
     if (ev.type === "off") {
-      this.attempt.noteOff(ev.pitch, ev.timeMs);
+      this.attempt.noteOff(ev.pitch, ev.timeMs, beat ?? undefined);
       this.hooks.keyUp(ev.pitch);
       return;
     }

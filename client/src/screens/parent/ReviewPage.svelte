@@ -24,6 +24,10 @@
   interface Checks {
     notesOnPitch?: number; wordsOff?: number; pass?: boolean; reasons?: string[]; flags?: string[];
     grid100?: { median_ms?: number }; grid50?: { median_ms?: number };
+    // v0.50: the melismas (one syllable over several notes), bent onto the written notes or held
+    melismas?: { method: "bend" | "hold"; count: number; bent?: number;
+                 notesOnPitch?: { before: [number, number]; after: [number, number] };
+                 melodyOnStaff?: { before: [number, number]; after: [number, number] } };
   }
   interface Item {
     id: string; pieceId: string; song: string; title: string; composer: string | null; genre: string; hasMedia: boolean;
@@ -55,6 +59,8 @@
   let mapSkills = $state<Skill[]>([]);
   let songTitles = $state<Record<string, string>>({});
   let chosen = $state<string[]>([]);              // skills whose songs to ask updates for
+  let chosenSongs = $state<string[]>([]);         // and songs chosen one by one, by genre (v0.50)
+  let byGenre = $state<{ genre: string; songs: { id: string; title: string }[] }[]>([]);
   let bulkNote = $state("");
   let bulkOpen = $state(false);
   keepView("config/review", () => document.querySelector<HTMLElement>("main.body"));   // back from a song: where it was
@@ -65,6 +71,14 @@
       skillNames = Object.fromEntries(c.map.skills.map((s) => [s.id, s.name]));
       mapSkills = c.map.skills.filter((s) => s.pieces?.length);
       songTitles = Object.fromEntries(c.pieces.map((p) => [p.id, p.title]));
+      const g = new Map<string, { id: string; title: string }[]>();
+      for (const p of c.pieces) {
+        const k = p.genre || "other";
+        if (!g.has(k)) g.set(k, []);
+        g.get(k)!.push({ id: p.id, title: p.version ? `${p.songTitle ?? p.title} (${p.version})` : p.title });
+      }
+      byGenre = [...g].map(([genre, songs]) => ({ genre, songs: songs.sort((a, b) => a.title.localeCompare(b.title)) }))
+        .sort((a, b) => a.genre.localeCompare(b.genre));
     }).catch(() => {});
   });
 
@@ -108,7 +122,8 @@
   let forgetting = $state<string | null>(null);
 
   const units = $derived([...new Set(mapSkills.map((s) => s.unit ?? ""))].map((u) => ({ unit: u, skills: mapSkills.filter((s) => (s.unit ?? "") === u) })));
-  const bulkSongs = $derived([...new Set(mapSkills.filter((s) => chosen.includes(s.id)).flatMap((s) => s.pieces ?? []))]);
+  const bulkSongs = $derived([...new Set([...mapSkills.filter((s) => chosen.includes(s.id)).flatMap((s) => s.pieces ?? []), ...chosenSongs])]);
+  const toggleSong = (id: string) => { chosenSongs = chosenSongs.includes(id) ? chosenSongs.filter((x) => x !== id) : [...chosenSongs, id]; };
   const toggle = (id: string) => { chosen = chosen.includes(id) ? chosen.filter((x) => x !== id) : [...chosen, id]; };
 
   /** Needs improvement for every song of the chosen skills, with one note (v0.40). */
@@ -121,6 +136,7 @@
       done = `${r.asked.length} song${r.asked.length === 1 ? "" : "s"} asked for an update with your note; each comes back to this list to approve.`
         + (r.skipped.length ? ` Left out: ${r.skipped.map((x) => `${title(x.pieceId)} (${x.why})`).join(", ")}.` : "");
       chosen = [];
+      chosenSongs = [];
       bulkNote = "";
       await load();
     } catch (e) {
@@ -183,6 +199,14 @@
           <p class="line">Vocal: {pct(c.notesOnPitch)} of notes on pitch · {pct(c.wordsOff)} of words off the notes
             {#if c.grid100?.median_ms != null} · on the beat within {Math.round(c.grid100.median_ms)} ms{/if}
             · <b class:ok={c.pass} class:warn={!c.pass}>{c.pass ? "checks pass" : "checks: " + (c.reasons ?? []).join("; ")}</b></p>
+          {#if c.melismas}
+            {@const m = c.melismas}
+            <p class="line">Melismas: {m.count} (one syllable over several notes) ·
+              {#if m.method === "hold"}held on one pitch, as the piece asks{:else if m.notesOnPitch && m.melodyOnStaff}
+                {m.bent} bent onto the written notes: {m.notesOnPitch.after[0]} of {m.notesOnPitch.after[1]} of their notes on pitch
+                (were {m.notesOnPitch.before[0]}); the whole tune on the staff's notes {pct(m.melodyOnStaff.after[0] / m.melodyOnStaff.after[1])}
+                (was {pct(m.melodyOnStaff.before[0] / m.melodyOnStaff.before[1])}){/if}</p>
+          {/if}
         {/if}
         {#if it.info.backing?.parts}
           <p class="line">Backing: {it.info.backing.parts.map((x) => x.name).join(", ")}</p>
@@ -318,15 +342,24 @@
     <details bind:open={bulkOpen}>
       <summary><b>Ask for updates to several songs</b></summary>
       {#if bulkOpen}
-      <p class="muted">For a change across the curriculum: choose skills, say what should change, and every song in their
-        Journey bubbles is asked for an update at once. Each update comes back to the list above for you to approve; until
-        then the children keep playing the live song.</p>
+      <p class="muted">For a change across several songs: choose skills (every song in their Journey bubbles) or songs one by
+        one, below, say what should change, and they are all asked for an update at once. Each update comes back to the list
+        above for you to approve; until then the children keep playing the live song.</p>
       {#each units as u (u.unit)}
         <h3>{u.unit}</h3>
         {#each u.skills as s (s.id)}
           <label class="pick"><input type="checkbox" checked={chosen.includes(s.id)} onchange={() => toggle(s.id)} />
             {s.name} <span class="muted">· {(s.pieces ?? []).map((id) => songTitles[id] ?? id).join(", ")}</span></label>
         {/each}
+      {/each}
+      <h3>Songs, by genre</h3>
+      {#each byGenre as g (g.genre)}
+        <details class="genre">
+          <summary>{g.genre} <span class="muted">· {g.songs.length} song{g.songs.length === 1 ? "" : "s"}{g.songs.some((x) => chosenSongs.includes(x.id)) ? `, ${g.songs.filter((x) => chosenSongs.includes(x.id)).length} chosen` : ""}</span></summary>
+          {#each g.songs as x (x.id)}
+            <label class="pick"><input type="checkbox" checked={chosenSongs.includes(x.id)} onchange={() => toggleSong(x.id)} /> {x.title}</label>
+          {/each}
+        </details>
       {/each}
       <div class="write">
         <label for="bulk-note">What should change in these songs?</label>
@@ -365,4 +398,6 @@
   .buttons { display: flex; gap: 10px; margin-top: 8px; }
   h3 { margin: 14px 0 4px; font-size: 16px; }
   .pick { display: block; padding: 4px 0; }
+  .genre { margin: 4px 0; }
+  .genre summary { cursor: pointer; font-weight: 650; }
 </style>

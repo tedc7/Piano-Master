@@ -145,6 +145,7 @@ export interface Skill {
   pieces?: string[];                               // its practice pieces: the songs in its Journey bubble
   featuring?: string[];                            // every piece the song analysis says features it
   requiredCapabilities?: string[];
+  passNeeds?: string[];                            // the scorers its pass also needs 3 stars from (§7.7, v0.50)
   conceptLesson?: boolean;
   unit?: string;                                   // our own grouping, "Unit 3 · Naming the White Keys"
   map: string;

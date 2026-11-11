@@ -30,6 +30,8 @@ export interface DeviceSettings {
   keyboardSize: 61 | 88 | null;   // parent-set (arch §5)
   hasPedal: boolean | null;          // from the piano check, or set by the parent (§2.4); null = not checked
   velocitySensitive: boolean | null;
+  dynamicsSoft: number | null;       // the piano check's soft and loud presses (median velocity), for
+  dynamicsLoud: number | null;       //   the margin a loud-and-soft change must show (§7.7, v0.50)
 }
 
 export interface StudentSettings {
@@ -71,6 +73,8 @@ export const DEVICE_DEFAULTS: DeviceSettings = {
   keyboardSize: null,
   hasPedal: null,
   velocitySensitive: null,
+  dynamicsSoft: null,
+  dynamicsLoud: null,
 };
 
 export const STUDENT_DEFAULTS: StudentSettings = {

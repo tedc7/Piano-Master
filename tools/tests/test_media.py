@@ -335,3 +335,109 @@ def test_a_take_far_over_on_bleed_ranks_below_one_just_over():
         return {"checks": checks, "words": {"shareOver300ms": 0.07}, "heard": {"share": 1.0}, "bleed": {"db": db}, "score": score}
     loud, slight = take(0.79, -12.0), take(0.70, -23.0)
     assert max([loud, slight], key=media.rank) is slight
+
+
+# ------------------------------------------------------------------------------ melismas (v0.50)
+
+MELISMA = {  # "night" over two notes (G then A), "all" over three (E, D, C)
+    "title": "Test Melisma", "composer": "Trad.", "kind": "library", "genre": "kids", "level": "Level 1", "hands": "R",
+    "phraseBars": 2,
+    "abc": "X:1\nM:4/4\nL:1/4\nQ:1/4=60\nK:C\nC E (GA) | (E D C) z |]\nw: Si-lent night_ all__\n",
+}
+
+
+def tone(midi_at, seconds: float, sr: int):
+    """A sung-like tone: five harmonics, a little vibrato, its pitch from midi_at(t)."""
+    import numpy as np
+    t = np.arange(int(seconds * sr)) / sr
+    f0 = 440 * 2 ** ((np.array([midi_at(x) for x in t]) - 69) / 12) * (1 + 0.004 * np.sin(2 * np.pi * 5.5 * t))
+    ph = 2 * np.pi * np.cumsum(f0) / sr
+    return 0.2 * sum(np.sin(k * ph) / k for k in range(1, 6))
+
+
+def test_melismas_are_found_with_their_notes(tmp_path):
+    import melisma
+    p = piece(tmp_path, MELISMA)
+    found = melisma.melismas(p)
+    assert [[n["pitch"] for n in m["notes"]] for m in found] == [[67, 69], [64, 62, 60]]
+    assert [m["notes"][0]["lyric"]["text"] for m in found] == ["night", "all"]
+    assert found[0]["seconds"] == [1.0, 1.0]                    # quarter notes at 60
+    assert melisma.method(p) == "bend"
+    with pytest.raises(ValueError):
+        melisma.method(piece(tmp_path, {**MELISMA, "media": {"melisma": "split"}}, "u"))
+
+
+def test_a_held_melisma_is_bent_onto_its_notes_and_the_rest_is_left_alone(tmp_path):
+    import numpy as np
+    import melisma
+    p = piece(tmp_path, MELISMA)
+    found = melisma.melismas(p)
+    sr = melisma.SR
+    at = melisma.stem_time(p, 0.0)
+    # the take as YuE2 sings it: one pitch per syllable (C E G G | E E E), then silence
+    held = [(0, 60), (1, 64), (2, 67), (3, 67), (4, 64), (5, 64), (6, 64)]
+    y = tone(lambda t: next(m for s, m in reversed(held) if t >= s), 7.0, sr)
+    for gap in (1, 2, 4):                                     # a consonant before each new syllable
+        y[int((gap - 0.04) * sr):int((gap + 0.02) * sr)] = 0
+    y[int(6.95 * sr):] = 0
+    stereo = np.stack([y, 0.9 * y], axis=1)
+    out, rep = melisma.bend(stereo, sr, p, found, at)
+    assert rep["bent"] == 2 and rep["notesOnPitchBefore"][0] == 0
+    assert rep["notesOnPitch"] == [3, 3]                       # A, then D and C
+    f, v = melisma.pitch_track(out.mean(axis=1))
+    for beat, want in ((3, 69), (5, 62), (6, 60)):
+        assert abs(melisma.sung(f, v, at(beat), at(beat + 1)) - want) < 0.3
+    # outside the melismas (the first two syllables), the stem is the original, sample for sample
+    a = int(at(1.6) * sr)
+    assert np.array_equal(out[:a], stereo[:a])
+    assert out.shape == stereo.shape
+
+
+def test_a_hold_piece_and_a_take_with_no_voice_there_are_left_as_sung(tmp_path):
+    import numpy as np
+    import melisma
+    p = piece(tmp_path, MELISMA)
+    found = melisma.melismas(p)
+    sr = melisma.SR
+    silent = np.zeros((7 * sr, 2))
+    out, rep = melisma.bend(silent, sr, p, found, melisma.stem_time(p, 0.0))
+    assert rep["bent"] == 0 and np.array_equal(out, silent)
+    pts, regions = melisma.contour(found, melisma.stem_time(p, 0.0), np.zeros(700), np.zeros(700, bool))
+    assert pts == [] and regions == []
+
+
+def test_the_bend_curve_is_zero_outside_its_regions_and_has_no_jumps(tmp_path):
+    import numpy as np
+    import melisma
+    p = piece(tmp_path, MELISMA)
+    found = melisma.melismas(p)
+    at = melisma.stem_time(p, 0.0)
+    frames = np.arange(800) / 100
+    sung = np.array([60 if t < 1 else 64 if t < 2 else 67 if t < 4 else 64 for t in frames], float)
+    pts, regions = melisma.contour(found, at, sung, np.ones(800, bool))
+    ts = np.array([q[0] for q in pts]); ss = np.array([q[1] for q in pts])
+    assert ts[0] > 2.9 and ss[0] == 0 and ss[-1] == 0
+    grid = np.interp(np.arange(0, 8, 0.001), ts, ss, left=0, right=0)
+    assert np.max(np.abs(np.diff(grid))) < 0.2              # semitones per millisecond: slides, not steps
+    assert max(abs(x) for x in ss) == pytest.approx(4.0, abs=0.01)   # E down to C
+
+
+def test_a_quiet_melisma_in_a_loud_song_is_still_bent(tmp_path):
+    """Praat's voicing threshold is relative to the loudest part of what it analyses: on a whole
+    song a quiet phrase could come back unbent (Up on the Housetop, Nov 11, 2026). Each melisma is
+    resynthesised on its own stretch of the take."""
+    import numpy as np
+    import melisma
+    p = piece(tmp_path, {**MELISMA, "abc": MELISMA["abc"].replace("(E D C) z |]", "(E D C) z | G4 | G4 | G4 |]")})
+    found = melisma.melismas(p)
+    sr = melisma.SR
+    at = melisma.stem_time(p, 0.0)
+    held = [(0, 60), (1, 64), (2, 67), (3, 67), (4, 64), (5, 64), (6, 64), (7, 64), (8, 67)]
+    y = tone(lambda t: next(m for s, m in reversed(held) if t >= s), 20.0, sr)
+    for gap in (1, 2, 4):
+        y[int((gap - 0.04) * sr):int((gap + 0.02) * sr)] = 0
+    y[int(6.95 * sr):int(10 * sr)] = 0                        # a rest, then the loud end, well after the melismas
+    y[:int(7 * sr)] *= 0.01                                   # the melismas 46 dB under it
+    y[int(10 * sr):] *= 2.0
+    out, rep = melisma.bend(np.stack([y, y], axis=1), sr, p, found, at)
+    assert rep["bent"] == 2 and rep["notesOnPitch"] == [3, 3]

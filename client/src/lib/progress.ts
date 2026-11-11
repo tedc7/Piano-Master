@@ -2,6 +2,7 @@
 // reports them (arch §6.8, §8.1, §8.5). The server is the one that decides; the client shows it
 // and keeps its own copy up to date between requests.
 import type { Rewards } from "./awards";
+import type { SongState } from "./songs";
 import type { PieceSummary, Skill, SkillMap } from "./types";
 
 export type SkillStatus = "locked" | "current" | "passed" | "mastered";
@@ -93,6 +94,7 @@ export interface StudentState {
   day: Day;
   favorites: string[];
   rewards?: Rewards;                   // the star collection and new medals (M10)
+  songs?: Record<string, SongState>;   // each song's progress (§8.12, v0.50)
 }
 
 export const TRY_ANOTHER_WAY = 3;

@@ -2,6 +2,7 @@
 // factor, and star ratings. Fixed, published rules: the same playing always earns the same stars.
 // All numbers are a first version, to be tuned against recorded performances (§7.10).
 import type { Windows } from "./matcher";
+import type { ScorerRow } from "./scorers";
 import type { Preset } from "./types";
 
 /** Timing windows by level band (§7.1). */
@@ -22,6 +23,7 @@ export function levelBand(level: string | undefined): string {
 export const EXTRA_PENALTY = 0.25;       // per extra note (§7.3)
 export const EXTRA_CAP = 0.1;            // ... capped at 10% of the expected notes
 export const TIMING_STARS_MIN_ACCURACY = 0.5;
+export const SHORT_LOSS = 0.25;          // a note let go before half its length earns 0.75 (§7.2, Level 3 up)
 
 /** The conditions an attempt was played under (§5 Attempt.conditions). */
 export interface Conditions {
@@ -70,6 +72,13 @@ export interface Tally {
   expected: number;
   deltasMs: number[];      // one per matched note: played minus expected, after latency correction
   extra: number;           // played notes with no match (brushes, re-strikes, the other hand excluded)
+  short?: number;          // matched notes let go before half their length, when held notes count (§7.2, Level 3 up)
+}
+
+/** What the later scorers found (scorers.ts), for evaluate to make into star rows. */
+export interface MoreScores {
+  held?: { checked: number; short: number };
+  dynamics?: { score: number | null; changes: number; heard: number; louder: boolean | null };
 }
 
 export interface Evaluation {
@@ -90,9 +99,13 @@ export interface Evaluation {
   tendency: "early" | "late" | null;
   aids: Aid[];
   hint: string | null;     // one friendly line about earning more stars
+  /** A star row for each scorer the play ran (§7.7, v0.50): notes and timing (the two above), then
+   *  any later scorer the level and the setup allow, such as Loud and soft. */
+  scorers: ScorerRow[];
+  short: number;           // notes let go before half their length (0 unless held notes count)
 }
 
-export function evaluate(t: Tally, w: Windows, c: Conditions): Evaluation {
+export function evaluate(t: Tally, w: Windows, c: Conditions, more: MoreScores = {}): Evaluation {
   let onTime = 0, offTime = 0, outside = 0, early = 0, late = 0;
   for (const d of t.deltasMs) {
     const a = Math.abs(d);
@@ -104,7 +117,10 @@ export function evaluate(t: Tally, w: Windows, c: Conditions): Evaluation {
   }
   const matched = t.deltasMs.length;
   const penalty = Math.min(EXTRA_PENALTY * t.extra, EXTRA_CAP * t.expected);
-  const rawAccuracy = t.expected ? Math.max(0, (matched - penalty) / t.expected) : 0;
+  // held notes (§7.2, from Level 3): a note let go before half its length earns 0.75
+  const short = more.held?.short ?? t.short ?? 0;
+  const credit = matched - SHORT_LOSS * short;
+  const rawAccuracy = t.expected ? Math.max(0, (credit - penalty) / t.expected) : 0;
   const rawTiming = matched ? (onTime + 0.5 * offTime) / matched : null;
   const aids = practiceAids(c);
   const factor = aids.reduce((f, a) => f * a.factor, 1);
@@ -114,12 +130,24 @@ export function evaluate(t: Tally, w: Windows, c: Conditions): Evaluation {
   // "mostly early (rushing) or late (dragging)": at least 3 notes off time, two thirds one way
   const off = early + late;
   const tendency = off >= 3 && early >= (2 / 3) * off ? "early" : off >= 3 && late >= (2 / 3) * off ? "late" : null;
+  const accuracyStars = stars(accuracy);
+  const timingStars = showTiming ? stars(timing!) : null;
+  const scorers: ScorerRow[] = [
+    { id: "notes", label: "Notes", score: rawAccuracy, stars: accuracyStars,
+      detail: short ? `${short} note${short === 1 ? "" : "s"} let go early` : undefined,
+      advice: short ? "Hold each note for its whole length." : null },
+    { id: "timing", label: "Timing", score: rawTiming, stars: timingStars },
+  ];
+  const d = more.dynamics;
+  if (d && d.score !== null) {
+    scorers.push({ id: "dynamics", label: "Loud and soft", score: d.score, stars: stars(d.score * factor),
+                   detail: `${d.heard} of ${d.changes} change${d.changes === 1 ? "" : "s"} heard`,
+                   advice: d.louder === true ? "Make the loud parts louder." : d.louder === false ? "Make the soft parts softer." : null });
+  }
   return {
     expected: t.expected, matched, missed: t.expected - matched, extra: t.extra,
     onTime, offTime, outside, rawAccuracy, rawTiming, factor, accuracy, timing,
-    accuracyStars: stars(accuracy),
-    timingStars: showTiming ? stars(timing!) : null,
-    tendency, aids, hint: hint(aids),
+    accuracyStars, timingStars, tendency, aids, hint: hint(aids), scorers, short,
   };
 }
 

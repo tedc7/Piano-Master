@@ -10,6 +10,7 @@
   import { onMount, untrack } from "svelte";
   import Medal from "../components/Medal.svelte";
   import Stars from "../components/Stars.svelte";
+  import { songNote } from "../lib/songs";
   import Status from "../components/Status.svelte";
   import TabBar from "../components/TabBar.svelte";
   import { app } from "../lib/app.svelte.js";
@@ -260,6 +261,9 @@
           <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(p.id, "journey")}>
             <span class="card-title">{p.title}</span>
             <span class="card-meta">{handsLabel(p.hands)} · {p.timeSig}{p.hasMedia ? " · with singing" : ""}</span>
+            {#if songNote(app.songs[p.id])}
+              <span class="card-meta stage">{songNote(app.songs[p.id])}</span>
+            {/if}
           </button>
         {/each}
       </div>
@@ -308,4 +312,5 @@
   .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .sheet .card { min-width: 0; width: 100%; }
   .card:disabled { opacity: 0.6; }
+  .card-meta.stage { color: #8a6200; font-weight: 700; }
 </style>

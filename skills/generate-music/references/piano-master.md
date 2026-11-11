@@ -68,5 +68,6 @@ Piano-Master runs this skill from its own `make-media` skill (`.claude/skills/ma
 (`tools/media/yue2.py`), aligns every take to the beat grid (Rubber Band time map), runs the pitch,
 word, melody, tuning and backing-bleed checks, makes the tempo versions, renders the FluidSynth
 backing and packages the stems. For Piano-Master work, use that skill rather than calling this
-one by hand. Known YuE2 limits: melismas are sung as one held pitch; the first word can be soft or
+one by hand. Known YuE2 limits: melismas are sung as one held pitch (the media skill bends them onto the
+written notes afterwards, since v0.50); the first word can be soft or
 unclear; the backing's level and instruments vary within and between songs.
