@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass, field, fields
 from datetime import date, timedelta
 from typing import Any
 
-from . import diagnostics
+from . import diagnostics, song_progress
 from .content import Content, Piece, Skill
 
 # 8.1, 8.2
@@ -97,6 +97,7 @@ class SkillState:
     review_day: str | None = None
     review_best: float | None = None
     review_base: dict | None = None       # the ladder as it stood before that day's review
+    best_scorer_stars: dict = field(default_factory=dict)   # the best stars from each later scorer (v0.50, §7.7)
 
     @property
     def passed(self) -> bool:
@@ -109,7 +110,7 @@ class SkillState:
 
 
 BOOL = {"concept_done", "capability_hold", "stuck", "high_timing", "refresher"}
-JSON = {"high_days": "[]", "review_base": "null"}
+JSON = {"high_days": "[]", "review_base": "null", "best_scorer_stars": "{}"}
 COLUMNS = [f.name for f in fields(SkillState)]
 
 
@@ -210,17 +211,21 @@ class AttemptInfo:
     tricky_phrase: int | None = None
     factor: float = 1.0                   # the practice-aid factor (7.5)
     hand_step: bool = False               # one hand of a song for both, as its session item asked (v0.40)
+    scorer_stars: dict[str, float] = field(default_factory=dict)   # the later scorers' stars (v0.50, §7.7)
     note_errors: list[dict] = field(default_factory=list)   # {kind: missed or wrong, bar}
 
 
 def passes(skill: Skill, a: AttemptInfo) -> bool:
     """A completed attempt of the whole item with 3+ accuracy stars; rhythm skills also need 3+
-    timing stars in the same attempt (8.1)."""
+    timing stars in the same attempt (8.1). A skill can name other scorers its pass needs
+    (`passNeeds`, v0.50, §7.7): each needs 3+ stars in the same attempt, when the play ran it. A
+    scorer this setup can't run (the microphone, keys without touch) is not held against the pass:
+    missing hardware never blocks progress (2.4)."""
     if not a.completed or a.mode != "play" or a.accuracy_stars < PASS_STARS:
         return False
-    if skill.track == "rhythm":
-        return (a.timing_stars or 0) >= PASS_STARS
-    return True
+    if (skill.track == "rhythm" or "timing" in skill.pass_needs) and (a.timing_stars or 0) < PASS_STARS:
+        return False
+    return all(a.scorer_stars[n] >= PASS_STARS for n in skill.pass_needs if n != "timing" and n in a.scorer_stars)
 
 
 def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a: AttemptInfo,
@@ -260,6 +265,8 @@ def record_attempt(con: sqlite3.Connection, content: Content, student_id: str, a
             st.best_accuracy_stars = max(st.best_accuracy_stars or 0, a.accuracy_stars)
             if a.timing_stars is not None:
                 st.best_timing_stars = max(st.best_timing_stars or 0, a.timing_stars)
+            for k, v in a.scorer_stars.items():
+                st.best_scorer_stars[k] = max(st.best_scorer_stars.get(k, 0), v)
 
             if st.status == "current":
                 if passes(skill, a):
@@ -517,10 +524,12 @@ class Planner:
     """Builds one day's queue in slot order: warm-up review, new, practice, reward (8.5)."""
 
     def __init__(self, content: Content, states: dict[str, SkillState], today: date, target_minutes: float,
-                 remedies: list[dict[str, Any]] | None = None, played: dict[str, set[str]] | None = None):
+                 remedies: list[dict[str, Any]] | None = None, played: dict[str, set[str]] | None = None,
+                 songs: dict[str, dict[str, Any]] | None = None):
         self.c, self.states, self.today = content, states, today
         self.remedies = remedies or []
         self.played = played or {}             # the hands each song has been played with (hands_played)
+        self.songs = songs or {}               # each song's record (§8.12): its tricky phrase and last preset
         self.total = target_minutes * 60
         self.items: list[dict[str, Any]] = []
         self.used: set[str] = set()
@@ -622,12 +631,15 @@ class Planner:
             p = next((x for x in c.pieces_of(s.id) if guided_ready(x, states)), None)
             if p:
                 # short, low-pressure contact: the tricky section one day, the whole piece one preset
-                # slower the next (a section alone can never pass the skill)
+                # slower the next (a section alone can never pass the skill). The tricky phrase and
+                # the last preset are this song's own (§8.12, v0.50; they were the skill's, so the
+                # phrase could be another song's)
                 since = (today - (day(st.stuck_since) or today)).days
-                if st.last_tricky_phrase is not None and st.last_tricky_phrase < p.phrases and since % 2 == 0:
-                    spent += self.add_piece("Tricky spot", s, p, section=st.last_tricky_phrase)
+                tp, last = self.tricky(p, st)
+                if tp is not None and since % 2 == 0:
+                    spent += self.add_piece("Tricky spot", s, p, section=tp)
                 else:
-                    spent += self.add_piece("Tricky spot", s, p, preset=SLOWER.get(st.last_preset or "90", "50"))
+                    spent += self.add_piece("Tricky spot", s, p, preset=SLOWER.get(last or st.last_preset or "90", "50"))
             for sp in self.support(s):
                 if spent >= budget:
                     break
@@ -647,11 +659,11 @@ class Planner:
             st = states[s.id]
             if spent >= budget:
                 break
-            if st.status == "current" and not st.stuck and st.last_tricky_phrase is not None:
+            if st.status == "current" and not st.stuck:
                 p = next((x for x in c.pieces_of(s.id) if x.id == st.last_piece_id), None)
-                if p and st.last_tricky_phrase < p.phrases and not any(i["pieceId"] == p.id and i["section"] is not None for i in self.items):
-                    spent += self.add(new_item("piece", "Tricky spot", skill=s, piece=p, section=st.last_tricky_phrase,
-                                               est=SECTION_SEC))
+                tp = self.tricky(p, st)[0] if p else None
+                if p and tp is not None and not any(i["pieceId"] == p.id and i["section"] is not None for i in self.items):
+                    spent += self.add(new_item("piece", "Tricky spot", skill=s, piece=p, section=tp, est=SECTION_SEC))
         mastered = sorted((s for s in order if states[s.id].status == "mastered" and (states[s.id].best_accuracy_stars or 0) < 5
                            and self.polish_due(s, POLISH_MASTERED_DAYS)), key=self.longest_unpractised)
         for s in mastered:
@@ -677,6 +689,18 @@ class Planner:
         for _ in range(picks):
             self.add(new_item("pick", "Your pick", title="Any song you like", est=PICK_SEC))
         return self.items, end_of_content
+
+    def tricky(self, p: Piece, st: SkillState) -> tuple[int | None, str | None]:
+        """The song's own tricky phrase (from its record, when it is one of the song's phrases now)
+        and the preset it was last played at. A song with no record yet (the engine driven alone, as
+        the practice simulator does) takes the skill's, only when the skill's last song was this one."""
+        rec = self.songs.get(p.id)
+        if rec is not None:
+            tp, last = (rec.get("tricky") or {}).get("phrase"), rec.get("last_preset")
+        else:
+            mine = st.last_piece_id == p.id
+            tp, last = (st.last_tricky_phrase if mine else None), (st.last_preset if mine else None)
+        return (tp if tp is not None and tp < p.phrases else None), last
 
     def add_new(self, s: Skill) -> float:
         st = self.states[s.id]
@@ -767,7 +791,8 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
     save_states(con, student_id, states)
     diagnostics.run(con, content, student_id, today)       # after the last session, before this one (8.8)
     remedies = diagnostics.remedy_items(con, content, student_id, states, today, target, new_item, piece_seconds)
-    items, end = Planner(content, states, today, target, remedies, hands_played(con, student_id)).build()
+    items, end = Planner(content, states, today, target, remedies, hands_played(con, student_id),
+                         song_progress.load(con, student_id)).build()
     con.execute("INSERT INTO sessions (student_id, date, target_minutes, queue, end_of_content, created_at, updated_at) "
                 "VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
                 (student_id, iso(today), target, json.dumps(items), int(end)))
@@ -779,12 +804,8 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
 
 def hands_played(con: sqlite3.Connection, student_id: str) -> dict[str, set[str]]:
     """The hands the student has played each song to the end with, in Play mode: "R", "L" or "both"
-    (Planner.add_song)."""
-    out: dict[str, set[str]] = {}
-    for r in con.execute("SELECT piece_id, conditions FROM attempts WHERE student_id = ? AND completed = 1 AND mode = 'play'",
-                         (student_id,)):
-        out.setdefault(r["piece_id"], set()).add(json.loads(r["conditions"] or "{}").get("hands", "both"))
-    return out
+    (Planner.add_song), from each song's record (§8.12, v0.50)."""
+    return song_progress.hands_done(con, student_id)
 
 
 def find_item(con: sqlite3.Connection, student_id: str, item_id: str | None, d: date) -> dict[str, Any] | None:
@@ -853,7 +874,8 @@ def continue_new_slot(con: sqlite3.Connection, content: Content, student_id: str
     if not stale:
         return
     queued = {it["skillId"] for it in items}
-    p = Planner(content, states, d, s["targetMinutes"], played=hands_played(con, student_id))
+    p = Planner(content, states, d, s["targetMinutes"], played=hands_played(con, student_id),
+                songs=song_progress.load(con, student_id))
     p.used = {it["pieceId"] for it in items if it["pieceId"]}
     for s2 in content.order:
         st = states[s2.id]

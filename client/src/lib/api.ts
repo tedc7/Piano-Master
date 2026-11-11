@@ -5,6 +5,7 @@
 // new device (§5), and practice never waits on the network.
 
 import type { AttemptRewards } from "./awards";
+import type { SongStage } from "./songs";
 
 const API = "/api";
 const DEVICE_KEY = "pm.device.v1";
@@ -58,7 +59,10 @@ async function send(path: string, method: string, body: unknown, headers: Record
 interface LogEntry { time: string; level: "info" | "warning" | "error"; message: string; context?: unknown }
 
 /** What the lesson engine changed after a stored attempt (api students.after_attempt). */
-export interface AttemptEffects extends Partial<AttemptRewards> { passed: string[]; mastered: string[]; reviewed: string[]; item: unknown }
+export interface AttemptEffects extends Partial<AttemptRewards> {
+  passed: string[]; mastered: string[]; reviewed: string[]; item: unknown;
+  song?: { stage: SongStage; was: SongStage };     // the song reached a new stage (§8.12)
+}
 
 class ApiClient {
   readonly deviceId: string;

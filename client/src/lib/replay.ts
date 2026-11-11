@@ -56,7 +56,7 @@ export function replay(tl: Timeline, tempo: number, opts: AttemptOptions, passes
         const o = offs.shift()!;
         const ms = at(o.beat);
         a.record({ t: ms, type: "off", pitch: o.pitch, velocity: 0, beat: o.beat });
-        a.noteOff(o.pitch, ms);
+        a.noteOff(o.pitch, ms, o.beat);
       }
       if (b < from) continue;
       plan = a.tick(b, spb, autoRewind).plan;

@@ -50,6 +50,7 @@ media:
   vocal_line: as-written     # sing the hands where they're written against each other (a tune shared
                              # between the hands; an echo an octave below), not each moved into range alone
   vocal_octave: -1           # the whole vocal an octave lower (or higher), leaps kept
+  melisma: hold              # keep the pitch YuE2 holds over a melisma (the default, bend, sings the written notes)
 ```
 
 For a hymn, type all four parts (`%%score (S A) (T B)`) and set `play: melody`: the backing then
@@ -93,6 +94,17 @@ button turns a poor vocal off). Fast songs fail more often; `--max-takes 6` (up 
 seeds, stopping at the first take that passes. Don't submit a take that fails the words check
 with a quarter or more of its words off: the parent hears that every time (v0.30). A curriculum song (`genre: studies`) gets the
 vocal alone, with no backing (style `none`).
+
+**Melismas (v0.50, arch §10.5 "Melismas").** YuE2 still gets one note per syllable, so a take holds
+one pitch over a melisma (one syllable over several notes). `package` bends it onto the written
+notes in every preset's vocal (`tools/media/melisma.py`: Praat's overlap-add on the mono sum,
+spliced in only where the melismas are, the rest of the take untouched) and prints, per preset,
+how many melismas it bent and their notes on pitch before and after. They go in `media.json`
+(`check.melismas`), the Review list and `MEDIA.md`. A melisma with no voice there, or where the take
+sang something else, is left as sung; many of them in one song is worth a flag for the listen.
+`media: {melisma: hold}` in a piece keeps the held pitch. Don't send YuE2 a syllable for each note
+of a melisma to make it sing them: tried on Nov 10, 2026, it cost the words on every take. Running
+`package` again on a song bends its aligned take again from the start (it never bends a bent one).
 
 ## 4. Hand the parent one review, in the app
 

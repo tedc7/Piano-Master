@@ -29,6 +29,14 @@
   let logKey = 0;
   let clickOn = $state(false);
   let saved = $state("");
+  // Loud and soft (v0.50, arch §7.7): five soft presses, then five loud ones; their medians set the
+  // margin a loud-and-soft change must show on this keyboard
+  const PRESSES = 5;
+  let touchStep = $state<"soft" | "loud" | null>(null);
+  let touchPresses = $state<number[]>([]);
+  let soft = $state<number | null>(app.device.dynamicsSoft);
+  let loud = $state<number | null>(app.device.dynamicsLoud);
+  const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[xs.length >> 1];
 
   const full = (p: number) => `${noteName(p)}${Math.floor(p / 12) - 1}`;
 
@@ -50,6 +58,13 @@
       maxHeld = Math.max(maxHeld, held.size);
       if (!heard.has(ev.pitch)) { heard = new Set(heard).add(ev.pitch); kb?.mark(ev.pitch, "kb-heard"); }
       velocities = [...velocities, ev.velocity].slice(-500);
+      if (touchStep) {
+        touchPresses = [...touchPresses, ev.velocity];
+        if (touchPresses.length >= PRESSES) {
+          if (touchStep === "soft") { soft = median(touchPresses); touchStep = "loud"; } else { loud = median(touchPresses); touchStep = null; }
+          touchPresses = [];
+        }
+      }
       delays = [...delays, ev.delayMs].slice(-500);
       const prev = lastOn.get(ev.pitch);
       if (prev !== undefined) fastestRepeat = Math.min(fastestRepeat ?? Infinity, ev.timeMs - prev);
@@ -107,10 +122,11 @@
 
   function save(): void {
     api.log("info", "piano check", { ...summary, input: app.device.inputMode, ...(app.micMode && { mic: app.mic.applied }) });
-    const found: { hasPedal?: boolean; velocitySensitive?: boolean } = {};
+    const found: { hasPedal?: boolean; velocitySensitive?: boolean; dynamicsSoft?: number; dynamicsLoud?: number } = {};
     if (pedalSeen) found.hasPedal = true;
     // the microphone's velocity is only loudness, not the keyboard's touch
     if (velocities.length >= 20 && !app.micMode) found.velocitySensitive = velocitySensitive;
+    if (soft !== null && loud !== null && loud > soft && !app.micMode) Object.assign(found, { dynamicsSoft: soft, dynamicsLoud: loud });
     if (Object.keys(found).length) app.setDevice(found);
     saved = `Saved at ${new Date().toLocaleTimeString()}: results in the piano server's log` +
       (Object.keys(found).length ? "; pedal and touch in Device settings." : ".");
@@ -142,6 +158,13 @@
     <section class="panel">
       <h2>3 · Touch, pedal, repeats</h2>
       <p class:ok={velocitySensitive}>Velocity: {velMin === null ? "play soft and loud" : `${velMin}–${velMax}${velocitySensitive ? " ✓ responds to touch" : " (play softer and louder)"}`}</p>
+      {#if !app.micMode}
+        <p class:ok={soft !== null && loud !== null && loud > soft}>Loud and soft:
+          {#if touchStep}<b>play any key {touchStep === "soft" ? "softly" : "loudly"}, {PRESSES - touchPresses.length} more</b>
+          {:else if soft !== null && loud !== null}soft {soft}, loud {loud}{loud > soft ? " ✓" : " (play the loud ones louder)"}
+          {:else}not measured{/if}
+          <button class="quiet" onclick={() => { touchStep = "soft"; touchPresses = []; soft = loud = null; }}>{soft !== null ? "Again" : "Measure"}</button></p>
+      {/if}
       <p class:ok={pedalSeen}>Pedal: {pedalSeen ? `✓ ${pedal! >= 64 ? "down" : "up"} (${pedal})` : "press the sustain pedal"}</p>
       <p>Notes played: <b>{noteOns}</b>{fastestRepeat !== null ? ` · fastest repeat ${Math.round(fastestRepeat)} ms` : ""}</p>
       <p class="muted small">Tap one key 10 times fast; the count should go up by 10.</p>

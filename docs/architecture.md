@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.48** · Nov 8, 2026
+**Version 0.50** · Nov 10, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -304,7 +304,7 @@ Tempo is chosen from four presets: **50%, 75%, 90%, and 100%** of the written te
 Accompaniment and vocals are audio **stems** produced for each arrangement by the Claude media skill before the song is submitted (section 10.5), so the parent hears them when approving the song.
 
 - **Accompaniment stem:** a backing that stays behind the piano part, in instruments matched to the song's genre (10.5). **Since v0.22** it is rendered with FluidSynth from the arrangement's own notes (the score's ensemble parts, a hymn's alto, tenor and bass, or its chord symbols). YuE2's backing is kept only for a song with words and no backing notes. Its level is set in the media pipeline for tablet speakers, and the student can adjust the volume. An instrumental piece has an accompaniment stem and no vocal.
-- **Vocal stem:** a sung vocal in a style matched to the song's genre, with a **Vocals on/off** button on the Play screen, remembered per song. Known YuE2 limits: a melisma (one syllable over several notes) is sung as one held pitch, the first word can be soft or unclear, and a take can put a stretch of words on other notes than the staff shows. Each song's check results are stored with its stems and shown in the parent's review list, so a badly affected song can be re-rendered or left with vocals off.
+- **Vocal stem:** a sung vocal in a style matched to the song's genre, with a **Vocals on/off** button on the Play screen, remembered per song. Known YuE2 limits: the first word can be soft or unclear, and a take can put a stretch of words on other notes than the staff shows. Each song's check results are stored with its stems and shown in the parent's review list, so a badly affected song can be re-rendered or left with vocals off. A melisma (one syllable over several notes) is sung as written since v0.50: YuE2 holds one pitch there, and the media skill bends it onto the written notes (10.5, "Melismas").
 - **When stems play:** Listen and Play modes, at every tempo preset (100%, 90%, 75%, and 50%); each is rendered in advance.
 - **No vocals or accompaniment in wait mode:** recorded audio cannot pause mid-word or mid-bar. If wait mode is built (a potential feature, section 14), it plays only the metronome and the student's own notes.
 - **Solo piano pieces (v0.21):** the pianist's other hand is the accompaniment. When a child practises one hand, the app plays the other on its sampled piano (a per-student setting, on by default); Listen mode uses the same piano for every note.
@@ -453,7 +453,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 
 | Entity | Key fields |
 | --- | --- |
-| Skill | id (stable, never reused), name, map (basic, intermediate, advanced), level, **sequence** (suggested order along the map, unique; used for layout and to choose which available skill to introduce first), track (reading, rhythm, technique, theory, repertoire, musicianship), staff (treble, bass, grand), **prerequisites\[\]** (define the map's forks and joins; each must have a lower sequence), requiredCapabilities\[\] (e.g. pedal, velocity, 88 keys), constraints (allowed notes or hand positions, rhythms, keys, time signatures, hands, staff, range; since v0.24 also intervals, two notes at once, held-note hands together, ties, rests and pre-staff `letters`), unit?, targetTempo?, conceptLessonId?, description |
+| Skill | id (stable, never reused), name, map (basic, intermediate, advanced), level, **sequence** (suggested order along the map, unique; used for layout and to choose which available skill to introduce first), track (reading, rhythm, technique, theory, repertoire, musicianship), staff (treble, bass, grand), **prerequisites\[\]** (define the map's forks and joins; each must have a lower sequence), requiredCapabilities\[\] (e.g. pedal, velocity, 88 keys), passNeeds\[\]? (scorers its pass also needs 3 stars from, v0.50, 7.7), constraints (allowed notes or hand positions, rhythms, keys, time signatures, hands, staff, range; since v0.24 also intervals, two notes at once, held-note hands together, ties, rests and pre-staff `letters`), unit?, targetTempo?, conceptLessonId?, description |
 | Lesson | id, skillIds\[\], type (concept, exercise, drill, song, review), drillParams? (e.g. scale, key, octaves, hands, target bpm), arrangementId?, cards\[\] (concept lessons), passCriteria |
 | ConceptCard | kind (explain, show, hear, try, check, watch), text, diagram (declarative: keys to light, staff notes, timing), audioExample, expectedNotes\[\], questions\[\] |
 | Genre | id, name, genreStyle (e.g. "traditional hymn"), defaultVocalStyle, defaultAccompanimentStyle (named instruments and how they play, 10.5), defaultAllowed (false for every genre: the map's practice songs are allowed whatever their genre, 10.1) |
@@ -487,11 +487,12 @@ Everything is stored in the server's SQLite database, except media files (in the
 | --- | --- |
 | Student | id, name, avatar, startDate, status (active, archived), settings (hints, default tempo preset, auto-rewind on/off, accompaniment volume, the app playing the other hand in one-hand practice, vocals off for songs\[\], tempo preset per song, metronome on/off for every song (v0.29), chord symbols on/off for every song (v0.35)) |
 | ParentSettings | pinHash, failedAttempts, lockedUntil, aiEnabled, autoLogoutMinutes |
-| DeviceProfile | deviceId, inputMode (`midi` or `mic`, v0.38), pianoName (the MIDI input to use), micSensitivity (1 to 3), micQuietMusic, micLatencyOffsetMs, micLatencySpreadMs, micLatencyCheckedAt, keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), lastChecked |
+| DeviceProfile | deviceId, inputMode (`midi` or `mic`, v0.38), pianoName (the MIDI input to use), micSensitivity (1 to 3), micQuietMusic, micLatencyOffsetMs, micLatencySpreadMs, micLatencyCheckedAt, keyboardSize (61 or 88, parent-set), hasPedal, velocitySensitive, touch, latencyOffsetMs, latencySpreadMs, **displayOffsetMs** (staff drawn behind the estimated audio clock; 80 ms on the iPad A16), fullScreenGapPx (threshold for the full-screen reminder), dynamicsSoft and dynamicsLoud (the piano check's soft and loud presses, v0.50, 7.7), lastChecked |
 | GenreRule | studentId, genreId, allowed (true/false) |
 | SongRule | studentId, songId, allowed (true/false); overrides GenreRule |
-| Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), noteResults\[\] (each written note of the scored pass: its timing, or missed; v0.21), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
-| SkillState | studentId, skillId, status (locked, current, passed, mastered), capabilityHold (true/false), **mastery** (0 to 1, stored running value, 8.2), **bestMastery**, bestAccuracyStars, bestTimingStars, attemptsWithoutPass (completed attempts while Current), **stuck** (true/false), stuckSince?, lastPracticed, reviewStep (0 to 6), nextReviewDate, reviewDay, reviewBest and reviewBase (the day of the last Review item, that day's best stars on it, and the ladder as it stood before it; v0.37) |
+| Attempt | id, studentId, lessonId or songId, arrangementId, contentVersion, deviceProfileId, context (guided / free), date, mode, **conditions** (mode, tempoPreset, hands, sectionOnly, extraHints, rewinds), conditionsFactor, rawAccuracy, rawTiming, accuracy, timingScore, accuracyStars, timingStars, perMeasureErrors\[\], noteErrors\[\] (expected vs played, hand, measure), noteResults\[\] (each written note of the scored pass: its timing, or missed (v0.21); a matched note also how long it was held and its velocity (v0.50)), **rawEvents** (compact list of played notes: time, pitch, velocity, duration, pedal), latencyOffsetMs, skillIdsExercised\[\], durationSec, completed (true/false) |
+| SkillState | studentId, skillId, status (locked, current, passed, mastered), capabilityHold (true/false), **mastery** (0 to 1, stored running value, 8.2), **bestMastery**, bestAccuracyStars, bestTimingStars, attemptsWithoutPass (completed attempts while Current), **stuck** (true/false), stuckSince?, lastPracticed, reviewStep (0 to 6), nextReviewDate, reviewDay, reviewBest and reviewBase (the day of the last Review item, that day's best stars on it, and the ladder as it stood before it; v0.37), bestScorerStars (the best from each later scorer, v0.50) |
+| SongProgress (v0.50; 8.12) | studentId, pieceId, songVersion, hands, handsDone, plays, completedPlays, seconds, firstPlayed, lastPlayed, best (stars by hands and tempo preset), bestStars, dayBest, tempoReached, stage (new, hands apart, learning, slow, learned, solid, excellent), sections\[\] (per phrase: plays, last errors, fewest errors, last practised, times the tricky spot), tricky, lastPreset, learnedDate, fiveStarDate |
 | ErrorPattern | id, studentId, kind (note confusion, rhythm, hands together, position shift, tempo ceiling), details, skillIds\[\], firstSeen, lastSeen, remediesTried\[\], status (active, improving, resolved, stuck) |
 | PracticeDay | studentId, date (local calendar day), guidedMinutes, freeMinutes, targetMinutes, sessionCompleted |
 | Session | studentId, date, queue\[\] (item, slot, reason), currentIndex, completedItems\[\], aiAdviceId? |
@@ -500,7 +501,7 @@ Everything is stored in the server's SQLite database, except media files (in the
 | AIAdvice (potential feature, 14) | id, studentId, date, kind, summarySent, response, applied (true/false), outcome |
 | ClientLog | time, deviceId, studentId?, level (info, warning, error), message, context |
 
-The streak and the star collection (each song's best accuracy stars, with its growth today and this week) are calculated from PracticeDay and Attempt, not stored.
+The streak is calculated from PracticeDay, not stored; the star collection (each song's best accuracy stars, with its growth today and this week) is read from each song's SongProgress since v0.50 (8.12).
 
 **Import path:** songs arrive as MusicXML, MIDI, ABC or Humdrum files and are converted to this format by the song import skill (section 10). Songs written for the curriculum are authored the same way (section 6.9), and every song reaches the library the same way (10.7).
 
@@ -576,8 +577,8 @@ MIDI already carries what advanced scoring needs: key velocity (dynamics), the s
 ### 6.6 Built in from the start, so later levels need no redesign
 
 - The skill map supports any number of levels, tracks, maps, and branches.
-- The notation format stores velocity, dynamics, articulation, pedal events, repeats, key/time/tempo changes, chord symbols and verses from day one, even before they are used.
-- The Performance Evaluator is a set of pluggable scorers (notes, timing, dynamics, pedal, articulation), each switched on at the level where it is introduced.
+- The notation format stores velocity, dynamics, articulation, pedal events, repeats, key/time/tempo changes, chord symbols and verses from day one, even before they are used. (Built so far: all but articulation, pedal events and named sections, which the song import doesn't carry yet; 7.7.)
+- The Performance Evaluator is a set of pluggable scorers (notes, timing, dynamics, pedal, articulation), each switched on at the level where it is introduced. (Built so far: notes and timing, as one matcher; 7.7 gives the order for the rest.)
 - Lessons can be **generated** from parameters (for example: G major scale, 2 octaves, hands together, 80 bpm), so technique content scales to all keys without hand authoring.
 
 Each skill has a track: **reading**, **rhythm**, **technique**, **theory**, **repertoire**, or **musicianship**. Tracks let reports show strengths and weaknesses by category, and let the session planner balance practice at higher levels.
@@ -777,6 +778,26 @@ Accuracy and timing each get their own star rating from this table, after the pr
 ### 7.7 Later-level scorers
 
 Dynamics (from key velocity), pedal timing (from the sustain pedal), and articulation (from note lengths) are separate scorers, each with its own star row. A scorer runs only when the level introduces it **and** the setup supports it (section 2.4); otherwise that star row is not shown. Their rules are designed in Phase 2 and 3 (section 13).
+
+**Built (v0.50): steps 1 to 4 and 7 of the order below; articulation and pedal wait for their marks in the notation.** The evaluator is a set of scorers: notes and timing (as before, with the same numbers: the recorded fixtures guard them) and the later ones in `client/src/lib/scorers.ts`.
+
+| Needed | Where it stands (v0.50) |
+| --- | --- |
+| When each key came up, how hard it was pressed | Kept with every matched note (`matcher.ts`), and stored with each note's result: `noteResults` entries are `[note, ms, held, velocity]`, `held` the share of the written length (a tied note's whole length) the key was down, or null when still down at the end |
+| The sustain pedal | In the raw events (MIDI CC 64); nothing reads it yet (step 6) |
+| Dynamic marks in the notation | Built: `dynamics[]`, and each note's velocity for its mark. Crescendo and diminuendo marks are not |
+| Staccato, accents, slurs and pedal marks in the notation | Not built: the built notation has no `articulation` or `pedalEvents`, and the staff draws no slurs. The song import must carry them first (steps 5 and 6) |
+| A setup that can't supply them (2.4) | The microphone input hears no key coming up, no pedal and only a guess at loudness, so every later scorer is **MIDI only**: with the microphone none of them runs |
+
+**Which scorers a play runs** (`scorersFor`): the later scorers start at Level 3 (6.4), or earlier for a skill whose pass needs one (`passNeeds`, step 7), and only with the MIDI piano; dynamics also needs keys that respond to touch (the piano check's finding, 2.4). At Prep A nothing changes.
+
+1. **The played note** (built). The attempt keeps each matched note's key-down, key-up and velocity; Diagnostics and the re-scoring tool (Next steps) can read them.
+2. **Scorers as separate functions** (built). Each scorer takes the played notes and gives what it found; `evaluate` makes a star row of each, after the practice-aid factor (`evaluation.scorers`: an id, a label, the score, the stars, a detail and one line of advice). Notes and timing are the first two rows, with the same numbers as before. The result card shows a row for each scorer the play ran, and its advice. Each skill keeps its best stars from each later scorer (`SkillState.bestScorerStars`, migration 016).
+3. **Held notes** (built). From Level 3, a note let go before half its written length earns 0.75 (7.2): part of the notes score, with "2 notes let go early" on its row. The held-note marks on the staff (section 14) are not built.
+4. **Dynamics** (built). Loud and soft are judged against each other, not against fixed numbers: at each change of written dynamic mark, in playback order, with at least 3 played notes on each side, the change earns credit for how far the median velocity moved the right way, up to a margin; the score is the mean credit, as its own row, **Loud and soft** ("1 of 2 changes heard", "Make the soft parts softer."). The margin is a fifth of the range between a soft and a loud press, measured by the **Loud and soft** step in the piano check (between 6 and 20 velocity steps; 12 until measured). A piece with no change of mark has no row.
+5. **Articulation** (to build): staccato from a short held length, legato from the gap or overlap between a slurred note and the next, an accent from its velocity against its neighbours. Needs the marks in the notation and slurs on the staff.
+6. **Pedal** (to build): each pedal change against its mark, with the usual legato pedalling (up and down again just after the new chord) counted as right. Needs `pedalEvents` in the notation.
+7. **What a skill needs to pass** (built). A skill can name the scorers its pass needs (`passNeeds: [dynamics]` in the skill map; `timing` too, which a rhythm skill needs anyway): each needs 3 stars in the same attempt. A scorer the play couldn't run (the microphone, keys without touch) is not held against the pass, as missing hardware never blocks progress (2.4). No Prep A skill names one: until the MIDI piano is in use, a child playing a forte or piano song is taken to be playing it loud and soft as asked (the parent's decision, Nov 10, 2026).
 
 ### 7.8 Theory and musicianship scoring (first version)
 
@@ -1007,6 +1028,62 @@ Shown to both student (kid-friendly wording) and parent (full detail):
 - Practice days, Guided minutes, Free Play minutes, streak, and current target session length.
 - Content runway (parent only).
 
+### 8.12 Song progress (v0.50)
+
+**Decision: each student's progress on each song is a record of its own, beside the skill states.** A skill state says what the child can do; a song's progress says what the child can play, and how far along a song still being learned is. **Built in v0.50:** steps 1 to 3 below (`api/app/song_progress.py`, migration 015); step 4 waits for the designs it needs (13.1, 13.2).
+
+**Why.** Until v0.50 the only stored progress was per skill. What the app knows about a song is worked out from the attempts each time, or kept on a skill where it doesn't belong:
+
+- **Which hands a song has been played with** (the one-hand steps of v0.40) is found by reading every one of the student's attempts each time a session is planned (`engine.hands_played`).
+- **Each song's best stars** (the star collection) are found the same way (`awards.plays`).
+- **A song's tricky phrase and last tempo preset** are kept on the skill (`SkillState.last_tricky_phrase`, `last_preset`), though they belong to one song. A stuck skill's Tricky spot item takes the skill's first ready song with that phrase number, which can be another song's phrase.
+- **Nothing records how far a song has come**: hands apart, slow, up to tempo. At Prep A a song is learned in a day or two, so this hasn't mattered. From Level 1 a piece takes days, and from about Level 3 the Repertoire track (6.5) learns a piece over weeks by section, by hand and by tempo, and needs somewhere to keep that.
+
+**The record: SongProgress**, one per student and song (a piece id; two arrangements of one song are two records, since their notes differ).
+
+| Field | What it holds |
+| --- | --- |
+| studentId, pieceId, songVersion, hands | Whose, which song, the version of its notes (the hash each attempt already records) and its hands (R, L or RL) |
+| plays, completedPlays, seconds, firstPlayed, lastPlayed | How much it has been played. `lastPlayed` lets a review take the song played longest ago |
+| handsDone | The hands it has been played to the end with, in Play mode (R, L, both): the one-hand steps of v0.40 read this |
+| best | The best accuracy and timing stars for each way it has been played to the end: hands (right, left, both) by tempo preset (50, 75, 90, 100), with the day. A planned one-hand step counts under its hand |
+| bestStars, dayBest | The song's stars in the star collection (the same plays the collection always counted), and each day's best, so "added today" and "this week" need no scan of the attempts |
+| tempoReached | The fastest preset played as written with 3 stars or more |
+| stage | Where the song stands, worked out from the fields above (below) |
+| sections | For each phrase (later, each named section of a long piece): plays, the last pass's errors, the fewest, the day last practised, and how often it was the tricky spot (built); for a long piece, its own hands and tempo reached (with the song plan, step 4). A section's play counts only for the phrases it covered |
+| tricky, lastPreset | The song's last tricky phrase (from whole-song plays) and the preset it was last played at: what a Tricky spot item uses |
+| learnedDate, fiveStarDate | When it first reached Learned and five stars |
+
+**Stages**, shown to the child in plain words:
+
+| Stage | Rule |
+| --- | --- |
+| New | Never played to the end |
+| Hands apart | A song for both hands, played to the end with one hand or each, not yet with both |
+| Learning | Played to the end as written, under 3 stars |
+| Slow | 3 stars or more as written, at a preset under 100% ("Learned at 75%: try 90%") |
+| Learned | 3 stars or more as written at 100% |
+| Solid | 4 stars or more as written at 100% |
+| Excellent | 5 stars |
+
+A stage never goes back: like the map's stars, it shows the best reached.
+
+**How it is kept.** One place updates it: after every stored attempt (`students.after_attempt`, beside the lesson engine and the awards). A whole-song play updates `best`, the stage and the sections; a section attempt (`mode: loop`) updates only its sections; a play stopped part-way adds to the plays and the seconds. Drills have no record. The parent's plays are never recorded. Skill states are untouched: passing and mastering a skill stay as in 8.1 and 8.2.
+
+**What uses it, in the order built:**
+
+1. **The record, with no change in behaviour** (built). A migration (015) adds the table and fills it by replaying every stored attempt in order (a Python migration, like 011 and 012). A test checks that replaying gives the same record as keeping it play by play.
+2. **The reads that were worked out each time** (built). The one-hand steps (`Planner.add_song`), the star collection and its growth, and each song's best in the library read the record. The tricky phrase and last preset move from the skill to the song's record, which mends the stuck item's phrase (an engine run with no records, as the practice simulator's, uses the skill's only for the song it came from). A test checks the collection read from the records against the old reading of every attempt.
+3. **Showing it** (built). A song in the library and on a Journey sheet says how far it has come only where its best stars can't: "Right hand done: left hand next" for a song for both hands met one hand at a time (those plays aren't in the star collection, so it may have no stars yet), and "Learned at 75% · Try 90% next" for one learned at a slower tempo. Learned, Solid and Excellent aren't shown beside a song: its stars already say them, since the practice-aid factor caps a slower play (at most 3 stars at 50%, 4 at 75%), so 4 or 5 stars mean full speed (the family's first look, v0.50). My Progress gains **Songs I can play**: the Learned songs, newest first. The parent's report shows songs learned by week. The result card says when a song is learned, or learned at a slower tempo, with the chime (a new best on its stars says the rest).
+4. **Planning with it** (to build; each waits for its design). The tempo ramp (13.1): a session item opens a song at the preset after `tempoReached`, in place of always 100% or one below the last. Review and Polish take the song played longest ago (Next steps). For long pieces, a **song plan**: the piece's sections (5, `sections[]`), each learned hands apart then together, slow then at tempo, then joined, with each day's session taking the plan's next step. This is the Repertoire track of 6.5 and is designed in detail with the first level that needs it (13.2).
+
+**Cases to handle:**
+
+- **A live song is updated (10.7).** The record and its whole-song bests carry on, as the child's stars do. When the number of phrases changed, the sections start again (built).
+- **A deleted song.** The record is kept and labelled, like its attempts.
+- **Several arrangements.** The library shows the song by the arrangement the child is furthest along (built).
+- **Later levels.** Memory mode and recordings (13.3) add fields to the same record: played from memory, and the saved performances.
+
 ## 9. AI advisor (optional, exploratory; a potential feature, section 14)
 
 **Status: exploratory.** It is not yet clear where AI would improve learning beyond the rule-based engine, so the advisor is not designed in detail. The first step is to define how AI could help; only then do we decide how to use and measure that help.
@@ -1165,7 +1242,7 @@ The media skill adds a sung vocal and an accompaniment to each arrangement befor
 - **Syllables:** they come from the source's own lyric splits (MusicXML lyrics, ABC `w:` lines).
 - **Check:** the `generate-music` skill refuses a score unless its melody has exactly one note per syllable, each on its syllable's beat, and the syllables spell the lyrics.
 - **Result:** words more than 0.3 s off the staff fell from 39% to 12%, and notes on pitch (with the words placed) rose from 60% to 85%.
-- **Cost:** the singer holds one pitch where the staff shows a slur. That's a known limitation, accepted.
+- **Cost:** the take holds one pitch where the staff shows the notes move. Since v0.50 the package step bends it back onto the written notes ("Melismas" below).
 - **A run that must be sung (v0.33):** give each note its own syllable on the same vowel ("Glo- o- o- o- ri- a"). In YuE2's lyrics such a run keeps a hyphen before each note ("Glo-o-o-o-ria"), where other syllables are joined into words; and the lyrics' lines break only between words.
 
 **Style by genre.** Each genre has a default genre style, vocal style and accompaniment style. A song can override the vocal or accompaniment.
@@ -1219,7 +1296,7 @@ Hymns and Christmas YuE2 styles were tested by listening in v0.17. The FluidSynt
 The parent hears the vocal and accompaniment in the staging review list, so media reaches children only after that single approval.
 
 **Known YuE2 limitations (accepted for a family app; revisit when the engine is replaced):**
-- **Melismas** are sung as one held pitch.
+- **Melismas** are sung as one held pitch; the bend puts them back on the written notes (v0.50, "Melismas" below).
 - **The first word** can be soft or unclear.
 - **Words on other notes:** some takes put a stretch of words on other notes than the staff shows; seeds differ, which is why 2–3 are rendered.
 - **Backing:** it varies in level and instruments within and between songs.
@@ -1238,6 +1315,20 @@ The parent hears the vocal and accompaniment in the staging review list, so medi
 | Rubber Band 4 (command line) | Pitch-preserving time-warp to the beat grid (time map) and the tempo versions; the Python bindings can't pass a time map |
 | FluidSynth 2.6 (conda-forge) and the MuseScore General SoundFont (MIT) | Renders the backing from notation at each tempo preset (v0.22); the SoundFont's acknowledgements go in the app's credits |
 | Skill scripts (ours) | Run the steps and build the package (prototypes in `feasibility/sync-probe/`) |
+
+#### Melismas (v0.50)
+
+**Decision: a melisma is sung as written, by bending the held pitch onto the written notes after the take is chosen (`tools/media/melisma.py`; tested in `feasibility/melisma-probe/`).** YuE2's input stays one note per syllable, so the words stay on their notes; the take holds one pitch over a melisma, and the package step (step 8) moves it, in each tempo preset's vocal before it is levelled:
+
+1. **Find the melismas** from the melody YuE2's export uses: a syllable's note and the notes merged into it, when their pitches differ.
+2. **Measure what was sung** over each later note of a melisma, in the stem's mono sum (pYIN).
+3. **The bend curve:** each later note moves by its written step from the first note, less how far the take is from the first note's pitch there (takes don't always hold the first pitch: 37 of 45 times in Joy to the World). The slides are raised cosines, 80 ms at 100% (longer at the slower presets, by the same ratio), never more than half the shorter note, centred on each note's beat. The bend ends in a gap in the voice (the next syllable's consonant) when there is one within 0.1 s of the syllable's end. A melisma with no voice there, or needing a bend over 9 semitones (the take sang something else), is left as sung.
+4. **Resynthesis:** Praat's pitch-synchronous overlap-add (`parselmouth`), which follows a slide even on a sixteenth note and keeps the vowel's colour. Each melisma is resynthesised on its own stretch of the take (1.5 s around it): Praat decides what is voice relative to the loudest part of what it analyses, so on a whole song a quiet phrase came back unbent (Up on the Housetop, Nov 11). Rubber Band's pitch map, tried first, missed short notes (3 of 23) and changed the whole file.
+5. **Only the melismas change:** inside each bent melisma the bent mono sum on both channels; everywhere else the stereo take exactly as it was. The two are switched where they are the same waveform (silence, consonants), or with an equal-power crossfade at the quietest spot when there is none within 3 s. (Bending each stereo channel by itself smeared the image: the channels' correlation fell from 0.64 to 0.07.) The vocal's level is the unbent take's.
+
+The media report (`media.json`, the Review list, `MEDIA.md`) gives the melismas, how many were bent, their notes on pitch before and after, and the whole tune on the staff's notes before and after. A piece keeps the held pitch with `media: {melisma: hold}`. Sending YuE2 a syllable on each note of a melisma ("thi-is", "Jo-o-oy") was tried for the short ones: the notes were sung, but none of six takes passed the word check, so it isn't used.
+
+**Tested** (Nov 10, 2026) on the three carols with the most melismas: their notes on pitch went from 0 to 53 of 57 (The First Noel), 4 to 38 of 41 (Joy to the World) and 0 to 23 of 24 (What Child Is This, 0.14 s notes), and the whole tune on the staff's notes from 72–81% to 96–98%, at every preset. These three went to the Review list as updates to the live songs; 23 more songs with melismas wait for the parent's listen.
 
 #### The lesson voice (v0.34)
 
@@ -1283,7 +1374,7 @@ Below the waiting list, **Deleted songs** holds the songs never allowed here and
 A song stays on the list until the parent decides on it. (The first version approved the selected songs of a batch and discarded the rest in one step; reviewing one song at a time, the parent lost four songs they hadn't listened to yet.)
 
 **Updating a live song (v0.27).** Songs in use keep turning up things to improve, so any library song can be updated without leaving the children:
-1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …") once the song has moved past its start (v0.29). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song. For a change across the curriculum (v0.40), the Review list's **Ask for updates to several songs** asks for every song of the chosen skills at once, with one note (`POST /api/library/improve`); songs with a request already open are left out and named.
+1. **Ask:** in the Play screen's gear pop-up (Song and settings, parent mode), **Needs improvement** takes a note, started with the bar the staff is at ("Bar 5: …") once the song has moved past its start (v0.29). It becomes a request in the review area that names the live song (`staged_items.live`, migration 009); it shows under "Sent back for changes" as a live song, where it can be cancelled. One request per song. For a change across the curriculum (v0.40), the Review list's **Ask for updates to several songs** asks for every song of the chosen skills at once, or songs chosen one by one, by genre (v0.50), with one note (`POST /api/library/improve`); songs with a request already open are left out and named.
 2. **Fix:** the skills read it with the other feedback (`GET /api/skill/feedback` marks it live; `import_song.py feedback` names the song's source and the submit command). Fixing it is manual for now, in a Claude Code session on the dev box.
 3. **Resubmit:** intake takes the fix under the same id while the request is open (otherwise an id in the library is refused). It replaces the request in the review list and keeps the link to the live song.
 4. **Review:** it waits as **Update to a live song**, with the note and what changed from the live song: the bars whose notes differ, the tempo, the words, new media, and a warning when the skills it needs changed (a child who hasn't reached them would lose the song). **▶ Live version** plays the live one to compare. The decisions are **Approve update**, **Needs more work** (another note; the live song still plays) and **Discard update** (the live song stays as it is). **Never allow** isn't offered: it would delete the live song.
@@ -1458,6 +1549,28 @@ M9 (the AI advisor) moved to section 14 in v0.26, with concept videos (from M8),
 - [x] The daily practice time needs a little more clarity when a practice is complete. Currently the lesson has indicated its complete even though the student had not played for enough minutes yet that day. Can we make the Time Played circle the final step in the Today's Practice secequence? If we do this, the Time Played circle would be inside the white steps rectangle and connected with the little path dashed lines as the final step in all Today's Practice sessions.  This would visually indicate to the student that part of completing practice includes practicing for sufficient time. The 'Any song you like' and "Choose a song" option are shown underneath when the only remaining task is to practice until the specified time is completed. The app would only notify the student that practice is complete when they have practiced for sufficient number of minutes. Review why the time wasn't originally included within the practice rectangle, and if there are any downsides to making this change. (v0.47: the minutes ring is the path's last step, and practice is complete for the student only once it is full; the internal completion is unchanged. The ring had been beside the path because the target was a goal and completion counted the items only; sessions are planned on estimated times, which run longer than the recorded practice, so the items often finished short of the minutes. The weekly step up now also needs the minutes reached on 80% of practice days)
 - [x] Are song used in a lesson prior to unlocking on the Songs area? We found this happened with 1 of the songs - is that normal? That seems counter-intuitive, because if a song is ready to be practiced as part of a lesson, then it seems like it also should be ready to be practiced in the songs area.  What would break if we made songs 'unlocked' once the student had made it to a lesson point which asked them to play the song as part of the normal lesson? (v0.47: yes, it was by design, Guided-ready vs library-ready; now the Songs page uses the session's rule, so anything Today's Practice may ask for is open)
 
+From the review of the design and the code (Nov 10, 2026), for learning rate, ease of use and engagement:
+
+- [ ] **Melisma on the staff.** A syllable sung over several notes lights up only on its first note (its highlight ends with that note, `client/src/lib/staff.ts`), and no slur is drawn. Keep the syllable lit through all of its notes and draw the slur, so the child sees one word over several notes whatever the vocal does. 26 of the 146 songs with words have melismas, nearly all of them carols (up to 26% of the melody's notes in Joy to the World and The First Noel); almost every one is two notes long.
+- [x] **Melisma in the vocal: listen, then build the bend (10.5; `feasibility/melisma-probe/`).** Built in the media skill in v0.50 (10.5 "Melismas"); the 23 other songs with melismas wait for the parent's listen of the first three. The probe (Nov 10) puts a melisma's notes back into an approved, beat-aligned vocal by bending the held pitch onto the written notes, with no new render: melisma notes on pitch went from 0 to 53 of 57 in The First Noel, 4 to 38 of 41 in Joy to the World and 0 to 23 of 24 in What Child Is This (sixteenth notes), and the whole melody against the staff from 72–81% to 96–98%. Sending YuE2 split vowels for the short melismas ("thi-is") was tried as the other half of a two-part pipeline: the notes were sung, but none of six takes passed the word check. The three test songs were bent at every tempo and are in the Review list as updates to the live songs (Nov 10). The parent listens there (and at `out/listen/index.html` for the other versions); if approved, the bend goes into the media skill's package step and the other 23 songs with melismas come back the same way. `RESULTS.md` has the numbers and `HANDOFF.md` what to build and where.
+- [ ] **Fade the next-key hint.** In Play mode the on-screen keyboard lights the next key to press at every level, on reviews too (`Play.svelte`, `highlight`), so a child can follow the lit key and never read the staff. Section 3 says hints fade as levels rise, and 7.5's "extra hints" aid is never set (`attempt.ts`); neither is built. First version to try with the children: the next key is lit while a song's skill is being learned; not on Review and Polish items, or once the song has 3 stars; a Keys button turns it back on as the extra-hints aid. Keys the child presses still light.
+- [ ] **Listen first on a new song.** A song the child has never played opens ready to Play; Listen first is offered only after 3 tries without passing (8.1). For a song with no plays yet, offer Listen beside Start on the Up next card (or flash Listen on the Play screen), so the child hears it once before reading it.
+- [ ] **Vary the song a Review or Polish item uses.** `Planner.piece_for` takes the first song that wasn't the last one played, so a skill's items go back and forth between its first two practice songs, and other library songs that feature the skill are never chosen. Take the song played longest ago among every Guided-ready song that features the skill (a favorite first on a tie), so a review checks the skill more than the memory of one song, and the child meets more of the library.
+- [ ] **A first sight-reading generator, used in reviews (7.8).** Designed, not built: reading skills are only ever checked on songs the child has practised. A short generated piece from the passed skills' notes and note values (the drill generator's `Material` holds them), seen once, as the Review item for a reading-track skill some of the time.
+- [ ] **A streak that survives a day off.** `engine.streak` ends on the first missed day, and the streak medals run to 365 days in a row, so one sick day or a trip takes a child back to 0. Decide between a rest day (one missed day a week keeps the streak) and counting practice weeks (5 days of 7), and apply it to the medals.
+- [ ] **A tuning report from the family's real plays.** The first-version numbers (rewind threshold, stuck rule, mastery step, the timing windows, 7 and 8) were to be tuned with the children, and the data is now there. A parent-mode page or `python -m app.admin` report: per song, plays before the first pass, the share of plays stopped part-way, rewinds per phrase and the bars most often missed; per session item, its real time against the planner's estimate (v0.47 found sessions finishing short of their minutes). It also finds songs too hard for their place on the map, as Sit Tall was.
+- [ ] **Re-score stored plays under changed numbers.** Every attempt keeps its raw events; `tools/fixture_from_attempt.py` turns one into a fixture. A tool that runs all of a child's stored attempts through the evaluator with a changed window, penalty or rewind rule, and lists whose stars and passes would have changed, before the change is deployed.
+- [x] **Song progress, step 1: the record (8.12).** (v0.50) The `song_progress` table, kept after every stored attempt and filled for past plays by replaying the stored attempts; a test that the two agree. No change in behaviour.
+- [x] **Song progress, step 2: read it.** (v0.50) The one-hand steps, the star collection and each song's best read the record, not every attempt; the tricky phrase and last preset move from the skill to the song (a stuck skill's Tricky spot item can name another song's phrase today).
+- [x] **Song progress, step 3: show it.** (v0.50) Each song's stage and next step in the song library and on the Journey sheet; Songs I can play on My Progress; songs learned by week in the parent's report.
+- [ ] **Song progress, step 4: plan with it.** Waits for the tempo ramp's design (13.1) and the song plan's (13.2). The tempo ramp from each song's `tempoReached`; the song plan for long pieces with the first level that needs it (8.12, 13.2).
+- [x] **Later scorers, step 1: the played note (7.7).** (v0.50; tried with the MIDI piano when it arrives) Keep each matched note's key-up time and velocity with its result; store them in the attempt. No score changes. MIDI only, so after the keyboard arrives.
+- [x] **Later scorers, step 2: scorers as separate functions (7.7),** (v0.50) with notes and timing as the first two, unchanged in their numbers, and a star row for each scorer in the result, the attempt and the skill's best stars.
+- [x] **Later scorers, step 3: held notes,** from Level 3 (7.2; v0.50). The held-note marks on the staff (section 14) are still to build.
+- [x] **Later scorers, step 4: dynamics,** (v0.50) judged loud against soft within the play, with the piano's range from a "play soft, play loud" card in the piano check (7.7). It can also check Prep A's forte, piano and mezzo forte skills.
+- [ ] **Later scorers, steps 5 and 6: articulation and pedal (7.7).** Step 7, a skill naming the scorers its pass needs (`passNeeds`), is built (v0.50); Prep A's forte and piano skills don't need Loud and soft while there's no MIDI piano (the parent's decision). First the song import carries staccato, accents, slurs and pedal marks into the notation, and the staff draws slurs (the melisma item above draws the first ones).
+- [ ] **Schedule the technique drills.** The drill generator makes scale, arpeggio and five-finger drills (`api/app/drills.py`), but only Diagnostics' reading and rhythm drills ever reach a session. Needed with the Level 1 map (the Technique track, 6.5); nothing to do for Prep A.
+
 
 ## 13. Later-phase design (placeholders)
 
@@ -1465,24 +1578,24 @@ Each of these is written before its milestone starts.
 
 ### 13.1 Phase 2 (M11): Levels 1 to 4
 
-- Dynamics scorer: velocity bands per marking, how relative dynamics are judged, star rules.
+- Dynamics scorer: velocity bands per marking, how relative dynamics are judged, star rules (first rules and the steps before it in 7.7).
 - Static-page cursor view: page layout and line breaks, cursor movement, rewind in the page view.
-- Tempo ramp: stepping through the presets, and whether technique drills need finer steps.
+- Tempo ramp: stepping through the presets, and whether technique drills need finer steps. It reads each song's `tempoReached` (8.12).
 - Intermediate map layout and chapters.
 
 ### 13.2 Phase 3 (M12): Levels 5 to 8
 
-- Pedal scorer: pedal change timing against markings, star rules.
-- Articulation scorer: legato and staccato from note lengths.
+- Pedal scorer: pedal change timing against markings, star rules (7.7 step 6).
+- Articulation scorer: legato and staccato from note lengths (7.7 step 5).
 - Sight-reading generator: difficulty model and piece structure at each level.
 - Ear-training progression at each level.
-- Long pieces: section design, joining sections, hands-separate to hands-together plan.
+- Long pieces: section design, joining sections, hands-separate to hands-together plan (the song plan of 8.12).
 - Advanced map layout.
 
 ### 13.3 Phase 4 (M13): Levels 9 to 10
 
 - Memory mode: hiding the staff progressively, scoring without the staff.
-- Record and play back: storage of recordings (MIDI and optional audio), self-review screen.
+- Record and play back: storage of recordings (MIDI and optional audio), self-review screen; both add fields to the song's progress record (8.12).
 - Expressive timing (rubato) and how timing scoring relaxes for it.
 
 ## 14. Potential features
@@ -1534,6 +1647,9 @@ Not planned for the first version; each is revisited when there's a reason to bu
 
 | Decision | Choice | Reason |
 | --- | --- | --- |
+| Melismas (v0.50) | The held pitch bent onto the written notes after the take is chosen (Praat overlap-add, the bent mono only inside each melisma, the stereo take elsewhere); `melisma: hold` keeps it; YuE2's input stays one note per syllable | Melisma notes on pitch from 0–10% to 93–96% on three carols with no new render; split vowels for YuE2 got the notes sung but failed the word check on every take |
+| Song progress (v0.50) | A record per student and song (8.12), kept after every attempt and rebuilt the same from the stored attempts; the hand steps, the star collection and the tricky phrase read it; stages from New to Excellent shown with a next step | What a child can play, not only what they can do; a song's tricky phrase is the song's own |
+| Later scorers (v0.50) | Scorers as functions with a star row each; held notes and Loud and soft from Level 3 (or a skill's `passNeeds`), MIDI only; loudness judged against itself within the play | Objective without fixed loudness numbers, which differ by piano and child; Prep A unchanged |
 | Microphone input (v0.38) | An interim microphone input, chosen by the parent in Device settings, giving the same note events as MIDI; the app's music keeps playing, its own sound learned and set aside; unsure keys never count as wrong | The MIDI keyboard's purchase was delayed and the children couldn't use the app; for the student it should look and sound the same as MIDI, only less accurate |
 | Rewards (v0.36) | The star collection counts each song's best; medals in bronze, silver, gold and platinum for milestones and for each unit and level; no mascot or stickers; moments on the result card, a card over the screen for a unit or level | Rewards playing well over repeating easy songs; accolades that still suit an older student |
 | Backing without stems (v0.35) | The FluidSynth backing from the media skill replaces the planned chord pad and choir voice; a song without stems has the app's own piano | It follows the written harmony and the beat at every preset; a pad needs chord symbols, which the curriculum songs don't have |

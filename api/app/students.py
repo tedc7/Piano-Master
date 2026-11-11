@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Path, Query
 from pydantic import BaseModel, Field
 
 from . import content as content_mod
-from . import awards, db, diagnostics, engine, library
+from . import awards, db, diagnostics, engine, library, song_progress
 from .parent import is_parent, require_parent
 
 router = APIRouter()
@@ -268,7 +268,8 @@ def student_state(student_id: str, device_id: str | None = Query(None, pattern=U
             return {"student": student_out(r), "contentVersion": c.version,
                     "skills": engine.skills_out(c, states, t, session), "session": session,
                     "day": engine.day_out(con, student_id, t, session), "favorites": favorites(con, student_id),
-                    "rewards": awards.summary(con, student_id, t)}
+                    "rewards": awards.summary(con, student_id, t),
+                    "songs": song_progress.summaries(con, student_id)}       # each song's stage (§8.12)
     finally:
         con.close()
 
@@ -376,6 +377,7 @@ def progress(student_id: str):
             "SELECT started_at, piece_id, mode, completed, tempo_preset, accuracy_stars, timing_stars, context FROM attempts "
             "WHERE student_id = ? AND started_at >= ? ORDER BY started_at DESC",
             (student_id, (datetime.now().astimezone() - timedelta(days=28)).isoformat())).fetchall()
+        songs = song_progress.load(con, student_id)        # each song's record (§8.12)
         weeks = []
         for w in range(4):
             lo, hi = t - timedelta(days=7 * (w + 1) - 1), t - timedelta(days=7 * w)
@@ -384,7 +386,8 @@ def progress(student_id: str):
             acc = [a["accuracy_stars"] for a in xs]
             tim = [a["timing_stars"] for a in xs if a["timing_stars"] is not None]
             weeks.insert(0, {"from": lo.isoformat(), "plays": len(xs), "accuracyStars": sum(acc) / len(acc) if acc else None,
-                             "timingStars": sum(tim) / len(tim) if tim else None})
+                             "timingStars": sum(tim) / len(tim) if tim else None,
+                             "songsLearned": sum(1 for x in songs.values() if x["learned_date"] and lo.isoformat() <= x["learned_date"] <= hi.isoformat())})
         week_ago = t - timedelta(days=6)
         stars = awards.collection(con, student_id, t)
         tracks: dict[str, list[float]] = {}
@@ -410,6 +413,11 @@ def progress(student_id: str):
             "guidedMinutes28": round(sum(d["guidedSec"] for d in days) / 60, 1),
             "freeMinutes28": round(sum(d["freeSec"] for d in days) / 60, 1),
             "runway": engine.runway(con, c, student_id, states, t),
+            # Songs I can play: every song learned (3 stars or more as written, at full speed), newest first
+            "songsLearned": [{"pieceId": pid, "title": c.pieces[pid].title if pid in c.pieces else "(removed song)",
+                              "stage": x["stage"], "learned": x["learned_date"], "stars": x["best_stars"]}
+                             for pid, x in sorted(songs.items(), key=lambda kv: kv[1]["learned_date"] or "", reverse=True)
+                             if x["learned_date"]],
             "patterns": [p for p in found if p["status"] != "resolved" or (p["resolvedDate"] or "") >= (t - timedelta(days=28)).isoformat()],
             "recent": [{"startedAt": a["started_at"], "pieceId": a["piece_id"], "mode": a["mode"], "completed": bool(a["completed"]),
                         "tempoPreset": a["tempo_preset"], "accuracyStars": a["accuracy_stars"], "timingStars": a["timing_stars"],
@@ -421,6 +429,15 @@ def progress(student_id: str):
 
 def after_attempt(con, student_id: str, a, content: content_mod.Content | None) -> dict[str, Any] | None:
     """Called by POST /api/attempts inside its transaction, for a student's attempt."""
+    # the song's own record first (§8.12): the lesson engine and the awards read it
+    piece = content.pieces.get(a.pieceId) if content else None
+    nota = content.notation(a.pieceId) if piece else None
+    song = song_progress.update(con, student_id, {
+        "piece_id": a.pieceId, "mode": a.mode, "completed": a.completed, "started_at": a.startedAt.isoformat(),
+        "duration_sec": a.durationSec, "tempo_preset": a.conditions.tempoPreset, "content_version": a.contentVersion,
+        "conditions": a.conditions.model_dump(), "accuracy_stars": a.evaluation.accuracyStars,
+        "timing_stars": a.evaluation.timingStars, "per_phrase_errors": a.perPhraseErrors, "section": a.section,
+        "tricky": a.tricky}, piece.hands if piece else None, (nota or {}).get("phrases"), (nota or {}).get("length"))
     if content is None:
         return None
     e = a.evaluation
@@ -430,10 +447,14 @@ def after_attempt(con, student_id: str, a, content: content_mod.Content | None) 
         preset=a.conditions.tempoPreset, skill_id=a.skillId, item_id=a.itemId,
         tricky_phrase=(a.tricky or {}).get("phrase"), factor=e.factor,
         hand_step=a.conditions.hands != "both" and a.conditions.handsWritten == a.conditions.hands,
+        scorer_stars={r["id"]: float(r["stars"]) for r in (e.model_extra or {}).get("scorers") or []
+                      if isinstance(r, dict) and r.get("id") not in (None, "notes", "timing") and r.get("stars") is not None},
         note_errors=[{"kind": x.get("kind"), "bar": x.get("bar")} for x in a.noteErrors])
     # the attempt counts on whatever song was played; the items that replace a skill passed
     # mid-session come only from the songs this child may play (§10.1)
     fx = engine.record_attempt(con, content, student_id, info, caps_for(con, a.deviceId),
                                plan=library.content_for(con, student_id, content))
-    fx.update(awards.after_attempt(con, content, student_id, a.id, a.pieceId, today()))
+    fx.update(awards.after_attempt(con, content, student_id, a.id, a.pieceId, today(), song))
+    if song and song["stage"] != song["stageBefore"]:
+        fx["song"] = {"stage": song["stage"], "was": song["stageBefore"]}
     return fx

@@ -21,7 +21,12 @@ export type Verdict =
   | { kind: "wrong"; pitch: number; beat: number }
   | { kind: "ignored"; reason: "brush" | "restrike" | "otherHand" | "outside" | "unsure" };
 
-interface Hit { deltaMs: number; beat: number }
+interface Hit {
+  deltaMs: number;
+  beat: number;
+  velocity: number;          // how hard the key was pressed (§7.7)
+  release?: number;          // the beat its key came up (§7.7), once it has
+}
 interface Wrong { pitch: number; beat: number; phrase: number; timeMs: number; retracted: boolean }
 
 export class Matcher {
@@ -30,6 +35,7 @@ export class Matcher {
   readonly wrongs: Wrong[] = [];
   private byPitch = new Map<number, Expected[]>();
   private lastHitAt = new Map<number, number>();    // pitch -> timeMs
+  private down = new Map<number, number>();         // pitch -> the note its key matched, until the key comes up
   private missCursor = 0;
 
   constructor(
@@ -70,8 +76,9 @@ export class Matcher {
     }
     if (best) {
       const deltaMs = bestDelta * spb * 1000;
-      this.hits.set(best.id, { deltaMs, beat });
+      this.hits.set(best.id, { deltaMs, beat, velocity });
       this.lastHitAt.set(pitch, timeMs);
+      this.down.set(pitch, best.id);
       return { kind: "hit", noteId: best.id, deltaMs, onTime: Math.abs(deltaMs) <= this.windows.onTimeMs, beat };
     }
     const last = this.lastHitAt.get(pitch);
@@ -81,8 +88,15 @@ export class Matcher {
     return { kind: "wrong", pitch, beat };
   }
 
-  /** A wrong note released within 40 ms was a brush: take it back. */
-  noteOff(pitch: number, timeMs: number): void {
+  /** A key came up: the matched note it played keeps when (`beat`, §7.7); a wrong note released
+   *  within 40 ms was a brush: take it back. */
+  noteOff(pitch: number, timeMs: number, beat?: number): void {
+    const id = this.down.get(pitch);
+    if (id !== undefined) {
+      this.down.delete(pitch);
+      const h = this.hits.get(id);
+      if (h && h.release === undefined && beat !== undefined) h.release = beat;
+    }
     for (let i = this.wrongs.length - 1; i >= 0; i--) {
       const w = this.wrongs[i];
       if (w.pitch !== pitch || w.retracted) continue;

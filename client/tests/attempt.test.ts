@@ -22,7 +22,8 @@ describe("Attempt results for Diagnostics (arch §8.8)", () => {
     expect(r.noteErrors.find((e) => e.kind === "missed")).toMatchObject({ pitch: 65, note: 3 });
     expect(r.noteResults).toHaveLength(16);
     expect(r.noteResults[3]).toEqual([3, null]);
-    expect(r.noteResults[0]).toEqual([0, 50]);             // 0.1 beat late at 0.5 s a beat
+    // 0.1 beat late at 0.5 s a beat; still held at the end (no key-up), pressed at velocity 80 (v0.50)
+    expect(r.noteResults[0]).toEqual([0, 50, null, 80]);
   });
 
   it("leaves out notes an attempt stopped before", () => {

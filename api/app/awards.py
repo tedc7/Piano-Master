@@ -18,7 +18,7 @@ import sqlite3
 from datetime import date, datetime, timedelta
 from typing import Any
 
-from . import engine
+from . import engine, song_progress
 from .content import Content
 
 B, S, G, P = "bronze", "silver", "gold", "platinum"
@@ -70,12 +70,12 @@ def local_day(ts: str) -> date:
 
 
 def collection(con: sqlite3.Connection, student_id: str, today: date) -> dict[str, Any]:
-    """The star total, what it grew by today and this week, and each song's best (for the library)."""
-    rows = plays(con, student_id)
-    now = bests(rows)
+    """The star total, what it grew by today and this week, and each song's best (for the library),
+    from each song's record (§8.12, v0.50; until then worked out from every attempt each time)."""
+    now, (before_today, before_week) = song_progress.collection(con, student_id, [today, today - timedelta(days=6)])
     total = sum(now.values())
-    return {"total": total, "today": total - sum(bests(rows, today).values()),
-            "week": total - sum(bests(rows, today - timedelta(days=6)).values()), "songs": now}
+    return {"total": total, "today": total - sum(before_today.values()), "week": total - sum(before_week.values()),
+            "songs": now}
 
 
 # ------------------------------------------------------------------------------ measures and medals
@@ -83,7 +83,7 @@ def collection(con: sqlite3.Connection, student_id: str, today: date) -> dict[st
 def measures(con: sqlite3.Connection, content: Content, student_id: str, today: date,
              states: dict[str, engine.SkillState] | None = None, songs: dict[str, float] | None = None) -> dict[str, float]:
     states = states or engine.load_states(con, content, student_id)
-    songs = songs if songs is not None else bests(plays(con, student_id))
+    songs = songs if songs is not None else song_progress.collection(con, student_id, [])[0]
     secs = con.execute("SELECT COALESCE(SUM(guided_sec + free_sec), 0) FROM practice_days WHERE student_id = ?",
                        (student_id,)).fetchone()[0]
     return {
@@ -168,16 +168,16 @@ def check(con: sqlite3.Connection, content: Content, student_id: str, today: dat
 
 
 def after_attempt(con: sqlite3.Connection, content: Content, student_id: str, attempt_id: str, piece_id: str,
-                  today: date) -> dict[str, Any]:
+                  today: date, song: dict[str, Any] | None = None) -> dict[str, Any]:
     """What an attempt added, for the result screen: new medals, the stars it added to the
-    collection, and the song's personal best when it beat it."""
-    rows = plays(con, student_id)
-    now, before = bests(rows), bests(rows, skip=attempt_id)
+    collection, and the song's personal best when it beat it. `song`: the song's collection stars
+    before and after this attempt (song_progress.update)."""
+    now = song_progress.collection(con, student_id, [])[0]
+    was, got = (song or {}).get("before"), (song or {}).get("after")
     out: dict[str, Any] = {"awards": check(con, content, student_id, today),
-                           "stars": {"total": sum(now.values()), "gained": now.get(piece_id, 0) - before.get(piece_id, 0)},
-                           "best": None}
-    if piece_id in before and now.get(piece_id, 0) > before[piece_id]:
-        out["best"] = {"previous": before[piece_id], "now": now[piece_id]}
+                           "stars": {"total": sum(now.values()), "gained": (got or 0) - (was or 0)}, "best": None}
+    if was is not None and (got or 0) > was:
+        out["best"] = {"previous": was, "now": got}
     return out
 
 

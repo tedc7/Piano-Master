@@ -36,6 +36,7 @@ import soundfile as sf
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import align  # noqa: E402
 import backing as bk  # noqa: E402
+import melisma  # noqa: E402
 import synth  # noqa: E402
 import yue2  # noqa: E402
 from common import PAD_BEATS, PRESETS, ROOT, SR, Piece, pieces  # noqa: E402
@@ -224,8 +225,17 @@ def package(piece: Piece) -> dict:
         v100, _ = sf.read(src / "vocals_100.wav", always_2d=True)
         v100 = song_only(v100, SR, end_s)
         gain = VOCAL_DB - rms_db(v100[start:])                        # one gain for every preset
+        # melismas sung as written (v0.50): the held pitch bent onto the written notes, in each
+        # preset's stem; the gain stays the unbent 100% vocal's, so the level is the same either way
+        found = melisma.melismas(piece) if melisma.method(piece) == "bend" else []
+        bends = {}
         for key, ratio in PRESETS.items():
             v, sr = sf.read(src / f"vocals_{key}.wav", always_2d=True)
+            if found:
+                v, bends[key] = melisma.bend(v, sr, piece, found, melisma.stem_time(piece, media["padBeats"], ratio), ratio)
+                b = bends[key]
+                print(f"  {key}%: {b['bent']} of {b['melismas']} melismas bent; melisma notes on pitch "
+                      f"{b['notesOnPitchBefore'][0]} -> {b['notesOnPitch'][0]} of {b['notesOnPitch'][1]}", flush=True)
             synth.mp3(synth.level(song_only(v, sr, end_s / ratio), gain), out / f"vocals_{key}.mp3", sr)
             presets[key]["vocals"] = f"vocals_{key}.mp3"
         if keep_yue2:
@@ -244,6 +254,8 @@ def package(piece: Piece) -> dict:
             engines.append("YuE2 vocal and backing")
         else:
             engines.append("YuE2 vocal")
+        if bends and any(b["bent"] for b in bends.values()):
+            engines[-1] += f"; {melisma.ENGINE_NOTE}"
         media["take"] = f"{choice['take']} ({choice['mode']})"
         media["check"] = {"notesOnPitch": a["pitch"]["share"], "wordsOff": a["words"]["shareOver300ms"],
                           "wordsHeard": (a.get("heard") or {}).get("share"), "heard": (a.get("heard") or {}).get("heard"),
@@ -251,7 +263,18 @@ def package(piece: Piece) -> dict:
                           "melodyStretches": a["melodyStretches"], "worstPhraseMs": a["checks"]["worstPhraseMs"],
                           "grid100": a["after"], "grid50": slow,
                           "tuningCents": a["tuningCents"], "bleedDb": a["bleed"]["db"], "pass": a["checks"]["pass"],
-                          "reasons": a["checks"]["reasons"], "flags": a["checks"]["flags"]}
+                          "reasons": a["checks"]["reasons"], "flags": list(a["checks"]["flags"])}
+        if bends:
+            b = bends["100"]
+            media["check"]["melismas"] = {"method": "bend", "count": b["melismas"], "bent": b["bent"],
+                                          "notesOnPitch": {"before": b["notesOnPitchBefore"], "after": b["notesOnPitch"]},
+                                          "melodyOnStaff": {"before": b["melodyOnStaffBefore"], "after": b["melodyOnStaff"]},
+                                          "presets": {k: x["notesOnPitch"] for k, x in bends.items()}}
+            if b["bent"]:
+                media["check"]["flags"].append(f"melismas bent onto the written notes: {b['notesOnPitch'][0]} of "
+                                               f"{b['notesOnPitch'][1]} melisma notes on pitch (were {b['notesOnPitchBefore'][0]})")
+        elif plan["vocal"] and melisma.method(piece) == "hold" and melisma.melismas(piece):
+            media["check"]["melismas"] = {"method": "hold", "count": len(melisma.melismas(piece))}
     if plan["backing"] == "fluidsynth":
         rep = json.loads((piece.work / "backing" / "report.json").read_text())
         for key, p in rep["presets"].items():
@@ -305,6 +328,11 @@ def report(batch: Path) -> Path:
             "; ".join((c.get("reasons") or []) + ([] if not b or b["timing"]["pass"] else [f"backing {b['timing']['worstPartMedianMs']} ms off"]))
         if c and c.get("flags"):
             checks += "; listen for: " + "; ".join(c["flags"])
+        if c and c.get("melismas"):
+            ml = c["melismas"]
+            vocal += (f"; {ml['count']} melismas held on one pitch (melisma: hold)" if ml["method"] == "hold" else
+                      f"; {ml['bent']} of {ml['count']} melismas bent, melisma notes on pitch "
+                      f"{ml['notesOnPitch']['before'][0]} -> {ml['notesOnPitch']['after'][0]} of {ml['notesOnPitch']['after'][1]}")
         rows.append(f"| {f.stem} | {vocal} | {back} | {checks} |")
     out = batch / "MEDIA.md"
     out.write_text("\n".join(rows) + "\n")

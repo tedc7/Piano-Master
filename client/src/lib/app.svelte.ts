@@ -19,6 +19,7 @@ import {
   loadDevice, loadParentSettings, saveDevice, saveParentSettings, toggleIn, withDefaults,
   type DeviceSettings, type Settings, type StudentSettings,
 } from "./settings";
+import type { SongState } from "./songs";
 import type { Preset } from "./types";
 
 /** Full-screen reminder threshold (arch §2.2): 87 px of app bars on the iPad A16, 0 in full
@@ -69,6 +70,8 @@ class AppState {
   day = $state<StudentState["day"] | null>(null);
   favorites = $state<string[]>([]);
   rewards = $state<Rewards | null>(null);
+  /** Each song's progress (§8.12): its stage and next step, by piece id. */
+  songs = $state<Record<string, SongState>>({});
   celebrations = $state<Celebration[]>([]);
   stateStatus = $state<"none" | "loading" | "ok" | "offline">("none");
   stateError = $state("");
@@ -269,6 +272,7 @@ class AppState {
     this.day = null;
     this.favorites = this.parentMode ? read<string[]>(FAV_KEY, []) : [];
     this.rewards = null;
+    this.songs = {};
     this.celebrations = [];
     this.stateStatus = "none";
     this.stateError = "";
@@ -280,6 +284,7 @@ class AppState {
     this.day = st.day;
     this.favorites = st.favorites;
     this.rewards = st.rewards ?? null;
+    this.songs = st.songs ?? {};
     this.stateStatus = fresh ? "ok" : "offline";
     if (fresh) this.cache();
   }
@@ -293,6 +298,7 @@ class AppState {
       session: $state.snapshot(this.session) as Session, day: $state.snapshot(this.day) as StudentState["day"],
       favorites: [...this.favorites],
       rewards: this.rewards ? ($state.snapshot(this.rewards) as Rewards) : undefined,
+      songs: $state.snapshot(this.songs) as Record<string, SongState>,
     };
     write(STATE_KEY, all);
   }
