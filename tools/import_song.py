@@ -45,7 +45,7 @@ ROOT = bc.ROOT
 CONTENT = bc.CONTENT
 INCOMING = CONTENT / "incoming"
 DELETED = CONTENT / "deleted.yaml"
-XML2ABC = ROOT / "tools" / ".vendor" / "xml2abc_177" / "xml2abc.py"
+XML2ABC = ROOT / "tools" / "vendor" / "xml2abc_177" / "xml2abc.py"
 # the edition's license (§10.2): these, optionally with a version ("CC BY-SA 3.0"), or "retyped
 # from …" when the notes were retyped from a public-domain composition and only checked against
 # the edition. Anything else (non-commercial, no-derivatives, unknown) is refused.

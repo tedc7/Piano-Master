@@ -18,9 +18,9 @@ from fastapi import FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-from . import content, db, library, parent, students
+from . import content, db, library, parent, songtools, students
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 log = logging.getLogger("piano.api")
 MAX_BODY = 4 * 1024 * 1024          # an attempt with every key press is well under this
 MAX_PACKAGE = 32 * 1024 * 1024      # a Skill API package: every piece's notation (its stems come one file at a time)
@@ -225,7 +225,7 @@ def health():
         con.close()
     c = content.load()
     return {"ok": True, "version": VERSION, "schema": schema_version, "contentVersion": content.deployed_version() if c else None,
-            "libraryVersion": c.version.partition("+")[2] if c else None}
+            "libraryVersion": c.version.partition("+")[2] if c else None, "songTools": songtools.on()}
 
 
 def touch_device(con, device_id: str, body: DeviceIn | None = None) -> None:

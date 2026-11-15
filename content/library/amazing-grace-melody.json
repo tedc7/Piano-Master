@@ -1,0 +1,1976 @@
+{
+ "barNotes": {
+  "1": 2,
+  "10": 8,
+  "11": 4,
+  "12": 8,
+  "13": 4,
+  "14": 6,
+  "15": 4,
+  "16": 2,
+  "17": 2,
+  "2": 6,
+  "3": 4,
+  "4": 4,
+  "5": 4,
+  "6": 6,
+  "7": 4,
+  "8": 2,
+  "9": 4
+ },
+ "beyondMap": [
+  "right hand A4 to D5",
+  "right hand intervals of 4ths",
+  "note lengths 0.5, 1.5 beats",
+  "key signature +1"
+ ],
+ "composer": "Traditional (New Britain)",
+ "contentVersion": "lib-b991cb869e",
+ "display": {
+  "fingers": null,
+  "letters": null
+ },
+ "featuredSkills": [
+  "prep-a.tie"
+ ],
+ "fingeringSource": "generated",
+ "genre": "hymns",
+ "hands": "R",
+ "id": "amazing-grace-melody",
+ "info": {
+  "hands": "R",
+  "level": "test",
+  "license": {
+   "composition": "public-domain",
+   "edition": "public-domain (The Open Hymnal)"
+  },
+  "seeded": true,
+  "source": {
+   "site": "The Open Hymnal Project",
+   "url": "https://openhymnal.org/"
+  }
+ },
+ "keyboardSize": 61,
+ "kind": "song",
+ "level": "test",
+ "mapPoint": 450,
+ "media": {
+  "bpm": 100,
+  "check": {
+   "firstWordSung": true,
+   "melodyStretches": [],
+   "notesOnPitch": 0.935,
+   "startOffset": 0.12,
+   "wordStretches": [],
+   "wordsOff": 0.057
+  },
+  "engine": "YuE2",
+  "padBeats": 5.0,
+  "presets": {
+   "100": {
+    "accompaniment": {
+     "bytes": 2969760,
+     "url": "/api/library/media/amazing-grace-melody/accompaniment_100.mp3"
+    },
+    "ratio": 1.0,
+    "vocals": {
+     "bytes": 2969760,
+     "url": "/api/library/media/amazing-grace-melody/vocals_100.mp3"
+    }
+   },
+   "50": {
+    "accompaniment": {
+     "bytes": 5938080,
+     "url": "/api/library/media/amazing-grace-melody/accompaniment_50.mp3"
+    },
+    "ratio": 0.5,
+    "vocals": {
+     "bytes": 5938080,
+     "url": "/api/library/media/amazing-grace-melody/vocals_50.mp3"
+    }
+   },
+   "75": {
+    "accompaniment": {
+     "bytes": 3959040,
+     "url": "/api/library/media/amazing-grace-melody/accompaniment_75.mp3"
+    },
+    "ratio": 0.75,
+    "vocals": {
+     "bytes": 3959040,
+     "url": "/api/library/media/amazing-grace-melody/vocals_75.mp3"
+    }
+   },
+   "90": {
+    "accompaniment": {
+     "bytes": 3299520,
+     "url": "/api/library/media/amazing-grace-melody/accompaniment_90.mp3"
+    },
+    "ratio": 0.9,
+    "vocals": {
+     "bytes": 3299520,
+     "url": "/api/library/media/amazing-grace-melody/vocals_90.mp3"
+    }
+   }
+  },
+  "take": "amazing-grace-syl-spec-s1-dtw"
+ },
+ "notation": {
+  "chordSymbols": [
+   {
+    "beat": 0.0,
+    "derived": true,
+    "symbol": "G"
+   },
+   {
+    "beat": 4.0,
+    "derived": true,
+    "symbol": "G/D"
+   },
+   {
+    "beat": 6.0,
+    "derived": true,
+    "symbol": "D7"
+   },
+   {
+    "beat": 7.0,
+    "derived": true,
+    "symbol": "Em"
+   },
+   {
+    "beat": 9.0,
+    "derived": true,
+    "symbol": "C"
+   },
+   {
+    "beat": 10.0,
+    "derived": true,
+    "symbol": "G"
+   },
+   {
+    "beat": 16.0,
+    "derived": true,
+    "symbol": "G/D"
+   },
+   {
+    "beat": 18.0,
+    "derived": true,
+    "symbol": "D7/C"
+   },
+   {
+    "beat": 19.0,
+    "derived": true,
+    "symbol": "G/B"
+   },
+   {
+    "beat": 24.0,
+    "derived": true,
+    "symbol": "G"
+   },
+   {
+    "beat": 28.0,
+    "derived": true,
+    "symbol": "G/B"
+   },
+   {
+    "beat": 31.0,
+    "derived": true,
+    "symbol": "C"
+   },
+   {
+    "beat": 34.0,
+    "derived": true,
+    "symbol": "G"
+   },
+   {
+    "beat": 36.0,
+    "derived": true,
+    "symbol": "G/B"
+   },
+   {
+    "beat": 37.0,
+    "derived": true,
+    "symbol": "Em"
+   },
+   {
+    "beat": 39.0,
+    "derived": true,
+    "symbol": "G/D"
+   },
+   {
+    "beat": 42.0,
+    "derived": true,
+    "symbol": "D7"
+   },
+   {
+    "beat": 43.0,
+    "derived": true,
+    "symbol": "G"
+   }
+  ],
+  "graces": [],
+  "header": {
+   "barLength": 3.0,
+   "keySig": 1,
+   "pickupBeats": 1.0,
+   "range": [
+    62,
+    74
+   ],
+   "staves": [
+    "treble"
+   ],
+   "tempo": 100,
+   "timeSig": "3/4"
+  },
+  "length": 96.0,
+  "lyrics": [
+   {
+    "note": 0,
+    "syllabic": "begin",
+    "text": "A",
+    "verse": 1
+   },
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "'Twas",
+    "verse": 2
+   },
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Through",
+    "verse": 3
+   },
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "The",
+    "verse": 4
+   },
+   {
+    "note": 0,
+    "syllabic": "single",
+    "text": "Yea,",
+    "verse": 5
+   },
+   {
+    "note": 1,
+    "syllabic": "middle",
+    "text": "maz",
+    "verse": 1
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "grace",
+    "verse": 2
+   },
+   {
+    "note": 1,
+    "syllabic": "begin",
+    "text": "ma",
+    "verse": 3
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "Lord",
+    "verse": 4
+   },
+   {
+    "note": 1,
+    "syllabic": "single",
+    "text": "when",
+    "verse": 5
+   },
+   {
+    "note": 2,
+    "syllabic": "end",
+    "text": "ing",
+    "verse": 1
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "that",
+    "verse": 2
+   },
+   {
+    "note": 2,
+    "syllabic": "end",
+    "text": "ny",
+    "verse": 3
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "has",
+    "verse": 4
+   },
+   {
+    "note": 2,
+    "syllabic": "single",
+    "text": "this",
+    "verse": 5
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "grace!",
+    "verse": 1
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "taught",
+    "verse": 2
+   },
+   {
+    "note": 4,
+    "syllabic": "begin",
+    "text": "dan",
+    "verse": 3
+   },
+   {
+    "note": 4,
+    "syllabic": "begin",
+    "text": "pro",
+    "verse": 4
+   },
+   {
+    "note": 4,
+    "syllabic": "single",
+    "text": "flesh",
+    "verse": 5
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "How",
+    "verse": 1
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 2
+   },
+   {
+    "note": 5,
+    "syllabic": "end",
+    "text": "gers,",
+    "verse": 3
+   },
+   {
+    "note": 5,
+    "syllabic": "end",
+    "text": "mised",
+    "verse": 4
+   },
+   {
+    "note": 5,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 5
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "sweet",
+    "verse": 1
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "heart",
+    "verse": 2
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "toils",
+    "verse": 3
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "good",
+    "verse": 4
+   },
+   {
+    "note": 6,
+    "syllabic": "single",
+    "text": "heart",
+    "verse": 5
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 1
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 2
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 3
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "to",
+    "verse": 4
+   },
+   {
+    "note": 7,
+    "syllabic": "single",
+    "text": "shall",
+    "verse": 5
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "sound",
+    "verse": 1
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "fear,",
+    "verse": 2
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "snares,",
+    "verse": 3
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "me,",
+    "verse": 4
+   },
+   {
+    "note": 8,
+    "syllabic": "single",
+    "text": "fail,",
+    "verse": 5
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "That",
+    "verse": 1
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "And",
+    "verse": 2
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 3
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "His",
+    "verse": 4
+   },
+   {
+    "note": 9,
+    "syllabic": "single",
+    "text": "And",
+    "verse": 5
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "saved",
+    "verse": 1
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "grace",
+    "verse": 2
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "have",
+    "verse": 3
+   },
+   {
+    "note": 10,
+    "syllabic": "single",
+    "text": "Word",
+    "verse": 4
+   },
+   {
+    "note": 10,
+    "syllabic": "begin",
+    "text": "mor",
+    "verse": 5
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "a",
+    "verse": 1
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 2
+   },
+   {
+    "note": 11,
+    "syllabic": "begin",
+    "text": "al",
+    "verse": 3
+   },
+   {
+    "note": 11,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 4
+   },
+   {
+    "note": 11,
+    "syllabic": "end",
+    "text": "tal",
+    "verse": 5
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "wretch",
+    "verse": 1
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "fears",
+    "verse": 2
+   },
+   {
+    "note": 13,
+    "syllabic": "middle",
+    "text": "rea",
+    "verse": 3
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "hope",
+    "verse": 4
+   },
+   {
+    "note": 13,
+    "syllabic": "single",
+    "text": "life",
+    "verse": 5
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "like",
+    "verse": 1
+   },
+   {
+    "note": 14,
+    "syllabic": "begin",
+    "text": "re",
+    "verse": 2
+   },
+   {
+    "note": 14,
+    "syllabic": "end",
+    "text": "dy",
+    "verse": 3
+   },
+   {
+    "note": 14,
+    "syllabic": "begin",
+    "text": "se",
+    "verse": 4
+   },
+   {
+    "note": 14,
+    "syllabic": "single",
+    "text": "shall",
+    "verse": 5
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "me!",
+    "verse": 1
+   },
+   {
+    "note": 15,
+    "syllabic": "end",
+    "text": "lieved;",
+    "verse": 2
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "come;",
+    "verse": 3
+   },
+   {
+    "note": 15,
+    "syllabic": "end",
+    "text": "cures;",
+    "verse": 4
+   },
+   {
+    "note": 15,
+    "syllabic": "single",
+    "text": "cease,",
+    "verse": 5
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 1
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "How",
+    "verse": 2
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "'Tis",
+    "verse": 3
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "He",
+    "verse": 4
+   },
+   {
+    "note": 17,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 5
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "once",
+    "verse": 1
+   },
+   {
+    "note": 18,
+    "syllabic": "begin",
+    "text": "pre",
+    "verse": 2
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "grace",
+    "verse": 3
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "will",
+    "verse": 4
+   },
+   {
+    "note": 18,
+    "syllabic": "single",
+    "text": "shall",
+    "verse": 5
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "was",
+    "verse": 1
+   },
+   {
+    "note": 20,
+    "syllabic": "end",
+    "text": "cious",
+    "verse": 2
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "hath",
+    "verse": 3
+   },
+   {
+    "note": 20,
+    "syllabic": "single",
+    "text": "my",
+    "verse": 4
+   },
+   {
+    "note": 20,
+    "syllabic": "begin",
+    "text": "pos",
+    "verse": 5
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "lost,",
+    "verse": 1
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "did",
+    "verse": 2
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "brought",
+    "verse": 3
+   },
+   {
+    "note": 22,
+    "syllabic": "single",
+    "text": "Shield",
+    "verse": 4
+   },
+   {
+    "note": 22,
+    "syllabic": "end",
+    "text": "sess,",
+    "verse": 5
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "but",
+    "verse": 1
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "that",
+    "verse": 2
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "me",
+    "verse": 3
+   },
+   {
+    "note": 23,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 4
+   },
+   {
+    "note": 23,
+    "syllabic": "begin",
+    "text": "with",
+    "verse": 5
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "now",
+    "verse": 1
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "grace",
+    "verse": 2
+   },
+   {
+    "note": 24,
+    "syllabic": "single",
+    "text": "safe",
+    "verse": 3
+   },
+   {
+    "note": 24,
+    "syllabic": "begin",
+    "text": "Por",
+    "verse": 4
+   },
+   {
+    "note": 24,
+    "syllabic": "end",
+    "text": "in",
+    "verse": 5
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "am",
+    "verse": 1
+   },
+   {
+    "note": 26,
+    "syllabic": "begin",
+    "text": "ap",
+    "verse": 2
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "thus",
+    "verse": 3
+   },
+   {
+    "note": 26,
+    "syllabic": "end",
+    "text": "tion",
+    "verse": 4
+   },
+   {
+    "note": 26,
+    "syllabic": "single",
+    "text": "the",
+    "verse": 5
+   },
+   {
+    "note": 28,
+    "syllabic": "single",
+    "text": "found;",
+    "verse": 1
+   },
+   {
+    "note": 28,
+    "syllabic": "end",
+    "text": "pear",
+    "verse": 2
+   },
+   {
+    "note": 28,
+    "syllabic": "single",
+    "text": "far,",
+    "verse": 3
+   },
+   {
+    "note": 28,
+    "syllabic": "single",
+    "text": "be,",
+    "verse": 4
+   },
+   {
+    "note": 28,
+    "syllabic": "single",
+    "text": "veil,",
+    "verse": 5
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "Was",
+    "verse": 1
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "The",
+    "verse": 2
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "And",
+    "verse": 3
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "As",
+    "verse": 4
+   },
+   {
+    "note": 29,
+    "syllabic": "single",
+    "text": "A",
+    "verse": 5
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "blind,",
+    "verse": 1
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "hour",
+    "verse": 2
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "grace",
+    "verse": 3
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "long",
+    "verse": 4
+   },
+   {
+    "note": 30,
+    "syllabic": "single",
+    "text": "life",
+    "verse": 5
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "but",
+    "verse": 1
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 2
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "will",
+    "verse": 3
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "as",
+    "verse": 4
+   },
+   {
+    "note": 31,
+    "syllabic": "single",
+    "text": "of",
+    "verse": 5
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "now",
+    "verse": 1
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "first",
+    "verse": 2
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "lead",
+    "verse": 3
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "life",
+    "verse": 4
+   },
+   {
+    "note": 33,
+    "syllabic": "single",
+    "text": "joy",
+    "verse": 5
+   },
+   {
+    "note": 34,
+    "syllabic": "single",
+    "text": "I",
+    "verse": 1
+   },
+   {
+    "note": 34,
+    "syllabic": "begin",
+    "text": "be",
+    "verse": 2
+   },
+   {
+    "note": 34,
+    "syllabic": "single",
+    "text": "me",
+    "verse": 3
+   },
+   {
+    "note": 34,
+    "syllabic": "begin",
+    "text": "en",
+    "verse": 4
+   },
+   {
+    "note": 34,
+    "syllabic": "single",
+    "text": "and",
+    "verse": 5
+   },
+   {
+    "note": 35,
+    "syllabic": "single",
+    "text": "see.",
+    "verse": 1
+   },
+   {
+    "note": 35,
+    "syllabic": "end",
+    "text": "lieved.",
+    "verse": 2
+   },
+   {
+    "note": 35,
+    "syllabic": "single",
+    "text": "home.",
+    "verse": 3
+   },
+   {
+    "note": 35,
+    "syllabic": "end",
+    "text": "dures.",
+    "verse": 4
+   },
+   {
+    "note": 35,
+    "syllabic": "single",
+    "text": "peace.",
+    "verse": 5
+   }
+  ],
+  "measures": [
+   {
+    "duration": 1.0,
+    "number": 1,
+    "start": 0.0
+   },
+   {
+    "duration": 3.0,
+    "number": 2,
+    "start": 1.0
+   },
+   {
+    "duration": 3.0,
+    "number": 3,
+    "start": 4.0
+   },
+   {
+    "duration": 3.0,
+    "number": 4,
+    "start": 7.0
+   },
+   {
+    "duration": 3.0,
+    "number": 5,
+    "start": 10.0
+   },
+   {
+    "duration": 3.0,
+    "number": 6,
+    "start": 13.0
+   },
+   {
+    "duration": 3.0,
+    "number": 7,
+    "start": 16.0
+   },
+   {
+    "duration": 3.0,
+    "number": 8,
+    "start": 19.0
+   },
+   {
+    "duration": 3.0,
+    "number": 9,
+    "start": 22.0
+   },
+   {
+    "duration": 3.0,
+    "number": 10,
+    "start": 25.0
+   },
+   {
+    "duration": 3.0,
+    "number": 11,
+    "start": 28.0
+   },
+   {
+    "duration": 3.0,
+    "number": 12,
+    "start": 31.0
+   },
+   {
+    "duration": 3.0,
+    "number": 13,
+    "start": 34.0
+   },
+   {
+    "duration": 3.0,
+    "number": 14,
+    "start": 37.0
+   },
+   {
+    "duration": 3.0,
+    "number": 15,
+    "start": 40.0
+   },
+   {
+    "duration": 3.0,
+    "number": 16,
+    "start": 43.0
+   },
+   {
+    "duration": 2.0,
+    "number": 17,
+    "start": 46.0
+   }
+  ],
+  "notes": [
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 0.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 1.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 3.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 3.5,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 4.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 69,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 6.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 7.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 9.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 10.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 12.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 13.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 15.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 15.5,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 16.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 69,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 18.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 74,
+    "spelled": {
+     "alter": 0,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 19.0,
+    "tieToNext": true,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 74,
+    "spelled": {
+     "alter": 0,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 22.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 24.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.5,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 74,
+    "spelled": {
+     "alter": 0,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 25.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 26.5,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 74,
+    "spelled": {
+     "alter": 0,
+     "octave": 5,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 27.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 27.5,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 28.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 30.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.5,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 31.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 32.5,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 33.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 2,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 64,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "E"
+    },
+    "staff": 0,
+    "start": 33.5,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 34.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 1,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 62,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "D"
+    },
+    "staff": 0,
+    "start": 36.0,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 37.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 39.0,
+    "voice": 1
+   },
+   {
+    "duration": 0.5,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 39.5,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 5,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 71,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "B"
+    },
+    "staff": 0,
+    "start": 40.0,
+    "voice": 1
+   },
+   {
+    "duration": 1.0,
+    "finger": 4,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 69,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "A"
+    },
+    "staff": 0,
+    "start": 42.0,
+    "voice": 1
+   },
+   {
+    "duration": 3.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 43.0,
+    "tieToNext": true,
+    "voice": 1
+   },
+   {
+    "duration": 2.0,
+    "finger": 3,
+    "hand": "R",
+    "isMelody": true,
+    "pitch": 67,
+    "spelled": {
+     "alter": 0,
+     "octave": 4,
+     "step": "G"
+    },
+    "staff": 0,
+    "start": 46.0,
+    "voice": 1
+   }
+  ],
+  "phrases": [
+   0.0,
+   12.0,
+   24.0,
+   36.0,
+   48.0,
+   60.0,
+   72.0,
+   84.0
+  ],
+  "playbackOrder": [
+   {
+    "measure": 0,
+    "verse": 1
+   },
+   {
+    "measure": 1,
+    "verse": 1
+   },
+   {
+    "measure": 2,
+    "verse": 1
+   },
+   {
+    "measure": 3,
+    "verse": 1
+   },
+   {
+    "measure": 4,
+    "verse": 1
+   },
+   {
+    "measure": 5,
+    "verse": 1
+   },
+   {
+    "measure": 6,
+    "verse": 1
+   },
+   {
+    "measure": 7,
+    "verse": 1
+   },
+   {
+    "measure": 8,
+    "verse": 1
+   },
+   {
+    "measure": 9,
+    "verse": 1
+   },
+   {
+    "measure": 10,
+    "verse": 1
+   },
+   {
+    "measure": 11,
+    "verse": 1
+   },
+   {
+    "measure": 12,
+    "verse": 1
+   },
+   {
+    "measure": 13,
+    "verse": 1
+   },
+   {
+    "measure": 14,
+    "verse": 1
+   },
+   {
+    "measure": 15,
+    "verse": 1
+   },
+   {
+    "measure": 16,
+    "verse": 1
+   },
+   {
+    "measure": 0,
+    "verse": 2
+   },
+   {
+    "measure": 1,
+    "verse": 2
+   },
+   {
+    "measure": 2,
+    "verse": 2
+   },
+   {
+    "measure": 3,
+    "verse": 2
+   },
+   {
+    "measure": 4,
+    "verse": 2
+   },
+   {
+    "measure": 5,
+    "verse": 2
+   },
+   {
+    "measure": 6,
+    "verse": 2
+   },
+   {
+    "measure": 7,
+    "verse": 2
+   },
+   {
+    "measure": 8,
+    "verse": 2
+   },
+   {
+    "measure": 9,
+    "verse": 2
+   },
+   {
+    "measure": 10,
+    "verse": 2
+   },
+   {
+    "measure": 11,
+    "verse": 2
+   },
+   {
+    "measure": 12,
+    "verse": 2
+   },
+   {
+    "measure": 13,
+    "verse": 2
+   },
+   {
+    "measure": 14,
+    "verse": 2
+   },
+   {
+    "measure": 15,
+    "verse": 2
+   },
+   {
+    "measure": 16,
+    "verse": 2
+   }
+  ],
+  "units": "start and duration are in quarter notes (beats of a quarter), in the written score"
+ },
+ "requiredSkills": [
+  "prep-a.sitting",
+  "prep-a.half-note",
+  "prep-a.dotted-half",
+  "prep-a.middle-c",
+  "prep-a.treble-g",
+  "prep-a.d-e-f",
+  "prep-a.three-four",
+  "prep-a.skips",
+  "prep-a.tie"
+ ],
+ "skillId": null,
+ "skillMeasures": {
+  "prep-a.d-e-f": [
+   1,
+   3,
+   4,
+   5,
+   7,
+   11,
+   12,
+   13,
+   15,
+   16
+  ],
+  "prep-a.dotted-half": [
+   8,
+   16
+  ],
+  "prep-a.half-note": [
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9,
+   11,
+   13,
+   14,
+   15,
+   17
+  ],
+  "prep-a.middle-c": [
+   5,
+   9,
+   12,
+   13,
+   17
+  ],
+  "prep-a.sitting": [
+   1,
+   3,
+   4,
+   5,
+   7,
+   9,
+   11,
+   13,
+   15
+  ],
+  "prep-a.skips": [
+   2,
+   3,
+   4,
+   6,
+   7,
+   9,
+   10,
+   11,
+   12,
+   14,
+   15
+  ],
+  "prep-a.three-four": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17
+  ],
+  "prep-a.tie": [
+   8,
+   16
+  ],
+  "prep-a.treble-g": [
+   2,
+   4,
+   6,
+   11,
+   12,
+   14,
+   16,
+   17
+  ]
+ },
+ "song": "amazing-grace-melody",
+ "songTitle": "Amazing Grace",
+ "title": "Amazing Grace",
+ "version": null
+}

@@ -9,6 +9,13 @@ You make and check; the parent listens and approves in the app's review list. Me
 waits with the batch in `content/incoming/<batch>/media/` until it's submitted with the pieces
 (the import skill's `submit`). Nothing reaches a child before the parent's approval.
 
+**First, check this is the dev box that makes songs** (v0.51, `docs/install-guide.md`): this skill
+needs the maintainers' dev box, with its GPU pipeline and a piano server whose song tools are on.
+Run `grep -q '^PIANO_SONG_TOOLS=on' ~/.config/piano-master/server.env && echo song tools on`. If it
+doesn't print `song tools on`, stop: say that this install gets its songs, fixes and lesson recordings
+from the app's updates (`git pull`, then `tools/deploy.sh`, then the Review list's Songs from the
+app), and that a request for a new song or a fix goes to the app's maintainers. Change nothing.
+
 All commands run from the repo root with `tools/.venv/bin/python tools/media/media.py …`.
 
 ## 1. Before you start

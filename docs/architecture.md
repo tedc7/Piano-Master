@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.50** · Nov 10, 2026
+**Version 0.51** · Nov 14, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -44,7 +44,7 @@ The app is a web client plus a small server on the home network. The server hold
 
 ### 2.1 Client device requirements
 
-- **Browser features:** Web MIDI, Web Audio and Screen Wake Lock, on a page served over HTTPS; storage that survives an app relaunch. With the interim microphone input (4), microphone access (`getUserMedia`, with echo cancellation) instead of Web MIDI; whether MIDIWeb Browser offers it is not yet checked (Safari on the iPad does).
+- **Browser features:** Web MIDI, Web Audio and Screen Wake Lock, on a page served over HTTPS; storage that survives an app relaunch. With the interim microphone input (4), microphone access (`getUserMedia`, with echo cancellation) instead of Web MIDI, which MIDIWeb Browser offers (checked in v0.38), as Safari on the iPad does.
 - **Network:** Wi-Fi access to the piano server on the home network. No internet needed.
 - **Screen:** about 10 inches or larger, landscape. Touch is recommended; mouse or trackpad also works.
 - **Performance:** smooth 60 fps staff scrolling; any recent mid-range tablet or laptop.
@@ -441,7 +441,7 @@ The MIDI keyboard's purchase was delayed, so the children could not use the app.
 
 **A silent microphone (v0.46):** when the microphone gives no sound at all (exact zeros for 3 seconds, or iPadOS marks it muted, as it does while a call, Siri or another app has it), the status reads "Microphone silent: close other apps using it, or reload" and Play waits, instead of hearing nothing. A Piano check recording of Oct 28 was 60 seconds of zeros.
 
-**What it can't do:** the sustain pedal can't be heard; velocity is only a guess from loudness; very fast repeated notes (under about 90 ms apart) merge; talking or singing in the room can be taken for keys (in tests, at most 1 loud syllable in 6, and rarely as a sure key), so the parent's guidance asks for a quiet room. Tested with synthetic piano tones, chords, legato, noise, talking and the app's music coming back through the speakers (`client/tests/pitch.test.ts`), and in Chromium with a recorded microphone (`tools/check_app.py`); not yet on the iPad with the JK-825.
+**What it can't do:** the sustain pedal can't be heard; velocity is only a guess from loudness; very fast repeated notes (under about 90 ms apart) merge; talking or singing in the room can be taken for keys (in tests, at most 1 loud syllable in 6, and rarely as a sure key), so the parent's guidance asks for a quiet room. Tested with synthetic piano tones, chords, legato, noise, talking and the app's music coming back through the speakers (`client/tests/pitch.test.ts`), and in Chromium with a recorded microphone (`tools/check_app.py`); on the iPad with the JK-825, in MIDIWeb Browser, through the recordings above.
 
 **Timing note:** MIDI events carry high-resolution timestamps. The evaluator converts them to the song clock using one fixed mapping between the MIDI clock and the audio clock, taken when playback starts, then subtracts the device's measured latency offset (2.6.1). Scoring stays accurate even if the display stutters. Microphone keys are timed from the moment their harmonics jumped and use the microphone's own latency offset.
 
@@ -835,9 +835,11 @@ Each skill has one of four states, in order:
 | State | Meaning | How it is reached |
 | --- | --- | --- |
 | Locked | Not yet reachable | Starting state. A skill stays locked until all of its prerequisites are passed |
-| Current | The student is learning it | All prerequisites are Passed, Mastered, or on capability hold, and its concept lesson (if any) is finished. Several skills can be Current at once, on different branches |
+| Current | The student is learning it | All prerequisites are Passed, Mastered, on capability hold, or waiting for a song (below), and its concept lesson (if any) is finished. Several skills can be Current at once, on different branches |
 | Passed | Good enough to move on | Any completed attempt of the whole item earns 3 or more accuracy stars (after the practice-aid factor, 7.5). **Rhythm-track skills** also need 3 or more timing stars in the same attempt (rhythm-tapping items, which have timing stars only, need 3 timing stars) |
 | Mastered | Learned securely | The mastery rule in 8.2 |
+
+**Waiting for a song (v0.51).** A skill no song in the library practises yet (its songs aren't approved, or the parent deleted them) **waits for a song**: its Journey bubble says so, Guided sessions leave it out (its lesson too), and once its own prerequisites count as passed it counts as passed for the skills after it, like a capability hold, so a missing song never holds a child up, and never lets them skip ahead of the skills before it. It's worked out from the whole library before a child's rules apply: a song the parent blocked for one child gives that child's session the "Song needed" note instead. When every skill left to learn is waiting (another family's first day, before the parent has approved the app's songs), the session says the songs are waiting, with no "Your pick" while there's no song to pick; once the parent approves one of those skills' songs, the day is planned again on the next load. When its song is approved, the skill is taught like any other: its lesson, then its songs. (`api/app/engine.py` `waiting`, `content.py` `Content.waiting`, `api/tests/test_app_songs.py`.)
 
 When all of a skill's prerequisites are passed, its concept lesson opens (the bubble shows Ready to learn) and the next Guided session schedules it in the New slot. Finishing the concept lesson makes the skill Current.
 
@@ -1381,6 +1383,10 @@ A song stays on the list until the parent decides on it. (The first version appr
 5. **Approve:** the fix replaces the live song in place: same id and first approval date (no New badge again), so every child's stars, attempts and skill progress carry on. Diagnostics matches attempts note by note only on the song's current notes: each attempt records its song's version (a hash of its notes), and attempts on older notes are left out of Diagnostics, since their note results point at notes the fix may have moved.
 Deleting a song cancels its open update. Videos are still to come (a potential feature, section 14).
 
+**Approve all (v0.51).** Above the list, each package with more than one song waiting has **Approve all…**, which asks once more and approves every song of the package still waiting (`POST /api/review/packages/{id}/approve`), after the parent has listened to the ones they want to.
+
+**Songs from the app (v0.51).** On a server without song tools (11.7), songs can't come from a dev box. Each deploy brings the approved curriculum songs the repo keeps (`content/library/`, 11.6) and any song packs pulled (`content/packs/<pack>/`, a potential feature) as **songs from the app**, beside the API (`api/available/`, `/srv/available` in its image, a layer of its own). None is approved there. The Review list's **Songs from the app** panel shows, for each group, the songs that are new or changed since the library's copy (a song's version as the parent hears it: its notes and its stems), and **Bring into review** stages them through the same intake as any song, analysed against that server's own map, as one package. A newer version of a library song comes in as an **update to a live song** (step 4 above), with no request needed; approving it replaces the song in place and keeps every child's stars. The parent's choices stay: a deleted song is never offered again, and an update the parent discarded, or a version intake refused, isn't offered again until a newer one comes. The app's own songs get no New badge, and the finger-number and letter-name choices they came with apply unless the parent has made their own. Send back and Ask for updates are hidden there, since no skills would answer them.
+
 ### 10.8 Melody fingerprint
 
 **Built (v0.21)** in `api/app/fingerprint.py`, shared by the import skill's checks and the server's intake (v0.23).
@@ -1415,6 +1421,7 @@ Used to catch duplicates and deleted songs, even in a different key, tempo, or a
 - **Access:** home network only. Each skill has its own token, scoped to read and submit. No token can approve, change rules, delete, or read student progress; approval always stays with the parent in staging.
 - **Uploaded media** stays in staging storage until its package is approved, and is removed if the package is rejected.
 - **Typical run:** the parent opens Claude Code on the dev box and asks it to process pending requests (or to find songs for a genre). The skill reads what it needs, does the work, submits, and reports what it sent.
+- **Song tools (v0.51):** only a server that works with a dev box has the Skill API (`api/app/songtools.py`). It's on when the deploy carries a `song-tools` marker, which `tools/deploy.sh` adds when the dev box's `server.env` says `PIANO_SONG_TOOLS=on`, or when the server already had skill tokens before v0.51 (migration 017, so ours keeps it whatever a deploy says). Without it, every Skill API call, a new token, Needs improvement and Send back are refused (403), `/api/health` and `/api/parent` say `songTools: false`, and the app hides Dev box connection, Work requests, Concept videos, Needs improvement, Send back, Ask for updates and the microphone's Record and send. It's a guard, not security: the family owns their server. The repo's song skills also stop at their start without it.
 
 ## 11. Operations: security, backup, logging, testing
 
@@ -1475,6 +1482,25 @@ Two ways back to a working server, in this order of preference (`docs/fresh-inst
 2. **A new install from the repo**, when there's no backup (or for a second server): the Server repo sets up the server, including the deploy account with the sudo `tools/deploy.sh` needs and, unless Caddy's data was restored, the new certificate authority's root on the dev box and every device (v0.32); then `tools/fresh_install.sh` on the dev box deploys the app and the API and seeds the library with the approved curriculum songs kept in `content/library/`. The scripts find the server from a config file outside the repo (`tools/server.env.example`, v0.32), so no install's address or accounts are in the public repo. The children and their progress start again; imported songs that aren't on the map (the kids' songs batch, say) aren't in the repo and must be submitted again.
 
 **The curriculum songs in the repo.** `content/library/` holds every song the skill map names exactly as the parent approved it: the built piece with its details and the parent's finger-number and letter-name choices, and its stems (Git LFS, about 2.5 MB a song with a vocal). `tools/library_export.py` copies them from the server's library through the Skill API (`GET /api/skill/library/{id}`), leaves unchanged songs alone and removes songs no longer on the map; it copies only songs whose source in `content/pieces/` is our own or public domain, so a song the family supplied for private use never reaches the public repo. Run it after the parent approves curriculum songs, and commit the result. On a new server's first start the API adopts them as approved (`library.adopt_seed`, `tools/deploy.sh --seed-songs`): only songs it doesn't already have, isn't reviewing and wasn't told to delete, so running the install again changes nothing. The seed is never part of an ordinary deploy, so a song the parent removed can't come back by itself.
+
+### 11.7 Another family's install (v0.51)
+
+Another family can run the app on their own home server, with no dev box and no GPU. Their own Claude Code installs it from `docs/install-guide.md`, which is written for it. It covers:
+- the rules it keeps in `CLAUDE.local.md`: no song skills, no changes to the repo, nothing private to GitHub or to us, never skip a certificate check, back up before every update, and every song approved by their parent;
+- what the family needs: Ubuntu Server 26.04 LTS, a fixed address, an iPad with MIDIWeb Browser, a class-compliant USB MIDI keyboard, or the microphone with its limits;
+- the server's setup, described from what our private Server repo provides: Caddy with `tls internal` and `default_sni`, the `piano-api` service, `/opt/piano/{www,api,data}`, `piano-api-redeploy`, the deploy's sudo rule, a nightly backup and a restore test;
+- the iPad's certificate, the first day in the app, updates and troubleshooting.
+
+How it differs from ours:
+- **One machine.** Their server is also their "dev box": `PIANO_HOST=local` in `server.env` runs `tools/deploy.sh` and `tools/fresh_install.sh` on the server itself, without ssh. `tools/setup.sh` uses the system's Node 22, and `--no-browser` leaves out Playwright's Chromium.
+- **No song tools** (10.9), so nothing waits for a dev box.
+- **Every song through their parent's Review list.** The first install's songs, every later fix to a curriculum song, and song packs all arrive as songs from the app (10.7), never approved by themselves (no `--seed-songs`). Until the parent approves a skill's songs, it waits for a song (8.1); `tools/library_check.py --app-songs` reports such songs instead of stopping the deploy. The skill map, the lessons and the app itself ship with each update without review, as on our server.
+- **Updates go through GitHub only.** They `git pull` `main` and run `tools/deploy.sh`, after a backup, since migrations are one-way. Their parent's requests come to us outside the app (Needs improvement is hidden), with nothing private in them.
+- **Amazing Grace** is built from its approved copy in `content/library/` (`fromLibrary: true` in its source file; `library_export.py`'s starter list), so the content build needs nothing from `feasibility/`, and every install starts with it. The ABC converters are in the repo (`tools/vendor/`, LGPL) at the versions the songs were built with, since their author's site keeps only the newest.
+
+**Checked** in `api/tests/test_app_songs.py` (song tools off, migration 017, bring into review, approve all, updates, deleted songs, waiting for a song) and `tools/check_app.py --home`: a new server's first day in the real screens, from the first PIN to the child's first lesson after Approve all. A fresh Ubuntu 26.04 container built the repo and passed every test with a system Node 22, and the guide's `compose.yml`, `Caddyfile`, backup script and restore test worked as written (on a local port, with the first day's songs brought in and approved through the API).
+
+**Not yet:** a whole run through the guide on a real Ubuntu 26.04 machine by a Claude session given only the guide (the redeploy helper, the sudo rule and the iPad's certificate weren't part of the checks above), and the first install with the family.
 
 ## 12. Implementation milestones
 

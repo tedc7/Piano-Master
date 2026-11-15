@@ -216,7 +216,8 @@
           </button>
           {#if pr?.due}<span class="badge" title="Time to review">🔁</span>
           {:else if pr?.today}<span class="today">Today</span>{/if}
-          {#if pr?.hold}<span class="hold">Needs {(p.skill.requiredCapabilities ?? []).join(", ")}</span>{/if}
+          {#if pr?.hold}<span class="hold">Needs {(p.skill.requiredCapabilities ?? []).join(", ")}</span>
+          {:else if pr?.waiting && !isPassed(pr)}<span class="hold">Waiting for a song</span>{/if}
           <div class="name">{p.skill.name}</div>
           <div class="unit">{p.skill.unit ? `${p.skill.unit.split(" · ")[0]} · ` : ""}<span style:color={conceptType(p.skill.track).color}>{conceptType(p.skill.track).label}</span></div>
           <div class="stars">

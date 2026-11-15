@@ -25,7 +25,7 @@ from pathlib import Path
 from music21 import articulations, bar, chord, clef, converter, expressions, harmony, spanner
 
 HERE = Path(__file__).resolve().parent
-ABC2XML = HERE / ".vendor" / "abc2xml_268" / "abc2xml.py"
+ABC2XML = HERE / "vendor" / "abc2xml_268" / "abc2xml.py"
 
 
 def Q(x) -> Fraction:

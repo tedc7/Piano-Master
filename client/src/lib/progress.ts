@@ -13,6 +13,7 @@ export interface SkillProgress {
   lessonOpen: boolean;            // the concept lesson opens when the prerequisites are passed
   conceptDone: boolean;
   hold: boolean;                  // needs a capability this setup lacks, e.g. a pedal
+  waiting?: boolean;              // no song in the library practises it yet (v0.51): "Waiting for a song"
   mastery: number | null;
   bestMastery: number | null;
   accuracyStars: number | null;   // best, after practice-aid scaling (arch §3 "Journey map star display")

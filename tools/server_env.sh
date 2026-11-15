@@ -1,7 +1,7 @@
 # Sourced by the dev box's shell scripts: this install's piano server (tools/server.env.example),
 # from ~/.config/piano-master/server.env or $PIANO_CONFIG. Variables already set win.
 PIANO_CONFIG="${PIANO_CONFIG:-$HOME/.config/piano-master/server.env}"
-_pm_set=$(declare -p PIANO_SERVER PIANO_HOST CADDY_ROOT_CA 2>/dev/null || true)
+_pm_set=$(declare -p PIANO_SERVER PIANO_HOST CADDY_ROOT_CA PIANO_SONG_TOOLS 2>/dev/null || true)
 # shellcheck disable=SC1090
 [ -f "$PIANO_CONFIG" ] && . "$PIANO_CONFIG"
 eval "$_pm_set"

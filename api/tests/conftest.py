@@ -27,12 +27,18 @@ PIECES = [piece("pa1", "t.a"), piece("pa2", "t.a"), piece("pb1", "t.b"), piece("
           piece("pe1", "t.e"), piece("free1", None, "A free song")]
 
 
-def write_content(d, skills=SKILLS, pieces=PIECES, version="test1"):
+def write_content(d, skills=SKILLS, pieces=PIECES, version="test1", song_tools=True):
     """The deployed skill map, and the songs as a seed the API adopts into the library when it starts
-    (v0.27: every song is in the library)."""
+    (v0.27: every song is in the library). `song_tools`: deployed from the dev box, as our server is
+    (v0.51); without it, a server like another family's."""
     (d / "seed").mkdir(parents=True, exist_ok=True)
     (d / "skillmap.json").write_text(json.dumps({"contentVersion": version, "skills": skills}))
     (d / "seed" / "index.json").write_text(json.dumps({"pieces": pieces}))
+    marker = d / "song-tools"
+    if song_tools:
+        marker.write_text("on\n")
+    else:
+        marker.unlink(missing_ok=True)
 
 
 @pytest.fixture()

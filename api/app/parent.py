@@ -15,7 +15,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
 
-from . import db
+from . import db, songtools
 
 PIN = r"^\d{4,8}$"
 MAX_TRIES = 5
@@ -106,7 +106,7 @@ def parent_info():
         r = parent_row(con)
         locked = r["locked_until"] and r["locked_until"] > utcnow().isoformat()
         return {"pinSet": bool(r["pin_hash"]), "lockedUntil": r["locked_until"] if locked else None,
-                "autoLogoutMinutes": r["auto_logout_minutes"]}
+                "autoLogoutMinutes": r["auto_logout_minutes"], "songTools": songtools.on(con)}
     finally:
         con.close()
 

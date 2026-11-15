@@ -2,6 +2,7 @@
 
     tools/.venv/bin/python tools/library_check.py              # the piano server's library
     tools/.venv/bin/python tools/library_check.py --seeding    # the deploy brings content/library/ in as approved
+    tools/.venv/bin/python tools/library_check.py --app-songs  # a server without song tools (v0.51)
 
 Every song lives in the piano server's library, and the map deploys with the app, naming each
 skill's practice songs by id. This compares the built map (client/public/content/skillmap.json)
@@ -9,6 +10,10 @@ with the library (GET /api/library): a practice song that isn't there stops the 
 (tools/import_song.py submit) and approve it first. A practice song whose notes changed here since
 it was approved is only a warning: the children keep the approved one until the change goes
 through the review list too.
+
+On a server without song tools (another family's install, v0.51), the map's songs come with the app
+and its parent approves them in the Review list (Songs from the app), so a practice song not
+approved yet is only a note: its skill waits for a song until then.
 """
 from __future__ import annotations
 
@@ -32,6 +37,7 @@ def library() -> dict[str, dict]:
 
 def main(argv: list[str]) -> int:
     seeding = "--seeding" in argv
+    app_songs = "--app-songs" in argv
     skills = json.loads(MAP.read_text())["skills"]
     built = {e["id"]: e for e in json.loads(SONGS.read_text())["pieces"]}
     seed = {e["id"] for e in json.loads(SEED.read_text())["pieces"]} if seeding and SEED.exists() else set()
@@ -51,6 +57,10 @@ def main(argv: list[str]) -> int:
     for pid in changed:
         print(f"warning: {pid} changed here since it was approved; the children keep the approved one until the change "
               f"is submitted and approved (tools/import_song.py submit content/pieces {pid})")
+    if missing and app_songs:
+        print(f"{len(missing)} practice song{'s' if len(missing) != 1 else ''} on the map aren't approved on this server yet: "
+              "the parent brings them in from Config > Review list (Songs from the app); until then their skills wait for a song")
+        return 0
     if missing:
         print("the map names songs that aren't in the library: submit and approve them first\n  " + "\n  ".join(missing),
               file=sys.stderr)

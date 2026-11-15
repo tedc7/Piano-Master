@@ -11,6 +11,8 @@ client/public/media/
 tests-output/
 # the content bundled into the API at deploy (tools/deploy.sh)
 api/app/content/
+api/available/*
+!api/available/README.md
 # the media skill's tools (tools/media/setup.sh) and its work files
 tools/.media/
 # the lesson voice's tools (tools/voice/setup.sh)
