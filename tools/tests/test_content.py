@@ -133,6 +133,9 @@ def test_chord_symbols_come_from_the_hand_that_plays():
            "[V:RH] \"C\"E E \"G\"D2 | z4 |]\n[V:LH] \"F\"C,4 | \"D\"A, A, \"G\"G,2 |]\n")
     nota, _ = nt.build_notation(nt.parse_abc(abc))
     assert [(c["beat"], c["symbol"]) for c in nota["chordSymbols"]] == [(0, "C"), (2, "G"), (4, "D"), (6, "G")]
+    # and never as grace notes: music21 reads a chord symbol as a chord of no length (v0.51: every song
+    # with chord symbols drew each chord's notes as a grace-note cluster before its note)
+    assert nota["graces"] == []
 
 
 def test_a_letters_piece_is_marked_in_the_header():

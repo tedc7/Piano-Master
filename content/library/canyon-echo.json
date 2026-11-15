@@ -17,8 +17,7 @@
   "letters": true
  },
  "featuredSkills": [
-  "prep-a.two-black-keys",
-  "prep-a.low-and-high"
+  "prep-a.two-black-keys"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
@@ -933,17 +932,10 @@
  },
  "requiredSkills": [
   "prep-a.sitting",
-  "prep-a.low-and-high",
   "prep-a.two-black-keys"
  ],
  "skillId": "prep-a.two-black-keys",
  "skillMeasures": {
-  "prep-a.low-and-high": [
-   3,
-   4,
-   7,
-   8
-  ],
   "prep-a.sitting": [
    1,
    2,

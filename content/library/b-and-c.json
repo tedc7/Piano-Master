@@ -574,6 +574,7 @@
  "requiredSkills": [
   "prep-a.sitting",
   "prep-a.half-note",
+  "prep-a.hands-take-turns",
   "prep-a.whole-note",
   "prep-a.middle-c",
   "prep-a.treble-g",
@@ -588,6 +589,14 @@
   ],
   "prep-a.half-note": [
    2
+  ],
+  "prep-a.hands-take-turns": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
   ],
   "prep-a.middle-c": [
    1,

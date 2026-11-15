@@ -48,7 +48,10 @@ TAKES = 2
 MAX_TAKES = 3             # arch §10.5: re-render up to 3 tries
 USABLE_WORDS_OFF = 0.25    # a take with a quarter of its words off is never chosen over one the parent could hear (v0.30)
 BLEED_PER_DB = 0.05         # rank: a take's score less this for each dB of bleed over the limit
-USABLE_HEARD = 0.95        # ...unless Whisper hears nearly every word: then it's the aligner that's lost
+USABLE_HEARD = 0.95        # ...unless Whisper hears nearly every word: then it's the aligner that's lost,
+USABLE_HEARD_WORDS_OFF = 0.5   # ...as long as it's under half: hearing a word doesn't say when it's sung
+                               # (O Come, O Come, Emmanuel, Nov 15, 2026: 80% off, 98% heard, sent back
+                               # by the parent with the words about 2 s behind their notes all through)
 
 
 def rel(p: Path) -> str:
@@ -159,14 +162,22 @@ def rank(r: dict) -> tuple:
     quarter of its words off (God Rest Ye's Beginner chose 82% off, one failed check, over 10% off
     and an octave slip, two), or nearly every word heard by Whisper, where the aligner lost its place
     in repeated syllables (The Holly and the Ivy's take 2: 99% heard, 93% on pitch, "42% off");
-    then the fewest failed checks (B and C: one take's two alignments, one only over on bleed and
+    and never one with its melody off the notes (the pitch check failed); then the fewest failed
+    checks (B and C: one take's two alignments, one only over on bleed and
     one 81 ms off the beat too, a hundredth apart on score); then the score, less a little for each
     dB of bleed over the limit (Two-Key Hops, Oct 23, 2026: a take at -12 dB, the backing plainly
     heard, chosen over one at -23 dB, as both failed on bleed alone)."""
     failed = sum(1 for k, v in r["checks"].items() if isinstance(v, bool) and k != "pass" and not v)
-    usable = r["words"]["shareOver300ms"] < USABLE_WORDS_OFF or (r.get("heard") or {}).get("share", 0) >= USABLE_HEARD
+    off = r["words"]["shareOver300ms"]
+    # ...and never with the melody wrong: a take aligned onto the wrong notes (the Emmanuel Beginner's
+    # take 3 by its words, Nov 15, 2026: 19% on pitch, 95% heard) is one the parent can't use either
+    usable = r["checks"].get("pitch", True) is not False and (
+        off < USABLE_WORDS_OFF or ((r.get("heard") or {}).get("share", 0) >= USABLE_HEARD and off < USABLE_HEARD_WORDS_OFF))
     over = max(0.0, (r.get("bleed") or {}).get("db", align.PASS["bleedDb"]) - align.PASS["bleedDb"])
-    return r["checks"]["pass"], usable, -failed, r["score"] - BLEED_PER_DB * over
+    # among takes the parent couldn't use, the score decides, not the count of failed checks: it
+    # weighs the words off (the Emmanuel Beginner, Nov 15: 83% off and one failed check had come
+    # before 38% off and a phrase 184 ms late)
+    return r["checks"]["pass"], usable, -failed if usable else 0, r["score"] - BLEED_PER_DB * over
 
 
 # ------------------------------------------------------------------------------ backing

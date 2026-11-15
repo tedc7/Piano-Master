@@ -14,7 +14,7 @@
  },
  "featuredSkills": [
   "prep-a.quarter-note",
-  "prep-a.low-and-high"
+  "prep-a.two-black-keys"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
@@ -539,15 +539,11 @@
  },
  "requiredSkills": [
   "prep-a.sitting",
-  "prep-a.low-and-high",
+  "prep-a.two-black-keys",
   "prep-a.quarter-note"
  ],
  "skillId": "prep-a.quarter-note",
  "skillMeasures": {
-  "prep-a.low-and-high": [
-   3,
-   4
-  ],
   "prep-a.quarter-note": [
    1,
    2,
@@ -555,6 +551,12 @@
    4
   ],
   "prep-a.sitting": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "prep-a.two-black-keys": [
    1,
    2,
    3,

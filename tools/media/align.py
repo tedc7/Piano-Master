@@ -208,6 +208,29 @@ def merge_anchors(pitch_pts, lyric_pts, bias):
     return out
 
 
+HEAD_GAP_S = 2.0      # the map's first point this long after the song's first note: fill the opening
+
+
+def head_fill(pts, lyric_pts, predict, note_starts, song_start, bias):
+    """The opening of the song, when the map's first point comes well after its first note.
+    Before its first point the map holds one offset, and the vocal is muted before the first note
+    (the "Oh" lead-in), so an opening line sung early is cut (O Come, O Come, Emmanuel (Beginner),
+    Nov 15, 2026: "O come, O come" sung 2.5 s early, the first point at 14 s, the line muted). Fill
+    it with the words the lyric aligner placed there (bias-corrected, as merge_anchors does), else
+    with the rough map's note onsets."""
+    if not pts or pts[0][1] - song_start <= HEAD_GAP_S:
+        return pts
+    a0, sc0 = pts[0]
+    head = [(a + bias, sc) for a, sc in lyric_pts if song_start - 0.5 <= sc < sc0 - 0.5]
+    if not head:
+        head = [(float(predict(sc)), sc) for sc in note_starts if song_start - 1e-6 <= sc < sc0 - 0.5]
+    out = []
+    for a, sc in head:
+        if a < a0 - 0.05 and (not out or (a > out[-1][0] + 0.02 and sc > out[-1][1] + 0.02)):
+            out.append((a, sc))
+    return out + list(pts)
+
+
 def anchors_from(windows, audio_len):
     """(audio_s, score_s) points from reliable windows, minus isolated spikes, strictly increasing."""
     rel = [w for w in windows if w["reliable"]]
@@ -604,6 +627,10 @@ def align(folder: Path, abcmap: dict, phrases: list, mode: str) -> dict:
     pf = map_fn(pitch_pts)
     bias = float(np.median([float(pf(sc)) - a for a, sc in lyric_pts])) if lyric_pts else 0.0
     pts = merge_anchors(pitch_pts, [] if mode == "dtw" else lyric_pts, bias)
+    filled = head_fill(pts, lyric_pts, predict, [s for s, _, _ in notes], song_start, bias)
+    if len(filled) > len(pts):
+        r["headFilled"] = len(filled) - len(pts)
+        pts = filled
     offs = np.array([a - sc for a, sc in pts])
     r["before"] = {"firstOffsetS": round(float(np.median(offs[:5])), 3), "driftS": round(float(np.median(offs[-5:]) - np.median(offs[:5])), 3)}
     out = folder / f"aligned-{mode}"

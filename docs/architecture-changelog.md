@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.53 | Nov 15, 2026 | From the parent's listen: chord symbols no longer drawn as grace notes (26 approved songs cleaned on the server); the take chooser and the vocal alignment fixed for O Come, O Come, Emmanuel; a gentler slide on long melisma notes (Silent Night) |
 | v0.52 | Nov 14, 2026 | From family practice: a song chosen for Today's Practice goes Back to Today's Practice; the result card suggests one button in the ready look, with none solid blue; every lesson card fits the screen with Next in sight |
 | v0.51 | Nov 14, 2026 | Another family's install: an install guide written for their Claude Code; song tools only on a server that works with a dev box; songs from the app brought into the Review list, and Approve all; a skill waits for a song without holding anything up; Amazing Grace built from its approved copy |
 | v0.50 | Nov 10, 2026 | Melismas sung as written (the held pitch bent onto the written notes in the media skill); song progress built, a record per song with stages shown in the library, the Journey and My Progress; the later scorers' first steps: each note's release and velocity, scorers as star rows, held notes and Loud and soft from Level 3, a skill's pass needs |
@@ -47,6 +48,18 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.53 (Nov 15, 2026)
+
+From the parent's review on the iPad: O Come, O Come, Emmanuel and its Beginner version sent back for words off their notes, Silent Night for its melismas on "peace" and "born", and the Beginner looking harder than the full version.
+
+- **Chord symbols drawn as grace notes (5, 6.8):** since September the notation converter (`tools/notation.py`) read each chord symbol, which music21 holds as a chord of no length, as grace notes too, so every song with chord symbols drew each chord's notes as a small cluster before the melody (26 approved songs: Twinkle, Mary Had a Little Lamb, London Bridge and the other kids' songs with chords, and most of the Christmas songs). It's what made the Emmanuel Beginner look harder than the full version (its "sharps" were an E chord's G♯). The converter now skips chord symbols (test); migration 018 takes such grace notes out of the songs in the library and the review area, only where every grace note sits on a chord symbol's beat, and works out each song's version again (test). The repo's copies in `content/library/` were cleaned the same way.
+- **The take chooser (10.5):** Whisper hearing 95% of a take's words no longer makes it usable when half or more are off their notes, or when its notes are off pitch; among takes the parent couldn't use, the score decides, not the count of failed checks (tests). The take sent of O Come, O Come, Emmanuel sang its words about 2 s behind their notes all through: measured with Whisper's word timestamps against each word's written time, independently of the lyric aligner (`docs/media-pipeline-notes.md` note 38).
+- **An opening sung early (10.5 step 3):** when the pitch map's first anchor comes over 2 s after the song's first note, the opening is mapped from the words the lyric aligner placed there, else from the rough map; before, one offset held and the lead-in mute cut the line (the Emmanuel Beginner's "O come, O come"; test).
+- **Long melisma notes (10.5 "Melismas"):** the slide between them grows with the notes, 15% of the shorter one up to 0.2 s at 100% (Silent Night's "peace": 0.18 s, where 80 ms stepped; test).
+- **The songs:** the Emmanuel Beginner, now at quarter = 78 with a new take, was approved; Silent Night went back as an update; the full Emmanuel (back at 84, its take 6) was sent back again and stays for later.
+- **The browser check:** its letter-name and Chords checks used Twinkle as a song with neither, which it hasn't been since v0.40; they now compare a song with itself and use Joyful, Joyful.
+- **The curriculum songs in the repo** (`content/library/`, 11.6) brought up to date with the server's library, as the parent approved them.
 
 ## v0.52 (Nov 14, 2026)
 

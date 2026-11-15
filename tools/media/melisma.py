@@ -36,6 +36,11 @@ from common import Piece, nt
 SR = 48000
 GLIDE_S = 0.08            # the slide from one note of a melisma to the next, at 100% (raised cosine)
 GLIDE_SHARE = 0.5         # ...never more than this share of the shorter of the two notes
+# ...and longer between long notes (Nov 15, 2026): Silent Night's "peace" and "born" (two notes of
+# 1.2 s each, a third apart) were sent back by the parent; 80 ms there is a step where a singer
+# glides. Between notes this long the slide is this share of the shorter one, up to LONG_GLIDE_S.
+LONG_GLIDE_SHARE = 0.15
+LONG_GLIDE_S = 0.20
 RETURN_SEARCH_S = 0.10    # the bend ends in a gap in the voice this near the syllable's end
 MAX_BEND = 9.0            # semitones: a larger bend means the take sang something else there; left as sung
 FLOOR, CEILING, STEP = 90.0, 900.0, 0.005    # Praat's pitch analysis: the voice's range, 5 ms points
@@ -100,6 +105,14 @@ def near(d: float) -> float:
     return (d + 6) % 12 - 6
 
 
+def glide(glide_s: float, a: float, b: float) -> float:
+    """The slide between two melisma notes of a and b seconds: `glide_s` (80 ms at 100%, longer at a
+    slower preset), longer between long notes (LONG_GLIDE_SHARE), never over half the shorter note."""
+    short = min(a, b)
+    long_ = min(LONG_GLIDE_S * glide_s / GLIDE_S, LONG_GLIDE_SHARE * short)
+    return min(max(glide_s, long_), GLIDE_SHARE * short)
+
+
 def contour(found: list[dict], at, f, v, glide_s: float = GLIDE_S) -> tuple[list[tuple[float, float]], list[dict]]:
     """The bend as (seconds, semitones) breakpoints, linear between them and 0 outside, and the
     regions it touches (one per melisma bent)."""
@@ -126,7 +139,7 @@ def contour(found: list[dict], at, f, v, glide_s: float = GLIDE_S) -> tuple[list
         gap = [k for k in range(max(a, 0), min(b, len(v))) if not v[k]]
         if gap:
             end = min(gap, key=lambda k: abs(k / 100 - edges[-1])) / 100 + 0.005
-        steps = [(edges[k], offs[k - 1], offs[k], min(glide_s, GLIDE_SHARE * min(lens[k - 1], lens[k]))) for k in range(1, len(notes))]
+        steps = [(edges[k], offs[k - 1], offs[k], glide(glide_s, lens[k - 1], lens[k])) for k in range(1, len(notes))]
         steps.append((end, offs[-1], 0.0, 0.02 if gap else min(glide_s, GLIDE_SHARE * lens[-1])))
         start = steps[0][0] - steps[0][3] / 2
         pts.append((start - 1e-4, 0.0))
