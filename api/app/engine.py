@@ -49,6 +49,9 @@ RUNWAY_SKILLS, RUNWAY_DAYS = 15, 21
 SLOWER = {"100": "90", "90": "75", "75": "50", "50": "50"}
 PRESETS = ("50", "75", "90", "100")
 # 7.6: score -> stars
+# the session's note when every skill left to learn waits for a song the parent hasn't approved (v0.51)
+WAITING_NOTE = "Waiting for songs: the parent approves them in the Review list"
+
 STAR_TABLE = [(0.96, 5.0), (0.91, 4.5), (0.86, 4.0), (0.80, 3.5), (0.74, 3.0), (0.67, 2.5), (0.60, 2.0), (0.50, 1.5), (0.40, 1.0)]
 
 
@@ -98,6 +101,11 @@ class SkillState:
     review_best: float | None = None
     review_base: dict | None = None       # the ladder as it stood before that day's review
     best_scorer_stars: dict = field(default_factory=dict)   # the best stars from each later scorer (v0.50, §7.7)
+    # no song in the library practises it yet (v0.51, 8.1): worked out from the content each time,
+    # never stored
+    waiting: bool = field(default=False, metadata={"transient": True})
+    # ...and its own prerequisites count as passed, so it stands aside for the skills after it
+    waiting_open: bool = field(default=False, metadata={"transient": True})
 
     @property
     def passed(self) -> bool:
@@ -105,13 +113,16 @@ class SkillState:
 
     @property
     def counts_passed(self) -> bool:
-        """For unlocking: passed, mastered and capability-held skills count as passed (8.1)."""
-        return self.passed or self.capability_hold
+        """For unlocking: passed, mastered and capability-held skills count as passed (8.1), and so
+        does a skill waiting for a song once its own prerequisites are passed (v0.51): a song the
+        parent hasn't approved yet, or deleted, never holds up the skills after it, and never lets a
+        child skip ahead of the skills before it."""
+        return self.passed or self.capability_hold or self.waiting_open
 
 
 BOOL = {"concept_done", "capability_hold", "stuck", "high_timing", "refresher"}
 JSON = {"high_days": "[]", "review_base": "null", "best_scorer_stars": "{}"}
-COLUMNS = [f.name for f in fields(SkillState)]
+COLUMNS = [f.name for f in fields(SkillState) if not f.metadata.get("transient")]
 
 
 def load_states(con: sqlite3.Connection, content: Content, student_id: str) -> dict[str, SkillState]:
@@ -120,14 +131,14 @@ def load_states(con: sqlite3.Connection, content: Content, student_id: str) -> d
     for s in content.order:
         r = rows.get(s.id)
         if r is None:
-            out[s.id] = SkillState(s.id)
+            out[s.id] = SkillState(s.id, waiting=s.id in content.waiting)
             continue
         kw = {c: r[c] for c in COLUMNS}
         for c in BOOL:
             kw[c] = bool(kw[c])
         for c, empty in JSON.items():
             kw[c] = json.loads(kw[c] or empty)
-        out[s.id] = SkillState(**kw)
+        out[s.id] = SkillState(**kw, waiting=s.id in content.waiting)
     return out
 
 
@@ -160,6 +171,16 @@ def refresh(content: Content, states: dict[str, SkillState], caps: dict[str, boo
     """Unlocking (8.1): a skill opens when its prerequisites count as passed, and is Current once
     its concept lesson is done. A skill needing a capability this setup lacks is on hold."""
     caps = caps or {}
+    for s in content.order:
+        states[s.id].waiting = s.id in content.waiting
+    changed = True
+    while changed:                     # a waiting skill stands aside once the skills before it count
+        changed = False
+        for s in content.order:
+            st = states[s.id]
+            open_ = st.waiting and prerequisites_met(s, states)
+            if open_ != st.waiting_open:
+                st.waiting_open, changed = open_, True
     for s in content.order:
         st = states[s.id]
         st.capability_hold = any(caps.get(c) is False for c in s.capabilities) and not st.passed
@@ -569,7 +590,8 @@ class Planner:
 
     def build(self) -> tuple[list[dict[str, Any]], bool]:
         c, states, today = self.c, self.states, self.today
-        order = [s for s in c.order if not states[s.id].capability_hold]
+        # a skill on hold for missing hardware, or waiting for a song (v0.51), isn't planned
+        order = [s for s in c.order if not states[s.id].capability_hold and not states[s.id].waiting]
         stuck = [s for s in order if states[s.id].status == "current" and states[s.id].stuck]
         share = dict(SLOTS)
         if stuck:
@@ -602,7 +624,14 @@ class Planner:
             states[s.id].status == "current" or
             (states[s.id].status == "locked" and s.has_lesson and not states[s.id].concept_done and lesson_open(s, states)))]
         nothing_new = not learning
-        end_of_content = nothing_new and not stuck
+        # skills waiting for a song aren't the end of the content: the parent's approval is still to come
+        waits = [s for s in c.order if states[s.id].waiting and not states[s.id].passed and not states[s.id].capability_hold]
+        end_of_content = nothing_new and not stuck and not waits
+        if nothing_new and waits:
+            it = new_item("needed", "New", skill=waits[0], title=WAITING_NOTE)
+            it["done"] = True
+            it["waiting"] = [s.id for s in waits]   # when one has a song, the day is planned again (stale)
+            self.add(it)
         for s in learning:
             if spent >= budget:
                 break
@@ -685,8 +714,8 @@ class Planner:
 
         # reward: the student's choice from the library, with any time still unplanned
         spare = max(0.0, self.total * (1 - share["reward"]) - sum(i["est"] for i in self.items))
-        picks = max(1, min(4, round((share["reward"] * self.total + spare) / (PICK_SEC * 1.5))))
-        for _ in range(picks):
+        picks = max(1, min(4, round((share["reward"] * self.total + spare) / (PICK_SEC * 1.5)))) if c.pieces else 0
+        for _ in range(picks):                # (none while the library has no song this child may play)
             self.add(new_item("pick", "Your pick", title="Any song you like", est=PICK_SEC))
         return self.items, end_of_content
 
@@ -770,9 +799,11 @@ def save_queue(con: sqlite3.Connection, student_id: str, d: str, items: list[dic
 
 
 def stale(content: Content, session: dict[str, Any]) -> bool:
-    """Whether a saved session names a skill, or a piece to play, that the content no longer has."""
+    """Whether a saved session names a skill, or a piece to play, that the content no longer has; or
+    it waited for songs (v0.51) and one of those skills has a song now (the parent approved it today)."""
     return any((i.get("skillId") and i["skillId"] not in content.skills)
                or (i.get("kind") == "piece" and i.get("pieceId") and i["pieceId"] not in content.pieces)
+               or any(sid not in content.waiting for sid in i.get("waiting") or [])
                for i in session["items"])
 
 
@@ -879,7 +910,7 @@ def continue_new_slot(con: sqlite3.Connection, content: Content, student_id: str
     p.used = {it["pieceId"] for it in items if it["pieceId"]}
     for s2 in content.order:
         st = states[s2.id]
-        if s2.id in queued or st.capability_hold or st.stuck:
+        if s2.id in queued or st.capability_hold or st.waiting or st.stuck:
             continue
         if st.status == "current" or (st.status == "locked" and s2.has_lesson and not st.concept_done and lesson_open(s2, states)):
             p.add_new(s2)
@@ -926,7 +957,7 @@ def skills_out(content: Content, states: dict[str, SkillState], today: date, ses
             "due": st.status == "mastered" and bool(st.next_review_date) and day(st.next_review_date) <= today,
             "today": s.id in in_session, "attemptsWithoutPass": st.attempts_without_pass,
             "tryAnotherWay": st.status == "current" and st.attempts_without_pass >= TRY_ANOTHER_WAY,
-            "refresher": st.refresher, "nextReview": st.next_review_date,
+            "refresher": st.refresher, "nextReview": st.next_review_date, "waiting": st.waiting,
         })
     return out
 
@@ -934,13 +965,15 @@ def skills_out(content: Content, states: dict[str, SkillState], today: date, ses
 def runway(con: sqlite3.Connection, content: Content, student_id: str, states: dict[str, SkillState], today: date) -> dict:
     """Skills left before the end of the authored content, and an estimate at the current pace (8.10)."""
     remaining = [s for s in content.order if not states[s.id].passed and not states[s.id].capability_hold]
+    waiting = sum(1 for s in remaining if states[s.id].waiting)
     since = today - timedelta(days=28)
     recent = sum(1 for st in states.values() if st.passed_date and day(st.passed_date) >= since)
     per_day = recent / 28
     days_left = round(len(remaining) / per_day) if per_day else None
     return {"remaining": len(remaining), "passedLast28Days": recent, "daysLeft": days_left,
             "alert": len(remaining) < RUNWAY_SKILLS or (days_left is not None and days_left < RUNWAY_DAYS),
-            "heldBy": sorted({c for s in content.order if states[s.id].capability_hold for c in s.capabilities})}
+            "heldBy": sorted({c for s in content.order if states[s.id].capability_hold for c in s.capabilities}),
+            "waitingForSongs": waiting}
 
 
 def day_out(con: sqlite3.Connection, student_id: str, today: date, session: dict | None) -> dict:

@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import secrets
 import shutil
@@ -48,7 +49,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
-from . import analysis, db, fingerprint
+from . import analysis, db, fingerprint, songtools
 from . import content as content_mod
 from .parent import require_parent
 
@@ -93,8 +94,20 @@ def new_token(con, name: str) -> str:
     return token
 
 
+SONG_TOOLS_OFF = ("song tools are off on this piano server: it has no dev box, and its songs come from the app "
+                  "(Config > Review list > Songs from the app)")
+
+
+def need_song_tools() -> None:
+    """What only a server with a dev box does (songtools.py): the Skill API, tokens for it, and the
+    parent's notes that wait for the skills (Needs improvement, send back)."""
+    if not songtools.on():
+        raise HTTPException(403, SONG_TOOLS_OFF)
+
+
 def require_skill(authorization: str | None = Header(None)) -> str:
     """A Claude skill's token: it can read and submit, never approve, change rules or delete."""
+    need_song_tools()
     token = (authorization or "").removeprefix("Bearer ").strip()
     if not token:
         raise HTTPException(401, "a skill token is needed (Config > Dev box connection)")
@@ -126,6 +139,7 @@ def list_tokens():
 
 @router.post("/api/skill-tokens", status_code=201, dependencies=[Depends(require_parent)])
 def create_token(body: TokenIn):
+    need_song_tools()
     con = db.connect()
     try:
         return {"token": new_token(con, body.name), "name": body.name}
@@ -228,11 +242,12 @@ def media_files(piece: dict) -> list[dict]:
     return [{"file": k, "bytes": v} for k, v in sorted(out.items())]
 
 
-def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str]) -> dict:
+def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str], app_update: bool = False) -> dict:
     """The deterministic intake checks (§10.3): the piece is well formed, licensed, on the piano,
     not already in the library (id, melody fingerprint, title and composer), not deleted. Song
-    analysis is run again here against the deployed skill map. Returns the checked piece, its
-    index entry, errors and warnings."""
+    analysis is run again here against the deployed skill map. `app_update`: a newer version of a
+    library song from the app's own songs (v0.51, "Songs from the app"), which is an update to it
+    with no request needed. Returns the checked piece, its index entry, errors and warnings."""
     p, info = dict(item.piece), dict(item.info)
     errors, warnings = [], []
     pid = str(p.get("id") or "")
@@ -272,7 +287,7 @@ def check_item(con, c: content_mod.Content, item: ItemIn, taken: dict[str, str])
     song = str(p.get("song") or pid)
     prints = fingerprint.fingerprint(nota)
     lib = {r["id"]: r for r in library_rows(con)}
-    update = pid in lib and open_update(con, pid) is not None
+    update = pid in lib and (app_update or open_update(con, pid) is not None)
     if pid in lib and not update:
         errors.append(f"a piece with the id {pid} is already in the library (the parent can ask for an update: "
                       "Needs improvement on the Play screen)")
@@ -584,7 +599,8 @@ def review_list():
             "WHERE s.status = 'staged' ORDER BY p.submitted_at, s.rowid")]
         deleted = [item_out(con, r) for r in con.execute(
             "SELECT * FROM staged_items WHERE status = 'deleted' ORDER BY decided_at DESC")]
-        return {"items": items, "packages": out, "sentBack": sent_back, "deleted": deleted}
+        return {"items": items, "packages": out, "sentBack": sent_back, "deleted": deleted, "songTools": songtools.on(con),
+                "appSongs": app_songs_out(con)}
     finally:
         con.close()
 
@@ -631,37 +647,65 @@ def waiting(con, item: str, statuses=("staged",)):
     return r
 
 
+def approve(con, c: content_mod.Content, r) -> dict:
+    """Move one staged song (its staged_items row) into the library."""
+    item = r["id"]
+    t = now()
+    info = loads(r["info"], {})
+    shown = info.pop("display", None) or {}             # the helper choices a song from the app came with
+    app = info.get("fromApp") or {}
+    with db.transaction(con):
+        src, dest = folder("staging", r["package_id"], item), folder("library", r["piece_id"])
+        piece = with_media_urls(json.loads((src / "piece.json").read_text()), f"/api/library/media/{r['piece_id']}")
+        entry = {**(info.pop("entry", None) or {}), "hasMedia": bool(piece.get("media"))}
+        if app.get("kind") == "curriculum":
+            entry["seeded"] = True                      # the app's own songs: no New badge on every one
+        first = con.execute("SELECT approved_at, entry FROM library WHERE piece_id = ?", (r["piece_id"],)).fetchone()
+        if r["live"] and first:                                # an update: the same song, not a new one
+            entry.update(updatedAt=t, **({"seeded": True} if loads(first["entry"], {}).get("seeded") else {}))
+            t = first["approved_at"]
+        an = analyse(c, r["piece_id"], piece["notation"])      # the map may have changed since intake
+        apply_analysis(piece, an)
+        apply_analysis(entry, an)
+        shutil.rmtree(dest, ignore_errors=True)
+        shutil.move(str(src), dest)
+        (dest / "piece.json").write_text(json.dumps(piece))
+        con.execute("INSERT OR REPLACE INTO library (piece_id, song, title, composer, genre, source_ids, fingerprint, info, "
+                    "entry, approved_at, package_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (r["piece_id"], r["song"], r["title"], r["composer"], r["genre"], json.dumps(info.get("sourceIds", [])),
+                     r["fingerprint"], json.dumps(info), json.dumps(entry), t, r["package_id"]))
+        if any(v is not None for v in shown.values()):         # the parent's own choice, if any, stays
+            con.execute("INSERT OR IGNORE INTO song_display (piece_id, fingers, letters, updated_at) VALUES (?, ?, ?, ?)",
+                        (r["piece_id"], shown.get("fingers"), shown.get("letters"), now()))
+        con.execute("UPDATE staged_items SET status = 'approved', decided_at = ? WHERE id = ?", (now(), item))
+        close_if_done(con, r["package_id"])
+        write_index(con)
+    return {"approved": r["piece_id"], **({"updated": True} if r["live"] else {})}
+
+
 @router.post("/api/review/items/{item}/approve", dependencies=[Depends(require_parent)])
 def approve_item(item: str):
     """Add one staged song to the library: it follows each child's genre rules and shows as New."""
     con = db.connect()
     try:
         r = waiting(con, item)
+        return approve(con, need_content(), r)
+    finally:
+        con.close()
+
+
+@router.post("/api/review/packages/{pkg}/approve", dependencies=[Depends(require_parent)])
+def approve_package(pkg: str):
+    """Approve all (v0.51): every song of one package still waiting, after the parent has listened
+    to the ones they want to (the app's songs on a new install are a hundred at once)."""
+    con = db.connect()
+    try:
         c = need_content()
-        t = now()
-        info = loads(r["info"], {})
-        with db.transaction(con):
-            src, dest = folder("staging", r["package_id"], item), folder("library", r["piece_id"])
-            piece = with_media_urls(json.loads((src / "piece.json").read_text()), f"/api/library/media/{r['piece_id']}")
-            entry = {**(info.pop("entry", None) or {}), "hasMedia": bool(piece.get("media"))}
-            first = con.execute("SELECT approved_at, entry FROM library WHERE piece_id = ?", (r["piece_id"],)).fetchone()
-            if r["live"] and first:                                # an update: the same song, not a new one
-                entry.update(updatedAt=t, **({"seeded": True} if loads(first["entry"], {}).get("seeded") else {}))
-                t = first["approved_at"]
-            an = analyse(c, r["piece_id"], piece["notation"])      # the map may have changed since intake
-            apply_analysis(piece, an)
-            apply_analysis(entry, an)
-            shutil.rmtree(dest, ignore_errors=True)
-            shutil.move(str(src), dest)
-            (dest / "piece.json").write_text(json.dumps(piece))
-            con.execute("INSERT OR REPLACE INTO library (piece_id, song, title, composer, genre, source_ids, fingerprint, info, "
-                        "entry, approved_at, package_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        (r["piece_id"], r["song"], r["title"], r["composer"], r["genre"], json.dumps(info.get("sourceIds", [])),
-                         r["fingerprint"], json.dumps(info), json.dumps(entry), t, r["package_id"]))
-            con.execute("UPDATE staged_items SET status = 'approved', decided_at = ? WHERE id = ?", (now(), item))
-            close_if_done(con, r["package_id"])
-            write_index(con)
-        return {"approved": r["piece_id"], **({"updated": True} if r["live"] else {})}
+        rows = con.execute("SELECT * FROM staged_items WHERE package_id = ? AND status = 'staged' ORDER BY rowid", (pkg,)).fetchall()
+        if not rows:
+            raise HTTPException(404, "nothing from that package is waiting")
+        out = [approve(con, c, r) for r in rows]
+        return {"approved": [x["approved"] for x in out], "updated": sum(1 for x in out if x.get("updated"))}
     finally:
         con.close()
 
@@ -675,6 +719,7 @@ def improve_item(item: str, body: FeedbackIn):
     """Send a song back with what needs to change. It leaves the waiting list; the feedback waits
     for the Claude skills (GET /api/skill/feedback), and the fixed song, resubmitted under the same
     id, replaces it and shows this feedback beside it."""
+    need_song_tools()
     con = db.connect()
     try:
         r = waiting(con, item, ("staged", "deleted"))       # a deleted song can be corrected too
@@ -921,6 +966,7 @@ def request_updates(con, rows: list, feedback: str, name: str) -> None:
 def ask_for_update(pid: str, body: FeedbackIn):
     """Needs improvement, for a song in the library: the request waits with the other feedback for
     the skills; the live song stays as it is until the fix is approved."""
+    need_song_tools()
     con = db.connect()
     try:
         row = con.execute("SELECT * FROM library WHERE piece_id = ?", (pid,)).fetchone()
@@ -944,6 +990,7 @@ def ask_for_updates(body: UpdatesIn):
     curriculum across a unit, which the parent asked for, needs a request for each song before the
     skills can send its update). Songs not in the library, or with an update already waiting, are
     left out and named."""
+    need_song_tools()
     con = db.connect()
     try:
         rows, skipped = [], []
@@ -1027,6 +1074,160 @@ def adopt_seed() -> list[str]:
                                 (pid, shown.get("fingers"), shown.get("letters"), t))
             write_index(con)
         return [e["id"] for e in new]
+    finally:
+        con.close()
+
+
+# ------------------------------------------------------------------------------ songs from the app (v0.51)
+#
+# Another family's server has no dev box (songtools.py). Its songs come with the app: each deploy
+# brings the approved curriculum songs the repo keeps (content/library/) and any song packs pulled
+# (content/packs/<pack>/), in <app songs>/<group>/ (app_songs_dir), in the seed format (index.json,
+# <id>.json, media/<id>/). Nothing in them is approved there. The Review list shows what is new or
+# changed in each group, and "Bring into review" stages those songs through the same intake as the
+# skills' songs, so their parent approves every one, one at a time or all together. A newer version
+# of a library song comes in as an update to it (approving it replaces it in place, keeping every
+# child's stars). A song the parent deleted is never brought back; an update the parent discarded
+# (and a song intake refused) isn't offered again until the app brings a newer version.
+
+AVAILABLE = "available"
+APP_STATES = ("new", "update", "unchanged", "waiting", "deleted", "declined", "refused")
+
+
+def app_songs_dir() -> Path:
+    """$PIANO_APP_SONGS (/srv/available in the image), else <content>/available."""
+    d = os.environ.get("PIANO_APP_SONGS")
+    return Path(d) if d else content_mod.content_dir() / AVAILABLE
+
+
+def app_groups() -> list[dict]:
+    """The groups of songs this release brings: <app songs>/<group>/, named by its group.json
+    ({name, kind: curriculum or pack, description})."""
+    d = app_songs_dir()
+    out = []
+    for g in sorted(d.iterdir()) if d.is_dir() else []:
+        if not re.match(SLUG, g.name) or not (g / "index.json").exists():
+            continue
+        meta = json.loads((g / "group.json").read_text()) if (g / "group.json").exists() else {}
+        kind = meta.get("kind") or ("curriculum" if g.name == "curriculum" else "pack")
+        out.append({"id": g.name, "name": meta.get("name") or ("Curriculum" if kind == "curriculum" else g.name),
+                    "kind": kind, "description": meta.get("description"), "dir": g})
+    return out
+
+
+def revision(piece: dict) -> str:
+    """A song's version as the parent hears it: its notes and its stems (not its analysis, which
+    each server makes against its own map)."""
+    return hashlib.sha256(json.dumps({"notes": content_mod.song_version(piece["notation"]), "media": media_files(piece)},
+                                     sort_keys=True).encode()).hexdigest()[:12]
+
+
+def app_songs(con, g: dict) -> list[dict]:
+    """Each song in a group and where it stands here:
+    new        not in the library, not waiting, never deleted
+    update     in the library, and the app has a different version
+    unchanged  in the library as the app has it
+    waiting    already in the review list (or an update to it is)
+    deleted    the parent deleted it (or never allowed it): never offered again
+    declined   the parent discarded this very version as an update
+    refused    intake refused this very version (the reason is in its report)"""
+    lib = {r["piece_id"] for r in con.execute("SELECT piece_id FROM library")}
+    rows: dict[str, list] = {}
+    for r in con.execute("SELECT piece_id, live, status, info FROM staged_items"):
+        rows.setdefault(r["live"] or r["piece_id"], []).append(r)
+    out = []
+    for e in json.loads((g["dir"] / "index.json").read_text())["pieces"]:
+        pid = e.get("id", "")
+        f = g["dir"] / f"{pid}.json"
+        if not re.match(SLUG, pid) or not f.exists():
+            continue
+        piece = json.loads(f.read_text())
+        if not piece.get("notation"):
+            continue
+        rev = revision(piece)
+        mine = rows.get(pid, [])
+        same = [r for r in mine if (loads(r["info"], {}).get("fromApp") or {}).get("revision") == rev]
+        if any(r["status"] == "deleted" for r in mine):
+            state = "deleted"
+        elif any(r["status"] in ("open", "staged", "needs-work") for r in mine):
+            state = "waiting"
+        elif pid in lib:
+            lf = folder("library", pid, "piece.json")
+            state = "unchanged" if lf.exists() and revision(json.loads(lf.read_text())) == rev else \
+                "declined" if any(r["status"] == "discarded" for r in same) else \
+                "refused" if any(r["status"] == "rejected" for r in same) else "update"
+        else:
+            state = "refused" if any(r["status"] == "rejected" for r in same) else "new"
+        out.append({"id": pid, "title": piece.get("title") or pid, "state": state, "revision": rev, "piece": piece})
+    return out
+
+
+def app_songs_out(con) -> list[dict]:
+    """The Review list's "Songs from the app": each group, what's new or changed in it, and the
+    rest counted. Only on a server without song tools (with a dev box, songs come from it)."""
+    if songtools.on(con):
+        return []
+    out = []
+    for g in app_groups():
+        songs = app_songs(con, g)
+        counts = {k: sum(1 for s in songs if s["state"] == k) for k in APP_STATES}
+        out.append({"id": g["id"], "name": g["name"], "kind": g["kind"], "description": g["description"],
+                    "counts": counts, "songs": [{"id": s["id"], "title": s["title"], "state": s["state"]}
+                                                for s in songs if s["state"] in ("new", "update", "refused")]})
+    return out
+
+
+@router.post("/api/review/app-songs/{group}/import", dependencies=[Depends(require_parent)])
+def bring_into_review(group: str):
+    """Bring into review: the group's new and changed songs go through intake (the same checks and
+    analysis against this server's map as any song) and wait in the review list as one package."""
+    if songtools.on():
+        raise HTTPException(409, "this server has song tools: its songs come from the dev box")
+    g = next((x for x in app_groups() if x["id"] == group), None)
+    if g is None:
+        raise HTTPException(404, "the app has no such group of songs")
+    c = need_content()
+    con = db.connect()
+    try:
+        songs = [s for s in app_songs(con, g) if s["state"] in ("new", "update")]
+        if not songs:
+            raise HTTPException(409, "nothing new or changed in these songs")
+        pkg, t = uuid.uuid4().hex[:12], now()
+        report, taken = [], {}
+        with db.transaction(con):
+            con.execute("INSERT INTO packages (id, name, skill, notes, status, created_at, submitted_at) "
+                        "VALUES (?, ?, 'app', ?, 'open', ?, ?)", (pkg, g["name"], g["description"], t, t))
+            for s in songs:
+                piece = dict(s["piece"])
+                info_in = piece.pop("info", None) or {}
+                shown = piece.pop("display", None) or {}
+                update = s["state"] == "update"
+                item = ItemIn(piece=piece, info={k: info_in.get(k) for k in INFO_KEYS if info_in.get(k) is not None})
+                r = check_item(con, c, item, taken, app_update=update)
+                ok = not r["errors"]
+                iid = uuid.uuid4().hex[:12]
+                p = r.get("piece") or piece
+                info = {**item.info, "entry": r.get("entry"), "sourceIds": r.get("sourceIds", []),
+                        "fromApp": {"group": g["id"], "kind": g["kind"], "revision": s["revision"]},
+                        **({"display": shown} if shown else {})}
+                if ok:
+                    d = folder("staging", pkg, iid)
+                    (d / "media").mkdir(parents=True, exist_ok=True)
+                    for m in r["files"]:
+                        shutil.copy2(g["dir"] / "media" / s["id"] / m["file"], d / "media" / m["file"])
+                    (d / "piece.json").write_text(json.dumps(p))
+                    taken[r["pieceId"]] = r["song"]
+                con.execute("INSERT INTO staged_items (id, package_id, piece_id, song, title, composer, genre, info, report, "
+                            "fingerprint, media, status, live) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            (iid, pkg, r["pieceId"], r.get("song") or r["pieceId"], str(p.get("title") or ""), p.get("composer"),
+                             str(p.get("genre") or ""), json.dumps(info), json.dumps({"errors": r["errors"], "warnings": r["warnings"]}),
+                             json.dumps(r.get("fingerprint", [])), json.dumps(r.get("files", [])),
+                             "staged" if ok else "rejected", s["id"] if ok and update else None))
+                report.append({"pieceId": s["id"], "title": s["title"], "staged": ok, "update": update, "errors": r["errors"]})
+            staged = sum(1 for x in report if x["staged"])
+            con.execute("UPDATE packages SET status = ? WHERE id = ?", ("staged" if staged else "done", pkg))
+        return {"package": pkg, "staged": staged, "updates": sum(1 for x in report if x["staged"] and x["update"]),
+                "refused": [x for x in report if not x["staged"]]}
     finally:
         con.close()
 

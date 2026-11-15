@@ -1,7 +1,9 @@
 # A fresh install, and keeping the curriculum songs in the repo
 
 How to get the piano app working on a server again, and how to keep the repo ready for that
-(architecture §11.2, §11.6, v0.31).
+(architecture §11.2, §11.6, v0.31). This is **our** server, with the dev box and song tools
+(`PIANO_SONG_TOOLS=on` in `server.env`). Another family's install, without them, follows
+[install-guide.md](install-guide.md) instead (§11.7).
 
 ## Which way back
 
@@ -60,7 +62,10 @@ Always prefer the backup. A new install from the repo is for when there's nothin
 ## Keeping `content/library/` up to date
 
 `content/library/` is the curriculum's part of the server's library, exactly as the parent approved
-it:
+it, plus the starter songs beyond the map that every install gets (`library_export.py`'s `STARTER`:
+Amazing Grace, whose approved copy is also its source for the content build, v0.51). Another
+family's server gets all of it as songs from the app, which their parent approves in the Review
+list (§10.7), so a song exported here reaches them with their next update:
 
 | File | What |
 | --- | --- |
@@ -75,6 +80,7 @@ such as new vocals), copy them into the repo and commit:
 tools/.venv/bin/python tools/build_content.py           # the built skill map says which songs are the curriculum
 tools/.venv/bin/python tools/library_export.py --check  # what would change
 tools/.venv/bin/python tools/library_export.py          # copy it
+tools/.venv/bin/python tools/library_export.py --only ID  # or only these songs (repeat --only)
 git add content/library && git commit                   # the stems go to Git LFS
 ```
 

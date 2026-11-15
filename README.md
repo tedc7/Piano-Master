@@ -92,8 +92,8 @@ tools/.venv/bin/python tools/build_content.py    # content/ -> client/public/con
 cd client && npm run dev                         # http://localhost:5173 (Web MIDI works on localhost in Chrome)
 ```
 
-The Amazing Grace test song copies its YuE2 stems from the sync probe's build
-(`feasibility/sync-probe/dist`); the build fails with a clear message if that isn't on this machine.
+The Amazing Grace test song is built from its approved copy in `content/library/` (its stems are on
+Git LFS: `git lfs pull`), so a fresh clone builds with nothing from `feasibility/`.
 
 ## Test
 
@@ -107,7 +107,9 @@ tools/.venv/bin/python -m pytest -q tools/tests  # skill-map validation, convert
 `check_app.py` runs the built app and the API (with a throwaway database) in headless Chromium at
 iPad A16 size and plays pieces with a scripted keyboard (a Web MIDI stand-in that exists only in
 that test). It starts from a new server: it chooses the parent PIN, adds two students and plays
-their first session. Screenshots go to `tests-output/`.
+their first session. Screenshots go to `tests-output/`. `check_app.py --home` plays another
+family's first day instead: no song tools, the app's songs brought into the Review list and
+approved, and a child's skills waiting for a song until then.
 
 The **practice simulator** (`api/tests/simulator.py`, arch §11.4) drives the real lesson engine
 day by day for simulated learners (fast, slow, inconsistent, one skill much harder) over 8 weeks
@@ -125,7 +127,9 @@ one with `tools/.venv/bin/python tools/fixture_from_attempt.py` (lists recent at
 The scripts find your piano server in `~/.config/piano-master/server.env`: copy
 [tools/server.env.example](tools/server.env.example) there and fill in the site's address, the ssh
 host for deploys and the server's root certificate. It's kept outside the repo, which is public.
-A new server from scratch: [docs/fresh-install.md](docs/fresh-install.md).
+A new server from scratch: [docs/fresh-install.md](docs/fresh-install.md). **Another family** running
+the app on their own server, with their own Claude Code: [docs/install-guide.md](docs/install-guide.md)
+(arch §11.7). Only the dev box that makes songs sets `PIANO_SONG_TOOLS=on` in its `server.env`.
 
 ```sh
 tools/deploy.sh             # tests, then the API (/opt/piano/api) and the client (https://<piano-server>/app/)

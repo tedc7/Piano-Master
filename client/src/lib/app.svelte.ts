@@ -63,6 +63,9 @@ class AppState {
   student = $state<Student | null>(null);
   parentMode = $state(false);
   pinSet = $state<boolean | null>(null);
+  /** The piano server works with a dev box (v0.51): its parent can ask the Claude skills for songs
+   *  and fixes. Another family's server has none, and those parts of parent mode are hidden. */
+  songTools = $state(false);
   autoLogoutMinutes = $state(10);
   // the student's state from the lesson engine
   progress = $state<Progress>(new Map());
@@ -155,8 +158,9 @@ class AppState {
       this.studentsStatus = "offline";
     }
     try {
-      const p = await api.request<{ pinSet: boolean; autoLogoutMinutes: number }>("/parent");
+      const p = await api.request<{ pinSet: boolean; autoLogoutMinutes: number; songTools?: boolean }>("/parent");
       this.pinSet = p.pinSet;
+      this.songTools = !!p.songTools;
       this.autoLogoutMinutes = p.autoLogoutMinutes;
     } catch { /* asked again on the PIN screen */ }
   }

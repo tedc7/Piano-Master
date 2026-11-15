@@ -54,7 +54,7 @@
     await call(`/library/songs/${encodeURIComponent(s.song)}/delete`, "POST", { reason: reason.trim() || null });
     reason = "";
     reloadContent();
-    done = `${s.title} is out of the library. It's under Deleted songs in the Review list, where it can be sent back to review, improved or forgotten.`;
+    done = `${s.title} is out of the library. It's under Deleted songs in the Review list, where it can be sent back to review, ${app.songTools ? "improved " : ""}or forgotten.`;
   }
   const shown = $derived(songs.filter((s) => !filter || s.title.toLowerCase().includes(filter.toLowerCase())));
 </script>

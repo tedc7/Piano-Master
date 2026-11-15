@@ -1,6 +1,7 @@
 """End-to-end check of the built client and the App API in headless Chromium at iPad A16 size.
 
     tools/.venv/bin/python tools/check_app.py            # serves client/dist and the API locally
+    tools/.venv/bin/python tools/check_app.py --home     # another family's first day (no song tools, v0.51)
 
 The API runs in-process with a temporary database, and serves client/dist at / like Caddy does.
 
@@ -33,6 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "client" / "dist"
 SONGS = ROOT / "build" / "songs"           # every song, built (tools/build_content.py); the library's seed here
 OUT = ROOT / "tests-output"
+LIBRARY = ROOT / "content" / "library"     # the approved curriculum songs (tools/library_export.py)
 
 FAKE_MIDI = """
 (() => {
@@ -165,16 +167,27 @@ def plant_blocked_first_skill() -> tuple[str, str]:
     return sid, first
 
 
-def serve():
+def serve(home: bool = False):
     """The App API plus the built client at /, on a free local port, with a throwaway database. The
     API plans from the built skill map, and its library starts with every built song, as a deploy's
-    seed brings them in (v0.27)."""
+    seed brings them in (v0.27). `home` (v0.51): another family's new server instead, with no song
+    tools and an empty library, and the approved curriculum songs (content/library/) brought by the
+    deploy as songs from the app, as tools/deploy.sh does."""
     tmp = Path(tempfile.mkdtemp())
     os.environ["PIANO_DB"] = str(tmp / "piano.db")
     content = tmp / "content"
     content.mkdir()
     (content / "skillmap.json").write_text((DIST / "content" / "skillmap.json").read_text())
-    (content / "seed").symlink_to(SONGS)
+    if home:
+        cur = tmp / "available" / "curriculum"
+        cur.mkdir(parents=True)
+        for f in LIBRARY.iterdir():
+            (cur / f.name).symlink_to(f)
+        (cur / "group.json").write_text(json.dumps({"name": "Curriculum", "kind": "curriculum"}))
+        os.environ["PIANO_APP_SONGS"] = str(tmp / "available")
+    else:
+        (content / "seed").symlink_to(SONGS)
+        (content / "song-tools").write_text("on\n")   # our server: it works with the dev box (v0.51)
     os.environ["PIANO_CONTENT"] = str(content)
     sys.path.insert(0, str(ROOT / "api"))
     from starlette.staticfiles import StaticFiles
@@ -1411,5 +1424,131 @@ def main():
     return 1 if failures else 0
 
 
+def home_main():
+    """Another family's first day (v0.51, arch §11.7), in the real screens: a new server without song
+    tools, the app's songs waiting for the parent. The first PIN, a child whose skills wait for a
+    song, then the Review list's Songs from the app: Bring into review, listen to one, Approve all;
+    the same day, the child's session teaches the first skill. Nothing that waits for a dev box
+    shows (Dev box connection, Needs improvement)."""
+    if not (DIST / "index.html").exists():
+        print("build first: (cd client && npm run build)", file=sys.stderr)
+        return 1
+    OUT.mkdir(exist_ok=True)
+    server, url = serve(home=True)
+    failures = []
+    songs = len(json.loads((LIBRARY / "index.json").read_text())["pieces"])
+
+    def check(ok, what):
+        print(("PASS " if ok else "FAIL ") + what)
+        if not ok:
+            failures.append(what)
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(args=["--autoplay-policy=no-user-gesture-required"])
+        ctx = browser.new_context(viewport={"width": 1180, "height": 820}, device_scale_factor=2, has_touch=True)
+        ctx.add_init_script(FAKE_MIDI)
+        page = ctx.new_page()
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        tile = lambda name: page.locator(".tile").filter(has=page.locator(".tile-name", has_text=name))
+        pad = lambda digits: [page.locator(".pad").get_by_role("button", name=d, exact=True).click() for d in digits]
+
+        def ok_pin(digits):
+            pad(digits)
+            page.get_by_role("button", name="OK").click()
+
+        health = json.loads(urllib.request.urlopen(url + "api/health").read())
+        check(health["songTools"] is False, "home: a new server has no song tools")
+        page.goto(url)
+        page.wait_for_selector(".student")
+        page.locator(".student.parent").click()
+        page.wait_for_selector("text=Choose a parent PIN")
+        ok_pin("1357")
+        page.wait_for_selector("text=Enter it again")
+        ok_pin("1357")
+        page.wait_for_selector(".tile")
+        names = page.locator(".tile-name").all_inner_texts()
+        check("Review list" in names and not {"Dev box connection", "Work requests", "Concept videos"} & set(names),
+              f"home: Config has the Review list and nothing that needs a dev box ({len(names)} tiles)")
+        page.screenshot(path=str(OUT / "home-config.png"))
+        tile("Students").click()
+        page.get_by_role("button", name="＋ Add a student").click()
+        page.get_by_placeholder("First name").fill("Ada")
+        page.get_by_role("button", name="Avatar 🦊").click()
+        page.get_by_role("button", name="Save").click()
+        page.wait_for_selector(".student h2:text-is('Ada')")
+
+        # day one, before the parent has approved a song: every skill waits for one
+        page.get_by_role("button", name="Switch player").click()
+        page.locator(".student", has_text="Ada").click()
+        page.wait_for_selector("text=Waiting for songs", timeout=15000)
+        check(page.get_by_text("Your pick").count() == 0, "home: day one says the songs are waiting, with no song to pick")
+        page.screenshot(path=str(OUT / "home-day-one.png"))
+        page.locator("nav.tabbar button", has_text="Journey").click()
+        try:
+            page.wait_for_selector("text=Waiting for a song", timeout=15000)
+        except Exception:
+            pass
+        waiting = page.get_by_text("Waiting for a song").count()
+        check(waiting > 0, f"home: the Journey shows skills waiting for a song ({waiting})")
+
+        # the parent brings the app's songs into review, listens to one and approves them all
+        page.get_by_role("button", name="Switch player").click()
+        page.locator(".student.parent").click()
+        ok_pin("1357")
+        page.wait_for_selector(".tile")
+        tile("Review list").click()
+        page.wait_for_selector("button:has-text('Bring into review')", timeout=30000)
+        bring = page.get_by_role("button", name=f"Bring into review ({songs})")
+        check(bring.count() == 1, f"home: Songs from the app offers all {songs} songs")
+        page.screenshot(path=str(OUT / "home-review-app-songs.png"))
+        bring.click()
+        page.wait_for_selector("text=waiting for you below", timeout=120000)
+        n = page.locator(".item").count()
+        check(n == songs, f"home: they wait in the review list ({n})")
+        check(page.get_by_role("button", name="Needs improvement").count() == 0 and page.get_by_text("Ask for updates").count() == 0,
+              "home: no Needs improvement or Ask for updates without a dev box")
+        page.locator(".item").first.get_by_role("button", name="▶ Listen and play").click()
+        page.wait_for_function("window.__pm && window.__pm.player && window.__pm.player.piece.id.startsWith('staged--')", timeout=30000)
+        check(True, "home: a song waiting for review opens in the Play screen")
+        page.goto(url + "#/config/review")
+        page.wait_for_selector("text=Approve all…")
+        page.get_by_role("button", name="Approve all…").click()
+        page.get_by_role("button", name=f"Approve all {songs}").click()
+        page.wait_for_selector(f"text={songs} songs from Curriculum approved", timeout=180000)
+        lib = json.loads(urllib.request.urlopen(url + "api/library").read())["pieces"]
+        check(len(lib) == songs and not any(e["new"] for e in lib), f"home: every song is in the library, with no New badge ({len(lib)})")
+        page.wait_for_selector("text=Nothing new or changed")
+        page.screenshot(path=str(OUT / "home-review-approved.png"))
+        page.goto(url + "#/play/mary-had-a-little-lamb")
+        page.wait_for_function("window.__pm && window.__pm.player.piece.id === 'mary-had-a-little-lamb'")
+        page.get_by_role("button", name="Song and settings").click()
+        page.wait_for_selector("text=On the staff")
+        check(page.get_by_text("Needs improvement").count() == 0, "home: the Play screen's pop-up has no Needs improvement")
+
+        # the same day, Ada's session is planned again with her first lesson
+        page.goto(url)
+        page.wait_for_selector("button:has-text('Switch player'), .student")
+        if page.locator(".student").count() == 0:
+            page.get_by_role("button", name="Switch player").click()
+        page.locator(".student", has_text="Ada").click()
+        page.wait_for_selector(".upnext", timeout=15000)
+        try:                                  # the morning's state shows first, from this device's copy
+            page.wait_for_function("document.querySelector('.upnext').innerText.includes('New idea')", timeout=15000)
+        except Exception:
+            pass
+        up = page.locator(".upnext").inner_text()
+        check("New idea" in up, f"home: once approved, the same day's session teaches the first skill ({up[:50]!r})")
+        page.locator("nav.tabbar button", has_text="Journey").click()
+        page.wait_for_selector(".bubble")
+        check(page.get_by_text("Waiting for a song").count() == 0, "home: nothing on the Journey waits for a song now")
+        page.screenshot(path=str(OUT / "home-journey.png"))
+        check(not errors, "home: no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
+        browser.close()
+    server.should_exit = True
+    print(f"\n{len(failures)} failed" if failures else "\nall passed")
+    return 1 if failures else 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(home_main() if "--home" in sys.argv else main())

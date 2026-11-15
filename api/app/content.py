@@ -90,6 +90,10 @@ class Content:
     genres: dict[str, str] = field(default_factory=dict)       # piece id -> genre (for each child's rules)
     songs: dict[str, str] = field(default_factory=dict)        # piece id -> song (arrangements share one)
     versions: dict[str, str] = field(default_factory=dict)     # piece id -> its notes' version (song_version)
+    # skills no song in the whole library practises yet (v0.51): "Waiting for a song". Worked out
+    # before a child's rules take songs away, so a song the parent blocked for one child doesn't
+    # make the skill wait (that child's session says a song is needed instead)
+    waiting: set[str] = field(default_factory=set)
 
     def notation(self, piece_id: str) -> dict | None:
         """A song's §5 notation, from the library; None when it isn't there."""
@@ -124,7 +128,7 @@ class Content:
         """The same content with only the pieces keep(piece id) allows (a child's rules)."""
         return Content(version=self.version, skills=self.skills, pieces={k: p for k, p in self.pieces.items() if keep(k)},
                        folder=self.folder, notations=self.notations, paths=self.paths, genres=self.genres, songs=self.songs,
-                       versions=self.versions)
+                       versions=self.versions, waiting=self.waiting)
 
     def pieces_of(self, skill_id: str) -> list[Piece]:
         """The songs that feature the skill (song analysis), its practice songs first, in the skill
@@ -158,10 +162,12 @@ class Content:
                 beyond=list(p.get("beyondMap", [])), map_point=p.get("mapPoint"),
                 skill_measures=dict(p.get("skillMeasures", {})),
                 bar_notes={int(k): v for k, v in (p.get("barNotes") or {}).items()}, level=p.get("level") or "")
+        practised = {f for p in pieces.values() if not p.beyond for f in p.featured}
         return cls(version=index.get("contentVersion", skillmap.get("contentVersion", "")), skills=skills, pieces=pieces,
                    folder=folder, genres={p["id"]: p.get("genre") or "" for p in index["pieces"]},
                    songs={p["id"]: p.get("song") or p["id"] for p in index["pieces"]},
-                   versions={p["id"]: p["contentVersion"] for p in index["pieces"] if p.get("contentVersion")})
+                   versions={p["id"]: p["contentVersion"] for p in index["pieces"] if p.get("contentVersion")},
+                   waiting={sid for sid in skills if sid not in practised})
 
 
 _cache: tuple[tuple, Content] | None = None

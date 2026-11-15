@@ -14,6 +14,10 @@
   // from the library in Songs and genres), which can go back to review, be sent for improvement
   // (to be corrected), or be forgotten (the skills may then offer them again). Last (v0.40): ask for
   // updates to several live songs at once, by skill, with one note (a change across the curriculum).
+  // v0.51: "Approve all" for a whole package, after listening to the ones the parent wants to. On a
+  // server without song tools (another family's install, no dev box), songs come with the app:
+  // "Songs from the app" lists what each release brings that's new or changed, and Bring into review
+  // puts those here; everything that waits for the Claude skills (send back, ask for updates) is hidden.
   import { onMount } from "svelte";
   import { api } from "../../lib/api";
   import { app } from "../../lib/app.svelte.js";
@@ -46,7 +50,17 @@
     summary: { timeSig?: string; tempo?: number; beats?: number };
   }
 
+  interface Package { id: string; name: string; skill: string; items: Item[] }
+  interface AppGroup {
+    id: string; name: string; kind: "curriculum" | "pack"; description: string | null;
+    counts: Record<"new" | "update" | "unchanged" | "waiting" | "deleted" | "declined" | "refused", number>;
+    songs: { id: string; title: string; state: "new" | "update" | "refused" }[];
+  }
+
   let items = $state<Item[]>([]);
+  let packages = $state<Package[]>([]);
+  let appSongs = $state<AppGroup[]>([]);
+  let approvingAll = $state<string | null>(null);   // the package whose Approve all is being confirmed
   let sentBack = $state<Item[]>([]);
   let deleted = $state<Item[]>([]);
   let loaded = $state(false);
@@ -84,8 +98,12 @@
 
   async function load(): Promise<void> {
     try {
-      const r = await api.request<{ items: Item[]; sentBack: Item[]; deleted: Item[] }>("/review");
+      const r = await api.request<{ items: Item[]; sentBack: Item[]; deleted: Item[]; packages: Package[];
+                                    songTools: boolean; appSongs: AppGroup[] }>("/review");
       items = r.items;
+      packages = r.packages;
+      appSongs = r.appSongs ?? [];
+      app.songTools = r.songTools;
       sentBack = r.sentBack;
       deleted = r.deleted;
       error = "";
@@ -145,6 +163,40 @@
     busy = false;
   }
 
+  /** Songs from the app (v0.51): the group's new and changed songs into this list. */
+  async function bringIn(g: AppGroup): Promise<void> {
+    busy = true;
+    try {
+      const r = await api.request<{ staged: number; updates: number; refused: { title: string; errors: string[] }[] }>(
+        `/review/app-songs/${g.id}/import`, "POST");
+      done = `${r.staged} song${r.staged === 1 ? "" : "s"} from ${g.name} ${r.staged === 1 ? "is" : "are"} waiting for you below`
+        + (r.updates ? ` (${r.updates} of them updates to songs you have)` : "") + "."
+        + (r.refused.length ? ` Not brought in, because they didn't pass the checks: ${r.refused.map((x) => `${x.title} (${x.errors.join("; ")})`).join(", ")}.` : "");
+      await load();
+    } catch (e) {
+      if (!app.parentRefused(e)) error = (e as Error).message;
+    }
+    busy = false;
+  }
+
+  /** Approve all: every song of one package still waiting (v0.51). */
+  async function approveAll(pkg: Package): Promise<void> {
+    busy = true;
+    approvingAll = null;
+    try {
+      const r = await api.request<{ approved: string[]; updated: number }>(`/review/packages/${pkg.id}/approve`, "POST");
+      done = `${r.approved.length} song${r.approved.length === 1 ? "" : "s"} from ${pkg.name} approved`
+        + (r.updated ? ` (${r.updated} updated in place, with the children's stars and progress kept)` : "") + ".";
+      reloadContent();
+      await load();
+    } catch (e) {
+      if (!app.parentRefused(e)) error = (e as Error).message;
+    }
+    busy = false;
+  }
+
+  const ofState = (g: AppGroup, st: string) => g.songs.filter((x) => x.state === st).map((x) => x.title).join(", ");
+
   function start(it: Item, kind: "improve" | "never"): void {
     open = { id: it.id, kind };
     feedback = "";
@@ -169,10 +221,45 @@
 {#if error}<p class="notice error">{error}</p>{/if}
 {#if done}<p class="notice">{done}</p>{/if}
 
+{#each appSongs as g (g.id)}
+  {@const fresh = g.counts.new + g.counts.update}
+  <section class="panel app-songs">
+    <h2>Songs from the app: {g.name}</h2>
+    {#if g.description}<p class="muted">{g.description}</p>{/if}
+    {#if fresh}
+      <p>This version of the app brings {g.counts.new ? `${g.counts.new} new song${g.counts.new === 1 ? "" : "s"}` : ""}{g.counts.new && g.counts.update ? " and " : ""}{g.counts.update ? `${g.counts.update} update${g.counts.update === 1 ? "" : "s"} to songs you have` : ""}.
+        Bring them into review to listen to them and approve them: none reaches a child before you do.</p>
+      <details>
+        <summary>Which songs</summary>
+        {#if g.counts.new}<p class="line"><b>New:</b> {ofState(g, "new")}</p>{/if}
+        {#if g.counts.update}<p class="line"><b>Updated:</b> {ofState(g, "update")}</p>{/if}
+      </details>
+      <div class="buttons"><button class="approve" onclick={() => bringIn(g)} disabled={busy}>Bring into review ({fresh})</button></div>
+    {:else}
+      <p class="muted">Nothing new or changed{g.counts.waiting ? `: ${g.counts.waiting} waiting for you below` : ""}.</p>
+    {/if}
+    {#if g.counts.unchanged + g.counts.deleted + g.counts.declined + g.counts.refused}
+    <p class="muted small">{g.counts.unchanged} in the library as the app has them{g.counts.deleted ? ` · ${g.counts.deleted} you deleted, never offered again` : ""}{g.counts.declined ? ` · ${g.counts.declined} update${g.counts.declined === 1 ? "" : "s"} you discarded` : ""}{g.counts.refused ? ` · ${g.counts.refused} that didn't pass the checks (${ofState(g, "refused")})` : ""}</p>
+    {/if}
+  </section>
+{/each}
+
 <section class="panel">
   <h2>Waiting for you ({items.length})</h2>
-  <p class="muted">Listen to each song, then approve it, send it back with what needs to change, or never allow it.
-    A song stays here until you decide.</p>
+  <p class="muted">{app.songTools ? "Listen to each song, then approve it, send it back with what needs to change, or never allow it."
+    : "Listen to each song, then approve it, or never allow it."} A song stays here until you decide.</p>
+  {#each packages.filter((x) => x.items.length > 1) as pkg (pkg.id)}
+    <div class="all">
+      {#if approvingAll === pkg.id}
+        <span>Approve all {pkg.items.length} songs from <b>{pkg.name}</b> without listening to the rest?</span>
+        <button class="approve" onclick={() => approveAll(pkg)} disabled={busy}>Approve all {pkg.items.length}</button>
+        <button class="quiet" onclick={() => { approvingAll = null; }}>Cancel</button>
+      {:else}
+        <span>{pkg.items.length} waiting from <b>{pkg.name}</b></span>
+        <button class="quiet" onclick={() => { approvingAll = pkg.id; }} disabled={busy}>Approve all…</button>
+      {/if}
+    </div>
+  {/each}
 
   {#each items as it (it.id)}
     {@const c = it.info.checks}
@@ -253,18 +340,18 @@
         {#if it.live}
           <button class="quiet" onclick={() => app.openPiece(it.live!, "config/review")}>▶ Live version</button>
           <button class="approve" onclick={() => decide(it, "approve")} disabled={busy}>Approve update</button>
-          <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs more work</button>
+          {#if app.songTools}<button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs more work</button>{/if}
           <button class="quiet never" onclick={() => decide(it, "discard")} disabled={busy}>Discard update</button>
         {:else}
           <button class="approve" onclick={() => decide(it, "approve")} disabled={busy}>Approve</button>
-          <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>
+          {#if app.songTools}<button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>{/if}
           <button class="quiet never" onclick={() => start(it, "never")} disabled={busy}>Never allow</button>
         {/if}
       </div>
     </div>
   {:else}
     {#if loaded && !error}
-      <p class="muted">Nothing waiting. Songs the Claude skills submit appear here for your approval; nothing reaches the children before that.</p>
+      <p class="muted">Nothing waiting. {app.songTools ? "Songs the Claude skills submit" : "Songs you bring in from the app"} appear here for your approval; nothing reaches the children before that.</p>
     {/if}
   {/each}
 </section>
@@ -297,9 +384,14 @@
 {#if deleted.length}
   <section class="panel">
     <h2>Deleted songs ({deleted.length})</h2>
-    <p class="muted">Songs you never allowed here, or deleted from the library in Songs and genres. The skills won't offer
-      them again. Send one back to review, send it for improvement to have it corrected, or forget it, which removes it
-      and lets the skills offer it again some day.</p>
+    {#if app.songTools}
+      <p class="muted">Songs you never allowed here, or deleted from the library in Songs and genres. The skills won't offer
+        them again. Send one back to review, send it for improvement to have it corrected, or forget it, which removes it
+        and lets the skills offer it again some day.</p>
+    {:else}
+      <p class="muted">Songs you never allowed here, or deleted from the library in Songs and genres. The app won't offer
+        them again. Send one back to review, or forget it, which removes it and lets the app offer it again.</p>
+    {/if}
     {#each deleted as it (it.id)}
       <div class="item">
         <div class="what">
@@ -328,7 +420,7 @@
           {#if it.hasFiles}
             <button class="quiet" onclick={() => listen(it)}>▶ Listen</button>
             <button class="quiet" onclick={() => decide(it, "restore")} disabled={busy}>Back to review</button>
-            <button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>
+            {#if app.songTools}<button class="quiet" onclick={() => start(it, "improve")} disabled={busy}>Needs improvement</button>{/if}
           {/if}
           <button class="quiet never" onclick={() => { forgetting = it.id; }} disabled={busy}>Forget</button>
         </div>
@@ -337,7 +429,7 @@
   </section>
 {/if}
 
-{#if mapSkills.length}
+{#if mapSkills.length && app.songTools}
   <section class="panel">
     <details bind:open={bulkOpen}>
       <summary><b>Ask for updates to several songs</b></summary>
@@ -400,4 +492,8 @@
   .pick { display: block; padding: 4px 0; }
   .genre { margin: 4px 0; }
   .genre summary { cursor: pointer; font-weight: 650; }
+  .all { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 8px 0; padding: 8px 12px; background: #f7f5f0; border-radius: 12px; }
+  .all span { flex: 1 1 260px; }
+  .app-songs { border-left: 4px solid var(--accent); }
+  .small { font-size: 14px; }
 </style>

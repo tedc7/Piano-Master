@@ -178,7 +178,8 @@
     </section>
   </div>
 
-  {#if app.micMode}
+  {#if app.micMode && app.songTools}
+    <!-- tuning the detector is the dev box's work (tools/mic_recording.py): only with song tools (v0.51) -->
     <section class="panel record">
       <h2>Send a recording for tuning</h2>
       <p>Records {RECORD_S} seconds of what the microphone hears, with the keys the app heard, and sends it to the piano server so the microphone's note detection can be tuned to this keyboard. Press <b>Record</b>, then play each key once, slowly, from the lowest to the highest (about one key every half second), then a few chords. (A song can be recorded too, from the Play screen's ⚙ sheet.)</p>

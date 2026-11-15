@@ -32,6 +32,7 @@
     { name: "Songs and lessons", tiles: [
       { id: "content", icon: "📚", name: "Content preview", what: "Every skill and song in sequence order, open for review." },
       { id: "review", icon: "📥", name: "Review list", what: "New songs waiting for you: listen, then approve each, send it back with what needs to change, or never allow it. Nothing here reaches a child." },
+      { id: "review-app", icon: "📥", name: "Review list", what: "Songs from the app waiting for you: bring them into review, listen, then approve them one at a time or all together, or never allow one. Nothing here reaches a child." },
       { id: "requests", icon: "📝", name: "Work requests", what: "Ask the Claude skills on the dev box to find songs, import a file, change a vocal style or find a concept video.", milestone: "a later version" },
       { id: "videos", icon: "🎬", name: "Concept videos", what: "Upcoming concepts for each child, with a suggested search, and the approved videos.", milestone: "a later version" },
       { id: "analysis", icon: "🔎", name: "Content and analysis", what: "The coverage report (each skill's core pieces and library songs; every skill needs at least 2 core practice pieces) and each piece's song analysis: required and featured skills, map point, anything beyond the map." },
@@ -50,11 +51,16 @@
     ] },
   ];
   const BUILT: Record<string, true> = {
-    content: true, analysis: true, rules: true, review: true, devbox: true, midi: true, calibrate: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
+    content: true, analysis: true, rules: true, review: true, "review-app": true, devbox: true, midi: true, calibrate: true, device: true, status: true, students: true, reports: true, pin: true, "journey-test": true,
   };
   function openTile(id: string): void {
-    if (id === "journey-test") go("journey/test"); else go(`config/${id}`);
+    if (id === "journey-test") go("journey/test"); else go(`config/${id === "review-app" ? "review" : id}`);
   }
+  // without song tools (another family's server, v0.51) there is no dev box: its tiles are hidden
+  const DEV_BOX = new Set(["devbox", "requests", "videos"]);
+  const tileShown = (id: string) => (id === "review" ? app.songTools : id === "review-app" ? !app.songTools : app.songTools || !DEV_BOX.has(id));
+  const groups = $derived(GROUPS.map((g) => ({ ...g, tiles: g.tiles.filter((t) => tileShown(t.id)) }))
+    .filter((g) => g.tiles.length));
   const tile = $derived(page ? GROUPS.flatMap((g) => g.tiles).find((t) => t.id === page) ?? null : null);
 </script>
 
@@ -69,7 +75,7 @@
     </div>
 
     {#if !page}
-      {#each GROUPS as g (g.name)}
+      {#each groups as g (g.name)}
         <h2 class="group">{g.name}</h2>
         <div class="tiles">
           {#each g.tiles as t (t.id)}

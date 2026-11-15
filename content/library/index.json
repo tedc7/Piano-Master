@@ -9696,6 +9696,166 @@
    "updatedAt": "2026-10-20T16:16:01+00:00",
    "version": null,
    "words": "Go, go, go! Go, go, go! Stop! Stop! Stop! Stop! Red light, stop! Green light, go! Look both ways, go!"
+  },
+  {
+   "approvedAt": "2026-10-01T05:25:41+00:00",
+   "barNotes": {
+    "1": 2,
+    "10": 8,
+    "11": 4,
+    "12": 8,
+    "13": 4,
+    "14": 6,
+    "15": 4,
+    "16": 2,
+    "17": 2,
+    "2": 6,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 6,
+    "7": 4,
+    "8": 2,
+    "9": 4
+   },
+   "beats": 96.0,
+   "beyondMap": [
+    "right hand A4 to D5",
+    "right hand intervals of 4ths",
+    "note lengths 0.5, 1.5 beats",
+    "key signature +1"
+   ],
+   "composer": "Traditional (New Britain)",
+   "contentVersion": "lib-b991cb869e",
+   "featuredSkills": [
+    "prep-a.tie"
+   ],
+   "genre": "hymns",
+   "hands": "R",
+   "hasMedia": true,
+   "id": "amazing-grace-melody",
+   "keyboardSize": 61,
+   "kind": "song",
+   "level": "test",
+   "mapPoint": 450,
+   "measures": 34,
+   "phrases": 8,
+   "requiredSkills": [
+    "prep-a.sitting",
+    "prep-a.half-note",
+    "prep-a.dotted-half",
+    "prep-a.middle-c",
+    "prep-a.treble-g",
+    "prep-a.d-e-f",
+    "prep-a.three-four",
+    "prep-a.skips",
+    "prep-a.tie"
+   ],
+   "seeded": true,
+   "skillId": null,
+   "skillMeasures": {
+    "prep-a.d-e-f": [
+     1,
+     3,
+     4,
+     5,
+     7,
+     11,
+     12,
+     13,
+     15,
+     16
+    ],
+    "prep-a.dotted-half": [
+     8,
+     16
+    ],
+    "prep-a.half-note": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     11,
+     13,
+     14,
+     15,
+     17
+    ],
+    "prep-a.middle-c": [
+     5,
+     9,
+     12,
+     13,
+     17
+    ],
+    "prep-a.sitting": [
+     1,
+     3,
+     4,
+     5,
+     7,
+     9,
+     11,
+     13,
+     15
+    ],
+    "prep-a.skips": [
+     2,
+     3,
+     4,
+     6,
+     7,
+     9,
+     10,
+     11,
+     12,
+     14,
+     15
+    ],
+    "prep-a.three-four": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17
+    ],
+    "prep-a.tie": [
+     8,
+     16
+    ],
+    "prep-a.treble-g": [
+     2,
+     4,
+     6,
+     11,
+     12,
+     14,
+     16,
+     17
+    ]
+   },
+   "song": "amazing-grace-melody",
+   "songTitle": "Amazing Grace",
+   "tempo": 100,
+   "timeSig": "3/4",
+   "title": "Amazing Grace",
+   "version": null,
+   "words": "Amazing grace! How sweet the sound That saved a wretch like me! I once was lost, but now am found; Was blind, but now I see. 'Twas grace that taught my heart to fear, And grace my fears relieved; How precious did that grace appear The hour I first believed. Through many dangers, toils and snares, I have already come; 'Tis grace hath brought me safe thus far, And grace will lead me home. The Lord has promised good to me, His Word my hope secures; He will my Shield and Portion be, As long as life endures. Yea, when this flesh and heart shall fail, And mortal life shall cease, I shall possess, within the veil, A life of joy and peace."
   }
  ]
 }

@@ -1,7 +1,8 @@
 # Library test song: the melody of the Open Hymnal's Amazing Grace (words John Newton, 1779;
 # tune New Britain; public domain), with the YuE2 vocal and backing from the feasibility tests.
-# Needs the sync-probe build (feasibility/sync-probe: convert.py ... build_site.py) on this
-# machine; its notation is the one the stems were aligned to, so the beat grid matches.
+# It has no ABC here: the sync probe (feasibility/sync-probe: convert.py ... build_site.py) made its
+# notation and the stems aligned to it, and the approved copy in content/library/ is its source
+# (`fromLibrary`, v0.51), so every install builds and starts with the same song.
 title: Amazing Grace
 composer: Traditional (New Britain)
 genre: hymns
@@ -15,6 +16,4 @@ license:
   edition: public-domain (The Open Hymnal)
 phraseBars: 4
 verses: 2
-syncProbe:
-  song: amazing-grace
-  take: amazing-grace-syl-spec-s1-dtw
+fromLibrary: true

@@ -45,7 +45,7 @@ OUT = ROOT / "client" / "public" / "content"
 SONGS = ROOT / "build" / "songs"   # every song, built, for the library (not deployed with the app)
 MEDIA = SONGS / "media"
 MEDIA_SRC = CONTENT / "media"      # the media skill's stems (gitignored, arch §10.5)
-SYNC_PROBE = ROOT / "feasibility" / "sync-probe" / "dist"
+APPROVED = CONTENT / "library"     # the approved curriculum and starter songs (tools/library_export.py, Git LFS stems)
 TRACKS = {"reading", "rhythm", "technique", "theory", "repertoire", "musicianship"}
 PASS_NEEDS = {"timing", "dynamics"}       # scorers a skill can need for its pass (v0.50, arch §7.7)
 PRESETS = ("100", "90", "75", "50")
@@ -183,9 +183,9 @@ def build_piece(pid, meta, media_root=None):
             add_dynamics(nota, meta["dynamics"])
         # `_noMedia`: the media skill building the notation it makes the media for
         return nota, None if meta.get("_noMedia") else media_for(pid, nota, media_root), warnings
-    if "syncProbe" in meta:
-        return build_sync_probe_piece(pid, meta, phrase_bars)
-    raise ContentError(f"{pid}: needs an `abc` block or a `syncProbe` source")
+    if meta.get("fromLibrary"):
+        return build_from_library(pid)
+    raise ContentError(f"{pid}: needs an `abc` block, or `fromLibrary: true` for a song whose approved copy is its source")
 
 
 # how hard the app's piano plays each dynamic mark (a MIDI velocity; the player scales its level by it)
@@ -248,42 +248,36 @@ def media_for(pid, nota, media_root=None):
             "presets": presets, "check": media.get("check")}
 
 
-def build_sync_probe_piece(pid, meta, phrase_bars):
-    sp = meta["syncProbe"]
-    manifest_path = SYNC_PROBE / "manifest.json"
-    if not manifest_path.exists():
-        raise ContentError(f"{pid}: {manifest_path} missing; build the sync probe first (feasibility/sync-probe/setup.sh)")
-    manifest = json.loads(manifest_path.read_text())
-    song = next((s for s in manifest["songs"] if s["id"] == sp["song"]), None)
-    if song is None or sp["take"] not in song.get("takes", {}):
-        raise ContentError(f"{pid}: take {sp['song']}/{sp['take']} not in the sync-probe build")
-    take = song["takes"][sp["take"]]
-    nota = json.loads((SYNC_PROBE / song["notation"]).read_text())
-    for k in ("id", "title", "genre", "source", "chordSymbolsDerived"):
-        nota.pop(k, None)
-    nota["header"] = {k: v for k, v in nota["header"].items() if k not in ("key", "mode")}
-    nota["header"]["tempo"] = take["bpm"]
-    nt.melody_only(nota, phrase_bars)
-    if meta.get("verses"):
-        nt.limit_verses(nota, int(meta["verses"]), phrase_bars)
+def build_from_library(pid):
+    """A song with no ABC source (v0.51): Amazing Grace, whose notation and stems the sync probe made
+    (feasibility/sync-probe, convert.py to build_site.py, on the GPU). Its approved copy in
+    content/library/ is its source, so every install builds it the same way; the stems were aligned
+    to exactly this notation."""
+    f = APPROVED / f"{pid}.json"
+    if not f.exists():
+        raise ContentError(f"{pid}: {f.relative_to(ROOT)} missing; export it from the library (tools/library_export.py --only {pid})")
+    piece = json.loads(f.read_text())
+    nota, src = piece["notation"], piece.get("media")
+    if not src:
+        return nota, None, []
     dest = MEDIA / pid
     dest.mkdir(parents=True, exist_ok=True)
     presets = {}
-    for key in PRESETS:
-        st = take["stems"].get(key)
-        if not st:
-            continue
-        entry = {"ratio": st["ratio"]}
+    for key, p in src["presets"].items():
+        entry = {"ratio": p["ratio"]}
         for stem in ("vocals", "accompaniment"):
-            src = SYNC_PROBE / st[stem]["url"]
-            name = f"{stem}_{key}{src.suffix}"
-            if not (dest / name).exists() or (dest / name).stat().st_size != src.stat().st_size:
-                shutil.copy2(src, dest / name)
-            entry[stem] = {"url": f"media/{pid}/{name}", "bytes": src.stat().st_size}
+            if not p.get(stem):
+                continue
+            name = Path(p[stem]["url"]).name
+            stem_file = APPROVED / "media" / pid / name
+            if not stem_file.exists() or stem_file.open("rb").read(24) == b"version https://git-lfs":
+                raise ContentError(f"{pid}: {stem_file.relative_to(ROOT)} isn't here; fetch the stems with git lfs pull")
+            if not (dest / name).exists() or (dest / name).stat().st_size != stem_file.stat().st_size:
+                shutil.copy2(stem_file, dest / name)
+            entry[stem] = {"url": f"media/{pid}/{name}", "bytes": stem_file.stat().st_size}
         presets[key] = entry
-    media = {"engine": "YuE2", "take": sp["take"], "padBeats": take["padBeats"], "bpm": take["bpm"],
-             "presets": presets, "check": take.get("check")}
-    return nota, media, []
+    media = {k: src[k] for k in ("engine", "take", "padBeats", "bpm", "check") if k in src}
+    return nota, {**media, "presets": presets}, []
 
 
 LESSONS = CONTENT / "lessons"
@@ -450,6 +444,8 @@ def make_piece(pid, meta, skills, parsed, version=None, written_for=None, media_
                         written_for if written_for in an["featuredSkills"] else an["featuredSkills"][0],
              "contentVersion": song_version(nt.jsonable(nota)), "keyboardSize": keyboard, "fingeringSource": fing["source"], **an,
              "notation": nt.jsonable(nota), "media": media}
+    if meta.get("fromLibrary"):           # its fingers came with the approved copy: say where they came from first
+        piece["fingeringSource"] = json.loads((APPROVED / f"{pid}.json").read_text()).get("fingeringSource") or fing["source"]
     entry = ({k: piece[k] for k in ("id", "title", "composer", "kind", "genre", "level", "hands", "skillId", "keyboardSize",
                                     "song", "songTitle", "version")}
              | {"tempo": nota["header"]["tempo"], "timeSig": nota["header"]["timeSig"],

@@ -10,6 +10,13 @@ Kokoro-82M's **Heart at 80% speed** (chosen by the family by ear; `tools/voice/s
 **Writing or changing a lesson isn't finished until its lines are recorded.** A line with no
 recording still works, but the iPad's mechanical device voice reads it instead.
 
+**First, check this is the dev box that makes songs** (v0.51, `docs/install-guide.md`): this skill
+needs the maintainers' dev box, with its GPU pipeline and a piano server whose song tools are on.
+Run `grep -q '^PIANO_SONG_TOOLS=on' ~/.config/piano-master/server.env && echo song tools on`. If it
+doesn't print `song tools on`, stop: say that this install gets its songs, fixes and lesson recordings
+from the app's updates (`git pull`, then `tools/deploy.sh`, then the Review list's Songs from the
+app), and that a request for a new song or a fix goes to the app's maintainers. Change nothing.
+
 All commands run from the repo root.
 
 ## 1. Before you start

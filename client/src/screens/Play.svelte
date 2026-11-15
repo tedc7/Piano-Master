@@ -807,6 +807,7 @@
     <div class="sheet">
       <div class="sheet-head"><h2>Song and settings</h2><button onclick={() => { sheet = false; }}>Close</button></div>
       {#if isSong}
+        {#if app.songTools}
         <div class="improve">
           {#if update}
             <p><b>Needs improvement:</b> “{update.feedback}”</p>
@@ -821,6 +822,7 @@
           {/if}
           {#if noteMsg}<p class="small">{noteMsg}</p>{/if}
         </div>
+        {/if}
         <div class="helpers">
           <b>On the staff</b>
           <label><input type="checkbox" checked={show.fingers} onchange={(e) => setHelper("fingers", e.currentTarget.checked)} /> Finger numbers</label>
@@ -828,7 +830,7 @@
           <span class="muted small">For this song, for every child.{showMsg ? ` ${showMsg}` : ""}</span>
         </div>
       {/if}
-      {#if app.micMode}
+      {#if app.micMode && app.songTools}
         <div class="improve">
           <p><b>Microphone recording:</b> records the next {RECORD_S} seconds of what the microphone hears and what the app
             plays, with the keys it heard, and sends them for tuning the note detection. Press it, close this, and play the song.</p>

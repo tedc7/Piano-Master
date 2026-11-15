@@ -3,6 +3,7 @@
     tools/.venv/bin/python tools/library_export.py            # bring content/library/ up to date with the server
     tools/.venv/bin/python tools/library_export.py --check    # only say what differs (exit 1 if anything does)
     tools/.venv/bin/python tools/library_export.py --verify   # offline: content/library/ is complete for the map
+    tools/.venv/bin/python tools/library_export.py --only ID  # just these songs (repeat --only), the rest left as they are
 
 Every song the app plays lives in the piano server's library, and reaches it only through the
 parent's review. content/library/ is a copy of the curriculum's part of it, exactly as approved,
@@ -14,7 +15,8 @@ in the seed format a new server adopts on its first start (library.adopt_seed, v
                              parent's finger-number and letter-name choices)
     media/<id>/<stem>.mp3    its stems (Git LFS, .gitattributes)
 
-Which songs: every song the skill map names (client/public/content/skillmap.json: build it first).
+Which songs: every song the skill map names (client/public/content/skillmap.json: build it first),
+and the starter songs beyond the map that every install gets (STARTER: Amazing Grace, v0.51).
 A song is copied only when its source in content/pieces/ is our own or public domain, so a song a
 parent supplied for private family use never reaches the public repo. Other library songs stay on
 the server and in its backup.
@@ -43,6 +45,10 @@ PIECES = ROOT / "content" / "pieces"
 MAP = ROOT / "client" / "public" / "content" / "skillmap.json"
 PUBLIC = ("original", "public-domain")
 LFS_POINTER = b"version https://git-lfs"
+# songs beyond the map that every install starts with (v0.51): Amazing Grace, whose notation and
+# stems were made by the sync probe (feasibility/sync-probe), so this approved copy is its only
+# source; tools/build_content.py builds it from here (`fromLibrary: true` in its content/pieces/ file)
+STARTER = ["amazing-grace-melody"]
 
 
 def fetch(path: str, raw: bool = False):
@@ -63,7 +69,7 @@ def map_songs() -> list[str]:
     out: list[str] = []
     for s in json.loads(MAP.read_text())["skills"]:
         out += [p for p in s.get("pieces", []) if p not in out]
-    return out
+    return out + [p for p in STARTER if p not in out]
 
 
 def publishable(pid: str) -> str | None:
@@ -123,7 +129,7 @@ def verify() -> int:
     return 0
 
 
-def export(check: bool) -> int:
+def export(check: bool, only: list[str] | None = None) -> int:
     songs = map_songs()
     lib = {e["id"]: e for e in fetch("/api/skill/library")["pieces"]}
     missing = [pid for pid in songs if pid not in lib]
@@ -135,8 +141,16 @@ def export(check: bool) -> int:
         print(f"skip {pid}: {why}", file=sys.stderr)
     want = [pid for pid in songs if pid not in blocked]
     old = {e["id"]: e for e in json.loads((OUT / "index.json").read_text())["pieces"]} if (OUT / "index.json").exists() else {}
+    if only:
+        unknown = [pid for pid in only if pid not in want]
+        if unknown:
+            raise SystemExit("not curriculum or starter songs that may be exported: " + ", ".join(unknown))
     changes, entries = [], []
     for pid in want:
+        if only and pid not in only:
+            if pid in old:
+                entries.append(old[pid])          # left as it is
+            continue
         got = fetch(f"/api/skill/library/{pid}")
         piece = {**got["piece"], "info": got["info"], "display": got["display"]}
         entry = {**got["entry"], "approvedAt": got["approvedAt"]}
@@ -160,7 +174,7 @@ def export(check: bool) -> int:
             (mdir / s["file"]).write_bytes(data)
         OUT.mkdir(parents=True, exist_ok=True)
         f.write_text(text)
-    gone = sorted(set(old) - set(want))
+    gone = [] if only else sorted(set(old) - set(want))
     changes += [f"remove {pid}" for pid in gone]
     if not check:
         for pid in gone:
@@ -182,7 +196,8 @@ def export(check: bool) -> int:
 def main(argv: list[str]) -> int:
     if "--verify" in argv:
         return verify()
-    return export(check="--check" in argv)
+    only = [argv[i + 1] for i, a in enumerate(argv[:-1]) if a == "--only"]
+    return export(check="--check" in argv, only=only or None)
 
 
 if __name__ == "__main__":

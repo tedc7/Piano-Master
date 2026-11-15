@@ -109,6 +109,7 @@ def test_hymn_backing_is_the_alto_tenor_and_bass(tmp_path):
 
 
 def test_holiday_backing_is_strings_harp_cello_and_sleigh_bells_on_the_drum_channel(tmp_path):
+    pytest.importorskip("mido")                # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, {**SONG, "genre": "christmas"})
     name, parts = bk.parts_for(p)
     assert name == "holiday" and [x.name for x in parts] == ["Strings, warm", "Harp arpeggios", "Cello (roots)", "Sleigh bells"]
@@ -140,7 +141,7 @@ def test_a_round_enters_behind_and_ends_on_the_tonic(tmp_path):
 
 
 def test_a_piece_without_backing_notes_keeps_yue2s(tmp_path):
-    import media
+    media = pytest.importorskip("media")       # the media tools (tools/media/setup.sh): only on the dev box
     bare = {**SONG, "abc": SONG["abc"].replace('"G"', "").replace('"D7"', "")}
     plan = media.plan_of(piece(tmp_path, bare))
     assert plan["vocal"] and plan["backing"] == "yue2"
@@ -251,7 +252,7 @@ def test_whisper_hearing_the_words_clears_the_aligners_scattered_misses_but_not_
 
 def test_a_vocal_ends_with_the_song():
     media = pytest.importorskip("media")
-    import numpy as np
+    np = pytest.importorskip("numpy")
     sr = 1000
     y = np.ones((10 * sr, 2))                       # a take still singing at 10 s; the song ends at 5 s
     out = media.song_only(y, sr, 5.0)
@@ -299,7 +300,7 @@ def test_words_off_on_the_last_word_fail_a_take():
 
 
 def test_a_take_with_most_words_off_is_not_chosen_for_failing_fewer_checks():
-    import media
+    media = pytest.importorskip("media")       # the media tools (tools/media/setup.sh): only on the dev box
     take = lambda off, failed, score, heard=0.9: {"words": {"shareOver300ms": off}, "score": score, "heard": {"share": heard},
                                                   "checks": {"pass": False, **{f"c{i}": False for i in range(failed)}}}
     drifted, close = take(0.82, 1, -0.02, 0.927), take(0.10, 2, 0.89)
@@ -314,7 +315,7 @@ def test_a_take_with_most_words_off_is_not_chosen_for_failing_fewer_checks():
 def test_the_words_heard_in_the_song_are_counted_like_the_lyric():
     # v0.40 (Oct 22, 2026): a take that sings words again inside the song fails; Whisper's digits and
     # its sign-offs on silence don't count
-    import align
+    align = pytest.importorskip("align")       # the media tools (tools/media/setup.sh): only on the dev box
     assert align.words_in("Bun-ny, bun-ny, in the gar-den") == 5 and align.words_in("fa-la-la-la, it's 3") == 3
     assert align.heard_share(["three", "black", "keys"], "3 black keys") == 1.0
     assert align.SIGN_OFF.sub("", "hopping home in time for dinner. Thanks for watching!").strip() == "hopping home in time for dinner"
@@ -329,7 +330,7 @@ def test_the_words_heard_in_the_song_are_counted_like_the_lyric():
 
 def test_a_take_far_over_on_bleed_ranks_below_one_just_over():
     # Oct 23, 2026: both fail on bleed alone; the score had chosen the one with the backing plainly heard
-    import media
+    media = pytest.importorskip("media")       # the media tools (tools/media/setup.sh): only on the dev box
     def take(score, db):
         checks = {"timing": True, "pitch": True, "bleed": False, "pass": False}
         return {"checks": checks, "words": {"shareOver300ms": 0.07}, "heard": {"share": 1.0}, "bleed": {"db": db}, "score": score}
@@ -348,7 +349,7 @@ MELISMA = {  # "night" over two notes (G then A), "all" over three (E, D, C)
 
 def tone(midi_at, seconds: float, sr: int):
     """A sung-like tone: five harmonics, a little vibrato, its pitch from midi_at(t)."""
-    import numpy as np
+    np = pytest.importorskip("numpy")
     t = np.arange(int(seconds * sr)) / sr
     f0 = 440 * 2 ** ((np.array([midi_at(x) for x in t]) - 69) / 12) * (1 + 0.004 * np.sin(2 * np.pi * 5.5 * t))
     ph = 2 * np.pi * np.cumsum(f0) / sr
@@ -356,7 +357,7 @@ def tone(midi_at, seconds: float, sr: int):
 
 
 def test_melismas_are_found_with_their_notes(tmp_path):
-    import melisma
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, MELISMA)
     found = melisma.melismas(p)
     assert [[n["pitch"] for n in m["notes"]] for m in found] == [[67, 69], [64, 62, 60]]
@@ -368,8 +369,8 @@ def test_melismas_are_found_with_their_notes(tmp_path):
 
 
 def test_a_held_melisma_is_bent_onto_its_notes_and_the_rest_is_left_alone(tmp_path):
-    import numpy as np
-    import melisma
+    np = pytest.importorskip("numpy")
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, MELISMA)
     found = melisma.melismas(p)
     sr = melisma.SR
@@ -394,8 +395,8 @@ def test_a_held_melisma_is_bent_onto_its_notes_and_the_rest_is_left_alone(tmp_pa
 
 
 def test_a_hold_piece_and_a_take_with_no_voice_there_are_left_as_sung(tmp_path):
-    import numpy as np
-    import melisma
+    np = pytest.importorskip("numpy")
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, MELISMA)
     found = melisma.melismas(p)
     sr = melisma.SR
@@ -407,8 +408,8 @@ def test_a_hold_piece_and_a_take_with_no_voice_there_are_left_as_sung(tmp_path):
 
 
 def test_the_bend_curve_is_zero_outside_its_regions_and_has_no_jumps(tmp_path):
-    import numpy as np
-    import melisma
+    np = pytest.importorskip("numpy")
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, MELISMA)
     found = melisma.melismas(p)
     at = melisma.stem_time(p, 0.0)
@@ -426,8 +427,8 @@ def test_a_quiet_melisma_in_a_loud_song_is_still_bent(tmp_path):
     """Praat's voicing threshold is relative to the loudest part of what it analyses: on a whole
     song a quiet phrase could come back unbent (Up on the Housetop, Nov 11, 2026). Each melisma is
     resynthesised on its own stretch of the take."""
-    import numpy as np
-    import melisma
+    np = pytest.importorskip("numpy")
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
     p = piece(tmp_path, {**MELISMA, "abc": MELISMA["abc"].replace("(E D C) z |]", "(E D C) z | G4 | G4 | G4 |]")})
     found = melisma.melismas(p)
     sr = melisma.SR
