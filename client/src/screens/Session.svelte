@@ -88,7 +88,7 @@
     if (!item) return;
     if (item.kind === "lesson" && item.skillId) go(`lesson/${encodeURIComponent(item.skillId)}`);
     else if ((item.kind === "piece" || item.kind === "drill") && item.pieceId) app.openPiece(item.pieceId, "session");
-    else go("library");
+    else go("library/pick");
   }
 </script>
 
@@ -173,7 +173,7 @@
             <h1>Any song you like</h1>
             <p class="why">Keep playing until the circle is full: {target - minutes} more minute{target - minutes === 1 ? "" : "s"} today.</p>
           </div>
-          <div class="upnext-actions"><button class="start ready" onclick={() => go("library")}>Choose a song</button></div>
+          <div class="upnext-actions"><button class="start ready" onclick={() => go("library/pick")}>Choose a song</button></div>
         </div>
       {:else}
         <div class="upnext done">

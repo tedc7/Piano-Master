@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.52 | Nov 14, 2026 | From family practice: a song chosen for Today's Practice goes Back to Today's Practice; the result card suggests one button in the ready look, with none solid blue; every lesson card fits the screen with Next in sight |
 | v0.51 | Nov 14, 2026 | Another family's install: an install guide written for their Claude Code; song tools only on a server that works with a dev box; songs from the app brought into the Review list, and Approve all; a skill waits for a song without holding anything up; Amazing Grace built from its approved copy |
 | v0.50 | Nov 10, 2026 | Melismas sung as written (the held pitch bent onto the written notes in the media skill); song progress built, a record per song with stages shown in the library, the Journey and My Progress; the later scorers' first steps: each note's release and velocity, scorers as star rows, held notes and Loud and soft from Level 3, a skill's pass needs |
 | v0.49 | Nov 10, 2026 | From a review of the design and the code for learning rate, ease of use and engagement: song progress planned as a record of its own beside the skill states (8.12); where the later scorers stand and the order to build them (7.7); a list of improvements and the melisma probe in Next steps |
@@ -46,6 +47,14 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.52 (Nov 14, 2026)
+
+From family practice.
+
+- **Back to Today's Practice (3):** "Choose a song" (the session's Your pick, and the minutes still to play) opens the Songs list as `#/library/pick`, and a song opened there goes Back to Today's Practice, not the Songs list, so the student sees at once whether practice is complete. The Songs tab opens the list as before. (`client/src/lib/route.ts`, `Library.svelte` `pick`.)
+- **The result card's buttons (3):** one button is suggested, in Play's ready look: "Try it another way" after 3 tries, else "Next" in a session, else "Play again". "Practice tricky part" and the rest are plain. Solid blue had looked as if a button were already chosen, and two of them showed at once.
+- **Lesson cards fit the screen (3):** a card's small staff is cropped to the notes it draws (the grand staff had about 50px of blank above and below), and the card's padding, heading icon, text margins and on-screen keys (170px to 150px) are tighter. At the iPad's 1180×820 every card of every lesson now shows its Next button, with at least 75px to spare; "The hands take turns" cards 4 and 5 had been 50 and 19px too tall. (`client/src/lib/staff.ts` `renderMini`, `Lesson.svelte`.)
 
 ## v0.51 (Nov 14, 2026)
 

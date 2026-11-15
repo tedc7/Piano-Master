@@ -62,7 +62,7 @@
     <Lesson skillId={route.skillId} />
   {/key}
 {:else if route.screen === "library"}
-  <Library />
+  <Library pick={route.pick} />
 {:else if route.screen === "progress"}
   <Progress />
 {:else if route.screen === "pin"}

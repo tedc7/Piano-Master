@@ -4,7 +4,7 @@ export type Route =
   | { screen: "session" }
   | { screen: "journey"; test: boolean }
   | { screen: "lesson"; skillId: string }
-  | { screen: "library" }
+  | { screen: "library"; pick: boolean }
   | { screen: "progress" }
   | { screen: "play"; id: string }
   | { screen: "pin" }
@@ -16,7 +16,8 @@ export function parse(hash: string): Route {
   switch (head) {
     case "session": case "home": return { screen: "session" };
     case "journey": return { screen: "journey", test: arg === "test" };
-    case "library": return { screen: "library" };
+    // library/pick: the song for Today's Practice, whose Back returns to the practice (v0.52)
+    case "library": return { screen: "library", pick: arg === "pick" };
     case "progress": return { screen: "progress" };
     case "lesson": if (arg) return { screen: "lesson", skillId: decodeURIComponent(arg) }; break;
     case "play": if (arg && /^[\w-]+$/.test(arg)) return { screen: "play", id: arg }; break;

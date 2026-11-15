@@ -522,19 +522,19 @@
 <style>
   .center { display: flex; justify-content: center; }
   .lesson { width: min(860px, 100%); }
-  .steps { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .steps { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
   .dot { padding: 4px 12px; border-radius: 999px; background: #ecebe6; color: var(--muted); font-weight: 650; font-size: 14px; }
   .dot.past { background: #d7ecdf; color: var(--ok); }
   .dot.on { background: var(--accent); color: #fff; }
   .card-big {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 18px 26px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 12px 26px 14px;
     text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   }
   .head { display: flex; align-items: center; justify-content: center; gap: 12px; }
   .head h1 { margin: 0 !important; }
   .type { color: #fff; border-radius: 999px; padding: 3px 12px; font-size: 15px; font-weight: 800; }
-  .icon { font-size: 40px; }
-  .text { font-size: 21px; line-height: 1.45; margin: 10px 0; }
+  .icon { font-size: 32px; line-height: 1; }
+  .text { font-size: 21px; line-height: 1.4; margin: 6px 0; }
   .question { font-weight: 700; }
   .choices { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 8px 0; }
   .choice { min-width: 110px; min-height: 60px; font-size: 22px; }
@@ -544,8 +544,8 @@
   .read { min-width: 190px; }
   .actions { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 8px; }
   video { max-width: 100%; max-height: 320px; border-radius: 12px; }
-  .keys { position: relative; height: 170px; background: #2a2a2e; margin-top: 12px; border-radius: 10px; }
-  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 12px; }
+  .keys { position: relative; height: 150px; background: #2a2a2e; margin-top: 8px; border-radius: 10px; }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; gap: 12px; }
   .next { min-width: 180px; min-height: 60px; font-size: 20px; }
   .next:disabled { opacity: 0.45; }
   .next.ready {
