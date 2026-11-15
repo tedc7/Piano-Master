@@ -76,7 +76,9 @@ on after it), MP3s and `media.json`. About a minute of GPU and five minutes of a
 alignments are reused.
 
 **The checks** (a take must pass all of them; the best passing take is kept, else the best one,
-flagged: a take with a quarter or more of its words off comes last, then the fewest failed checks):
+flagged: a take the parent couldn't use comes last, then the fewest failed checks. Couldn't use: a
+quarter or more of its words off (half, when Whisper hears 95% of them), or its notes off pitch. Among
+takes the parent couldn't use, the score decides):
 - timing: no phrase more than 50 ms off the beat;
 - pitch: 90% of notes on the right pitch;
 - words: the first word sung; words more than 0.3 s off their notes, or that the aligner can't

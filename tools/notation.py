@@ -143,6 +143,11 @@ def build_notation(score, *, hand_for_single_staff: str = "R", phrase_bars: int 
                 for vi, cont in enumerate(containers):
                     voice = voice_base + vi + 1
                     for el in cont.notes:
+                        if isinstance(el, harmony.Harmony):
+                            # a chord symbol ("Am" above a note) is a chord of no length to music21:
+                            # it's read into chordSymbols below, never a grace note (v0.51: every song
+                            # with chord symbols drew each chord's notes as a grace-note cluster)
+                            continue
                         start = measures[mi]["start"] + Q(el.offset)
                         hand = hand_at.get(Q(el.offset), staff_hand)
                         if el.duration.isGrace or el.quarterLength == 0:

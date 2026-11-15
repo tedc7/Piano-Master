@@ -1005,7 +1005,15 @@ def main():
 
         # letter names (pre-staff pieces): under the note heads, never on them, and the heads the usual size
         head_px = "() => Math.max(...__pm.layout.noteEls.filter(Boolean).map((e) => e.getBoundingClientRect().height))"
-        open_piece(page, "twinkle-twinkle")
+        # the same song without its letters, as the reference: the staff's scale fits each song's range,
+        # so heads measured on another song differ for that reason alone
+        with urllib.request.urlopen(url + "api/library/pieces/musical-alphabet") as r:
+            bare = json.loads(r.read())
+        bare["id"] = "test-no-letters"
+        bare["notation"]["header"]["letters"] = False
+        bare["display"] = {"fingers": None, "letters": False}
+        page.route("**/api/library/pieces/test-no-letters", lambda route, _request=None, b=bare: route.fulfill(json=b))
+        open_piece(page, "test-no-letters")
         plain = page.evaluate(head_px)
         open_piece(page, "musical-alphabet")
         lt = page.evaluate("""() => {
@@ -1038,7 +1046,7 @@ def main():
         check(page.evaluate(chords_shown) == n, "chords: the Chords button shows them at once")
         open_piece(page, "london-bridge")
         check(page.evaluate(chords_shown) > 0, "chords: turned on for one song, they show on the next")
-        open_piece(page, "twinkle-twinkle")
+        open_piece(page, "joyful-joyful")
         check(page.get_by_role("button", name="Chords").count() == 0, "chords: no Chords button on a song without chord symbols")
         open_piece(page, "london-bridge")
         page.get_by_role("button", name="Chords").click()

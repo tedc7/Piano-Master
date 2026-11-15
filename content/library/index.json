@@ -478,8 +478,7 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-cbe6bd42b7",
    "featuredSkills": [
-    "prep-a.two-black-keys",
-    "prep-a.sitting"
+    "prep-a.two-black-keys"
    ],
    "genre": "studies",
    "hands": "L",
@@ -541,8 +540,7 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-b51b104831",
    "featuredSkills": [
-    "prep-a.two-black-keys",
-    "prep-a.low-and-high"
+    "prep-a.two-black-keys"
    ],
    "genre": "studies",
    "hands": "L",
@@ -556,18 +554,11 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
-    "prep-a.low-and-high",
     "prep-a.two-black-keys"
    ],
    "seeded": true,
    "skillId": "prep-a.two-black-keys",
    "skillMeasures": {
-    "prep-a.low-and-high": [
-     3,
-     4,
-     7,
-     8
-    ],
     "prep-a.sitting": [
      1,
      2,
@@ -887,7 +878,7 @@
    "contentVersion": "lib-92d2469307",
    "featuredSkills": [
     "prep-a.quarter-note",
-    "prep-a.low-and-high"
+    "prep-a.two-black-keys"
    ],
    "genre": "studies",
    "hands": "L",
@@ -901,16 +892,12 @@
    "phrases": 2,
    "requiredSkills": [
     "prep-a.sitting",
-    "prep-a.low-and-high",
+    "prep-a.two-black-keys",
     "prep-a.quarter-note"
    ],
    "seeded": true,
    "skillId": "prep-a.quarter-note",
    "skillMeasures": {
-    "prep-a.low-and-high": [
-     3,
-     4
-    ],
     "prep-a.quarter-note": [
      1,
      2,
@@ -918,6 +905,12 @@
      4
     ],
     "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "prep-a.two-black-keys": [
      1,
      2,
      3,
@@ -1024,7 +1017,8 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-bea729320d",
    "featuredSkills": [
-    "prep-a.half-note"
+    "prep-a.half-note",
+    "prep-a.two-black-keys"
    ],
    "genre": "studies",
    "hands": "L",
@@ -1038,7 +1032,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
-    "prep-a.low-and-high",
+    "prep-a.two-black-keys",
     "prep-a.half-note"
    ],
    "seeded": true,
@@ -1052,13 +1046,17 @@
      6,
      8
     ],
-    "prep-a.low-and-high": [
+    "prep-a.sitting": [
+     1,
+     2,
+     3,
+     4,
      5,
      6,
      7,
      8
     ],
-    "prep-a.sitting": [
+    "prep-a.two-black-keys": [
      1,
      2,
      3,
@@ -1169,8 +1167,7 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-192d86f4d4",
    "featuredSkills": [
-    "prep-a.half-note",
-    "prep-a.sitting"
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1179,19 +1176,31 @@
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 80,
+   "mapPoint": 85,
    "measures": 8,
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
-    "prep-a.half-note"
+    "prep-a.two-black-keys",
+    "prep-a.half-note",
+    "prep-a.hands-take-turns"
    ],
-   "skillId": "prep-a.half-note",
+   "skillId": "prep-a.hands-take-turns",
    "skillMeasures": {
     "prep-a.half-note": [
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -1201,6 +1210,12 @@
      4,
      5,
      6,
+     7,
+     8
+    ],
+    "prep-a.two-black-keys": [
+     3,
+     4,
      7,
      8
     ]
@@ -1230,8 +1245,7 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-c1774c380e",
    "featuredSkills": [
-    "prep-a.half-note",
-    "prep-a.three-black-keys"
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1240,20 +1254,31 @@
    "keyboardSize": 61,
    "kind": "song",
    "level": "Prep A",
-   "mapPoint": 80,
+   "mapPoint": 85,
    "measures": 8,
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.three-black-keys",
-    "prep-a.half-note"
+    "prep-a.half-note",
+    "prep-a.hands-take-turns"
    ],
-   "skillId": "prep-a.half-note",
+   "skillId": "prep-a.hands-take-turns",
    "skillMeasures": {
     "prep-a.half-note": [
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -1303,7 +1328,7 @@
    "contentVersion": "lib-2d1b1d0eba",
    "featuredSkills": [
     "prep-a.forte-piano",
-    "prep-a.half-note"
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1319,6 +1344,7 @@
     "prep-a.sitting",
     "prep-a.three-black-keys",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.forte-piano"
    ],
    "seeded": true,
@@ -1338,6 +1364,16 @@
      2,
      3,
      4,
+     6,
+     7,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
      6,
      7,
      8
@@ -1390,7 +1426,7 @@
    "contentVersion": "lib-4b98f09215",
    "featuredSkills": [
     "prep-a.forte-piano",
-    "prep-a.half-note"
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1406,6 +1442,7 @@
     "prep-a.sitting",
     "prep-a.three-black-keys",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.forte-piano"
    ],
    "seeded": true,
@@ -1427,6 +1464,16 @@
      3,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -1476,7 +1523,8 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-bb20d762c9",
    "featuredSkills": [
-    "prep-a.whole-note"
+    "prep-a.whole-note",
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1491,8 +1539,10 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.low-and-high",
+    "prep-a.two-black-keys",
     "prep-a.three-black-keys",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note"
    ],
    "seeded": true,
@@ -1501,6 +1551,16 @@
     "prep-a.half-note": [
      5,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.low-and-high": [
      5,
@@ -1521,6 +1581,10 @@
      2,
      3,
      4
+    ],
+    "prep-a.two-black-keys": [
+     7,
+     8
     ],
     "prep-a.whole-note": [
      2,
@@ -1553,7 +1617,8 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-8b3d262d03",
    "featuredSkills": [
-    "prep-a.whole-note"
+    "prep-a.whole-note",
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1567,7 +1632,9 @@
    "phrases": 3,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.two-black-keys",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note"
    ],
    "seeded": true,
@@ -1577,10 +1644,23 @@
      2,
      5
     ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
     "prep-a.sitting": [
      1,
      2,
      3,
+     4,
+     5,
+     6
+    ],
+    "prep-a.two-black-keys": [
      4,
      5,
      6
@@ -1616,7 +1696,8 @@
    "composer": "Piano-Master",
    "contentVersion": "lib-331c795ab7",
    "featuredSkills": [
-    "prep-a.whole-note"
+    "prep-a.whole-note",
+    "prep-a.hands-take-turns"
    ],
    "genre": "studies",
    "hands": "RL",
@@ -1632,6 +1713,7 @@
     "prep-a.sitting",
     "prep-a.three-black-keys",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note"
    ],
    "seeded": true,
@@ -1640,6 +1722,16 @@
     "prep-a.half-note": [
      1,
      5
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -1785,6 +1877,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e"
    ],
@@ -1807,6 +1900,16 @@
      4,
      5,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -1936,6 +2039,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.c-d-e",
     "prep-a.musical-alphabet"
    ],
@@ -1956,6 +2060,16 @@
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.musical-alphabet": [
@@ -2092,6 +2206,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.steps"
@@ -2114,6 +2229,16 @@
      3,
      4,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2180,6 +2305,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b"
@@ -2202,6 +2328,16 @@
      5,
      6,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2259,6 +2395,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.f-g-a-b"
    ],
@@ -2279,6 +2416,16 @@
      2,
      4,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2335,6 +2482,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -2368,6 +2516,16 @@
      5,
      6,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2429,6 +2587,7 @@
    "phrases": 5,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -2464,6 +2623,18 @@
      3,
      7,
      8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
     ],
     "prep-a.sitting": [
      1,
@@ -2524,6 +2695,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -2551,6 +2723,16 @@
     "prep-a.half-note": [
      2,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2619,6 +2801,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -2643,6 +2826,16 @@
     "prep-a.half-note": [
      2,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -2951,6 +3144,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -2982,6 +3176,16 @@
      2,
      4,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -3038,6 +3242,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
     "prep-a.c-b-a-g-f"
@@ -3071,6 +3276,16 @@
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -3126,6 +3341,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -3154,6 +3370,16 @@
     "prep-a.half-note": [
      2,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -3370,6 +3596,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -3398,6 +3625,16 @@
      2,
      3,
      5
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -3455,6 +3692,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -3483,6 +3721,16 @@
      4,
      6,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -3634,6 +3882,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -3655,6 +3904,16 @@
      2,
      3,
      5,
+     7,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
      7,
      8
     ],
@@ -3727,6 +3986,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.c-d-e",
     "prep-a.f-g-a-b",
@@ -3754,6 +4014,16 @@
      2,
      4,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.sitting": [
      1,
@@ -3821,6 +4091,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.c-d-e",
     "prep-a.the-clefs"
    ],
@@ -3841,6 +4112,16 @@
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.sitting": [
@@ -3905,6 +4186,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c"
    ],
@@ -3916,6 +4198,16 @@
      4,
      5,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -3981,6 +4273,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.dotted-half",
     "prep-a.middle-c"
@@ -3994,6 +4287,14 @@
     "prep-a.half-note": [
      1,
      2
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
     "prep-a.middle-c": [
      1,
@@ -4127,6 +4428,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g"
@@ -4138,6 +4440,16 @@
      2,
      6,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -4282,6 +4594,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.bass-f"
@@ -4298,6 +4611,16 @@
     "prep-a.half-note": [
      2,
      3
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -4367,6 +4690,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -4387,6 +4711,16 @@
      2,
      5,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -4471,6 +4805,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -4493,6 +4828,16 @@
      4,
      5,
      7
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -4574,6 +4919,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -4595,6 +4941,16 @@
      7
     ],
     "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -4669,6 +5025,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -4687,6 +5044,16 @@
      7
     ],
     "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -4764,6 +5131,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -4787,6 +5155,16 @@
      7
     ],
     "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -5700,6 +6078,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -5715,6 +6094,14 @@
     ],
     "prep-a.half-note": [
      2
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
     "prep-a.middle-c": [
      1,
@@ -5973,6 +6360,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.dotted-half",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -6004,6 +6392,16 @@
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -6075,6 +6473,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.dotted-half",
     "prep-a.middle-c",
     "prep-a.d-e-f",
@@ -6104,6 +6503,16 @@
      2,
      4,
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -6382,6 +6791,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.dotted-half",
     "prep-a.middle-c",
     "prep-a.d-e-f",
@@ -6414,6 +6824,16 @@
      6
     ],
     "prep-a.dotted-half": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -6595,6 +7015,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -6628,6 +7049,16 @@
     ],
     "prep-a.half-note": [
      6,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -6689,7 +7120,7 @@
    "beats": 32.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-cf5b0baedb",
+   "contentVersion": "lib-dd47504478",
    "featuredSkills": [
     "prep-a.skips",
     "prep-a.d-e-f"
@@ -6802,6 +7233,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.d-e-f",
@@ -6827,6 +7259,16 @@
      1,
      3,
      4
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -6889,7 +7331,7 @@
    "beats": 48.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-749941bcee",
+   "contentVersion": "lib-47c98d7a74",
    "featuredSkills": [
     "prep-a.skips"
    ],
@@ -6906,6 +7348,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.middle-c",
     "prep-a.d-e-f",
     "prep-a.bass-b",
@@ -6953,6 +7396,20 @@
      6,
      8,
      10,
+     12
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
      12
     ],
     "prep-a.middle-c": [
@@ -7021,7 +7478,7 @@
    "beats": 64.0,
    "beyondMap": [],
    "composer": "Traditional (German folk tune)",
-   "contentVersion": "lib-9d536b8a9e",
+   "contentVersion": "lib-8d999eeafc",
    "featuredSkills": [
     "prep-a.allegro",
     "prep-a.skips"
@@ -7196,6 +7653,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.middle-c",
     "prep-a.treble-g",
     "prep-a.d-e-f",
@@ -7231,6 +7689,16 @@
     "prep-a.half-note": [
      3,
      4,
+     7,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
      7,
      8
     ],
@@ -7388,6 +7856,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.d-e-f",
@@ -7420,6 +7889,14 @@
     "prep-a.half-note": [
      2,
      4
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
     ],
     "prep-a.middle-c": [
      5,
@@ -7491,6 +7968,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -7522,6 +8000,16 @@
      2,
      5,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -7603,6 +8091,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -7634,6 +8123,13 @@
      1,
      2,
      4
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5
     ],
     "prep-a.middle-c": [
      1,
@@ -7787,6 +8283,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.bass-f",
@@ -7818,6 +8315,16 @@
     "prep-a.half-note": [
      2,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      1,
@@ -7980,6 +8487,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -8014,6 +8522,12 @@
     ],
     "prep-a.half-note": [
      2
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4
     ],
     "prep-a.middle-c": [
      3
@@ -8315,6 +8829,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -8364,6 +8879,16 @@
     "prep-a.half-note": [
      2,
      6
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
     ],
     "prep-a.middle-c": [
      2,
@@ -8640,6 +9165,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.middle-c",
     "prep-a.treble-g",
     "prep-a.bass-f",
@@ -8694,6 +9220,16 @@
      2,
      3,
      4,
+     7,
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
      7,
      8
     ],
@@ -8772,6 +9308,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -8830,6 +9367,16 @@
      6
     ],
     "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [
@@ -9198,6 +9745,7 @@
    "requiredSkills": [
     "prep-a.sitting",
     "prep-a.half-note",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -9238,6 +9786,16 @@
      6
     ],
     "prep-a.hands-at-once": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "prep-a.hands-take-turns": [
      1,
      2,
      3,
@@ -9315,7 +9873,7 @@
    "beats": 24.0,
    "beyondMap": [],
    "composer": "Traditional",
-   "contentVersion": "lib-26852a0b34",
+   "contentVersion": "lib-2f92136c7e",
    "featuredSkills": [
     "prep-a.quarter-rest"
    ],
@@ -9609,6 +10167,7 @@
    "phrases": 4,
    "requiredSkills": [
     "prep-a.sitting",
+    "prep-a.hands-take-turns",
     "prep-a.whole-note",
     "prep-a.middle-c",
     "prep-a.treble-g",
@@ -9641,6 +10200,16 @@
      7
     ],
     "prep-a.hands-at-once": [
+     8
+    ],
+    "prep-a.hands-take-turns": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
      8
     ],
     "prep-a.middle-c": [

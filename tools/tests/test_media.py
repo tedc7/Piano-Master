@@ -310,6 +310,17 @@ def test_a_take_with_most_words_off_is_not_chosen_for_failing_fewer_checks():
     assert max([lost, off_pitch], key=media.rank) is lost
     # among takes the parent could hear, fewer failed checks still come first
     assert max([take(0.10, 2, 0.9), take(0.12, 1, 0.5)], key=media.rank)["score"] == 0.5
+    # Whisper hearing every word doesn't make a take usable when most of them are off their notes: it
+    # hears words, not when they're sung (O Come, O Come, Emmanuel, Nov 15, 2026: 80% off, 98% heard)
+    behind, nearly = take(0.80, 1, 0.072, 0.975), take(0.26, 1, 0.588, 0.946)    # their real scores
+    assert max([behind, nearly], key=media.rank) is nearly
+    # nor when its melody is off the notes: a take aligned onto the wrong notes by its words
+    wrong_notes = {**take(0.39, 5, -0.41, 0.95), "checks": {"pass": False, "pitch": False, **{f"c{i}": False for i in range(4)}}}
+    on_notes = take(0.38, 2, 0.40, 0.949)
+    assert max([wrong_notes, on_notes], key=media.rank) is on_notes
+    # and among takes the parent couldn't use, the score decides, not the count of failed checks
+    far_off, nearer = take(0.83, 1, -0.011, 0.932), take(0.38, 2, 0.40, 0.949)
+    assert max([far_off, nearer], key=media.rank) is nearer
 
 
 def test_the_words_heard_in_the_song_are_counted_like_the_lyric():
@@ -442,3 +453,30 @@ def test_a_quiet_melisma_in_a_loud_song_is_still_bent(tmp_path):
     y[int(10 * sr):] *= 2.0
     out, rep = melisma.bend(np.stack([y, y], axis=1), sr, p, found, at)
     assert rep["bent"] == 2 and rep["notesOnPitch"] == [3, 3]
+
+
+def test_the_slide_between_long_melisma_notes_is_a_glide_not_a_step():
+    """Nov 15, 2026: Silent Night's "peace" (two 1.2 s notes) slid in 80 ms, as a sixteenth note
+    does; between long notes the slide grows with them, up to 0.2 s, and short ones keep 80 ms."""
+    melisma = pytest.importorskip("melisma")       # the media tools (tools/media/setup.sh): only on the dev box
+    assert melisma.glide(0.08, 0.14, 0.14) == pytest.approx(0.07)       # half a sixteenth at most
+    assert melisma.glide(0.08, 0.39, 0.39) == pytest.approx(0.08)       # an eighth at 76: as before
+    assert melisma.glide(0.08, 1.18, 1.18) == pytest.approx(0.177)      # "peace"
+    assert melisma.glide(0.08, 3.0, 3.0) == pytest.approx(0.20)         # never longer than 0.2 s at 100%
+    assert melisma.glide(0.16, 2.36, 2.36) == pytest.approx(0.354)      # the 50% preset: everything twice as long
+
+
+def test_an_opening_sung_early_is_mapped_from_its_words_not_cut():
+    """Nov 15, 2026: the Emmanuel Beginner's take 6 sang "O come, O come" 2.5 s early; the pitch
+    map's first point was at 14 s, so one offset held before it and the lead-in mute cut the line.
+    The opening is now filled from the words placed there, else from the rough map."""
+    align = pytest.importorskip("align")       # the media tools (tools/media/setup.sh): only on the dev box
+    pts = [(14.25, 13.99), (14.71, 14.49)]
+    lyric = [(2.9, 5.38), (3.6, 6.15), (12.0, 12.5)]
+    out = align.head_fill(pts, lyric, lambda t: t - 2.0, [5.38, 6.15, 6.92], 5.38, 0.05)
+    assert [(round(a, 2), sc) for a, sc in out[:2]] == [(2.95, 5.38), (3.65, 6.15)] and out[-2:] == pts and len(out) == 5
+    # no words placed there: the rough map's note onsets
+    out = align.head_fill(pts, [], lambda t: t - 2.0, [5.38, 6.15, 6.92], 5.38, 0.0)
+    assert [(round(a, 2), sc) for a, sc in out[:3]] == [(3.38, 5.38), (4.15, 6.15), (4.92, 6.92)]
+    # a map that starts at the song's start is left alone
+    assert align.head_fill([(5.0, 5.4)], lyric, lambda t: t, [5.38], 5.38, 0.0) == [(5.0, 5.4)]

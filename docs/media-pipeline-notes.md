@@ -514,3 +514,57 @@ come: the parent's listen, which tunes the `kids` style, the bleed threshold and
       aligner losing its place in the repeated refrain (as with "fa la la", note 34) more than the
       singing; the parent's listen decides. Next to try if they still sound wrong: a slower tempo
       (The Holly and the Ivy came through at 96 where 108 garbled it, note 34).
+38. **Nov 15: the parent's listen on the Emmanuels and Silent Night.** Sent back: O Come, O Come,
+    Emmanuel ("Vocals are mismatched with lyrics. Improve alignment"), its Beginner version ("Some
+    vocals are misaligned with lyrics"), and Silent Night, live ("Melisma needs more work during the
+    'peace' and 'born' words").
+    - *The Emmanuels' words were really off.* Note 37 guessed the aligner was lost; the parent heard
+      otherwise. A second measure, independent of the aligner: Whisper's word timestamps on each
+      aligned take against each word's written time (abcmap beat × 60 / bpm), matched in order. On
+      the full version's take 2, the one sent, the words sat about 2 s behind their notes all through
+      (median offset 2.0 s; the other takes -0.1 to -0.2 s): the pitch alignment (dtw) had locked a few
+      notes late on the refrain's repeated pitches ("Re-joice! Re-joice!" on held Ds and Bs), where
+      pitch can't show where one syllable ends. Whisper's timestamps are rough on singing (30-40% of
+      words over 0.3 s even on good takes, and a repeated refrain can pull its matching seconds off),
+      so it tells a take that's seconds off from one that's close, not more. Worth building into the
+      checks: the words-heard check knows what was sung, not when.
+    - *Why take 2 was chosen:* `media.rank` counted a take as usable when Whisper heard 95% of its
+      words, however many were off their notes (note 34's rule, for The Holly and the Ivy's 42%).
+      Take 2, 80% off and 98% heard, beat take 6, 26% off and 95% heard, on that alone. Now the
+      exemption holds only under half off (`USABLE_HEARD_WORDS_OFF`, with a test). On these takes it
+      would choose take 8 (39% off, 95% heard, one octave slip) over take 6 (26%): the 25% line still
+      decides on fine margins, which a timing measure like the one above would settle.
+    - *Next: a slower tempo,* as note 37 suggested: both Emmanuels re-rendered at quarter = 78 (the
+      slowest recording in their tempo note; 84 before), up to six takes each. The takes at 84 are
+      kept outside the repo for comparison.
+    - *Silent Night's melismas were on pitch.* "peace", "born" and "birth" each rise a third over two
+      1.2 s notes; the bent second note measured on pitch at 100% and 75% (within 0.1 semitone), the
+      step on the beat. What the parent heard is likely how it sounds: the slide between melisma notes
+      was 80 ms whatever the note's length, a step where a singer glides on a slow lullaby. The slide
+      now grows with long notes, 15% of the shorter one up to 0.2 s at 100% (`melisma.glide`, with a
+      test): 0.18 s on "peace"; sixteenths and eighths keep 80 ms. Packaged again from the same take
+      and sent back as an update, to compare with the live version. Also possible on long melismas,
+      not changed: the bent stretch is mono on both channels (note 36), so a 2.3 s syllable narrows
+      to the centre.
+    - *What came of it.* At quarter = 78 the full version did worse (every take of six 46-91% off in
+      the pitch alignment, take 3's first verse 4-5 s early), so it went back to 84 with take 6 of
+      ten (26% off, every note on pitch), chosen with takes 2 (the one the parent heard) and 8 (an
+      octave slip, and far off by Whisper's timing) skipped. The Beginner came out better at 78:
+      take 6, 35% off, 95% on pitch, one phrase 122 ms late.
+    - *Two more faults in choosing, found on the Beginner's takes:* the chooser kept take 3 aligned
+      by its words, 19% of its notes on pitch, because Whisper heard 95% of its words; and with no
+      usable take, the count of failed checks came before the score, so 83% of the words off with
+      one failed check beat 38% off with two. Now a take with its notes off pitch is never usable,
+      and among takes that aren't, the score decides (tests for both).
+    - *The Beginner's opening line was cut.* Whisper heard "O'er the land of the free and the home of
+      the brave" over its first line, in the packaged vocal and in the aligned one before the bend,
+      but "O come, O come, Emmanuel" in the raw take. The take sang the line 2.5 s early; the pitch
+      map's first point was at 14 s, so one offset held before it and the lead-in mute (before the
+      first note) cut the line, and Whisper invented one. When the pitch map's first point comes
+      over 2 s after the first note, the opening is now mapped from the words the lyric aligner
+      placed there, else from the rough map (`align.head_fill`, with a test). The take re-aligned:
+      the voice starts on the first note, "O come, O come" heard, the extra words gone, words off
+      38% → 35%, the worst phrase 184 → 122 ms. Worth checking for other songs: a take whose map
+      starts late (`map[0]`) with words off "in the first 15 s".
+    - *Still for the ear:* "Emmanuel" in the Beginner's first line (Whisper: "we lend you a land"),
+      and whether the longer slides on Silent Night's "peace" and "born" sound right.

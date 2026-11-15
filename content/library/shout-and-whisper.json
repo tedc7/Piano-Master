@@ -18,7 +18,7 @@
  },
  "featuredSkills": [
   "prep-a.forte-piano",
-  "prep-a.half-note"
+  "prep-a.hands-take-turns"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
@@ -810,6 +810,7 @@
   "prep-a.sitting",
   "prep-a.three-black-keys",
   "prep-a.half-note",
+  "prep-a.hands-take-turns",
   "prep-a.forte-piano"
  ],
  "skillId": "prep-a.forte-piano",
@@ -830,6 +831,16 @@
    3,
    4,
    6,
+   8
+  ],
+  "prep-a.hands-take-turns": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
    8
   ],
   "prep-a.sitting": [

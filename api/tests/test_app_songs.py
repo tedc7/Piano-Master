@@ -225,3 +225,37 @@ def test_a_skill_waiting_for_a_song_holds_nothing_up(home, hp):
     st = fresh_day(home, sid)
     assert not {s["skillId"]: s for s in st["skills"]}["t.b"]["waiting"]
     assert ("lesson", "t.b") in [(i["kind"], i["skillId"]) for i in st["session"]["items"]]
+
+
+def test_chord_symbols_drawn_as_grace_notes_are_taken_out_of_the_library(tmp_path, monkeypatch):
+    """Migration 018: a library song whose grace notes all sit on its chord symbols' beats (the
+    converter's old mistake) loses them, with its version worked out again; one with a grace note
+    anywhere else is left as it is."""
+    import importlib.util
+    from app import content
+    path = str(tmp_path / "p.db")
+    db.migrate(path)
+    con = db.connect(path)
+    nota = lambda graces: {"notes": [{"pitch": 60, "start": 0.0}], "chordSymbols": [{"beat": 0, "symbol": "C"}, {"beat": 4, "symbol": "G"}],
+                           "graces": graces}
+    g = lambda start, pitch: {"pitch": pitch, "start": start}
+    pieces = {"bogus": nota([g(0.0, 48), g(0.0, 52), g(4.0, 55)]), "real": nota([g(0.0, 48), g(2.5, 79)])}
+    for pid, n in pieces.items():
+        d = tmp_path / "library" / pid
+        d.mkdir(parents=True)
+        (d / "piece.json").write_text(json.dumps({"id": pid, "notation": n, "contentVersion": "old"}))
+        con.execute("INSERT INTO library (piece_id, song, title, genre, fingerprint, info, entry, approved_at) "
+                    "VALUES (?, ?, ?, 'kids', '[]', '{}', ?, 't')",
+                    (pid, pid, pid, json.dumps({"id": pid, "contentVersion": "old"})))
+    spec = importlib.util.spec_from_file_location("m018", db.MIGRATIONS / "018_chord_symbol_graces.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    monkeypatch.setenv("PIANO_DB", path)
+    m.run(con, tmp_path)
+    bogus = json.loads((tmp_path / "library/bogus/piece.json").read_text())
+    real = json.loads((tmp_path / "library/real/piece.json").read_text())
+    assert bogus["notation"]["graces"] == [] and bogus["contentVersion"] == content.song_version(bogus["notation"])
+    assert len(real["notation"]["graces"]) == 2 and real["contentVersion"] == "old"
+    entry = json.loads(con.execute("SELECT entry FROM library WHERE piece_id = 'bogus'").fetchone()["entry"])
+    assert entry["contentVersion"] == bogus["contentVersion"]
+    con.close()

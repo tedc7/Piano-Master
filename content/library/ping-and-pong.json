@@ -17,8 +17,7 @@
   "letters": null
  },
  "featuredSkills": [
-  "prep-a.half-note",
-  "prep-a.three-black-keys"
+  "prep-a.hands-take-turns"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
@@ -72,7 +71,7 @@
  "keyboardSize": 61,
  "kind": "song",
  "level": "Prep A",
- "mapPoint": 80,
+ "mapPoint": 85,
  "media": {
   "bpm": 84.0,
   "check": {
@@ -843,14 +842,25 @@
  "requiredSkills": [
   "prep-a.sitting",
   "prep-a.three-black-keys",
-  "prep-a.half-note"
+  "prep-a.half-note",
+  "prep-a.hands-take-turns"
  ],
- "skillId": "prep-a.half-note",
+ "skillId": "prep-a.hands-take-turns",
  "skillMeasures": {
   "prep-a.half-note": [
    2,
    4,
    6,
+   8
+  ],
+  "prep-a.hands-take-turns": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
    8
   ],
   "prep-a.sitting": [

@@ -17,7 +17,8 @@
   "letters": null
  },
  "featuredSkills": [
-  "prep-a.whole-note"
+  "prep-a.whole-note",
+  "prep-a.hands-take-turns"
  ],
  "fingeringSource": "mixed",
  "genre": "studies",
@@ -600,8 +601,10 @@
  "requiredSkills": [
   "prep-a.sitting",
   "prep-a.low-and-high",
+  "prep-a.two-black-keys",
   "prep-a.three-black-keys",
   "prep-a.half-note",
+  "prep-a.hands-take-turns",
   "prep-a.whole-note"
  ],
  "skillId": "prep-a.whole-note",
@@ -609,6 +612,16 @@
   "prep-a.half-note": [
    5,
    7
+  ],
+  "prep-a.hands-take-turns": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
   ],
   "prep-a.low-and-high": [
    5,
@@ -629,6 +642,10 @@
    2,
    3,
    4
+  ],
+  "prep-a.two-black-keys": [
+   7,
+   8
   ],
   "prep-a.whole-note": [
    2,
