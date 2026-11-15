@@ -745,15 +745,18 @@
             <button class="quiet" onclick={() => { player?.stop(); go("library"); }}>🎵 Free Play</button>
           </div>
         {:else}
+          <!-- one button is suggested, in the ready look (like Play's), never solid blue as if chosen
+               (v0.52): Try it another way after 3 tries, else Next in a session, else Play again -->
+          {@const suggest = offerAnother ? "another" : inSession ? "next" : "again"}
           <div class="row">
             {#if offerAnother}
-              <button onclick={() => { another = true; }}>Try it another way</button>
+              <button class="quiet" class:ready={suggest === "another"} onclick={() => { another = true; }}>Try it another way</button>
             {:else if result.tricky}
-              <button onclick={practiceTricky}>Practice tricky part</button>
+              <button class="quiet" onclick={practiceTricky}>Practice tricky part</button>
             {/if}
-            <button class:quiet={!!result.tricky || inSession || offerAnother} onclick={playAgain}>Play again</button>
+            <button class="quiet" class:ready={suggest === "again"} onclick={playAgain}>Play again</button>
             {#if inSession}
-              <button class:quiet={offerAnother} onclick={next}>Next ›</button>
+              <button class="quiet" class:ready={suggest === "next"} onclick={next}>Next ›</button>
             {:else}
               <button class="quiet" onclick={back}>Done</button>
             {/if}
@@ -924,6 +927,10 @@
   .hands { min-width: 118px; }
   .muted { color: var(--muted); }
   .row { flex: 0 0 auto; display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+  .row button.ready {
+    background: #dde8fb; color: var(--accent); outline: 3px dashed var(--accent); outline-offset: -6px;
+    animation: ready 1.2s ease-in-out infinite;
+  }
   .choices { flex: 0 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
   .small { font-size: 14px; margin: 4px 0 0; }
   .controls {

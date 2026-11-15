@@ -553,6 +553,18 @@ export function renderMini(host: HTMLElement, notes: MiniNote[], clef: "treble" 
   });
   new Formatter().joinVoices(voices.map((x) => x.v)).format(voices.map((x) => x.v), width - 100);
   voices.forEach((x, i) => x.v.draw(ctx, staves[i]));
+  // cropped to what was drawn (v0.52): the canvas leaves room for notes far above or below the
+  // staff, which most cards don't have, and the blank space pushed a card's Next off the screen
+  const svg = host.querySelector("svg");
+  if (svg) {
+    const bb = svg.getBBox(), pad = 8;
+    if (bb.height > 0) {
+      const top = Math.floor(bb.y - pad), h = Math.ceil(bb.height + 2 * pad);
+      svg.setAttribute("viewBox", `0 ${top} ${width} ${h}`);
+      svg.setAttribute("height", String(h));
+      svg.style.height = `${h}px`;
+    }
+  }
   return notes.map((n, i) => {
     const vn = voices[staffOf(n)].tick[i];
     return vn.noteHeads.map((h) => h.getSVGElement()).filter((e): e is SVGElement => !!e);

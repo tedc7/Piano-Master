@@ -21,6 +21,9 @@
   import { libraryState } from "../lib/progress";
   import type { PieceSummary } from "../lib/types";
 
+  // opened by Today's Practice to choose its song (library/pick): the song's Back returns to the practice
+  let { pick = false }: { pick?: boolean } = $props();
+  const from = $derived(pick ? "session" : "library");
   let content = $state<Content | null>(null);
   let rules = $state<Rules | null>(null);        // the child's genre and song rules; the parent sees everything
   let error = $state("");
@@ -115,7 +118,7 @@
             {@const playable = r.ready || app.parentMode}
             {@const b = r.best}
             <div class="song" class:locked={!playable}>
-              <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(b.p.id, "library")}>
+              <button class="card" class:locked={!playable} disabled={!playable} onclick={() => app.openPiece(b.p.id, from)}>
                 <span class="card-title">{r.title}{#if r.vs.some((v) => v.p.new)} <span class="new">New</span>{/if}</span>
                 <span class="card-meta">{b.p.version ? `${b.p.version} · ` : ""}{handsLabel(b.p.hands)} · {b.p.timeSig}{b.p.hasMedia ? " · with singing" : ""}</span>
                 {#if bestOf(r.vs) !== null}
@@ -133,7 +136,7 @@
               {#if r.vs.length > 1}
                 <div class="versions">
                   {#each r.vs as v (v.p.id)}
-                    <button class="quiet version" disabled={!v.ready && !app.parentMode} onclick={() => app.openPiece(v.p.id, "library")}
+                    <button class="quiet version" disabled={!v.ready && !app.parentMode} onclick={() => app.openPiece(v.p.id, from)}
                             title={v.ready ? "" : v.beyond.length ? "Coming later" : "Coming soon"}>{v.p.version ?? v.p.title}{v.ready ? "" : " 🔒"}</button>
                   {/each}
                 </div>
