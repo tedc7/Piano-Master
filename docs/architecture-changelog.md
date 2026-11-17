@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.54 | Nov 17, 2026 | From family practice: the trophy case's bars fill from nothing to the next medal, as their words count, so a bar no longer looks empty just after a medal |
 | v0.53 | Nov 15, 2026 | From the parent's listen: chord symbols no longer drawn as grace notes (26 approved songs cleaned on the server); the take chooser and the vocal alignment fixed for O Come, O Come, Emmanuel; a gentler slide on long melisma notes (Silent Night) |
 | v0.52 | Nov 14, 2026 | From family practice: a song chosen for Today's Practice goes Back to Today's Practice; the result card suggests one button in the ready look, with none solid blue; every lesson card fits the screen with Next in sight |
 | v0.51 | Nov 14, 2026 | Another family's install: an install guide written for their Claude Code; song tools only on a server that works with a dev box; songs from the app brought into the Review list, and Approve all; a skill waits for a song without holding anything up; Amazing Grace built from its approved copy |
@@ -48,6 +49,12 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.54 (Nov 17, 2026)
+
+From family practice: Zippy's My Progress said "149½ more to the 250-star medal" over an empty gray bar, while Dad's showed his progress.
+
+- **The trophy case's bars (3 "Rewards"):** each milestone bar measured only from the last medal earned to the next one, so just after a medal it was empty (Zippy, 100½ stars with the 100-star medal: 0.3% of the way from 100 to 250; Dad, 159 stars: 39%). The bars now fill from nothing to the next medal, as the words under them count (Zippy 40%, Dad 64%); the pips still show the medals earned.
 
 ## v0.53 (Nov 15, 2026)
 

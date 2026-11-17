@@ -43,11 +43,12 @@
       case "hours": return v < 1 ? `${Math.round(v * 60)} minutes` : n("hour", "hours");
     }
   }
-  /** How far from the last medal earned (or the start) to the next one, 0..1. */
+  /** How far along the way to the next medal, from nothing, 0..1: the bar matches the words under
+   *  it ("149½ more to the 250-star medal"). Measured from the last medal earned, as it was before
+   *  v0.54, the bar looked empty just after a medal (100½ of 100 to 250 drew 0.3%). */
   function toNext(s: Series): number {
     if (!s.next) return 1;
-    const from = topStep(s)?.at ?? 0;
-    return Math.max(0, Math.min(1, (s.value - from) / (s.next.at - from)));
+    return Math.max(0, Math.min(1, s.value / s.next.at));
   }
   const pct = (n: number, of: number) => (of ? Math.round((100 * n) / of) : 0);
   const unitName = (u: string) => u.replace(/^Unit \d+ · /, "");
