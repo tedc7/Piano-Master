@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.53** · Nov 15, 2026
+**Version 0.54** · Nov 17, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -335,7 +335,7 @@ Accompaniment and vocals are audio **stems** produced for each arrangement by th
 | Each unit and each level of the map | Bronze: every skill passed · Silver: every skill mastered · Gold: every skill mastered with 5 stars |
 
 - **The moment:** after a play, the result card shows what it earned, with a short chime on the app's piano: a skill passed or mastered, a new medal, a new best on the song ("3 → 4½ stars"), and the stars added to the collection. A unit or level medal, and anything a concept lesson earns (a theory skill passes there), shows as a card over the screen that the student taps to continue. Nothing is shown in parent mode.
-- **The trophy case (My Progress):** the collection, new medals, each medal row with its next step and a bar toward it, and each level and unit with its three medals and how far through it the student is. Opening it marks new medals seen; until then My Progress's tab shows how many are new. The parent's progress report shows the same trophy case. The Journey sheet shows how far through its unit the student is.
+- **The trophy case (My Progress):** the collection, new medals, each medal row with its next step and a bar toward it (filled from nothing to the next medal, as its words count, so it never looks empty just after a medal; v0.54), and each level and unit with its three medals and how far through it the student is. Opening it marks new medals seen; until then My Progress's tab shows how many are new. The parent's progress report shows the same trophy case. The Journey sheet shows how far through its unit the student is.
 - **Medals earned before M10** are awarded the first time the student's state is loaded, and show as new.
 - A light theme, with high contrast for the staff at all times (a dark theme is a potential feature, section 14).
 
