@@ -60,7 +60,9 @@
   let recent = $state<{ text: string; key: number }[]>([]);
   let stats = $state({ fps: 0, worst: 0, over25: 0, renderMs: 0, problems: 0, measures: 0 });
   // dragging the staff (v0.33): where the touch began, and the bar at the play line while it moves
+  // and after it's let go, until Play starts from there (v0.55)
   let drag: { id: number; x0: number; beat0: number; moved: boolean } | null = null;
+  let dragging = $state(false);
   let dragBar = $state<string | null>(null);
 
   let stageEl: HTMLDivElement;
@@ -171,6 +173,7 @@
           // a stop, a start, a resume after a pause, a rewind or a loop: the marks of keys as played
           // go (a pause and the end keep them, to look at)
           if (s === "idle" || s === "gliding" || s === "countin") clearMarks();
+          if (s !== "paused" && s !== "finished") dragBar = null;
         },
         verdict: (v, pitch) => {
           if (v.kind === "hit") {
@@ -397,8 +400,10 @@
   }
 
   // ------------------------------------------------------------------ dragging the staff
-  /** A touch on the staff: a drag moves it (the music pauses), and letting go plays on from the
-   *  nearest bar line in the same mode. A tap does nothing. Pop-ups on the staff keep their taps. */
+  /** A touch on the staff: a drag moves it (the music pauses), and letting go leaves it there; Play
+   *  then starts from the nearest bar line (v0.55; until then letting go played on by itself, and
+   *  the student and the app pulled the staff against each other). A tap does nothing. Pop-ups on
+   *  the staff keep their taps. */
   function dragStart(e: PointerEvent): void {
     if (!player || !layout || drag || uiState === "loading" || !e.isPrimary) return;
     if ((e.target as Element).closest(".result, .message, button")) return;
@@ -410,6 +415,7 @@
     if (!drag.moved) {
       if (Math.abs(e.clientX - drag.x0) < DRAG_PX) return;
       drag.moved = true;
+      dragging = true;
       stageEl.setPointerCapture(e.pointerId);
       if (player.running) player.pause();
       // from here the staff follows the finger, without jumping the distance that made it a drag
@@ -428,9 +434,17 @@
     if (!drag || e.pointerId !== drag.id) return;
     const moved = drag.moved;
     drag = null;
-    dragBar = null;
+    dragging = false;
     if (stageEl.hasPointerCapture(e.pointerId)) stageEl.releasePointerCapture(e.pointerId);
-    if (moved && player) void player.dragTo(player.position.display, !needPiano);
+    // the staff stays put, its bar still showing at the play line, until Play starts from there
+    if (moved && player) player.dragTo(player.position.display);
+    showDragged();
+  }
+
+  /** The bar label at the play line while the dragged staff waits for Play. */
+  function showDragged(): void {
+    const b = player?.draggedTo;
+    dragBar = b == null ? null : barLabel(b);
   }
 
   /** "Bar 7" (and its verse) for the bar line at `beat`. */
@@ -570,12 +584,13 @@
     player.setMode(m);
     void player.play();
   }
-  function rewind(): void { player?.rewindBars(app.prefs.rewindBars); }
+  function rewind(): void { player?.rewindBars(app.prefs.rewindBars); showDragged(); }
   function playAgain(): void { another = false; void player?.play(); }
   function setHands(): void {
     const order: Hands[] = ["both", "R", "L"];
     hands = order[(order.indexOf(hands) + 1) % 3];
     player?.setHands(hands);
+    showDragged();
     markHands();
     result = null;
   }
@@ -668,7 +683,7 @@
     {#if micRecorder.busy}<span class="rec">● {micRecorder.label}</span>{:else if micRecorder.note && micRecorder.state !== "sent"}<span class="muted">{micRecorder.note}</span>{/if}
   </Status>
 
-  <div class="stage" class:dragging={!!dragBar} bind:this={stageEl} role="presentation"
+  <div class="stage" class:dragging bind:this={stageEl} role="presentation"
        onpointerdown={dragStart} onpointermove={dragMove} onpointerup={dragEnd} onpointercancel={dragEnd}>
     <div class="strip" class:no-chords={!chordsOn} bind:this={stripEl}></div>
     <div class="fade" style:width="{LINE_FRAC * 100}%"></div>

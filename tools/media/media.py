@@ -138,17 +138,44 @@ def vocal(piece: Piece, takes: int = TAKES, max_takes: int = MAX_TAKES, skip: fr
                   + (f" (flag: {'; '.join(c['flags'])})" if c["flags"] else ""),
                   flush=True)
 
-    for t in range(1, takes + 1):
-        run(t)
+    joined = piece.spec.get("vocal_takes")
+    if joined:
+        # the vocal from several takes, joined (v0.55): those takes only, and the joined one chosen
+        for t in sorted({int(x["take"]) for x in joined}):
+            run(t)
+        a = align.join(piece.work, piece.pid, joined, abcmap, phrases)
+        sung = [w["word"] for w in abcmap["words"][1:]]
+        s = align.heard_in_song(piece.work / "renders" / a["take"], "joined", sung,
+                                align.score_notes(piece.work / "renders" / a["take"] / "score.abc")[0][-1][1])
+        if s:
+            a["heard"] = {"heard": s["heard"], "share": s["share"], "wrongLetters": align.wrong_letters(sung, s["heard"])}
+            a["songHeard"] = {**s, "words": align.words_in(" ".join(sung))}
+        a["lastWordS"] = float(Fraction(abcmap["words"][-1]["beat"])) * 60.0 / float(abcmap["bpm"])
+        a["checks"] = align.verdict(a)
+        a["checks"]["flags"].append("joined from " + align.label(a).removesuffix(" (joined)") + ": listen at "
+                                    + ", ".join(f"{j:.1f} s" for j in a["joinsS"]) + " for a change in the voice")
+        a["score"] = align.score(a)
+        (piece.work / "renders" / a["take"] / "alignment-joined.json").write_text(json.dumps(a, indent=1) + "\n")
+        c = a["checks"]
+        print(f"  joined {align.label(a)} at {', '.join(f'{j:.2f} s' for j in a['joinsS'])}: score {a['score']:+.2f}, "
+              f"on pitch {a['pitch']['share']:.0%}, words off {a['words']['shareOver300ms']:.0%}, "
+              f"heard {f"{s['share']:.0%}" if s else '?'}: {'PASS' if c['pass'] else 'FAIL: ' + '; '.join(c['reasons'])}"
+              + (f" (flag: {'; '.join(c['flags'])})" if c["flags"] else ""), flush=True)
+        results[:] = [a] + results
+        best = a
+    else:
+        for t in range(1, takes + 1):
+            run(t)
     t = takes
-    while not any(r["checks"]["pass"] for r in results) and t < min(max_takes, len(yue2.SEEDS)):
+    while not joined and not any(r["checks"]["pass"] for r in results) and t < min(max_takes, len(yue2.SEEDS)):
         t += 1
         print(f"  no take passed: rendering take {t}", flush=True)
         run(t)
     if not results:
         raise RuntimeError(f"{piece.pid}: no usable YuE2 take")
-    best = max(results, key=rank)
-    choice = {"take": best["take"], "mode": best["mode"], "pass": best["checks"]["pass"], "score": best["score"],
+    if not joined:
+        best = max(results, key=rank)
+    choice = {"take": best["take"], "mode": best["mode"], "label": align.label(best), "pass": best["checks"]["pass"], "score": best["score"],
               "padBeats": abcmap.get("songPadBeats", abcmap["padBeats"]), "bpm": piece.bpm, "songStartS": best["songStartS"],
               "candidates": [{"take": r["take"], "mode": r["mode"], "score": r["score"], "pass": r["checks"]["pass"],
                               "reasons": r["checks"]["reasons"]} for r in sorted(results, key=lambda r: -r["score"])]}
@@ -267,7 +294,7 @@ def package(piece: Piece) -> dict:
             engines.append("YuE2 vocal")
         if bends and any(b["bent"] for b in bends.values()):
             engines[-1] += f"; {melisma.ENGINE_NOTE}"
-        media["take"] = f"{choice['take']} ({choice['mode']})"
+        media["take"] = choice.get("label") or f"{choice['take']} ({choice['mode']})"
         media["check"] = {"notesOnPitch": a["pitch"]["share"], "wordsOff": a["words"]["shareOver300ms"],
                           "wordsHeard": (a.get("heard") or {}).get("share"), "heard": (a.get("heard") or {}).get("heard"),
                           "firstWordSung": a["firstWordSung"], "wordStretches": a["words"]["stretches"],

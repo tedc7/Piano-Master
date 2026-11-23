@@ -754,8 +754,29 @@ def main():
         page.wait_for_selector(".map .bubble")
         tab("Songs").click()
         page.wait_for_selector(".song")
-        page.wait_for_timeout(300)
-        check(page.evaluate("document.querySelector('main.body').scrollTop") == 0, "the tab bar opens a screen fresh")
+        page.wait_for_timeout(500)
+        # opened fresh, at the student's frontier (v0.55): the first song still locked on the bottom
+        # row of the screen (or on the first screen, unscrolled), the songs above it open
+        r = page.evaluate("""() => { const el = document.querySelector('main.body'), box = el.getBoundingClientRect();
+            const lk = el.querySelector('.song.locked')?.getBoundingClientRect();
+            return { top: el.scrollTop, locked: !!lk, inView: !!lk && lk.top >= box.top - 1 && lk.bottom <= box.bottom + 1,
+                     below: lk ? box.bottom - lk.bottom : null }; }""")
+        check(r["locked"] and r["inView"] and (r["top"] == 0 or r["below"] <= 14) and abs(r["top"] - 600) > 2,
+              f"the tab bar opens a screen fresh: the Songs page at the first locked row, at the bottom of the screen ({r})")
+        # on a screen too short for that row, it scrolls down to put the row at the bottom
+        size = page.viewport_size
+        page.set_viewport_size({"width": size["width"], "height": 380})
+        tab("Journey").click()
+        page.wait_for_selector(".map .bubble")
+        tab("Songs").click()
+        page.wait_for_selector(".song")
+        page.wait_for_timeout(500)
+        r = page.evaluate("""() => { const el = document.querySelector('main.body'), box = el.getBoundingClientRect();
+            const lk = el.querySelector('.song.locked').getBoundingClientRect();
+            return { top: el.scrollTop, below: box.bottom - lk.bottom, inView: lk.top >= box.top - 1 }; }""")
+        page.set_viewport_size(size)
+        check(r["top"] > 0 and 0 <= r["below"] <= 14 and r["inView"],
+              f"songs: on a short screen it scrolls so the first locked row sits at the bottom ({r})")
 
         tab("My Progress").click()
         page.wait_for_selector(".counts")
@@ -1193,8 +1214,9 @@ def main():
         after = page.evaluate("__pm.player.position.display")
         check(page.evaluate("__pm.player.state") == "paused" and after < before, f"rewind while paused: stays paused, further back ({before:.2f} -> {after:.2f})")
 
-        # 4d. Dragging the staff (v0.33): a tap does nothing; a drag pauses, shows the bar, and on
-        # letting go plays on from the nearest bar line in the same mode
+        # 4d. Dragging the staff (v0.33): a tap does nothing; a drag pauses and shows the bar; letting
+        # go leaves the staff there, as often as it's dragged, and Play or Listen starts from the
+        # nearest bar line (v0.55; until then letting go played on by itself)
         def drag_staff(a, b):
             """Drag across the staff from `a` to `b` (fractions of its width)."""
             box = page.locator(".stage").bounding_box()
@@ -1221,6 +1243,16 @@ def main():
         page.screenshot(path=str(OUT / "drag-held.png"))
         check(held["s"] == "paused" and held["b"] < at - 1 and (held["label"] or "").startswith("Bar "),
               f"drag while listening: the music pauses, the staff follows back, and the bar shows ({held}, from {at:.2f})")
+        page.wait_for_timeout(1500)
+        r = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display, label: document.querySelector('.dragbar')?.textContent ?? null})")
+        check(r["s"] == "paused" and abs(r["b"] - held["b"]) < 0.01 and r["label"] == held["label"],
+              f"drag let go: the staff stays where it was let go, its bar still showing, and nothing plays ({r})")
+        again = drag_staff(0.5, 0.6)
+        page.wait_for_timeout(800)
+        r = page.evaluate("({s: __pm.player.state, b: __pm.player.position.display})")
+        check(r["s"] == "paused" and r["b"] < held["b"] and abs(r["b"] - again["b"]) < 0.01,
+              f"drag again: it moves on from there and stays put again ({held['b']:.2f} -> {r['b']:.2f})")
+        page.locator(".modes button").nth(1).click()
         page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
         r = page.evaluate("({from: __pm.player.debug().passStart, lines: __pm.tl.barLines, mode: __pm.player.mode})")
         check(r["from"] in r["lines"] and r["from"] < at and r["mode"] == "listen",
@@ -1234,6 +1266,9 @@ def main():
         page.evaluate(AUTOPLAY, [[], 0, 7, False])
         a0 = page.evaluate("__pm.player.debug().attempt")
         held = drag_staff(0.5, 0.7)
+        page.wait_for_timeout(800)
+        check(page.evaluate("__pm.player.state") == "paused", "drag while playing: letting go leaves it paused")
+        page.locator(".modes button").first.click()
         page.wait_for_function("__pm.player.state === 'countin' || __pm.player.state === 'playing'", timeout=10000)
         d = page.evaluate("__pm.player.debug()")
         check(held["s"] == "paused" and d["attempt"]["id"] == a0["id"] and d["attempt"]["rewinds"] == a0["rewinds"] + 1 and d["state"] in ("countin", "playing"),
@@ -1244,6 +1279,9 @@ def main():
         open_piece(page, "twinkle-twinkle")
         page.get_by_role("button", name="100%").click()
         drag_staff(0.9, 0.05)
+        page.wait_for_timeout(800)
+        check(page.evaluate("__pm.player.state") == "idle", "drag ahead from the start: letting go doesn't start it")
+        page.locator(".modes button").first.click()
         page.wait_for_function("__pm.player.state === 'gliding' || __pm.player.state === 'countin'", timeout=5000)
         start = page.evaluate("__pm.player.debug().attempt.start")
         r = page.evaluate(AUTOPLAY, [[], 0, 60, False])

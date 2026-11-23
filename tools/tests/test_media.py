@@ -480,3 +480,51 @@ def test_an_opening_sung_early_is_mapped_from_its_words_not_cut():
     assert [(round(a, 2), sc) for a, sc in out[:3]] == [(3.38, 5.38), (4.15, 6.15), (4.92, 6.92)]
     # a map that starts at the song's start is left alone
     assert align.head_fill([(5.0, 5.4)], lyric, lambda t: t, [5.38], 5.38, 0.0) == [(5.0, 5.4)]
+
+
+def test_two_takes_are_joined_in_the_breath_near_the_beat():
+    """v0.55: a vocal from two takes (a piece's `media: vocal_takes`), joined where both are quiet
+    near the second's first beat, at every tempo preset, and the joined stem is each take's own audio
+    either side of the join."""
+    align = pytest.importorskip("align")       # the media tools (tools/media/setup.sh): only on the dev box
+    np = pytest.importorskip("numpy")
+    sr = 8000
+
+    def stem(freq, quiet, ratio):
+        t = np.arange(int(12 / ratio * sr)) / sr
+        y = 0.3 * np.sin(2 * np.pi * freq * t)
+        y[(t >= quiet[0] / ratio) & (t < quiet[1] / ratio)] = 0.0
+        return np.stack([y, y], axis=1)
+    for ratio in (1.0, 0.5):
+        a = stem(220, (8.95, 9.30), ratio)    # the first take breathes before verse 2...
+        b = stem(330, (9.20, 9.28), ratio)    # ...the second only before its first syllable
+        out, joins = align.join_stems([(a, 0.0), (b, 9.3)], sr, ratio)
+        j = joins[0] * ratio
+        assert 9.2 <= j <= 9.28, j
+        k = int(joins[0] * sr)
+        f = int(align.JOIN_FADE_S * sr)
+        assert np.allclose(out[:k - f], a[:k - f]) and np.allclose(out[k + f:], b[k + f:len(out)])
+
+
+def test_a_joined_vocal_is_named_by_its_parts():
+    align = pytest.importorskip("align")
+    r = {"take": "x-joined", "mode": "joined", "parts": [{"take": "x-s8", "mode": "dtw", "fromS": 0.0},
+                                                         {"take": "x-s6", "mode": "dtw", "fromS": 59.29}]}
+    assert align.label(r) == "x-s8 (dtw), then x-s6 (dtw) from 59.3 s (joined)"
+    assert align.label({"take": "x-s6", "mode": "dtw"}) == "x-s6 (dtw)"
+
+
+def test_one_letter_words_the_aligner_cant_place_are_left_for_the_listen(monkeypatch):
+    """Nov 17, 2026: each "O" in O Come, O Come, Emmanuel was unplaced by the aligner, all within
+    0.2 s of their notes; like letter names, one-letter words are left for the listen."""
+    align = pytest.importorskip("align")
+    words = [{"word": w, "score_s": float(i)} for i, w in enumerate(["O", "come,", "O", "come,", "I", "go", "a", "home."])]
+    placed = [{**w, "start": w["score_s"], "end": w["score_s"] + 0.3, "conf": -0.2} for w in words]
+    for w in placed:
+        if len(w["word"].strip(",.")) == 1:
+            w["conf"] = -99.0
+    monkeypatch.setattr(align, "lyric_words", lambda audio, ws: placed)
+    r = align.check_words(Path("unused.wav"), words, 0.0)
+    assert r["shareOver300ms"] == 0.0 and r["lettersUnjudged"] == 4 and r["forced"] == 4
+    placed[5]["conf"] = -99.0                     # a longer word unplaced still counts as off
+    assert align.check_words(Path("unused.wav"), words, 0.0)["shareOver300ms"] == 0.25

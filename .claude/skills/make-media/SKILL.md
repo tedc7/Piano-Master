@@ -135,6 +135,21 @@ is yours: change the piece (a tempo) or the media (`--max-takes`, a style), run 
 resubmit that song with `import_song.py submit content/incoming/BATCH ID`. A note about the take itself ("try another rendering", a garbled word the checks passed): render again with `--skip-take N` (the take in its media.json) so that take is never chosen again. It returns to the review
 list with the note beside it.
 
+**Words a note off in one verse, right in another take (v0.55).** When the words in a phrase are off
+their notes but the melody is in time (the take sang the words on the wrong notes: no warp can fix
+that), look at the takes phrase by phrase: one may sing that verse well and another the rest. Name
+them in the piece, each from the song beat it takes over (at a verse's start, where there's a breath):
+
+```yaml
+media:
+  vocal_takes:
+    - take: 8
+    - {take: 6, from: 76}     # song beat 76: verse 2's first word
+```
+
+`vocal` then joins those takes' aligned stems in the quietest spot near each beat (every preset),
+checks the joined vocal like a take, and flags each join for the parent to listen to.
+
 ## Log problems as you go
 
 Add each problem to `docs/media-pipeline-notes.md` as it comes up: what got in the way and what

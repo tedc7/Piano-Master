@@ -12,10 +12,12 @@
 // The app's piano: Listen mode plays every note; in Play mode with one hand chosen, it plays the
 // other hand (the student setting "otherHand"), so one-hand practice still sounds like the piece.
 //
-// Dragging the staff (v0.33): the music pauses while the staff is held (scrub), and on letting go
-// it plays on in the same mode from the nearest bar line (dragTo), after the usual glide and
-// count-in. In Play mode a drag back over what was played is a rewind, like the Rewind button; a
-// drag anywhere else starts a new attempt from that bar, which is practice of part of the song.
+// Dragging the staff (v0.33): the music pauses while the staff is held (scrub). Letting go leaves
+// the staff where it is (dragTo; v0.55, when it played on by itself, the student and the app pulled
+// against each other), and it can be dragged again as often as they like. Play or Listen then
+// starts from the bar line nearest the play line, after the usual glide and count-in. In Play mode
+// a drag back over what was played is a rewind, like the Rewind button; a drag anywhere else starts
+// a new attempt from that bar, which is practice of part of the song.
 import { Attempt, type AttemptResult, type RawEvent } from "./attempt";
 import type { AudioEngine, StemBuffers } from "./audio";
 import type { Verdict } from "./matcher";
@@ -89,6 +91,7 @@ export class Player {
   needs: string[] = [];
   private attempt: Attempt;
   private from: number | null = null;         // the next attempt starts here (the staff was dragged)
+  private dragged: number | null = null;      // the staff was let go here: Play starts from this bar
   private clock: Clock | null = null;
   private glide: { t0: number; from: number; to: number; target: number; park?: boolean } | null = null;
   private displayBeat: number;
@@ -173,6 +176,7 @@ export class Player {
 
   /** Play from the start (a new attempt), or resume after a pause. */
   async play(): Promise<void> {
+    if (this.dragged !== null && !this.running && this.state !== "loading") return this.playFromDragged();
     if (this.state === "paused") {
       // Listen carries on from the bar it stopped in; Play goes back to the phrase start, so the
       // phrase is scored as one pass
@@ -207,6 +211,15 @@ export class Player {
     if (this.state === "finished") {
       this.stop();
       this.reposition();
+      return;
+    }
+    if (this.dragged !== null && !this.running) {
+      // the staff was dragged and not played yet: move it back from there, ready to play
+      const lines = this.tl.barLines;
+      let i = 0;
+      while (i + 1 < lines.length && lines[i + 1] <= this.dragged + 0.05) i++;
+      this.dragged = Math.max(this.start, lines[Math.max(0, i - bars)]);
+      this.displayBeat = this.logicBeat = this.dragged - this.tl.barLength;
       return;
     }
     if (this.state !== "paused" && !this.running) return;
@@ -250,6 +263,7 @@ export class Player {
     this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
     this.resumeFrom = null;
     this.from = null;
+    this.dragged = null;
     this.attempt = this.newAttempt();
     this.setState("idle");
     this.releaseWake();
@@ -272,16 +286,25 @@ export class Player {
 
   setMode(m: Mode): void {
     if (m === this.mode) return;
-    this.stop();
-    this.mode = m;
-    this.reposition();
+    this.keepingDragged(() => { this.mode = m; });
   }
 
   setHands(h: Hands): void {
     if (h === this.hands) return;
+    this.keepingDragged(() => { this.hands = h; });
+  }
+
+  /** Stop, change something, and start over, except that a dragged staff stays where it is, so
+   *  Play starts from there in the new mode or hands. */
+  private keepingDragged(change: () => void): void {
+    const dragged = this.dragged, at = this.displayBeat;
     this.stop();
-    this.hands = h;
+    change();
     this.reposition();
+    if (dragged !== null) {
+      this.dragged = dragged;
+      this.displayBeat = this.logicBeat = at;
+    }
   }
 
   /** Choose the section (phrase indices, inclusive), or null for all bars. */
@@ -312,16 +335,21 @@ export class Player {
     return best;
   }
 
-  /** The staff was let go at `beat`: play on in this mode from the nearest bar line, after the glide
-   *  and count-in. With `start` false (Play mode with no piano connected) it only moves there. */
-  async dragTo(beat: number, start = true): Promise<void> {
+  /** The staff was let go at `beat`: it stays there, and Play (or Listen) starts from the nearest
+   *  bar line (v0.55; until then it played on by itself). */
+  dragTo(beat: number): void {
     if (this.state === "loading" || this.running) return;
-    const target = this.barNear(beat);
-    if (!start) {
-      this.scrub(target - this.tl.barLength);
-      this.resumeFrom = this.state === "paused" ? target : null;
-      return;
-    }
+    this.dragged = this.barNear(beat);
+    this.resumeFrom = null;
+  }
+
+  /** The bar the staff was dragged to, while it waits for Play, else null. */
+  get draggedTo(): number | null { return this.dragged; }
+
+  /** Play from the dragged-to bar, after the glide and count-in. */
+  private async playFromDragged(): Promise<void> {
+    const target = this.dragged!;
+    this.dragged = null;
     const a = this.attempt;
     const under = this.scoring && this.state === "paused" && a.passes.length > 0;
     if (under && target >= a.range.start - 1e-6 && target <= a.reached + 1e-6) {
@@ -356,6 +384,7 @@ export class Player {
 
   private reposition(): void {
     this.from = null;
+    this.dragged = null;
     this.attempt = this.newAttempt();
     this.displayBeat = this.logicBeat = this.start - this.tl.barLength;
     this.hooks.pass(-Infinity, null);
