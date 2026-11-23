@@ -30,6 +30,7 @@ from __future__ import annotations
 import difflib
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -538,8 +539,10 @@ def check_words(aligned: Path, words, song_start, phrase_s=None):
     # a word the aligner can't place with confidence counts as off too: it's usually a garbled
     # word (v0.30: Steady Steps' last "stomp"s, which the check had left out). Letter names ("E,
     # D, C") are the exception: the aligner can't place a one-letter word however it's sung (Pattern
-    # Up, Pattern Down: 16 of 22 words), so they're left for the listen.
-    letter = np.array([re.fullmatch(r"[A-G][#b♯♭]?[,.!?;:]*", w["word"].strip()) is not None for w in lw], dtype=bool)
+    # Up, Pattern Down: 16 of 22 words), so they're left for the listen. So are the other one-letter
+    # words, "O", "I", "a" (O Come, O Come, Emmanuel, Nov 17, 2026: each "O" unplaced, all within
+    # 0.2 s of their notes).
+    letter = np.array([re.fullmatch(r"([A-G][#b♯♭]?|[AaIO])[,.!?;:]*", w["word"].strip()) is not None for w in lw], dtype=bool)
     off = ((np.abs(res - typical) > 0.3) & ~fz) | (fz & ~letter)
     judged = ~(fz & letter)
     labels = [f"{w['word']} ({w['score_s']:.1f} s)" for w in lw]
@@ -653,12 +656,22 @@ def align(folder: Path, abcmap: dict, phrases: list, mode: str) -> dict:
             (out / "pass2.wav").replace(out / "vocals_100.wav")
         else:
             (out / "pass2.wav").unlink()
-    ya = load_mono(out / "vocals_100.wav")
     mute_before(out / "vocals_100.wav", song_start - 0.12)
-    ya = load_mono(out / "vocals_100.wav")
+    aligned_checks(r, out / "vocals_100.wav", notes, words, song_start, phrases, bpm)
+    r["bleed"] = bleed_db(vocals, folder / "accompaniment.flac")
+    r["map"] = [[round(a, 4), round(s, 4)] for a, s in pts]
+    r["checks"] = verdict(r)
+    r["score"] = score(r)
+    (folder / f"alignment-{mode}.json").write_text(json.dumps(r, indent=1, default=lambda o: o.item()) + "\n")
+    return r
+
+
+def aligned_checks(r: dict, wav: Path, notes, words, song_start: float, phrases: list, bpm: float) -> dict:
+    """The checks on an aligned 100% vocal (timing, pitch, octave, words, melody, tuning) into r."""
+    ya = load_mono(wav)
     sung_a = sung_pitch(ya)
     real = [n for n in notes if n[0] >= song_start - 1e-6]
-    after = window_deltas(ya, notes, 1.0, centers)
+    after = window_deltas(ya, notes, 1.0, window_centers(notes))
     r["after"] = stats([x["delta_s"] for x in after if x["reliable"]])
     phrase_s = [song_start + float(p) * 60 / bpm for p in phrases]
     r["phrases"] = phrase_offsets(after, phrase_s, notes[-1][1])
@@ -667,15 +680,102 @@ def align(folder: Path, abcmap: dict, phrases: list, mode: str) -> dict:
     missing = sung_check(sung_a, real)
     r["firstWordSung"] = 0 not in missing
     r["unsungNotes"] = len(missing)
-    r["words"] = check_words(out / "vocals_100.wav", words, song_start, phrase_s)
+    r["words"] = check_words(wav, words, song_start, phrase_s)
     r["melodyStretches"] = melody_stretches(sung_a, notes, song_start)
     r["tuningCents"] = tuning_cents(ya[int(song_start * SR):])
-    r["bleed"] = bleed_db(vocals, folder / "accompaniment.flac")
-    r["map"] = [[round(a, 4), round(s, 4)] for a, s in pts]
-    r["checks"] = verdict(r)
-    r["score"] = score(r)
-    (folder / f"alignment-{mode}.json").write_text(json.dumps(r, indent=1, default=lambda o: o.item()) + "\n")
     return r
+
+
+# ------------------------------------------------------------------------------ joined takes
+
+JOIN_BEFORE_S = 0.7   # a join is looked for from this long before its beat (at 100%)...
+JOIN_AFTER_S = 0.1    # ...to this long after it
+JOIN_FADE_S = 0.02    # an equal-power crossfade this long, centred on the join
+
+
+def join_point(stems: list[np.ndarray], sr: int, at_s: float, ratio: float = 1.0) -> int:
+    """The sample to join two aligned stems at: near at_s (score time at 100%, so at_s / ratio in a
+    preset's stem), where the louder of the two is quietest (a breath in the take that ends, the
+    gap before the next syllable in the one that starts), in 5 ms frames."""
+    hop = sr // 200
+    lo = max(1, int((at_s - JOIN_BEFORE_S) / ratio * sr / hop))
+    hi = int((at_s + JOIN_AFTER_S) / ratio * sr / hop)
+    hi = min(hi, min(len(s) for s in stems) // hop - 1)
+
+    def louder(k):
+        return max(float(np.mean(s[k * hop:(k + 1) * hop] ** 2)) for s in stems)
+    k = min(range(lo, max(lo + 1, hi)), key=louder)
+    return k * hop + hop // 2
+
+
+def join_stems(parts: list[tuple[np.ndarray, float]], sr: int, ratio: float = 1.0) -> tuple[np.ndarray, list[float]]:
+    """One vocal from aligned stems of several takes (frames x channels, all on the same grid):
+    [(stem, from_s), ...] with from_s the score time (100%) each takes over, the first 0. Each join
+    is an equal-power crossfade at join_point. Returns the joined stem and the join times (s)."""
+    out = parts[0][0].copy()
+    joins = []
+    for stem, at_s in parts[1:]:
+        n = max(len(out), len(stem))
+        a = np.pad(out, ((0, n - len(out)), (0, 0)))
+        b = np.pad(stem, ((0, n - len(stem)), (0, 0)))
+        t = join_point([a.mean(axis=1), b.mean(axis=1)], sr, at_s, ratio)
+        f = int(JOIN_FADE_S * sr)
+        w = np.zeros(n)
+        w[t + f // 2:] = 1.0
+        w[t - f // 2:t - f // 2 + f] = np.linspace(0.0, 1.0, f)
+        out = a * np.cos(w * np.pi / 2)[:, None] + b * np.sin(w * np.pi / 2)[:, None]
+        joins.append(round(t / sr, 3))
+    return out, joins
+
+
+def joined_parts(work: Path, pid: str, spec: list[dict], bpm: float, song_start: float) -> list[dict]:
+    """A piece's `vocal_takes` as parts: [{"folder", "mode", "fromS"}], the first from the start."""
+    return [{"folder": work / "renders" / f"{pid}-s{int(p['take'])}", "mode": p.get("mode", "dtw"),
+             "fromS": 0.0 if i == 0 else song_start + float(Fraction(str(p["from"]))) * 60.0 / bpm}
+            for i, p in enumerate(spec)]
+
+
+def join(work: Path, pid: str, spec: list[dict], abcmap: dict, phrases: list) -> dict:
+    """The vocal from several aligned takes (a piece's `media: vocal_takes`, v0.55), joined in the
+    quietest spot near each part's first beat, in work/renders/<pid>-joined/aligned-joined/, with
+    the checks every take gets (Whisper's hearing from the joined vocal itself, the bleed the worst
+    of the parts'). YuE2 can sing one verse's words on their notes and the other's a note late (O
+    Come, O Come, Emmanuel, Nov 17, 2026: take 6 had 6 of 7 words off in "Until the Son of God
+    appear", take 8 none; take 8 had 20 of 32 off in verse 2, take 6 three); no single warp can fix
+    words sung on the wrong notes, but a verse from each can. Tempo presets: `tempo_versions`."""
+    first = work / "renders" / f"{pid}-s{int(spec[0]['take'])}"
+    notes, bpm = score_notes(first / "score.abc")
+    song_start = float(Fraction(abcmap["padBeats"])) * 60.0 / bpm
+    parts = joined_parts(work, pid, spec, bpm, song_start)
+    folder = work / "renders" / f"{pid}-joined"
+    out = folder / "aligned-joined"
+    out.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(first / "score.abc", folder / "score.abc")
+    stems = []
+    for p in parts:
+        y, sr = sf.read(p["folder"] / f"aligned-{p['mode']}" / "vocals_100.wav", always_2d=True)
+        stems.append((y, p["fromS"]))
+    y, joins = join_stems(stems, sr)
+    sf.write(out / "vocals_100.wav", y, sr, subtype="PCM_24")
+    (out / "heard-song.json").unlink(missing_ok=True)
+    words = [{**w, "score_s": float(Fraction(w["beat"])) * 60.0 / bpm} for w in abcmap["words"]]
+    srcs = [json.loads((p["folder"] / f"alignment-{p['mode']}.json").read_text()) for p in parts]
+    r = {"take": folder.name, "mode": "joined", "bpm": bpm, "audioSeconds": round(len(y) / sr, 2),
+         "songStartS": round(song_start, 3),
+         "parts": [{"take": p["folder"].name, "mode": p["mode"], "fromS": round(p["fromS"], 3)} for p in parts],
+         "joinsS": joins}
+    aligned_checks(r, out / "vocals_100.wav", notes, words, song_start, phrases, bpm)
+    r["bleed"] = max((s["bleed"] for s in srcs), key=lambda b: b["db"])
+    (folder / "alignment-joined.json").write_text(json.dumps(r, indent=1, default=lambda o: o.item()) + "\n")
+    return r
+
+
+def label(r: dict) -> str:
+    """How media.json names the vocal's take: "<take> (<mode>)", or each part of a joined one."""
+    if r.get("parts"):
+        return ", then ".join(f"{p['take']} ({p['mode']})" + (f" from {p['fromS']:.1f} s" if p["fromS"] else "")
+                              for p in r["parts"]) + " (joined)"
+    return f"{r['take']} ({r['mode']})"
 
 
 def verdict(r) -> dict:
@@ -752,7 +852,7 @@ def verdict(r) -> dict:
     elif jumps:
         flags.append("a short note sung in another octave at " + "; ".join(f"{j['start']:.1f} s" for j in jumps))
     if w.get("lettersUnjudged"):
-        flags.append(f"{w['lettersUnjudged']} letter names the word check can't place: listen to them")
+        flags.append(f"{w['lettersUnjudged']} one-letter words (letter names, \"O\") the word check can't place: listen to them")
     if r.get("wordsOnly"):
         flags.append("timed by its words only (its notes repeat too much for the beat check): listen for the beat")
     return {**checks, "pass": all(checks.values()), "worstPhraseMs": worst, "reasons": reasons, "flags": flags}
@@ -782,8 +882,23 @@ def score(r) -> float:
 def tempo_versions(folder: Path, mode: str, presets: dict[str, float], song_start: float, with_backing: bool) -> None:
     """The chosen take's other presets from the same map (and YuE2's accompaniment when kept)."""
     r = json.loads((folder / f"alignment-{mode}.json").read_text())
-    pts = [tuple(p) for p in r["map"]]
     out = folder / f"aligned-{mode}"
+    if r.get("parts"):
+        # a joined vocal: each part's presets from its own map, then joined at each preset
+        parts = [(folder.parent / p["take"], p["mode"], p["fromS"]) for p in r["parts"]]
+        for f, m, _ in parts:
+            tempo_versions(f, m, presets, song_start, False)
+        for key, ratio in presets.items():
+            if key == "100" and (out / "vocals_100.wav").exists():
+                continue
+            stems = []
+            for f, m, at in parts:
+                y, sr = sf.read(f / f"aligned-{m}" / f"vocals_{key}.wav", always_2d=True)
+                stems.append((y, at))
+            y, _ = join_stems(stems, sr, ratio)
+            sf.write(out / f"vocals_{key}.wav", y, sr, subtype="PCM_24")
+        return
+    pts = [tuple(p) for p in r["map"]]
     for key, ratio in presets.items():
         v = out / f"vocals_{key}.wav"
         if key != "100" or not v.exists():

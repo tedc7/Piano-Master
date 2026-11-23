@@ -10,7 +10,9 @@
   // the list to songs with the text in their title or words, and a genre choice to one genre
   // (v0.35); both stay with Back from a song, as the filter does. All songs clears them all. A song
   // the student has played shows its best stars (M10: the star collection counts each song's best).
-  import { onMount } from "svelte";
+  // Opened fresh, it scrolls to the student's frontier (v0.55): the first row still locked sits at
+  // the bottom of the screen, with the songs they can play above it.
+  import { onMount, tick } from "svelte";
   import Stars from "../components/Stars.svelte";
   import { furthest, songNote } from "../lib/songs";
   import Status from "../components/Status.svelte";
@@ -32,13 +34,31 @@
   let genre = $state("");                         // one genre, or "" for every genre
   let bodyEl = $state<HTMLElement>();
   type View = { filter: "all" | "favorites"; query: string; genre: string };
-  keepView<View>("library", () => bodyEl, { get: () => ({ filter, query, genre }),
+  const restored = keepView<View>("library", () => bodyEl, { get: () => ({ filter, query, genre }),
                                             set: (v) => { ({ filter, query, genre } = v); } });
 
   onMount(async () => {
     try { content = await loadContent(); } catch (e) { error = `Can't load the songs from the piano server (${(e as Error).message}).`; }
     if (app.student && !app.parentMode) rules = await rulesFor(app.student.id, true);
+    loaded = true;
     void app.refresh();
+  });
+
+  // opened fresh (not by Back) for a student who has started: scroll so the first song still locked
+  // is on the bottom row of the screen, every song above it open (v0.55); a new student, and the
+  // parent reviewing every song, start at the top
+  let loaded = $state(false);
+  let placed = false;
+  $effect(() => {
+    if (placed || restored || app.parentMode || !loaded || !bodyEl || !rows.length || !progress.size) return;
+    placed = true;
+    const el = bodyEl;
+    void tick().then(() => requestAnimationFrame(() => {
+      const locked = el.querySelector<HTMLElement>(".song.locked");
+      if (!locked) { el.scrollTop = el.scrollHeight; return; }   // every song open: the newest, at the end
+      const gap = 12;
+      el.scrollTop += Math.max(0, locked.getBoundingClientRect().bottom + gap - el.getBoundingClientRect().bottom);
+    }));
   });
 
   const mine = $derived(new Set(app.favorites));

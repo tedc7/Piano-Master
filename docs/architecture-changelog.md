@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.55 | Nov 23, 2026 | From family practice: a dragged staff stays where it's let go until the student presses Play; the Songs page opens at the student's frontier, with the first locked row at the bottom of the screen; and from the parent's listen, a vocal joined from two takes for O Come, O Come, Emmanuel |
 | v0.54 | Nov 17, 2026 | From family practice: the trophy case's bars fill from nothing to the next medal, as their words count, so a bar no longer looks empty just after a medal |
 | v0.53 | Nov 15, 2026 | From the parent's listen: chord symbols no longer drawn as grace notes (26 approved songs cleaned on the server); the take chooser and the vocal alignment fixed for O Come, O Come, Emmanuel; a gentler slide on long melisma notes (Silent Night) |
 | v0.52 | Nov 14, 2026 | From family practice: a song chosen for Today's Practice goes Back to Today's Practice; the result card suggests one button in the ready look, with none solid blue; every lesson card fits the screen with Next in sight |
@@ -50,9 +51,21 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
 
+## v0.55 (Nov 23, 2026)
+
+From family practice: letting go of a dragged staff started the music by itself, which "turned into a tug-of-war between the user trying to drag and the app trying to start playing"; and the Songs page always opened at the top, on the first songs, when a student who has moved on wants the songs near where they are.
+
+- **Dragging the staff (3 "Play and smooth rewind"):** letting go leaves the staff where it is, with its bar still showing at the play line, and it can be dragged again as often as the student likes. Play (or Listen) starts from the nearest bar line, with the glide and count-in as before; a drag back over what was played is still a rewind of that attempt, and a drag elsewhere a new attempt from that bar. Switching between Play and Listen, or the hands, keeps the dragged spot, and Rewind moves it back. Until now a drag from the start position or after the end, with no piano connected, was lost: Play started from the beginning.
+- **The Songs page (3, screen 7):** opened fresh, it scrolls so the first song still locked is on the bottom row of the screen, with every song above it open; with every song open, it scrolls to the end. A new student, and the parent, start at the top, and Back from a song returns to the list as it was left.
+
+From the parent's listen: O Come, O Come, Emmanuel sent back again, "Vocals are shifted from lyrics for many words."
+
+- **A vocal joined from two takes (10.5 step 8):** YuE2 had sung take 6's "Until the Son of God appear" a note late (6 of its 7 words off their notes, with the melody in time: the syllable breaks fall on the written notes, so no warp can fix it) and take 8's verse 2 (20 of 32 off), while each sang the other verse well. A piece can now name the takes to join (`media: vocal_takes`, each with the song beat it starts from). The vocal step joins their aligned stems at the quietest spot near the beat, at every tempo preset, checks the joined vocal like any take, and flags each join for the listen (tests). Emmanuel: verse 1 from take 8, verse 2 from take 6, joined in take 8's breath before verse 2. Words off went from 26% to 10%, every note is on pitch, and Whisper hears 95% of the words. It still fails "at the end", where the aligner can't place the last "Israel" after "O" (two vowels); its "-sra-" comes in on time.
+- **One-letter words (10.5 step 5):** an "O", "I" or "a" the aligner can't place is left for the listen, as letter names have been since v0.30 (Emmanuel's four "O"s, each within 0.2 s of its note; test).
+
 ## v0.54 (Nov 17, 2026)
 
-From family practice: Zippy's My Progress said "149½ more to the 250-star medal" over an empty gray bar, while Dad's showed his progress.
+From family practice: Zippy's My Progress said "149½ more to the 250-star medal" over an empty gray bar, while Dad's showed progress.
 
 - **The trophy case's bars (3 "Rewards"):** each milestone bar measured only from the last medal earned to the next one, so just after a medal it was empty (Zippy, 100½ stars with the 100-star medal: 0.3% of the way from 100 to 250; Dad, 159 stars: 39%). The bars now fill from nothing to the next medal, as the words under them count (Zippy 40%, Dad 64%); the pips still show the medals earned.
 

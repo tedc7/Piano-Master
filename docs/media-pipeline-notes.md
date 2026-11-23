@@ -568,3 +568,34 @@ come: the parent's listen, which tunes the `kids` style, the bleed threshold and
       starts late (`map[0]`) with words off "in the first 15 s".
     - *Still for the ear:* "Emmanuel" in the Beginner's first line (Whisper: "we lend you a land"),
       and whether the longer slides on Silent Night's "peace" and "born" sound right.
+
+39. **Nov 17: the full Emmanuel sent back again, "Vocals are shifted from lyrics for many words" (v0.55).**
+    - *Where the words were off.* Measured three ways on take 6's aligned vocal: the lyric aligner
+      word by word, Whisper's word timestamps, and the syllable breaks (dips in loudness).
+      - The "Rejoice! Rejoice!" refrain was on its notes, not what I'd guessed.
+      - The off words were "Until the Son of God appear" (6 of 7, 0.6-2.5 s late), the opening's
+        "O come, O come, Emmanuel", and the last "O Israel".
+      - In that line the pitch follows the score and the loudness dips fall on the written notes,
+        but both recognisers hear the words a note late. YuE2 sang the right melody in time with the
+        words on the wrong notes, which no time map can fix: moving a word onto its note drags the
+        wrong pitch with it.
+    - *Other takes, phrase by phrase* (scratch `wordres.py` on every take's aligned vocal).
+      - Take 8 sang verse 1 almost perfectly (that line 0 of 7 off) and verse 2 badly (20 of 32 off,
+        with an octave slip).
+      - Take 6 sang verse 2 well (3 of 32 off).
+      - All ten takes sing in the same octave, and the voices are close: the gap between takes on a
+        mean-MFCC measure was not much larger than the gap between one take's two verses.
+    - *Joined.* `media: vocal_takes` takes verse 1 from take 8 and verse 2 from take 6, joined in
+      take 8's breath before verse 2's "O" (59.26 s; 12-21 dB quieter than its singing, at every
+      preset; take 6 has no breath there, so it comes in on its "O").
+      - Words off went from 26% to 10%, every note is on pitch, and Whisper hears 95% of the words
+        (61 of 66 matched against 55).
+      - Beat timing is unchanged (13 ms worst phrase).
+    - *Two check findings.*
+      - The four "O"s were unplaced by the aligner, like letter names, though all were within 0.2 s
+        of their notes. One-letter words are now left for the listen.
+      - The last "Israel" is placed in the final "-el" in 8 of 10 takes. "O I-" is two vowels with
+        no break, and the "-sra-" consonant comes in on time, so the "at the end" failure is the
+        aligner's, left as a reason for the parent to hear.
+    - *For the ear:* the join at 59.3 s (a change in the voice), "Emmanuel" in the first line (Whisper:
+      "the NUL") and in verse 2's refrain ("e'er man you will").
