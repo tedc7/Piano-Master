@@ -6,6 +6,7 @@ What changed in each version of [architecture.md](architecture.md), newest first
 
 | Version | Date | Summary |
 | --- | --- | --- |
+| v0.56 | Nov 23, 2026 | From the parent: new skills slow down while a student is catching up, with 3 or more skills passed a week or more ago and still not mastered; Today's Practice gives that time to polishing them, and one new skill still starts every 4th such session |
 | v0.55 | Nov 23, 2026 | From family practice: a dragged staff stays where it's let go until the student presses Play; the Songs page opens at the student's frontier, with the first locked row at the bottom of the screen; and from the parent's listen, a vocal joined from two takes for O Come, O Come, Emmanuel |
 | v0.54 | Nov 17, 2026 | From family practice: the trophy case's bars fill from nothing to the next medal, as their words count, so a bar no longer looks empty just after a medal |
 | v0.53 | Nov 15, 2026 | From the parent's listen: chord symbols no longer drawn as grace notes (26 approved songs cleaned on the server); the take chooser and the vocal alignment fixed for O Come, O Come, Emmanuel; a gentler slide on long melisma notes (Silent Night) |
@@ -50,6 +51,14 @@ What changed in each version of [architecture.md](architecture.md), newest first
 | v0.14 | Sep 23, 2026 | Skill API for the dev box and parent work requests; tempo presets; smooth automatic rewind as the main practice mode; wait mode optional |
 | v0.13 | Sep 23, 2026 | Review changes: server database and home-network model, evaluator spec, practice-aid factor, map-point unlocking, media and video skills with single approval, parent mode, security, backup, logging, testing, later-phase milestones, future enhancements |
 | v0.12 | Sep 20, 2026 | Baseline reviewed in "Architecture v0.12 — Review Findings" |
+
+## v0.56 (Nov 23, 2026)
+
+From the parent: "Currently a new skill is introduced at every Today's Practice - is that correct? … Can the app recognize that condition and automatically slow down introduction of new skill material when the student isn't mastering the previous skills, and let the student continue practice sessions with these other skills until they catch up?" A new skill opened as soon as the one before it passed, at 3 stars once, and nothing looked at mastery: Zippy had 11 of 14 skills passed but not mastered, with none mastered in the last week, and polish was capped at 2 items a session.
+
+- **Catching up (8.1, new):** a skill passed 7 or more days ago and still not mastered is behind; with 3 or more behind, the day's session starts no new skill (one already begun keeps going), and the New slot's time goes to polish, uncapped, the skills behind first and every day, before a stuck skill's support pieces. Every 4th catching-up session in a row still starts one new skill, so skills that won't master slow the map without stopping it. Mastery releases it. Today's Practice says the day is for making songs shine, and the parent's progress report names the skills behind (8.11). The session records it (migration 019).
+- **Polish (8.3):** the cap of 2 a session doesn't apply while catching up.
+- **The practice simulator (11.4):** learners with a ceiling on a skill's ability, or every skill's; each day's unmastered count and catching-up state. New tests: the pile of unmastered skills at least halves for a learner who levels off, and three skills that never master slow the map but never stop it.
 
 ## v0.55 (Nov 23, 2026)
 

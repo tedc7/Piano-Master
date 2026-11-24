@@ -27,6 +27,8 @@
     greatAt: string[];
     workingOn: string[];
     stuck: string[];
+    behind?: string[];                 // passed a week or more ago, not mastered yet (v0.56)
+    catchingUp?: boolean;              // ...enough of them that new skills wait
     masteredThisWeek: string[];
     targetMinutes: number;
     guidedMinutes28: number;
@@ -134,6 +136,7 @@
       {/each}
       {#if (r.songsLearned ?? []).length > 12}<p class="muted">and {(r.songsLearned ?? []).length - 12} more</p>{/if}
       {#if full && r.stuck.length}<p class="notice">Stuck: {list(r.stuck)}. The sessions add support practice around it (arch §8.1).</p>{/if}
+      {#if full && r.catchingUp && r.behind?.length}<p class="notice">Catching up: {list(r.behind)} passed a week or more ago and aren't mastered yet. Today's Practice polishes them every day, and new skills slow down (one starts every 4th session) until fewer than 3 are left (arch §8.1).</p>{/if}
       {#if full}
         <h2 class="gap">Content runway</h2>
         <p class:alert={r.runway.alert}>{r.runway.remaining} skill{r.runway.remaining === 1 ? "" : "s"} left in the authored map{r.runway.daysLeft !== null ? `, about ${r.runway.daysLeft} days at the current pace` : ""}{r.runway.alert ? " — time to add the next level" : ""}.</p>

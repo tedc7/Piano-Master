@@ -187,6 +187,8 @@
       {/if}
       {#if s.endOfContent && item}
         <p class="muted soon">✨ New lessons coming soon! Until then, today is for making your songs shine.</p>
+      {:else if s.catchUp && item}
+        <p class="muted soon">💎 Today is for making the songs you've learned shine. New ideas come as they do!</p>
       {/if}
     {/if}
   </main>
