@@ -82,7 +82,10 @@ export interface SessionItem {
   skipped?: boolean;
 }
 
-export interface Session { date: string; targetMinutes: number; items: SessionItem[]; endOfContent: boolean }
+export interface Session {
+  date: string; targetMinutes: number; items: SessionItem[]; endOfContent: boolean;
+  catchUp?: boolean;                   // planned while catching up: new skills wait, the songs get polished (v0.56)
+}
 
 export interface Day { date: string; guidedSec: number; freeSec: number; targetMinutes: number; streak: number; completed: boolean }
 

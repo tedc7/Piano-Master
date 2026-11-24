@@ -399,6 +399,7 @@ def progress(student_id: str):
                           key=lambda x: -x["mastery"])
         name = {s.id: s.name for s in c.order}
         stuck_skills = [name[k] for k, st in states.items() if st.stuck]
+        lag = [s.name for s in engine.behind(c, states, t)]           # catching up (v0.56, 8.1)
         working = [name[k] for k, st in states.items() if st.status == "current"]
         great = [name[k] for k, st in sorted(states.items(), key=lambda kv: -(kv[1].best_mastery or 0))
                  if st.status == "mastered" or (st.passed and (st.best_mastery or 0) >= engine.MASTERY_LEVEL)][:3]
@@ -409,6 +410,7 @@ def progress(student_id: str):
             "days": days, "streak": engine.streak(con, student_id, t),
             "stars": stars["total"], "starsThisWeek": stars["week"],
             "weeks": weeks, "tracks": by_track, "greatAt": great, "workingOn": working, "stuck": stuck_skills,
+            "behind": lag, "catchingUp": len(lag) >= engine.CATCH_UP_AT,
             "masteredThisWeek": mastered_week, "targetMinutes": r["target_minutes"],
             "guidedMinutes28": round(sum(d["guidedSec"] for d in days) / 60, 1),
             "freeMinutes28": round(sum(d["freeSec"] for d in days) / 60, 1),

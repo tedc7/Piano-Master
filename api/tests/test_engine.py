@@ -206,6 +206,36 @@ def test_polish_goes_to_the_skill_practised_longest_ago(con, content):
     assert [i["skillId"] for i in items if i["reason"] == "Polish"][:2] == ["t.a", "t.b"]
 
 
+def test_catching_up_holds_new_skills_until_the_ones_behind_are_mastered(con, content):
+    """v0.56 (8.1 "Catching up"): 3 skills passed a week or more ago and still not mastered: no new
+    skill starts, one already begun keeps going, the time goes to polishing them, and every 4th
+    catching-up session in a row one new skill starts anyway."""
+    for sid, pid in (("t.a", "pa1"), ("t.b", "pb1"), ("t.c", "pc1")):
+        learn(con, content, sid, D0)
+        play(con, content, pid, D0, stars=3.0)
+    learn(con, content, "t.d", D0 + timedelta(days=3))               # begun before the catching up
+    assert [s.id for s in engine.behind(content, states(con, content), D0 + timedelta(days=6))] == []
+    d = D0 + timedelta(days=7)
+    assert [s.id for s in engine.behind(content, states(con, content), d)] == ["t.a", "t.b", "t.c"]
+    s = engine.get_session(con, content, "s1", d)
+    assert s["catchUp"] and not s["endOfContent"]
+    assert {i["skillId"] for i in s["items"] if i["reason"] == "New"} == {"t.d"}      # not t.e's lightbulb
+    assert {i["skillId"] for i in s["items"] if i["reason"] == "Polish"} == {"t.a", "t.b", "t.c"}   # past MAX_POLISH
+    for n in (8, 9):
+        assert engine.get_session(con, content, "s1", D0 + timedelta(days=n))["catchUp"]
+    assert engine.catch_up_run(con, "s1", D0 + timedelta(days=10)) == 3
+    s = engine.get_session(con, content, "s1", D0 + timedelta(days=10))         # the 4th in a row
+    assert s["catchUp"] and {i["skillId"] for i in s["items"] if i["reason"] == "New"} == {"t.d", "t.e"}
+    assert engine.catch_up_run(con, "s1", D0 + timedelta(days=11)) == 0         # counting starts again
+    # mastering one of them is enough: two behind don't hold new skills
+    for n in (11, 12):
+        for _ in range(3):
+            play(con, content, "pa1", D0 + timedelta(days=n), stars=5.0, timing=5.0)
+    assert states(con, content)["t.a"].status == "mastered"
+    s = engine.get_session(con, content, "s1", D0 + timedelta(days=13))
+    assert not s["catchUp"] and "t.e" in {i["skillId"] for i in s["items"] if i["reason"] == "New"}
+
+
 def test_a_skill_with_no_song_the_child_may_play_says_a_song_is_needed(con, content):
     learn(con, content, "t.a", D0)
     play(con, content, "pa1", D0, stars=4)                       # t.b and t.c open

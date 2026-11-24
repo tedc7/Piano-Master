@@ -3,7 +3,8 @@ branching skill map, driving the real lesson engine day by day, while invariants
 
 A learner has an ability per skill that grows with each attempt. `rate` is how fast, `days` is
 which days they practise, and `hard` skills grow much more slowly and stay below the pass
-standard for their first `hard_attempts` tries.
+standard for their first `hard_attempts` tries. `ceiling` caps a skill's ability (`top`, every
+skill's): a learner who passes but doesn't master (v0.56, catching up).
 """
 from __future__ import annotations
 
@@ -53,6 +54,8 @@ class Learner:
     days: set[int] | None = None             # practice days (day numbers); None = every day
     hard: dict[str, float] = field(default_factory=dict)   # skill -> rate multiplier
     hard_attempts: int = 12
+    ceiling: dict[str, float] = field(default_factory=dict)   # skill -> the most its ability reaches
+    top: float = 1.0                                          # ...and every other skill's
     seed: int = 1
 
 
@@ -66,6 +69,8 @@ class Log:
     reviewed: list[tuple[int, str]] = field(default_factory=list)
     stuck_days: dict[str, list[int]] = field(default_factory=dict)
     passed_count: dict[int, int] = field(default_factory=dict)          # day -> skills passed so far
+    unmastered: dict[int, int] = field(default_factory=dict)            # day -> passed, not yet mastered
+    catch_up: dict[int, int] = field(default_factory=dict)              # day -> the session's catch_up (0, 1, 2)
     targets: dict[int, float] = field(default_factory=dict)
     end_of_content: list[int] = field(default_factory=list)
     violations: list[str] = field(default_factory=list)
@@ -98,7 +103,7 @@ class Sim:
             acc = max(0.2, min(1.0, a + self.rng.uniform(-0.07, 0.05)))
             if preset != "100":
                 acc *= 0.9                             # the practice-aid factor of a slower preset
-            self.ability[sid] = a + rate * (1 - a)
+            self.ability[sid] = min(a + rate * (1 - a), self.l.ceiling.get(sid, self.l.top))
         st = stars_for(acc)
         tim = max(0.5, st - self.rng.choice([0, 0.5, 1.0]))
         info = engine.AttemptInfo(piece_id=pid, day=today, context="guided" if item else "free", mode=mode, completed=True, accuracy=acc,
@@ -119,6 +124,8 @@ class Sim:
         today = self.d0 + timedelta(days=n)
         s = engine.get_session(self.con, self.c, "s", today)
         self.log.sessions[n] = [dict(i) for i in s["items"]]
+        self.log.catch_up[n] = self.con.execute("SELECT catch_up FROM sessions WHERE student_id = 's' AND date = ?",
+                                                (today.isoformat(),)).fetchone()[0]
         self.log.targets[n] = s["targetMinutes"]
         if s["endOfContent"]:
             self.log.end_of_content.append(n)
@@ -173,6 +180,7 @@ class Sim:
                 self.day(n)
             states = engine.load_states(self.con, self.c, "s")
             self.log.passed_count[n] = sum(1 for st in states.values() if st.passed)
+            self.log.unmastered[n] = sum(1 for st in states.values() if st.status == "passed")
             for sid, st in states.items():
                 if st.stuck:
                     self.log.stuck_days.setdefault(sid, []).append(n)

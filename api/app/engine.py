@@ -34,6 +34,10 @@ WEAK_REVIEW = 3.0
 POLISH_PASSED_DAYS = 3
 POLISH_MASTERED_DAYS = 10
 MAX_POLISH = 2
+CATCH_UP_DAYS = 7                     # passed this many days ago and not yet mastered: behind (v0.56)
+CATCH_UP_AT = 3                       # this many skills behind: no new skill starts until they catch up
+CATCH_UP_TRICKLE = 4                  # ...except one, every 4th catching-up session in a row: a few skills
+                                      # that won't master slow the map down, never stop it
 # 8.5, 8.6
 SLOTS = {"review": 0.25, "new": 0.40, "practice": 0.20, "reward": 0.15}
 STUCK_PRACTICE = 0.30
@@ -195,6 +199,28 @@ def prerequisites_met(s: Skill, states: dict[str, SkillState]) -> bool:
 def lesson_open(s: Skill, states: dict[str, SkillState]) -> bool:
     """The lightbulb opens when the prerequisites are passed (§3 "Teaching concepts")."""
     return prerequisites_met(s, states)
+
+
+def behind(content: Content, states: dict[str, SkillState], today: date) -> list[Skill]:
+    """Skills the student is behind on (v0.56, 8.1 "Catching up"): passed CATCH_UP_DAYS or more
+    days ago and still not mastered, with a song the child may play to polish them."""
+    out = []
+    for s in content.order:
+        st = states[s.id]
+        if st.status != "passed" or st.waiting:
+            continue
+        since = day(st.passed_date)
+        if since is not None and (today - since).days < CATCH_UP_DAYS:
+            continue
+        if any(guided_ready(p, states) for p in content.pieces_of(s.id)):
+            out.append(s)
+    return out
+
+
+def started(s: Skill, st: SkillState) -> bool:
+    """A Current skill the student has begun: its concept lesson done, or one of its songs played.
+    While catching up it keeps its place in the New slot; a skill not begun yet waits."""
+    return st.status == "current" and (st.concept_done or st.last_practiced is not None)
 
 
 def guided_ready(p: Piece, states: dict[str, SkillState], learning: str | None = None) -> bool:
@@ -546,8 +572,9 @@ class Planner:
 
     def __init__(self, content: Content, states: dict[str, SkillState], today: date, target_minutes: float,
                  remedies: list[dict[str, Any]] | None = None, played: dict[str, set[str]] | None = None,
-                 songs: dict[str, dict[str, Any]] | None = None):
+                 songs: dict[str, dict[str, Any]] | None = None, catch_up_run: int = 0):
         self.c, self.states, self.today = content, states, today
+        self.catch_up_run = catch_up_run       # catching-up sessions in a row before today, none starting a skill
         self.remedies = remedies or []
         self.played = played or {}             # the hands each song has been played with (hands_played)
         self.songs = songs or {}               # each song's record (§8.12): its tricky phrase and last preset
@@ -555,6 +582,8 @@ class Planner:
         self.items: list[dict[str, Any]] = []
         self.used: set[str] = set()
         self.polish = 0
+        self.catch_up = False                  # new skills wait while the student catches up (v0.56)
+        self.trickle = False                   # ...and today one starts anyway
 
     def piece_for(self, s: Skill, *, library: bool = False) -> Piece | None:
         """A piece for the skill, different from the last one used when there is a choice."""
@@ -593,6 +622,10 @@ class Planner:
         # a skill on hold for missing hardware, or waiting for a song (v0.51), isn't planned
         order = [s for s in c.order if not states[s.id].capability_hold and not states[s.id].waiting]
         stuck = [s for s in order if states[s.id].status == "current" and states[s.id].stuck]
+        # catching up (v0.56, 8.1): several skills passed a week or more ago and still not mastered.
+        # No new skill starts; the New slot's time goes to polishing them, behind ones first
+        lag = {s.id for s in behind(c, states, today)}
+        self.catch_up = len(lag) >= CATCH_UP_AT
         share = dict(SLOTS)
         if stuck:
             share["new"] -= STUCK_PRACTICE - share["practice"]
@@ -623,11 +656,16 @@ class Planner:
         learning = [s for s in order if not states[s.id].stuck and (
             states[s.id].status == "current" or
             (states[s.id].status == "locked" and s.has_lesson and not states[s.id].concept_done and lesson_open(s, states)))]
+        if self.catch_up:
+            begun = [s for s in learning if started(s, states[s.id])]        # one begun keeps going
+            fresh = [s for s in learning if s not in begun]
+            self.trickle = bool(fresh) and self.catch_up_run >= CATCH_UP_TRICKLE - 1
+            learning = begun + fresh[:1] if self.trickle else begun
         nothing_new = not learning
         # skills waiting for a song aren't the end of the content: the parent's approval is still to come
         waits = [s for s in c.order if states[s.id].waiting and not states[s.id].passed and not states[s.id].capability_hold]
-        end_of_content = nothing_new and not stuck and not waits
-        if nothing_new and waits:
+        end_of_content = nothing_new and not stuck and not waits and not self.catch_up
+        if nothing_new and waits and not self.catch_up:
             it = new_item("needed", "New", skill=waits[0], title=WAITING_NOTE)
             it["done"] = True
             it["waiting"] = [s.id for s in waits]   # when one has a song, the day is planned again (stale)
@@ -637,7 +675,7 @@ class Planner:
                 break
             spent += self.add_new(s)
         # a longer session has room for more of the new skills' pieces
-        added = True
+        added = not self.catch_up            # (while catching up, the time goes to polish)
         while added and spent < budget * 0.8:
             added = False
             for s in learning:
@@ -653,8 +691,28 @@ class Planner:
         # practice: Diagnostics' remedies, support for a stuck skill, polish, a tricky spot, polish of mastered skills
         budget = share["practice"] * self.total + left_over
         spent = 0.0
+        # with nothing new to learn, the New slot's time goes to polish (8.10). While catching up
+        # (v0.56) polish isn't capped either, and the skills behind come first, every day, before
+        # a stuck skill's support pieces
+        cap = 10 ** 6 if nothing_new or self.catch_up else MAX_POLISH
+        every = 1 if self.catch_up else POLISH_PASSED_DAYS
+        polish = sorted((s for s in order if states[s.id].status == "passed" and self.polish_due(s, every)),
+                        key=lambda s: (s.id not in lag, *self.longest_unpractised(s)))
+
+        def polish_some(skills: list[Skill]) -> None:
+            nonlocal spent
+            for s in skills:
+                if spent >= budget or self.polish >= cap:
+                    break
+                p = self.piece_for(s) if not any(i["skillId"] == s.id for i in self.items) else None
+                if p:
+                    spent += self.add_piece("Polish", s, p)
+                    self.polish += 1
+
         for it in self.remedies:
             spent += self.add(it)
+        if self.catch_up:
+            polish_some([s for s in polish if s.id in lag])
         for s in stuck:
             st = states[s.id]
             p = next((x for x in c.pieces_of(s.id) if guided_ready(x, states)), None)
@@ -673,17 +731,7 @@ class Planner:
                 if spent >= budget:
                     break
                 spent += self.add_piece("Support", c.skills[sp.skill_id] if sp.skill_id in c.skills else s, sp)
-        # with nothing new to learn, the New slot's time goes to polish (8.10)
-        cap = 10 ** 6 if nothing_new else MAX_POLISH
-        polish = sorted((s for s in order if states[s.id].status == "passed" and self.polish_due(s, POLISH_PASSED_DAYS)),
-                        key=self.longest_unpractised)
-        for s in polish:
-            if spent >= budget or self.polish >= cap:
-                break
-            p = self.piece_for(s)
-            if p:
-                spent += self.add_piece("Polish", s, p)
-                self.polish += 1
+        polish_some(polish)
         for s in order:
             st = states[s.id]
             if spent >= budget:
@@ -788,7 +836,7 @@ def load_session(con: sqlite3.Connection, student_id: str, d: date) -> dict[str,
     if not r:
         return None
     return {"date": r["date"], "targetMinutes": r["target_minutes"], "items": json.loads(r["queue"]),
-            "endOfContent": bool(r["end_of_content"])}
+            "endOfContent": bool(r["end_of_content"]), "catchUp": bool(r["catch_up"])}
 
 
 def save_queue(con: sqlite3.Connection, student_id: str, d: str, items: list[dict[str, Any]]) -> None:
@@ -822,15 +870,29 @@ def get_session(con: sqlite3.Connection, content: Content, student_id: str, toda
     save_states(con, student_id, states)
     diagnostics.run(con, content, student_id, today)       # after the last session, before this one (8.8)
     remedies = diagnostics.remedy_items(con, content, student_id, states, today, target, new_item, piece_seconds)
-    items, end = Planner(content, states, today, target, remedies, hands_played(con, student_id),
-                         song_progress.load(con, student_id)).build()
-    con.execute("INSERT INTO sessions (student_id, date, target_minutes, queue, end_of_content, created_at, updated_at) "
-                "VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
-                (student_id, iso(today), target, json.dumps(items), int(end)))
+    planner = Planner(content, states, today, target, remedies, hands_played(con, student_id),
+                      song_progress.load(con, student_id), catch_up_run(con, student_id, today))
+    items, end = planner.build()
+    con.execute("INSERT INTO sessions (student_id, date, target_minutes, queue, end_of_content, catch_up, created_at, "
+                "updated_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))",
+                (student_id, iso(today), target, json.dumps(items), int(end),
+                 2 if planner.trickle else int(planner.catch_up)))
     con.execute("INSERT OR IGNORE INTO practice_days (student_id, date, target_minutes) VALUES (?, ?, ?)",
                 (student_id, iso(today), target))
     con.execute("UPDATE practice_days SET target_minutes = ? WHERE student_id = ? AND date = ?", (target, student_id, iso(today)))
     return load_session(con, student_id, today)
+
+
+def catch_up_run(con: sqlite3.Connection, student_id: str, today: date) -> int:
+    """The sessions before today planned while catching up, in a row, since one that started a new
+    skill anyway (v0.56): every CATCH_UP_TRICKLE-th starts one."""
+    n = 0
+    for r in con.execute("SELECT catch_up FROM sessions WHERE student_id = ? AND date < ? ORDER BY date DESC",
+                         (student_id, iso(today))):
+        if r["catch_up"] != 1:
+            break
+        n += 1
+    return n
 
 
 def hands_played(con: sqlite3.Connection, student_id: str) -> dict[str, set[str]]:
@@ -912,6 +974,8 @@ def continue_new_slot(con: sqlite3.Connection, content: Content, student_id: str
         st = states[s2.id]
         if s2.id in queued or st.capability_hold or st.waiting or st.stuck:
             continue
+        if s.get("catchUp") and not started(s2, st):
+            continue                          # catching up (v0.56): only a skill already begun
         if st.status == "current" or (st.status == "locked" and s2.has_lesson and not st.concept_done and lesson_open(s2, states)):
             p.add_new(s2)
             break

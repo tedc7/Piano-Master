@@ -167,6 +167,26 @@ def plant_blocked_first_skill() -> tuple[str, str]:
     return sid, first
 
 
+def plant_catching_up() -> tuple[str, list[str]]:
+    """A student who passed the map's first 5 skills 10 days ago and mastered none (v0.56), written
+    straight into the check's throwaway database: their session is planned while catching up."""
+    import sqlite3
+    from datetime import date, datetime, timedelta
+    skills = sorted(json.loads((DIST / "content" / "skillmap.json").read_text())["skills"], key=lambda s: s["sequence"])
+    behind = [s["id"] for s in skills[:5]]
+    ago = (date.today() - timedelta(days=10)).isoformat()
+    con = sqlite3.connect(os.environ["PIANO_DB"])
+    sid, now = str(uuid.uuid4()), datetime.now().astimezone()
+    con.execute("INSERT INTO students (id, name, avatar, start_date, sort, created_at) VALUES (?, 'Cat', '🐱', ?, 11, ?)",
+                (sid, ago, now.isoformat()))
+    con.executemany("INSERT INTO skill_states (student_id, skill_id, status, concept_done, mastery, best_mastery, "
+                    "best_accuracy_stars, best_timing_stars, passed_date, last_practiced) "
+                    "VALUES (?, ?, 'passed', 1, 0.7, 0.75, 3.5, 3.5, ?, ?)", [(sid, k, ago, ago) for k in behind])
+    con.commit()
+    con.close()
+    return sid, behind
+
+
 def serve(home: bool = False):
     """The App API plus the built client at /, on a free local port, with a throwaway database. The
     API plans from the built skill map, and its library starts with every built song, as a deploy's
@@ -1397,6 +1417,21 @@ def main():
         check(note.startswith("Song needed") and [i["skillId"] for i in needed] == [first] and needed[0]["done"]
               and page.locator(".upnext").count() == 1,
               f"song needed: a skill with no song the child may play shows a note in the session ({note!r})")
+
+        # 9. catching up (v0.56): 5 skills passed 10 days ago and not mastered, so no new skill
+        # starts; the session polishes them, and says why under the Up next card
+        sid, behind = plant_catching_up()
+        page.goto(url)
+        page.wait_for_selector(".student")
+        page.locator(".student", has_text="Cat").click()
+        page.wait_for_selector(".upnext", timeout=10000)
+        s = page.evaluate(f"fetch('api/students/{sid}/state').then(r => r.json()).then(j => j.session)")
+        polish = {i["skillId"] for i in s["items"] if i["reason"] == "Polish"}
+        soon = page.locator(".soon").inner_text() if page.locator(".soon").count() else ""
+        page.screenshot(path=str(OUT / "session-catching-up.png"))
+        check(s["catchUp"] and not any(i["reason"] == "New" for i in s["items"]) and len(polish) >= 3
+              and polish <= set(behind) and "shine" in soon,
+              f"catching up: no new skill, {len(polish)} skills behind polished, and the note ({soon!r})")
 
         check(not errors, "no page errors" + (": " + "; ".join(errors[:5]) if errors else ""))
         browser.close()

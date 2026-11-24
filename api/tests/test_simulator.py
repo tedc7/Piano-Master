@@ -70,7 +70,8 @@ def test_the_session_mix_follows_the_slot_order(fast, slow, hard):
             assert ranks == sorted(ranks), (n, [i["reason"] for i in items])
             assert items[-1]["kind"] == "pick"
             nothing_new = not any(i["reason"] == "New" for i in items)
-            assert sum(1 for i in items if i["reason"] == "Polish") <= engine.MAX_POLISH or nothing_new
+            catching_up = log.catch_up[n]                                 # polish isn't capped then (v0.56)
+            assert sum(1 for i in items if i["reason"] == "Polish") <= engine.MAX_POLISH or nothing_new or catching_up
 
 
 def test_reviews_come_on_the_ladder(fast, slow):
@@ -129,7 +130,8 @@ def test_a_backlog_after_a_break_is_worked_off_over_days(inconsistent):
         assert review <= inconsistent.targets[n] * 60 * engine.SLOTS["review"] + biggest
 
 
-def test_longer_sessions_hold_more_items(tmp_path, content):
+def test_longer_sessions_hold_more_items(tmp_path, content, monkeypatch):
+    monkeypatch.setattr(engine, "CATCH_UP_AT", 10 ** 6)                # the planner when not catching up
     sim = Sim(str(tmp_path / "len.db"), content, Learner("len", rate=0.15, start=0.52))
     sim.run(10)
     states = engine.load_states(sim.con, content, "s")
@@ -147,3 +149,28 @@ def test_the_end_of_content_keeps_sessions_full(tmp_path):
     assert log.end_of_content
     for n in log.end_of_content:
         assert sum(1 for i in log.sessions[n] if i["kind"] == "piece") >= 3
+
+
+def test_catching_up_keeps_the_pile_of_unmastered_skills_small(tmp_path, content, monkeypatch):
+    """v0.56 (8.1 "Catching up"): a learner who passes everything but levels off below 4 stars."""
+    plateau = Learner("plateau", rate=0.15, start=0.72, top=0.88, seed=5)
+    log = run(tmp_path, content, plateau)
+    monkeypatch.setattr(engine, "CATCH_UP_AT", 10 ** 6)
+    (tmp_path / "off").mkdir()
+    before = run(tmp_path / "off", content, plateau)
+    assert any(log.catch_up.values()) and not any(before.catch_up.values())
+    assert max(log.unmastered.values()) <= max(before.unmastered.values()) / 2
+    for n, items in log.sessions.items():
+        if log.catch_up[n]:
+            # the time goes to polish, past the usual two
+            assert sum(1 for i in items if i["reason"] == "Polish") > engine.MAX_POLISH, n
+
+
+def test_skills_that_wont_master_slow_the_map_but_never_stop_it(tmp_path, content):
+    """Three skills that never reach 4 stars keep the student catching up; every 4th session in a
+    row one new skill starts anyway."""
+    stuck = Learner("never", rate=0.2, start=0.55, ceiling={f"sim.0{i}": 0.80 for i in (3, 4, 5)}, seed=6)
+    log = run(tmp_path, content, stuck)
+    assert list(log.catch_up.values()).count(2) >= 5
+    for n in range(14, DAYS - 7, 7):
+        assert log.passed_count[n + 7] > log.passed_count[n], n

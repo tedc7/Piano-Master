@@ -1,6 +1,6 @@
 # Family Piano Tutor — Architecture
 
-**Version 0.55** · Nov 23, 2026
+**Version 0.56** · Nov 23, 2026
 
 The design of the Family Piano Tutor app, as it stands at this version. What changed in each version is in the [change log](architecture-changelog.md), and every earlier version of this file is in its git history (`git log --follow docs/architecture.md`).
 
@@ -843,7 +843,7 @@ Each skill has one of four states, in order:
 
 When all of a skill's prerequisites are passed, its concept lesson opens (the bubble shows Ready to learn) and the next Guided session schedules it in the New slot. Finishing the concept lesson makes the skill Current.
 
-**No minimum practice to pass, and no cap on new skills per day.** Some skills are easy and some are hard; a student who passes a skill quickly moves on straight away, and when a Current skill passes mid-session, the New slot continues with the next available skill. Spaced review and polish practice (8.3) then bring each passed skill up to mastery over time, tracked by its stars.
+**No minimum practice to pass, and no cap on new skills per day.** Some skills are easy and some are hard; a student who passes a skill quickly moves on straight away, and when a Current skill passes mid-session, the New slot continues with the next available skill. Spaced review and polish practice (8.3) then bring each passed skill up to mastery over time, tracked by its stars. Since v0.56 new skills slow down while a student is **catching up** (below): passing comes quickly, mastery doesn't always follow, and without a brake the pile of skills passed but not mastered only grew.
 
 A skill that needs a capability the current setup lacks (for example a pedal) is marked **capability hold**: it shows "Needs pedal" on the map, is skipped by the session planner, counts as passed for the skills that depend on it and for unlocking, and becomes Current as soon as the capability is detected.
 
@@ -875,6 +875,22 @@ A Current skill is marked **stuck** when it has not passed after 6 completed att
 
 A skill stops being stuck as soon as it passes.
 
+#### Catching up (v0.56)
+
+A new skill opens as soon as the one before it **passes** (3 stars once), so a student who passes easily but doesn't go on to master meets a new skill nearly every session while the skills behind them pile up. Polish (8.3) was capped at 2 items a session, each skill about every 3 days, so it couldn't keep up. In one child's practice (Nov 23, 2026), 11 of the 14 skills reached were passed but not mastered, with no mastery in the last week; in the practice simulator (11.4) a learner who passes everything but levels off below 4 stars had 52 at once.
+
+**Behind:** a skill passed 7 or more days ago and still not mastered, with a song the child may play (`CATCH_UP_DAYS`). A week leaves room for the two separate days mastery needs (8.2) and for the usual polish; a fast learner is seldom behind on many.
+
+**Catching up:** 3 or more skills behind (`CATCH_UP_AT`). The day's session is planned while catching up (the session records it, `sessions.catch_up`):
+
+- **No new skill starts.** A Current skill the student has already begun (its concept lesson done, or one of its songs played) keeps its place in the New slot, so nothing is left half learned; a skill not begun yet, and a lightbulb, wait. When a skill passes mid-session, the New slot continues only with a skill already begun.
+- **The time goes to polish.** The New slot's spare time moves to the Practice slot, where polish isn't capped at 2 and passed skills may come back every day: the skills behind first, practised longest ago first, before a stuck skill's support pieces. Review, a stuck skill's Tricky spot and Your pick are as usual.
+- **Slowed, never stopped:** every 4th catching-up session in a row starts one new skill anyway (`CATCH_UP_TRICKLE`; that session records 2), so a few skills that won't master slow the map down without stopping it. In the simulator, three skills held below 4 stars kept a learner catching up for the whole 8 weeks, and the map still moved on every week.
+- **Released by mastery:** once fewer than 3 are behind, the next day's session starts new skills again, so new skills arrive about as fast as skills are mastered.
+- **What the student and parent see:** Today's Practice says "Today is for making the songs you've learned shine. New ideas come as they do!" under the Up next card; the Polish items say why as before. The parent's progress report names the skills behind ("Catching up: …"). The Journey is unchanged: a lightbulb the student opens there is theirs to start.
+
+The numbers are a first version, chosen with the simulator: of the simulator's learners, a fast one catches up on about 10 of 56 days, mostly single days, and its most unmastered at once falls from 27 to 17; a slow one from 18 to 10; one who levels off from 52 to 21. (`api/app/engine.py` `behind`, `started`, `catch_up_run`, `Planner.build`; `api/tests/test_engine.py`, `test_simulator.py`.)
+
 ### 8.2 Mastery
 
 - **Mastery (0 to 1)** is a stored running value, updated after every completed attempt that exercises the skill: *new mastery = old mastery + 0.3 × (the attempt's practice-aid-scaled accuracy − old mastery)*. The first attempt sets it directly. Recent attempts count most and older ones fade gradually. Free Play updates use half the step (0.15, 8.7), except for a practice song's own skill: playing one of a skill's practice songs outside the session (from its Journey bubble or the song library) is deliberate practice of that skill, so it takes the full step (v0.37). The step size is a first version, tuned with the practice simulator (11.4).
@@ -899,7 +915,7 @@ A skill stops being stuck as soon as it passes.
 | Passed, not yet mastered | A polish item about every 3 days, the skill practised longest ago first (v0.37; lowest mastery first before) | High |
 | Mastered, best accuracy under 5 stars | About every 10 days, when the Practice slot has room, practised longest ago first | Low |
 
-At most 2 polish items per session, so polish never crowds out new material.
+At most 2 polish items per session, so polish never crowds out new material, except while catching up (8.1, v0.56), when polish takes the New slot's spare time and has no cap.
 
 **What a review or polish item is:** a short exercise, drill, or song from that skill, chosen to differ from the last one used. It is not a repeat of the concept lesson.
 
@@ -1027,6 +1043,7 @@ Shown to both student (kid-friendly wording) and parent (full detail):
 - Accuracy and timing star trends over 4 weeks.
 - Strengths and weaknesses by track (reading, rhythm, technique, theory, repertoire, musicianship).
 - Active, stuck, and recently resolved error patterns, and any stuck skills ("working on" areas).
+- The skills behind, while catching up (8.1, v0.56; parent only).
 - Practice days, Guided minutes, Free Play minutes, streak, and current target session length.
 - Content runway (parent only).
 
@@ -1733,6 +1750,7 @@ Not planned for the first version; each is revisited when there's a reason to bu
 | Gentle options and stuck skills (v0.15) | After 3 tries, "Try it another way" choices (listen, tricky part, slower, one hand, concept lesson, something else, Free Play); a stuck skill gets more support practice that does not require it, while other branches continue; never a "failed" message, never a free pass | Encouraging, and builds capability without passing students below the standard |
 | Rhythm skills (v0.15) | Passing a rhythm-track skill also needs 3 or more timing stars | Rhythm skills are about timing |
 | Pacing (v0.15) | No minimum practice to pass; no daily cap on new skills | Skills differ in difficulty; spaced review and polish bring each skill to mastery over time |
+| Catching up (v0.56) | With 3 or more skills passed a week ago and not mastered, no new skill starts (one every 4th such session) and the time goes to polish | New skills came as fast as skills passed, and the skills not mastered only piled up |
 | Mastery (v0.15) | Stored running value updated after every attempt (step 0.3; half step for Free Play); best-so-far mastery and stars kept | Supports review penalties; displayed stars never drop |
 | Content changes behind progress (v0.15) | Deferred to potential features | Not needed before the first levels are stable |
 | Skill API (v0.14) | The dev box (Claude Code, skills, YuE2) reaches the server only through a token-scoped Skill API; the server runs no Claude or GPU work | Server stays purely a server and the only writer to its database |
